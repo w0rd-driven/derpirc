@@ -9,6 +9,6 @@ namespace derpirc.Data
         // 1:1 with IMessagesView
         int ListId { get; set; }
 
-        List<Message> Items { get; set; }
+        IList<IMessage> Items { get; set; }
     }
 }

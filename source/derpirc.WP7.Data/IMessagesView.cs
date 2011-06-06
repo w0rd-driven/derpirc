@@ -9,7 +9,7 @@ namespace derpirc.Data
         int ServerId { get; set; }
 
         string Name { get; set; }
-        Message LastItem { get; set; }
+        IMessage LastItem { get; set; }
         int Count { get; set; }
     }
 }

@@ -10,5 +10,16 @@ namespace derpirc.Data
         int ListId { get; set; }
 
         DateTime TimeStamp { get; set; }
+
+        // IrcDotNet.IrcRawMessageEventArgs.Message
+        // IrcDotNet.IrcClient.IrcMessage
+        string Command { get; set; }
+        IList<string> Parameters { get; set; }
+        string Prefix { get; set; }
+        // IrcDotNet.IIrcMessageSource
+        string Source { get; set; }
+
+        // IrcDotNet.IrcRawMessageEventArgs.RawMessage
+        string RawContent { get; set; }
     }
 }

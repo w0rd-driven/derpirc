@@ -58,6 +58,15 @@
     <Compile Include="BaseModel.cs" />
     <Compile Include="BaseNotify.cs" />
     <Compile Include="IBaseModel.cs" />
+    <Compile Include="IMessage.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="IMessagesView.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="IMessageView.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings\Client.cs" />
     <Compile Include="Settings\Factory.cs" />
