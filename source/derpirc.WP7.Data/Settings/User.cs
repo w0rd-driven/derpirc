@@ -2,7 +2,7 @@
 
 namespace derpirc.Data
 {
-    public class User : BaseModel<User>
+    public class User
     {
         public string NickName { get; set; }
         public string NickNameAlternates { get; set; }
