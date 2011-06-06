@@ -2,7 +2,7 @@
 using Wintellect.Sterling;
 using Wintellect.Sterling.Database;
 
-namespace dIRca.Data
+namespace derpirc.Data
 {
     public class IdentityTrigger<T> : BaseSterlingTrigger<T, int> where T : class, IBaseModel, new()
     {

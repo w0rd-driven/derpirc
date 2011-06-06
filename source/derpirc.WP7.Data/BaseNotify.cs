@@ -5,7 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace dIRca.Data
+namespace derpirc.Data
 {
     public abstract class BaseNotify : INotifyPropertyChanged, IDisposable
     {

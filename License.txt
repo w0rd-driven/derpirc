@@ -1,4 +1,4 @@
-License for dIRca (http://dirca.codeplex.com) 3/10/2011
+License for derpirc 3/10/2011
 
 Copyright (c) 2011 Jeremy Brayton
 

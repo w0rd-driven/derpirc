@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using dIRca.Data.Settings;
+using derpirc.Data.Settings;
 using Wintellect.Sterling.Database;
 
-namespace dIRca.Data
+namespace derpirc.Data
 {
     public class ModelDatabase : BaseDatabaseInstance
     {
@@ -26,10 +26,10 @@ namespace dIRca.Data
             return new List<ITableDefinition>
                        {
                            CreateTableDefinition<Client, bool>(c => true),
-                           CreateTableDefinition<List<IrcServer>, bool>(c => true),
-                           CreateTableDefinition<List<IrcNetwork>, bool>(c => true),
-                           CreateTableDefinition<IrcUser, bool>(c => true),
-                           CreateTableDefinition<LastConnection, int>(last => last.Id),
+                           CreateTableDefinition<List<Server>, bool>(c => true),
+                           CreateTableDefinition<List<Network>, bool>(c => true),
+                           CreateTableDefinition<User, bool>(c => true),
+                           CreateTableDefinition<Session, bool>(c => true),
                        };
         }
     }
