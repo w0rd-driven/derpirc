@@ -1,0 +1,105 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+                    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+                    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+                    xmlns:controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls">
+    <!-- Converters -->
+    <!-- Fonts -->
+    <!-- Styles -->
+    <Style x:Key="TextBlockBase" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource FontFamilyNormal}"/>
+        <Setter Property="FontSize" Value="{StaticResource PhoneFontSizeNormal}"/>
+        <Setter Property="Foreground" Value="{StaticResource PhoneForegroundBrush}"/>
+        <Setter Property="Margin" Value="{StaticResource PhoneHorizontalMargin}"/>
+    </Style>
+    <Style x:Key="TextNormalStyle" TargetType="TextBlock" BasedOn="{StaticResource TextBlockBase}">
+        <Setter Property="TextWrapping" Value="Wrap" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+    <Style x:Key="TextSmallStyle" TargetType="TextBlock" BasedOn="{StaticResource TextBlockBase}">
+        <Setter Property="FontSize" Value="{StaticResource PhoneFontSizeSmall}"/>
+        <Setter Property="TextWrapping" Value="Wrap" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+    <Style x:Key="TextSubtleStyle" TargetType="TextBlock" BasedOn="{StaticResource TextBlockBase}">
+        <Setter Property="FontSize" Value="{StaticResource PhoneFontSizeSmall}"/>
+        <Setter Property="Foreground" Value="{StaticResource PhoneSubtleBrush}"/>
+        <Setter Property="TextWrapping" Value="Wrap" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+    <Style x:Key="PageTitleStyle" TargetType="TextBlock" BasedOn="{StaticResource TextNormalStyle}">
+        <Setter Property="FontSize" Value="{StaticResource PhoneFontSizeExtraLarge}"/>
+    </Style>
+    <Style x:Key="SmallPivotStyle" TargetType="controls:Pivot">
+        <Setter Property="FontFamily" Value="{StaticResource FontFamilyNormal}"/>
+        <Setter Property="FontSize" Value="{StaticResource PhoneFontSizeNormal}"/>
+    </Style>
+    <Style x:Key="SmallPivotItemStyle" TargetType="controls:PivotItem">
+        <Setter Property="FontFamily" Value="{StaticResource FontFamilyNormal}"/>
+        <Setter Property="FontSize" Value="{StaticResource PhoneFontSizeNormal}"/>
+    </Style>
+    <Style x:Key="SmallPivotHeaderStyle" TargetType="TextBlock" BasedOn="{StaticResource TextBlockBase}">
+        <Setter Property="FontSize" Value="{StaticResource PhoneFontSizeExtraLarge}"/>
+    </Style>
+    <Style x:Key="SmallPivotListBoxStyle" TargetType="ListBoxItem">
+        <Setter Property="FontFamily" Value="{StaticResource FontFamilyNormal}"/>
+        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+    </Style>
+    <Style x:Key="HyperlinkButtonContentStyle" TargetType="HyperlinkButton">
+        <Setter Property="Foreground" Value="{StaticResource PhoneForegroundBrush}" />
+        <Setter Property="Background" Value="{StaticResource PhoneBackgroundBrush}" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="HyperlinkButton">
+                    <Border Background="Transparent">
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="Normal" />
+                                <VisualState x:Name="MouseOver" />
+                                <VisualState x:Name="Pressed">
+                                    <Storyboard>
+                                        <DoubleAnimation Duration="0"
+                                                        To="0.5"
+                                                        Storyboard.TargetProperty="Opacity"
+                                                        Storyboard.TargetName="ContentElement" />
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="Disabled">
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Fill"
+                                                                    Storyboard.TargetName="DisabledElement">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource PhoneDisabledBrush}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                        <Border Background="{TemplateBinding Background}"
+                            Margin="{StaticResource PhoneHorizontalMargin}"
+                            Padding="{TemplateBinding Padding}">
+                            <Grid Height="31" Margin="0">
+                                <ContentPresenter x:Name="ContentElement"
+                                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                Content="{TemplateBinding Content}"
+                                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                                <Rectangle x:Name="DisabledElement" />
+                            </Grid>
+                        </Border>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <!-- DataTemplates -->
+    <DataTemplate x:Key="SmallPivotHeaderTemplate">
+        <TextBlock
+            Foreground="{StaticResource PhoneAccentBrush}"
+            Text="{Binding Model.Name}"
+            Style="{StaticResource SmallPivotHeaderStyle}"/>
+    </DataTemplate>
+</ResourceDictionary>

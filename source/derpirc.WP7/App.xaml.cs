@@ -83,6 +83,8 @@ namespace derpirc
         private void Application_Closing(object sender, ClosingEventArgs e)
         {
             // Ensure that required application state is persisted here.
+            // HACK: May or may not need VMLocator.Cleanup here
+            ViewModelLocator.Cleanup();
         }
 
         // Code to execute if a navigation fails
