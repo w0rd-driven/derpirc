@@ -1,13 +1,37 @@
-﻿using GalaSoft.MvvmLight;
+﻿using derpirc.Data;
+using GalaSoft.MvvmLight;
 
 namespace derpirc.ViewModels
 {
+    /// <summary>
+    /// List-based ItemViewModel
+    /// </summary>
     public class ChannelsViewModel : ViewModelBase
     {
+        private ChannelsView _model;
+        public ChannelsView Model
+        {
+            get { return _model; }
+            set
+            {
+                if (_model == value)
+                    return;
+
+                var oldValue = _model;
+                _model = value;
+                RaisePropertyChanged(() => Model);
+            }
+        }
+
         /// <summary>
         /// Initializes a new instance of the ChannelViewModel class.
         /// </summary>
-        public ChannelsViewModel()
+        public ChannelsViewModel() : this(new ChannelsView()) { }
+
+        /// <summary>
+        /// Initializes a new instance of the ChannelViewModel class.
+        /// </summary>
+        public ChannelsViewModel(ChannelsView model)
         {
             if (IsInDesignMode)
             {
@@ -17,6 +41,7 @@ namespace derpirc.ViewModels
             {
                 // code runs "for real": connect to service, etc...
             }
+            Model = model;
         }
 
         public override void Cleanup()
