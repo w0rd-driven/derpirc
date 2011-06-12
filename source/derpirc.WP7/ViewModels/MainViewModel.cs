@@ -31,6 +31,10 @@ namespace derpirc.ViewModels
         public MainViewModel()
         {
             _channelsList = new ObservableCollection<ChannelsViewModel>();
+            var channel = new ChannelsViewModel();
+            _channelsList.Add(channel);
+            _channelsList.Add(channel);
+            _channelsList.Add(channel);
             Channels = new CollectionViewSource() { Source = _channelsList };
         }
 

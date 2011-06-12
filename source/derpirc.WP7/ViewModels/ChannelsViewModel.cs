@@ -33,15 +33,21 @@ namespace derpirc.ViewModels
         /// </summary>
         public ChannelsViewModel(ChannelsView model)
         {
+            Model = model;
             if (IsInDesignMode)
             {
                 // code runs in blend --> create design time data.
+                model.Id = 0;
+                model.ServerId = 0;
+                model.Name = "#Test";
+                model.Topic = "This is a test topic";
+                //del.LastItem = new IMessage();
+                model.Count = 20;
             }
             else
             {
                 // code runs "for real": connect to service, etc...
             }
-            Model = model;
         }
 
         public override void Cleanup()

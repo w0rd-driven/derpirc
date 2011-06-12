@@ -7,13 +7,38 @@
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
-    d:DesignHeight="480" d:DesignWidth="480">
+    d:DesignHeight="480" d:DesignWidth="480"
+    DataContext="{Binding ChannelsViewModel, Source={StaticResource Locator}}">
     
     <Grid x:Name="LayoutRoot">
-        <ScrollViewer>
-            <ListBox>
-                
-            </ListBox>
-        </ScrollViewer>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <Button Content="X" Grid.Column="2" Name="buttonRemove" />
+        <TextBlock Grid.Row="1" Text="{Binding Model.Name}" />
+        <StackPanel Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right">
+            <TextBlock Grid.Row="2" Text="Unread Messages: " Grid.ColumnSpan="2" />
+            <TextBlock Grid.Row="2" Text="{Binding Model.Count}" Grid.ColumnSpan="2" />
+        </StackPanel>
+        <Grid Grid.Row="3" Grid.ColumnSpan="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="This is trying to be a super really long message but it'll look retarded" TextWrapping="Wrap" Grid.ColumnSpan="2" Grid.RowSpan="2" />
+            <TextBlock Grid.Row="1" Grid.Column="1" Text="Timestamp" VerticalAlignment="Bottom" HorizontalAlignment="Right" />
+        </Grid>
     </Grid>
 </UserControl>
