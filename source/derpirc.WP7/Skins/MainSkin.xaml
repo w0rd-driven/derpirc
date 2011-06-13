@@ -5,9 +5,12 @@
                     xmlns:sys="clr-namespace:System;assembly=mscorlib"
                     xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
                     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
-                    xmlns:controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls">
+                    xmlns:controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls"
+                    xmlns:primitives="clr-namespace:Microsoft.Phone.Controls.Primitives;assembly=Microsoft.Phone.Controls"
+                    >
     <!-- Converters -->
     <!-- Fonts -->
+    <FontFamily x:Key="FontFamilyNormal">/derpirc;component/Fonts/Fonts.zip#monofur</FontFamily>
     <!-- Styles -->
     <Style x:Key="TextBlockBase" TargetType="TextBlock">
         <Setter Property="FontFamily" Value="{StaticResource FontFamilyNormal}"/>
@@ -95,11 +98,20 @@
             </Setter.Value>
         </Setter>
     </Style>
+    <Style TargetType="primitives:PivotHeaderItem">
+        <Setter Property="FontSize" Value="{StaticResource PhoneFontSizeExtraExtraLarge}"/>
+        <Setter Property="FontFamily" Value="{StaticResource FontFamilyNormal}"/>
+    </Style>
+    <Style x:Key="emptyPivot" TargetType="controls:Pivot">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="controls:Pivot">
+                    <Grid HorizontalAlignment="{TemplateBinding HorizontalAlignment}" VerticalAlignment="{TemplateBinding VerticalAlignment}">
+                        <ItemsPresenter x:Name="PivotItemPresenter" Margin="{TemplateBinding Padding}" />
+                    </Grid> 
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
     <!-- DataTemplates -->
-    <DataTemplate x:Key="SmallPivotHeaderTemplate">
-        <TextBlock
-            Foreground="{StaticResource PhoneAccentBrush}"
-            Text="{Binding Model.Name}"
-            Style="{StaticResource SmallPivotHeaderStyle}"/>
-    </DataTemplate>
 </ResourceDictionary>
