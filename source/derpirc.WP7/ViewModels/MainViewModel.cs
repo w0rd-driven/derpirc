@@ -1,16 +1,28 @@
 ﻿using System.Collections.ObjectModel;
-using GalaSoft.MvvmLight;
+using System.Windows;
 using System.Windows.Data;
+using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Command;
 
 namespace derpirc.ViewModels
 {
     public class MainViewModel : ViewModelBase
     {
         #region Commands
-
+        RelayCommand<FrameworkElement> _layoutRootCommand;
+        public RelayCommand<FrameworkElement> LayoutRootCommand
+        {
+            get
+            {
+                return _layoutRootCommand ?? (_layoutRootCommand =
+                    new RelayCommand<FrameworkElement>(sender => this.LayoutRoot = sender));
+            }
+        }
         #endregion
 
         #region Properties
+        public FrameworkElement LayoutRoot { get; set; }
+
         private ObservableCollection<ChannelsViewModel> _channelsList;
         public CollectionViewSource Channels { get; set; }
 

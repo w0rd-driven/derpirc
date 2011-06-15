@@ -58,6 +58,7 @@
     </Reference>
     <Reference Include="Microsoft.Phone" />
     <Reference Include="Microsoft.Phone.Controls" />
+    <Reference Include="Microsoft.Phone.Controls.Toolkit, Version=1.0.0.0, Culture=neutral, PublicKeyToken=b772ad94eb9ca604" />
     <Reference Include="Microsoft.Phone.Interop" />
     <Reference Include="Microsoft.Practices.ServiceLocation">
       <HintPath>..\..\library\MVVMLight\WP71\Microsoft.Practices.ServiceLocation.dll</HintPath>
