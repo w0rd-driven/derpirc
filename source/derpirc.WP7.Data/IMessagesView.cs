@@ -11,5 +11,6 @@ namespace derpirc.Data
         string Name { get; set; }
         IMessage LastItem { get; set; }
         int Count { get; set; }
+        int UnreadCount { get; set; }
     }
 }

@@ -10,6 +10,7 @@ namespace derpirc.Data
         int ListId { get; set; }
 
         DateTime TimeStamp { get; set; }
+        bool IsRead { get; set; }
 
         // IrcDotNet.IrcRawMessageEventArgs.Message
         // IrcDotNet.IrcClient.IrcMessage
