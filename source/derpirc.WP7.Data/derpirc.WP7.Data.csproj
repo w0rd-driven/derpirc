@@ -74,7 +74,10 @@
     <Compile Include="Settings\Client.cs" />
     <Compile Include="Settings\Factory.cs" />
     <Compile Include="Settings\IClient.cs" />
+    <Compile Include="Settings\INetwork.cs" />
+    <Compile Include="Settings\IServer.cs" />
     <Compile Include="Settings\ISession.cs" />
+    <Compile Include="Settings\IUser.cs" />
     <Compile Include="Settings\Network.cs" />
     <Compile Include="Settings\Server.cs" />
     <Compile Include="Settings\User.cs" />
