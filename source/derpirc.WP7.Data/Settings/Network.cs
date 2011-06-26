@@ -2,7 +2,7 @@
 
 namespace derpirc.Data.Settings
 {
-    public class Network : BaseModel<INetwork>
+    public class Network : BaseModel<Network>
     {
         public string Name { get; set; }
 

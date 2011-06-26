@@ -1,7 +1,7 @@
 ﻿
 namespace derpirc.Data.Settings
 {
-    public class Server : BaseModel<IServer>
+    public class Server : BaseModel<Server>
     {
         public int NetworkId { get; set; }
         public string DisplayName { get; set; }
