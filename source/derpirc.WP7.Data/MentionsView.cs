@@ -7,10 +7,11 @@ namespace derpirc.Data
     /// </summary>
     public class MentionsView : BaseModel<MentionsView>, IMessagesView
     {
+        // IMessagesView
         public int ServerId { get; set; }
         public string Name { get; set; }
         public IMessage LastItem { get; set; }
         public int Count { get; set; }
-        public string Topic { get; set; }
+        public int UnreadCount { get; set; }
     }
 }

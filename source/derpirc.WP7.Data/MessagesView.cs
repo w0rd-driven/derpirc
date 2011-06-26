@@ -7,9 +7,11 @@ namespace derpirc.Data
     /// </summary>
     public class MessagesView : BaseModel<MessagesView>, IMessagesView
     {
+        // IMessagesView
         public int ServerId { get; set; }
         public string Name { get; set; }
         public IMessage LastItem { get; set; }
         public int Count { get; set; }
+        public int UnreadCount { get; set; }
     }
 }
