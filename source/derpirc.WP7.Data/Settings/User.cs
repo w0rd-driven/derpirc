@@ -12,7 +12,7 @@ namespace derpirc.Data.Settings
 
         public User()
         {
-
+            
         }
     }
 }

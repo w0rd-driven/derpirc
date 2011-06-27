@@ -1,7 +1,7 @@
 ﻿
 namespace derpirc.Data.Settings
 {
-    public class IUser
+    public interface IUser
     {
         public string NickName { get; set; }
         public string NickNameAlternates { get; set; }

@@ -1,7 +1,7 @@
 ﻿
 namespace derpirc.Data.Settings
 {
-    public class INetwork
+    public interface INetwork
     {
         public string Name { get; set; }
 
