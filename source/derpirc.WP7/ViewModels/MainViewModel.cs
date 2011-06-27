@@ -48,6 +48,13 @@ namespace derpirc.ViewModels
             _channelsList.Add(channel);
             _channelsList.Add(channel);
             Channels = new CollectionViewSource() { Source = _channelsList };
+
+            _messagesList = new ObservableCollection<MessagesViewModel>();
+            var message = new MessagesViewModel();
+            _messagesList.Add(message);
+            _messagesList.Add(message);
+            _messagesList.Add(message);
+            Messages = new CollectionViewSource() { Source = _messagesList };
         }
 
         public void LoadData()
