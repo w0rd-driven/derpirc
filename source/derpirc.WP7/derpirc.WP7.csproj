@@ -88,6 +88,9 @@
     <Compile Include="Views\MentionsView.xaml.cs">
       <DependentUpon>MentionsView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\MessageDetailView.xaml.cs">
+      <DependentUpon>MessageDetailView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\MessagesView.xaml.cs">
       <DependentUpon>MessagesView.xaml</DependentUpon>
     </Compile>
@@ -129,6 +132,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
+    <Page Include="Icons\Refresh.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -149,6 +156,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\MessageDetailView.xaml">
+      <SubType>Form</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\MessagesView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -162,7 +173,6 @@
   <ItemGroup>
     <Folder Include="Converters\" />
     <Folder Include="Extensions\" />
-    <Folder Include="Icons\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\derpirc.WP7.Core\derpirc.WP7.Core.csproj">

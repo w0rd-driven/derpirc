@@ -1,0 +1,22 @@
+﻿<Canvas Name="Layer_1" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+    <Path Name="processing" Stretch="Fill" Fill="White" Data="M 16.077,29C 12.5633,29 9.37332,27.6224 7.02371,25.3809L 7.02371,32L 3.00005,28L 3.00005,18L 12.0533,18L 16.077,22L 9.32895,22C 10.9867,23.8412 13.3957,25 16.0769,25C 20.3855,25 23.991,22.008 24.9058,18L 29.0001,18C 28.0323,24.2302 22.615,29 16.077,29 Z M 15.9231,3.00001C 19.4368,3.00001 22.6268,4.37761 24.9764,6.61915L 24.9764,5.72205e-006L 29,4L 29,14L 19.9468,14L 15.9231,10L 22.6711,10C 21.0134,8.15875 18.6044,7.00001 15.9231,7.00001C 11.6146,7.00001 8.00909,9.99203 7.09425,14L 3.00005,14C 3.96775,7.76982 9.38513,3.00001 15.9231,3.00001 Z " UseLayoutRounding="False" Width="26" Height="32">
+        <Path.RenderTransform>
+            <RotateTransform Angle="0" CenterY="16" CenterX="13"/>
+        </Path.RenderTransform>
+        <Path.Triggers>
+            <EventTrigger RoutedEvent="Path.Loaded">
+                <EventTrigger.Actions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation
+                             Storyboard.TargetName="processing"
+                             RepeatBehavior="Forever"
+                             Storyboard.TargetProperty="(Path.RenderTransform).(RotateTransform.Angle)" 
+                             From="0" To="180" Duration="0:0:2" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger.Actions>
+            </EventTrigger>
+        </Path.Triggers>
+    </Path>
+</Canvas>
