@@ -47,6 +47,12 @@ namespace derpirc.ViewModels
             else
             {
                 // code runs "for real": connect to service, etc...
+                model.Id = 0;
+                model.ServerId = 0;
+                model.Name = "#Test";
+                model.Topic = "This is a test topic";
+                //del.LastItem = new IMessage();
+                model.Count = 20;
             }
         }
 

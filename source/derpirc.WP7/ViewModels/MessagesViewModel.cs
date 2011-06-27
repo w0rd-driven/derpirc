@@ -38,11 +38,16 @@ namespace derpirc.ViewModels
                 model.ServerId = 0;
                 model.Name = "w0rd-driven";
                 //del.LastItem = new IMessage();
-                model.Count = 20;
+                model.Count = 4;
             }
             else
             {
                 // code runs "for real": connect to service, etc...
+                model.Id = 0;
+                model.ServerId = 0;
+                model.Name = "w0rd-driven";
+                //del.LastItem = new IMessage();
+                model.Count = 4;
             }
         }
 
