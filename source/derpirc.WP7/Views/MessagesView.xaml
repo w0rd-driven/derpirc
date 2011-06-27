@@ -4,12 +4,32 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
+    xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
-    d:DesignHeight="480" d:DesignWidth="480">
-    
-    <Grid x:Name="LayoutRoot">
+    d:DesignHeight="480" d:DesignWidth="480"
+    DataContext="{Binding MessagesViewModel, Source={StaticResource Locator}}">
 
+    <Grid x:Name="LayoutRoot">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <TextBlock Text="{Binding Model.Name}" VerticalAlignment="Center" Style="{StaticResource PhoneTextLargeStyle}" TextWrapping="Wrap" />
+        <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right">
+            <TextBlock Text="Unread:" Style="{StaticResource PhoneTextSmallStyle}" />
+            <TextBlock Text="{Binding Model.Count}" Foreground="{StaticResource PhoneAccentBrush}" FontSize="{StaticResource PhoneFontSizeLarge}" />
+        </StackPanel>
+        <Button Content="X" Grid.Column="2" Name="buttonRemove" />
+        <toolkit:WrapPanel Orientation="Horizontal" Grid.Row="2" Grid.ColumnSpan="3">
+            <TextBlock Text="This is trying to be a super really long message but it'll look retarded" TextWrapping="Wrap" Style="{StaticResource PhoneTextNormalStyle}" />
+            <TextBlock Text="Timestamp" Style="{StaticResource PhoneTextSmallStyle}" Foreground="{StaticResource PhoneAccentBrush}" />
+        </toolkit:WrapPanel>
     </Grid>
 </UserControl>

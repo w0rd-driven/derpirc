@@ -100,6 +100,54 @@ namespace derpirc.ViewModels
         }
         #endregion
 
+        #region MessagesViewModel
+        private static MessagesViewModel _messagesViewModel;
+
+        /// <summary>
+        /// Gets the MessagesViewModel property.
+        /// </summary>
+        public static MessagesViewModel MessagesStatic
+        {
+            get
+            {
+                if (_messagesViewModel == null)
+                    CreateMessages();
+
+                return _messagesViewModel;
+            }
+        }
+
+        /// <summary>
+        /// Gets the MessagesViewModel property.
+        /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance",
+            "CA1822:MarkMembersAsStatic",
+            Justification = "This non-static member is needed for data binding purposes.")]
+        public MessagesViewModel MessagesViewModel
+        {
+            get { return MessagesStatic; }
+        }
+
+        /// <summary>
+        /// Provides a deterministic way to delete the MessagesViewModel property.
+        /// </summary>
+        public static void ClearMessages()
+        {
+            if (_messagesViewModel != null)
+                _messagesViewModel.Cleanup();
+            _messagesViewModel = null;
+        }
+
+        /// <summary>
+        /// Provides a deterministic way to create the MessagesViewModel property.
+        /// </summary>
+        public static void CreateMessages()
+        {
+            if (_messagesViewModel == null)
+                _messagesViewModel = new MessagesViewModel();
+        }
+        #endregion
+
         /// <summary>
         /// Initializes a new instance of the ViewModelLocator class.
         /// </summary>
@@ -122,6 +170,7 @@ namespace derpirc.ViewModels
         {
             ClearMain();
             ClearChannels();
+            ClearMessages();
         }
     }
 }
