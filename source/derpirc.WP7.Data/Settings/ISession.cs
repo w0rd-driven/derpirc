@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
-
+﻿
 namespace derpirc.Data.Settings
 {
     public interface ISession
     {
-        List<Network> Networks { get; set; }
-        List<Server> Servers { get; set; }
+        int NetworkId { get; set; }
+        Network Network { get; set; }
+        int ServerId { get; set; }
+        Server Server { get; set; }
     }
 }

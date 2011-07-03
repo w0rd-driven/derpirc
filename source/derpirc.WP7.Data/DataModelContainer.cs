@@ -16,6 +16,7 @@ namespace derpirc.Data
     public partial class DataModelContainer : DataContext, IDataModelContainer 
     {
         public const string DatabaseFileName = "IRC.sdf";
+        public const string ConnectionString = "isostore:/" + DatabaseFileName;
         private static MappingSource mappingSource = new AttributeMappingSource();
 
         #region Extensibility Method Definitions
@@ -25,7 +26,7 @@ namespace derpirc.Data
         #region Constructors
 
         public DataModelContainer() :
-            base(DatabaseFileName, mappingSource)
+            base(ConnectionString, mappingSource)
         {
             OnCreated();
         }
@@ -78,7 +79,7 @@ namespace derpirc.Data
             try
             {
                 // Generate the database (with structure) from the code-based data context
-                this.CreateDatabase();
+                base.CreateDatabase();
 
                 // Populate the database with system data
                 // TODO: Factory.Create() goes here...
@@ -133,6 +134,9 @@ namespace derpirc.Data
                 this.Networks.InsertOnSubmit(item);
             }
 
+            var session = Factory.CreateSession();
+            this.Session.InsertOnSubmit(session);
+
             this.SubmitChanges();
         }
 
@@ -140,59 +144,54 @@ namespace derpirc.Data
     
         #region Table Properties
 
-        //public IObjectSet<Company> Companies
+        // TODO: Implement View entities
+        //public Table<ChannelsView> Channels
         //{
-        //    get { return _companies ?? (_companies = CreateObjectSet<Company>("Companies")); }
+        //    get { return _channels ?? (_channels = GetTable<ChannelsView>()); }
         //}
-        //private ObjectSet<Company> _companies;
-    
-        public ITable<ChannelsView> Channels
-        {
-            get { return _channels ?? (_channels = GetTable<ChannelsView>()); }
-        }
-        private ITable<ChannelsView> _channels;
+        //private Table<ChannelsView> _channels;
 
-        public ITable<MentionsView> Mentions
-        {
-            get { return _mentions ?? (_mentions = GetTable<MentionsView>()); }
-        }
-        private ITable<MentionsView> _mentions;
+        //public Table<MentionsView> Mentions
+        //{
+        //    get { return _mentions ?? (_mentions = GetTable<MentionsView>()); }
+        //}
+        //private Table<MentionsView> _mentions;
 
-        public ITable<MessagesView> Messages
-        {
-            get { return _messages ?? (_messages = GetTable<MessagesView>()); }
-        }
-        private ITable<MessagesView> _messages;
+        //public Table<MessagesView> Messages
+        //{
+        //    get { return _messages ?? (_messages = GetTable<MessagesView>()); }
+        //}
+        //private Table<MessagesView> _messages;
 
-        public ITable<Settings.Client> Client
+        public Table<Settings.Client> Client
         {
             get { return _client ?? (_client = GetTable<Settings.Client>()); }
         }
-        private ITable<Settings.Client> _client;
+        private Table<Settings.Client> _client;
 
-        public ITable<Settings.User> User
+        public Table<Settings.User> User
         {
             get { return _user ?? (_user = GetTable<Settings.User>()); }
         }
-        private ITable<Settings.User> _user;
+        private Table<Settings.User> _user;
 
-        public ITable<Settings.Network> Networks
+        public Table<Settings.Network> Networks
         {
             get { return _networks ?? (_networks = GetTable<Settings.Network>()); }
         }
-        private ITable<Settings.Network> _networks;
+        private Table<Settings.Network> _networks;
 
-        public ITable<Settings.Server> Servers
+        public Table<Settings.Server> Servers
         {
             get { return _servers ?? (_servers = GetTable<Settings.Server>()); }
         }
-        private ITable<Settings.Server> _servers;
+        private Table<Settings.Server> _servers;
 
-        public ITable<Settings.Session> Session
+        public Table<Settings.Session> Session
         {
             get { return _session ?? (_session = GetTable<Settings.Session>()); }
         }
-        private ITable<Settings.Session> _session;
+        private Table<Settings.Session> _session;
 
         #endregion
     }

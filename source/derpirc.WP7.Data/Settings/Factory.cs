@@ -101,8 +101,25 @@ namespace derpirc.Data.Settings
 
         public static Session CreateSession()
         {
-            // HACK: This will need to be created on your own, sorry.
+            // HACK: Manually link a server with a network entity
             var result = new Session();
+            result.Server = new Server()
+            {
+                Id = 0,
+                NetworkId = 0,
+                DisplayName = "Random server",
+                HostName = "irc.efnet.org",
+                Ports = "6667",
+                Group = "EFNet",
+            };
+            result.Network = new Network()
+            {
+                Id = 0,
+                Name = "EFNet",
+                IsJoinEnabled = true,
+                JoinChannels = "#wp7, #xna",
+                JoinDelay = 2,
+            };
             return result;
         }
     }

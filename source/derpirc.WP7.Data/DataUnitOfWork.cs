@@ -45,6 +45,71 @@ namespace derpirc.Data
             }
         }
 
+        SqlRepository<Settings.Client> _client = null;
+        public IRepository<Settings.Client> Client
+        {
+            get
+            {
+                if (_client == null)
+                {
+                    _client = new SqlRepository<Settings.Client>(_context);
+                }
+                return _client;
+            }
+        }
+
+        SqlRepository<Settings.User> _user = null;
+        public IRepository<Settings.User> User
+        {
+            get
+            {
+                if (_user == null)
+                {
+                    _user = new SqlRepository<Settings.User>(_context);
+                }
+                return _user;
+            }
+        }
+
+        SqlRepository<Settings.Server> _servers = null;
+        public IRepository<Settings.Server> Servers
+        {
+            get
+            {
+                if (_servers == null)
+                {
+                    _servers = new SqlRepository<Settings.Server>(_context);
+                }
+                return _servers;
+            }
+        }
+
+        SqlRepository<Settings.Network> _networks = null;
+        public IRepository<Settings.Network> Networks
+        {
+            get
+            {
+                if (_networks == null)
+                {
+                    _networks = new SqlRepository<Settings.Network>(_context);
+                }
+                return _networks;
+            }
+        }
+
+        SqlRepository<Settings.Session> _sessions = null;
+        public IRepository<Settings.Session> Sessions
+        {
+            get
+            {
+                if (_sessions == null)
+                {
+                    _sessions = new SqlRepository<Settings.Session>(_context);
+                }
+                return _sessions;
+            }
+        }
+
         public DataUnitOfWork()
         {
             _context = new DataModelContainer();
@@ -53,7 +118,8 @@ namespace derpirc.Data
         public bool InitializeDatabase()
         {
             var context = (_context as DataModelContainer);
-            context.InitializeDatabase();
+            // HACK: Wipe database for testing only. REMEMBER TO REMOVE THIS
+            context.InitializeDatabase(true);
             return context.DatabaseExists();
         }
 
