@@ -1,7 +1,7 @@
 ﻿
 namespace derpirc.Data
 {
-    public abstract class BaseModel<T> : IBaseModel where T : BaseModel<T>
+    public abstract class BaseModel<T> : BaseNotify, IBaseModel where T : BaseModel<T>
     {
         public int Id { get; set; }
 
