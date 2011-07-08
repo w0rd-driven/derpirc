@@ -1,22 +1,26 @@
-﻿using System.Data.Linq.Mapping;
+﻿using System.Data.Linq;
+using System.Data.Linq.Mapping;
 
 namespace derpirc.Data.Settings
 {
     [Table]
-    public partial class User : BaseModel<User>, IUser
+    public partial class User : BaseNotify, IBaseModel, IUser
     {
-        [Column(DbType = "Int NOT NULL", IsPrimaryKey = true)]
-        public new int Id { get; set; }
-        [Column(DbType = "NVarChar(255)")]
+        [Column(IsPrimaryKey = true, IsDbGenerated = true)]
+        public int Id { get; set; }
+        [Column(CanBeNull = false)]
         public string NickName { get; set; }
-        [Column(DbType = "NVarChar(255)")]
+        [Column(CanBeNull = true)]
         public string NickNameAlternates { get; set; }
-        [Column(DbType = "NVarChar(255)")]
+        [Column(CanBeNull = true)]
         public string Name { get; set; }
-        [Column(DbType = "NVarChar(255)")]
+        [Column(CanBeNull = true)]
         public string Email { get; set; }
-        [Column(DbType = "NVarChar(255)")]
+        [Column(CanBeNull = true)]
         public string QuitMessage { get; set; }
+
+        [Column(IsVersion = true)]
+        private Binary version;
 
         public User()
         {

@@ -1,26 +1,30 @@
-﻿using System.Data.Linq.Mapping;
+﻿using System.Data.Linq;
+using System.Data.Linq.Mapping;
 
 namespace derpirc.Data.Settings
 {
     [Table]
-    public partial class Client : BaseModel<Client>, IClient
+    public partial class Client : BaseNotify, IBaseModel, IClient
     {
-        [Column(DbType = "Int NOT NULL", IsPrimaryKey = true)]
-        public new int Id { get; set; }
-        [Column(DbType = "Bit")]
+        [Column(IsPrimaryKey = true, IsDbGenerated = true)]
+        public int Id { get; set; }
+        [Column(CanBeNull = true)]
         public bool ConnectOnStartup { get; set; }
-        [Column(DbType = "Bit")]
+        [Column(CanBeNull = true)]
         public bool ReconnectOnDisconnect { get; set; }
-        [Column(DbType = "Int")]
+        [Column(CanBeNull = true)]
         public int DefaultPort { get; set; }
-        [Column(DbType = "Bit")]
+        [Column(CanBeNull = true)]
         public bool IsTimeStamped { get; set; }
-        [Column(DbType = "Bit")]
+        [Column(CanBeNull = true)]
         public string TimeStampFormat { get; set; }
-        [Column(DbType = "Int")]
+        [Column(CanBeNull = true)]
         public int WindowBuffer { get; set; }
-        [Column(DbType = "Bit")]
+        [Column(CanBeNull = true)]
         public bool AutoScrollOnOutput { get; set; }
+
+        [Column(IsVersion = true)]
+        private Binary version;
 
         public Client()
         {

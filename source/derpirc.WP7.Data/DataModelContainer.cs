@@ -1,7 +1,8 @@
+using System;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
+using System.Linq;
 using System.IO.IsolatedStorage;
-using System;
 using derpirc.Data.Settings;
 
 namespace derpirc.Data
@@ -74,7 +75,7 @@ namespace derpirc.Data
             }
         }
 
-        private void CreateDatabase()
+        private new void CreateDatabase()
         {
             try
             {
@@ -123,19 +124,13 @@ namespace derpirc.Data
             this.User.InsertOnSubmit(user);
 
             var servers = Factory.CreateServers();
-            foreach (var item in servers)
-            {
-                this.Servers.InsertOnSubmit(item);
-            }
+            this.Servers.InsertAllOnSubmit(servers);
 
             var networks = Factory.CreateNetworks();
-            foreach (var item in networks)
-            {
-                this.Networks.InsertOnSubmit(item);
-            }
+            this.Networks.InsertAllOnSubmit(networks);
 
-            var session = Factory.CreateSession();
-            this.Session.InsertOnSubmit(session);
+            //var session = Factory.CreateSession();
+            //this.Session.InsertOnSubmit(session);
 
             this.SubmitChanges();
         }

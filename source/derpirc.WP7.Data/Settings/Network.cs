@@ -1,23 +1,26 @@
-﻿using System.Collections.Generic;
+﻿using System.Data.Linq;
 using System.Data.Linq.Mapping;
 
 namespace derpirc.Data.Settings
 {
     [Table(Name = "Networks")]
-    public partial class Network : BaseModel<Network>, INetwork
+    public partial class Network : BaseNotify, IBaseModel, INetwork
     {
-        [Column(DbType = "Int NOT NULL", IsPrimaryKey = true)]
-        public new int Id { get; set; }
-        [Column(DbType = "NVarChar(255)")]
+        [Column(IsPrimaryKey = true, IsDbGenerated = true)]
+        public int Id { get; set; }
+        [Column(CanBeNull = false)]
         public string Name { get; set; }
         // TODO: Legacy: Is AutoJoin channels relevant? What about a global toggle to turn it off?
         // Auto Join
-        [Column(DbType = "Bit")]
+        [Column(CanBeNull = true)]
         public bool IsJoinEnabled { get; set; }
-        [Column(DbType = "NVarChar(255)")]
+        [Column(CanBeNull = true)]
         public string JoinChannels { get; set; }
-        [Column(DbType = "Int")]
+        [Column(CanBeNull = true)]
         public int JoinDelay { get; set; }
+
+        [Column(IsVersion = true)]
+        private Binary version;
 
         #region TODO
         //// Auto Identify

@@ -4,11 +4,11 @@ using System.Data.Linq.Mapping;
 namespace derpirc.Data.Settings
 {
     [Table(Name = "Sessions")]
-    public partial class Session : BaseModel<Session>, ISession
+    public partial class Session : BaseNotify, IBaseModel, ISession
     {
-        [Column(DbType = "Int NOT NULL", IsPrimaryKey = true)]
-        public new int Id { get; set; }
-        [Column(DbType = "Int")]
+        [Column(IsPrimaryKey = true, IsDbGenerated = true)]
+        public int Id { get; set; }
+        [Column(CanBeNull = false)]
         public int NetworkId { get; set; }
         private EntityRef<Network> _network;
         [Association(Name = "Network_Item", ThisKey = "NetworkId", OtherKey = "Id", IsForeignKey = true)]
@@ -42,7 +42,7 @@ namespace derpirc.Data.Settings
                 }
             }
         }
-        [Column(DbType = "Int")]
+        [Column(CanBeNull = false)]
         public int ServerId { get; set; }
         private EntityRef<Server> _server;
         [Association(Name = "Server_Item", ThisKey = "ServerId", OtherKey = "Id", IsForeignKey = true)]
@@ -76,6 +76,9 @@ namespace derpirc.Data.Settings
                 }
             }
         }
+
+        [Column(IsVersion = true)]
+        private Binary version;
 
         public Session()
         {

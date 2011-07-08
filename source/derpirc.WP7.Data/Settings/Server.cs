@@ -1,27 +1,31 @@
-﻿using System.Data.Linq.Mapping;
+﻿using System.Data.Linq;
+using System.Data.Linq.Mapping;
 
 namespace derpirc.Data.Settings
 {
     [Table(Name = "Servers")]
-    public partial class Server : BaseModel<Server>, IServer
+    public partial class Server : BaseNotify, IBaseModel, IServer
     {
-        [Column(DbType = "Int NOT NULL", IsPrimaryKey = true)]
-        public new int Id { get; set; }
-        [Column(DbType = "Int")]
+        [Column(IsPrimaryKey = true, IsDbGenerated = true)]
+        public int Id { get; set; }
+        [Column(CanBeNull = false)]
         public int NetworkId { get; set; }
-        [Column(DbType = "NVarChar(255)")]
+        [Column(CanBeNull = true)]
         public string DisplayName { get; set; }
-        [Column(DbType = "NVarChar(255)")]
+        [Column(CanBeNull = false)]
         public string HostName { get; set; }
         // TODO: Ports parsing
-        [Column(DbType = "NVarChar(255)")]
+        [Column(CanBeNull = true)]
         public string Ports { get; set; }
-        [Column(DbType = "Int")]
+        [Column(CanBeNull = true)]
         public int Port { get; set; }
-        [Column(DbType = "NVarChar(255)")]
+        [Column(CanBeNull = true)]
         public string Group { get; set; }
-        [Column(DbType = "NVarChar(255)")]
+        [Column(CanBeNull = true)]
         public string Password { get; set; }
+
+        [Column(IsVersion = true)]
+        private Binary version;
 
         public Server()
         {
