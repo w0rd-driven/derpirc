@@ -7,6 +7,8 @@ namespace derpirc.Data
     public interface IMessageSummary
     {
         // Foreign keys
+        // 1:1 with IMessageDetail
+        int DetailId { get; set; }
         int ServerId { get; set; }
         int LastItemId { get; set; }
 

@@ -10,6 +10,9 @@ namespace derpirc.Data
     [Table]
     public class MentionSummary : BaseNotify, IBaseModel, IMessageSummary
     {
+        [Column(IsVersion = true)]
+        private Binary version;
+
         [Column(IsPrimaryKey = true, IsDbGenerated = true)]
         public int Id { get; set; }
         [Column(CanBeNull = false)]
@@ -53,13 +56,15 @@ namespace derpirc.Data
         public int LastItemId { get; set; }
         public IMessage LastItem { get; set; }
 
+        // 1:1 with IMessageSummary
+        [Column(CanBeNull = false)]
+        public int DetailId { get; set; }
+        // TODO: Implement with MentionDetail
+
         [Column(CanBeNull = true)]
         public int Count { get; set; }
         [Column(CanBeNull = true)]
         public int UnreadCount { get; set; }
-
-        [Column(IsVersion = true)]
-        private Binary version;
 
         public MentionSummary()
         {

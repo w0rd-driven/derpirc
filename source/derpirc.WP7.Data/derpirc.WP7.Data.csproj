@@ -58,6 +58,7 @@
     </Compile>
     <Compile Include="BaseModel.cs" />
     <Compile Include="BaseNotify.cs" />
+    <Compile Include="ChannelDetail.cs" />
     <Compile Include="ChannelMessage.cs" />
     <Compile Include="ChannelSummary.cs" />
     <Compile Include="DataModel.cs" />
@@ -76,7 +77,7 @@
     <Compile Include="IMessageSummary.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="IMessageView.cs">
+    <Compile Include="IMessageDetail.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />

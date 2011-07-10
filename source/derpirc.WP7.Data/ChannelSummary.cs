@@ -10,11 +10,15 @@ namespace derpirc.Data
     [Table]
     public class ChannelSummary : BaseNotify, IBaseModel, IMessageSummary
     {
+        [Column(IsVersion = true)]
+        private Binary version;
+        private EntityRef<Server> _server;
+        private EntityRef<ChannelDetail> _details;
+
         [Column(IsPrimaryKey = true, IsDbGenerated = true)]
         public int Id { get; set; }
         [Column(CanBeNull = false)]
         public int ServerId { get; set; }
-        private EntityRef<Server> _server;
         [Association(Name = "Server_Item", ThisKey = "ServerId", OtherKey = "Id", IsForeignKey = true)]
         public Server Server
         {
@@ -53,15 +57,44 @@ namespace derpirc.Data
         public int LastItemId { get; set; }
         public IMessage LastItem { get; set; }
 
+        // 1:1 with IMessageDetail
+        [Column(CanBeNull = false)]
+        public int DetailId { get; set; }
+        [Association(Name = "Detail_Item", ThisKey = "DetailId", OtherKey = "Id", IsForeignKey = true)]
+        public ChannelDetail Details
+        {
+            get { return _details.Entity; }
+            set
+            {
+                ChannelDetail previousValue = _details.Entity;
+                if (previousValue != value || _details.HasLoadedOrAssignedValue == false)
+                {
+                    this.RaisePropertyChanged();
+                    if ((previousValue != null))
+                    {
+                        _details.Entity = null;
+                    }
+                    _details.Entity = value;
+                    if ((value != null))
+                    {
+                        DetailId = value.Id;
+                    }
+                    else
+                    {
+                        DetailId = default(int);
+                    }
+                    this.RaisePropertyChanged(() => DetailId);
+                    this.RaisePropertyChanged(() => Details);
+                }
+            }
+        }
+
         [Column(CanBeNull = true)]
         public int Count { get; set; }
         [Column(CanBeNull = true)]
         public int UnreadCount { get; set; }
         [Column(CanBeNull = true)]
         public string Topic { get; set; }
-
-        [Column(IsVersion = true)]
-        private Binary version;
 
         public ChannelSummary()
         {
