@@ -1,4 +1,5 @@
-﻿using System.Data.Linq;
+﻿using System;
+using System.Data.Linq;
 using System.Data.Linq.Mapping;
 using derpirc.Data.Settings;
 
@@ -13,7 +14,7 @@ namespace derpirc.Data
         [Column(IsVersion = true)]
         private Binary version;
         private EntityRef<Server> _server;
-        private EntityRef<ChannelDetail> _details;
+        private EntitySet<ChannelMessage> _messages;
 
         [Column(IsPrimaryKey = true, IsDbGenerated = true)]
         public int Id { get; set; }
@@ -52,42 +53,16 @@ namespace derpirc.Data
         }
         [Column(CanBeNull = false)]
         public string Name { get; set; }
+        [Association(Name = "Message_Items", ThisKey = "Id", OtherKey = "SummaryId", DeleteRule = "NO ACTION")]
+        public EntitySet<ChannelMessage> Messages
+        {
+            get { return _messages; }
+            set { _messages.Assign(value); }
+        }
 
         [Column(CanBeNull = true)]
         public int LastItemId { get; set; }
         public IMessage LastItem { get; set; }
-
-        // 1:0..1 with IMessageDetail
-        [Column(CanBeNull = true)]
-        public int DetailId { get; set; }
-        [Association(Name = "Detail_Item", ThisKey = "DetailId", OtherKey = "Id", IsForeignKey = false)]
-        public ChannelDetail Details
-        {
-            get { return _details.Entity; }
-            set
-            {
-                ChannelDetail previousValue = _details.Entity;
-                if (previousValue != value || _details.HasLoadedOrAssignedValue == false)
-                {
-                    this.RaisePropertyChanged();
-                    if ((previousValue != null))
-                    {
-                        _details.Entity = null;
-                    }
-                    _details.Entity = value;
-                    if ((value != null))
-                    {
-                        DetailId = value.Id;
-                    }
-                    else
-                    {
-                        DetailId = default(int);
-                    }
-                    this.RaisePropertyChanged(() => DetailId);
-                    this.RaisePropertyChanged(() => Details);
-                }
-            }
-        }
 
         [Column(CanBeNull = true)]
         public int Count { get; set; }
@@ -99,8 +74,20 @@ namespace derpirc.Data
         public ChannelSummary()
         {
             _server = default(EntityRef<Server>);
-            _details = default(EntityRef<ChannelDetail>);
+            _messages = new EntitySet<ChannelMessage>(new Action<ChannelMessage>(attach_Messages), new Action<ChannelMessage>(detach_Messages));
             //TODO: Link up Detail collection events to get LastItemId, LastItem, Count, and UnreadCount
+        }
+
+        void attach_Messages(ChannelMessage entity)
+        {
+            this.RaisePropertyChanged();
+            entity.Summary = this;
+        }
+
+        void detach_Messages(ChannelMessage entity)
+        {
+            this.RaisePropertyChanged();
+            entity.Summary = null;
         }
     }
 }

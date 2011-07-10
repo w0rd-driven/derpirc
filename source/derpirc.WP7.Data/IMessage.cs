@@ -7,7 +7,7 @@ namespace derpirc.Data
     {
         // Foreign keys
         // 1:M from IMessageDetail
-        int DetailId { get; set; }
+        int SummaryId { get; set; }
 
         DateTime TimeStamp { get; set; }
         bool IsRead { get; set; }

@@ -11,7 +11,6 @@ namespace derpirc.Data
     public interface IDataModelContainer
     {
         Table<ChannelSummary> Channels { get; }
-        Table<ChannelDetail> ChannelDetails { get; }
         Table<ChannelMessage> ChannelMessages { get; }
         Table<MentionSummary> Mentions { get; }
         Table<MessageSummary> Messages { get; }

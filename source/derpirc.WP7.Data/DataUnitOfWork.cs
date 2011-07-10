@@ -19,19 +19,6 @@ namespace derpirc.Data
             }
         }
 
-        SqlRepository<ChannelDetail> _channelDetails = null;
-        public IRepository<ChannelDetail> ChannelDetails
-        {
-            get
-            {
-                if (_channelDetails == null)
-                {
-                    _channelDetails = new SqlRepository<ChannelDetail>(_context);
-                }
-                return _channelDetails;
-            }
-        }
-
         SqlRepository<ChannelMessage> _channelMessages = null;
         public IRepository<ChannelMessage> ChannelMessages
         {

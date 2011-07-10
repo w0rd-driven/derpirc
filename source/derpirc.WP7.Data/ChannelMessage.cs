@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
 
@@ -10,20 +9,20 @@ namespace derpirc.Data
     {
         [Column(IsVersion = true)]
         private Binary version;
-        private EntityRef<ChannelDetail> _details;
+        private EntityRef<ChannelSummary> _details;
 
         [Column(IsPrimaryKey = true, IsDbGenerated = true)]
         public int Id { get; set; }
-        // 1:1 with IMessageDetail
+        // 1:M with IMessageSummary
         [Column(CanBeNull = false)]
-        public int DetailId { get; set; }
-        [Association(Name = "Detail_Item", ThisKey = "DetailId", OtherKey = "Id", IsForeignKey = true)]
-        public ChannelDetail Details
+        public int SummaryId { get; set; }
+        [Association(Name = "Summary_Item", ThisKey = "SummaryId", OtherKey = "Id", IsForeignKey = true)]
+        public ChannelSummary Summary
         {
             get { return _details.Entity; }
             set
             {
-                ChannelDetail previousValue = _details.Entity;
+                ChannelSummary previousValue = _details.Entity;
                 if (previousValue != value || _details.HasLoadedOrAssignedValue == false)
                 {
                     this.RaisePropertyChanged();
@@ -34,14 +33,14 @@ namespace derpirc.Data
                     _details.Entity = value;
                     if ((value != null))
                     {
-                        DetailId = value.Id;
+                        SummaryId = value.Id;
                     }
                     else
                     {
-                        DetailId = default(int);
+                        SummaryId = default(int);
                     }
-                    this.RaisePropertyChanged(() => DetailId);
-                    this.RaisePropertyChanged(() => Details);
+                    this.RaisePropertyChanged(() => SummaryId);
+                    this.RaisePropertyChanged(() => Summary);
                 }
             }
         }
@@ -62,7 +61,7 @@ namespace derpirc.Data
 
         public ChannelMessage()
         {
-            _details = default(EntityRef<ChannelDetail>);
+            _details = default(EntityRef<ChannelSummary>);
         }
     }
 }
