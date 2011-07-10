@@ -10,10 +10,9 @@ namespace derpirc.Data
     /// </summary>
     public interface IDataModelContainer
     {
-        // TODO: Implement View entities
-        //Table<ChannelsView> Channels { get; }
-        //Table<MentionsView> Mentions { get; }
-        //Table<MessagesView> Messages { get; }
+        Table<ChannelSummary> Channels { get; }
+        Table<MentionSummary> Mentions { get; }
+        Table<MessageSummary> Messages { get; }
         // Settings
         Table<Client> Client { get; }
         Table<User> User { get; }

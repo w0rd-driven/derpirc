@@ -6,40 +6,40 @@ namespace derpirc.Data
     {
         readonly DataContext _context;
 
-        SqlRepository<ChannelsView> _channels = null;
-        public IRepository<ChannelsView> Channels
+        SqlRepository<ChannelSummary> _channels = null;
+        public IRepository<ChannelSummary> Channels
         {
             get
             {
                 if (_channels == null)
                 {
-                    _channels = new SqlRepository<ChannelsView>(_context);
+                    _channels = new SqlRepository<ChannelSummary>(_context);
                 }
                 return _channels;
             }
         }
 
-        SqlRepository<MentionsView> _mentions = null;
-        public IRepository<MentionsView> Mentions
+        SqlRepository<MentionSummary> _mentions = null;
+        public IRepository<MentionSummary> Mentions
         {
             get
             {
                 if (_mentions == null)
                 {
-                    _mentions = new SqlRepository<MentionsView>(_context);
+                    _mentions = new SqlRepository<MentionSummary>(_context);
                 }
                 return _mentions;
             }
         }
 
-        SqlRepository<MessagesView> _messages = null;
-        public IRepository<MessagesView> Messages
+        SqlRepository<MessageSummary> _messages = null;
+        public IRepository<MessageSummary> Messages
         {
             get
             {
                 if (_messages == null)
                 {
-                    _messages = new SqlRepository<MessagesView>(_context);
+                    _messages = new SqlRepository<MessageSummary>(_context);
                 }
                 return _messages;
             }

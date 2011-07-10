@@ -139,25 +139,25 @@ namespace derpirc.Data
     
         #region Table Properties
 
-        // TODO: Implement View entities
-        //public Table<ChannelsView> Channels
-        //{
-        //    get { return _channels ?? (_channels = GetTable<ChannelsView>()); }
-        //}
-        //private Table<ChannelsView> _channels;
+        public Table<ChannelSummary> Channels
+        {
+            get { return _channels ?? (_channels = GetTable<ChannelSummary>()); }
+        }
+        private Table<ChannelSummary> _channels;
 
-        //public Table<MentionsView> Mentions
-        //{
-        //    get { return _mentions ?? (_mentions = GetTable<MentionsView>()); }
-        //}
-        //private Table<MentionsView> _mentions;
+        public Table<MentionSummary> Mentions
+        {
+            get { return _mentions ?? (_mentions = GetTable<MentionSummary>()); }
+        }
+        private Table<MentionSummary> _mentions;
 
-        //public Table<MessagesView> Messages
-        //{
-        //    get { return _messages ?? (_messages = GetTable<MessagesView>()); }
-        //}
-        //private Table<MessagesView> _messages;
+        public Table<MessageSummary> Messages
+        {
+            get { return _messages ?? (_messages = GetTable<MessageSummary>()); }
+        }
+        private Table<MessageSummary> _messages;
 
+        // Settings
         public Table<Settings.Client> Client
         {
             get { return _client ?? (_client = GetTable<Settings.Client>()); }

@@ -5,8 +5,8 @@ namespace derpirc.ViewModels
 {
     public class MessagesViewModel : ViewModelBase
     {
-        private MessagesView _model;
-        public MessagesView Model
+        private MessageSummary _model;
+        public MessageSummary Model
         {
             get { return _model; }
             set
@@ -23,12 +23,12 @@ namespace derpirc.ViewModels
         /// <summary>
         /// Initializes a new instance of the ChannelViewModel class.
         /// </summary>
-        public MessagesViewModel() : this(new MessagesView()) { }
+        public MessagesViewModel() : this(new MessageSummary()) { }
 
         /// <summary>
         /// Initializes a new instance of the ChannelViewModel class.
         /// </summary>
-        public MessagesViewModel(MessagesView model)
+        public MessagesViewModel(MessageSummary model)
         {
             Model = model;
             if (IsInDesignMode)

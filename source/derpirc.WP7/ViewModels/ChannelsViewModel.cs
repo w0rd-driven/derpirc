@@ -8,8 +8,8 @@ namespace derpirc.ViewModels
     /// </summary>
     public class ChannelsViewModel : ViewModelBase
     {
-        private ChannelsView _model;
-        public ChannelsView Model
+        private ChannelSummary _model;
+        public ChannelSummary Model
         {
             get { return _model; }
             set
@@ -26,12 +26,12 @@ namespace derpirc.ViewModels
         /// <summary>
         /// Initializes a new instance of the ChannelViewModel class.
         /// </summary>
-        public ChannelsViewModel() : this(new ChannelsView()) { }
+        public ChannelsViewModel() : this(new ChannelSummary()) { }
 
         /// <summary>
         /// Initializes a new instance of the ChannelViewModel class.
         /// </summary>
-        public ChannelsViewModel(ChannelsView model)
+        public ChannelsViewModel(ChannelSummary model)
         {
             Model = model;
             if (IsInDesignMode)

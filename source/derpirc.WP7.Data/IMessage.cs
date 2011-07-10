@@ -6,7 +6,7 @@ namespace derpirc.Data
     public interface IMessage
     {
         // Foreign keys
-        // 1:1 with IMessagesView
+        // 1:1 with IMessageSummary
         int ListId { get; set; }
 
         DateTime TimeStamp { get; set; }
