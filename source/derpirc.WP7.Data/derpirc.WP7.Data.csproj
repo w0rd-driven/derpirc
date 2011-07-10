@@ -58,6 +58,7 @@
     </Compile>
     <Compile Include="BaseModel.cs" />
     <Compile Include="BaseNotify.cs" />
+    <Compile Include="ChannelMessage.cs" />
     <Compile Include="ChannelSummary.cs" />
     <Compile Include="DataModel.cs" />
     <Compile Include="DataModelContainer.cs" />

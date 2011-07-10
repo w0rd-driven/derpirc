@@ -19,6 +19,19 @@ namespace derpirc.Data
             }
         }
 
+        SqlRepository<ChannelMessage> _channelMessages = null;
+        public IRepository<ChannelMessage> ChannelMessages
+        {
+            get
+            {
+                if (_channelMessages == null)
+                {
+                    _channelMessages = new SqlRepository<ChannelMessage>(_context);
+                }
+                return _channelMessages;
+            }
+        }
+
         SqlRepository<MentionSummary> _mentions = null;
         public IRepository<MentionSummary> Mentions
         {

@@ -145,6 +145,12 @@ namespace derpirc.Data
         }
         private Table<ChannelSummary> _channels;
 
+        public Table<ChannelMessage> ChannelMessages
+        {
+            get { return _channelMessages ?? (_channelMessages = GetTable<ChannelMessage>()); }
+        }
+        private Table<ChannelMessage> _channelMessages;
+
         public Table<MentionSummary> Mentions
         {
             get { return _mentions ?? (_mentions = GetTable<MentionSummary>()); }

@@ -15,7 +15,8 @@ namespace derpirc.Data
         // IrcDotNet.IrcRawMessageEventArgs.Message
         // IrcDotNet.IrcClient.IrcMessage
         string Command { get; set; }
-        IList<string> Parameters { get; set; }
+        // Converted to byte[]/Binary from string[] to reduce the need for a child table
+        byte[] Parameters { get; set; }
         string Prefix { get; set; }
         // IrcDotNet.IIrcMessageSource
         string Source { get; set; }
