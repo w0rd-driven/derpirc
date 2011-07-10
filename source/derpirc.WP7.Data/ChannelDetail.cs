@@ -9,8 +9,8 @@ namespace derpirc.Data
     {
         [Column(IsVersion = true)]
         private Binary version;
-        private EntitySet<ChannelMessage> _messages;
         private EntityRef<ChannelSummary> _summary;
+        private EntitySet<ChannelMessage> _messages;
 
         // 1:1 with IMessageSummary
         [Column(IsPrimaryKey = true)]
@@ -54,6 +54,7 @@ namespace derpirc.Data
 
         public ChannelDetail()
         {
+            _summary = default(EntityRef<ChannelSummary>);
             _messages = new EntitySet<ChannelMessage>(new Action<ChannelMessage>(attach_Messages), new Action<ChannelMessage>(detach_Messages));
         }
 

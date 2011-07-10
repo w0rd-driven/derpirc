@@ -62,7 +62,7 @@ namespace derpirc.Data
 
         public ChannelMessage()
         {
-
+            _details = default(EntityRef<ChannelDetail>);
         }
     }
 }

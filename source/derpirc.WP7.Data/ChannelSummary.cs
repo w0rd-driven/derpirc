@@ -19,7 +19,7 @@ namespace derpirc.Data
         public int Id { get; set; }
         [Column(CanBeNull = false)]
         public int ServerId { get; set; }
-        [Association(Name = "Server_Item", ThisKey = "ServerId", OtherKey = "Id", IsForeignKey = true)]
+        [Association(Name = "Server_Item", ThisKey = "ServerId", OtherKey = "Id", IsForeignKey = false)]
         public Server Server
         {
             get
@@ -53,14 +53,14 @@ namespace derpirc.Data
         [Column(CanBeNull = false)]
         public string Name { get; set; }
 
-        [Column(CanBeNull = false)]
+        [Column(CanBeNull = true)]
         public int LastItemId { get; set; }
         public IMessage LastItem { get; set; }
 
-        // 1:1 with IMessageDetail
-        [Column(CanBeNull = false)]
+        // 1:0..1 with IMessageDetail
+        [Column(CanBeNull = true)]
         public int DetailId { get; set; }
-        [Association(Name = "Detail_Item", ThisKey = "DetailId", OtherKey = "Id", IsForeignKey = true)]
+        [Association(Name = "Detail_Item", ThisKey = "DetailId", OtherKey = "Id", IsForeignKey = false)]
         public ChannelDetail Details
         {
             get { return _details.Entity; }
@@ -98,7 +98,9 @@ namespace derpirc.Data
 
         public ChannelSummary()
         {
-
+            _server = default(EntityRef<Server>);
+            _details = default(EntityRef<ChannelDetail>);
+            //TODO: Link up Detail collection events to get LastItemId, LastItem, Count, and UnreadCount
         }
     }
 }
