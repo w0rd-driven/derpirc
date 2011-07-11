@@ -1,4 +1,5 @@
-﻿using System;
+﻿using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
 using derpirc.Data.Settings;
@@ -16,8 +17,28 @@ namespace derpirc.Data
         private EntityRef<Server> _server;
         private EntitySet<ChannelMessage> _messages;
 
+        #region Primitive Properties
+
         [Column(IsPrimaryKey = true, IsDbGenerated = true)]
         public int Id { get; set; }
+        [Column(CanBeNull = false)]
+        public string Name { get; set; }
+        [Column(CanBeNull = true)]
+        public string Topic { get; set; }
+
+        [Column(CanBeNull = true)]
+        public int LastItemId { get; set; }
+        public IMessage LastItem { get; set; }
+
+        [Column(CanBeNull = true)]
+        public int Count { get; set; }
+        [Column(CanBeNull = true)]
+        public int UnreadCount { get; set; }
+
+        #endregion
+
+        #region Navigation Properties
+
         [Column(CanBeNull = false)]
         public int ServerId { get; set; }
         [Association(Name = "Server_Item", ThisKey = "ServerId", OtherKey = "Id", IsForeignKey = false)]
@@ -51,43 +72,82 @@ namespace derpirc.Data
                 }
             }
         }
-        [Column(CanBeNull = false)]
-        public string Name { get; set; }
+
         [Association(Name = "Message_Items", ThisKey = "Id", OtherKey = "SummaryId", DeleteRule = "NO ACTION")]
-        public EntitySet<ChannelMessage> Messages
+        public ICollection<ChannelMessage> Messages
         {
-            get { return _messages; }
-            set { _messages.Assign(value); }
+            get
+            {
+                if (_messages == null)
+                {
+                    var newCollection = new FixupCollection<ChannelMessage>();
+                    newCollection.CollectionChanged += FixupMessages;
+                    _messages.SetSource(newCollection);
+                    //_messages = newCollection
+                }
+                return _messages;
+            }
+            set
+            {
+                if (!ReferenceEquals(_messages, value))
+                {
+                    var previousValue = _messages;
+                    if (previousValue != null)
+                    {
+                        previousValue.CollectionChanged -= FixupMessages;
+                    }
+                    _messages.SetSource(value);
+                    //_messages = value;
+                    var newValue = value as FixupCollection<ChannelMessage>;
+                    if (newValue != null)
+                    {
+                        newValue.CollectionChanged += FixupMessages;
+                    }
+                }
+            }
         }
 
-        [Column(CanBeNull = true)]
-        public int LastItemId { get; set; }
-        public IMessage LastItem { get; set; }
+        #endregion
 
-        [Column(CanBeNull = true)]
-        public int Count { get; set; }
-        [Column(CanBeNull = true)]
-        public int UnreadCount { get; set; }
-        [Column(CanBeNull = true)]
-        public string Topic { get; set; }
+        #region Association Fixup
+    
+        private void FixupMessages(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.NewItems != null)
+            {
+                foreach (ChannelMessage item in e.NewItems)
+                    item.Summary = this;
+            }
+            if (e.OldItems != null)
+            {
+                foreach (ChannelMessage item in e.OldItems)
+                {
+                    if (ReferenceEquals(item.Summary, this))
+                        item.Summary = null;
+                }
+            }
+        }
+
+        #endregion
 
         public ChannelSummary()
         {
             _server = default(EntityRef<Server>);
-            _messages = new EntitySet<ChannelMessage>(new Action<ChannelMessage>(attach_Messages), new Action<ChannelMessage>(detach_Messages));
+            _messages = new EntitySet<ChannelMessage>();
+            //_messages = new EntitySet<ChannelMessage>(new Action<ChannelMessage>(attach_Messages), new Action<ChannelMessage>(detach_Messages));
             //TODO: Link up Detail collection events to get LastItemId, LastItem, Count, and UnreadCount
         }
 
-        void attach_Messages(ChannelMessage entity)
-        {
-            this.RaisePropertyChanged();
-            entity.Summary = this;
-        }
+        //void attach_Messages(ChannelMessage entity)
+        //{
+        //    this.RaisePropertyChanged();
+        //    entity.Summary = this;
+        //}
 
-        void detach_Messages(ChannelMessage entity)
-        {
-            this.RaisePropertyChanged();
-            entity.Summary = null;
-        }
+        //void detach_Messages(ChannelMessage entity)
+        //{
+        //    this.RaisePropertyChanged();
+        //    entity.Summary = null;
+        //}
     }
 }
