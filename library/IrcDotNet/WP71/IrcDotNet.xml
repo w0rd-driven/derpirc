@@ -4,12 +4,247 @@
         <name>IrcDotNet</name>
     </assembly>
     <members>
+        <member name="T:IrcDotNet.Collections.CollectionsUtilities">
+            <summary>
+            Contains common utilities for functionality relating to collections.
+            </summary>
+        </member>
+        <member name="M:IrcDotNet.Collections.CollectionsUtilities.Set``2(System.Collections.Generic.IDictionary{``0,``1},``0,``1)">
+            <summary>
+            Sets the value for the specified key in a dictionary.
+            If the given key already exists, overwrite its value; otherwise, add a new key/value pair.
+            </summary>
+            <typeparam name="TKey">The type of keys in the dictionary.</typeparam>
+            <typeparam name="TValue">The type of values in the dictionary..</typeparam>
+            <param name="dictionary">The dictionary in which to set the value.</param>
+            <param name="key">The object to use as the key of the element to add/update.</param>
+            <param name="value">The object to use as the value of the element to add/update.</param>
+        </member>
+        <member name="M:IrcDotNet.Collections.CollectionsUtilities.AddRange``1(System.Collections.Generic.ICollection{``0},System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Adds the specified items to the collection.
+            </summary>
+            <typeparam name="T">The type of the items in the collection.</typeparam>
+            <param name="collection">The collection to which to add the items.</param>
+            <param name="range">A collection of items to add to <paramref name="collection"/>.</param>
+        </member>
+        <member name="M:IrcDotNet.Collections.CollectionsUtilities.RemoveRange``1(System.Collections.Generic.ICollection{``0},System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Removes the specified items from the collection.
+            </summary>
+            <typeparam name="T">The type of the items in the collection.</typeparam>
+            <param name="collection">The collection fom which to remove the items.</param>
+            <param name="range">A collection of items to remove from <paramref name="collection"/>.</param>
+        </member>
+        <member name="M:IrcDotNet.Collections.CollectionsUtilities.ForEach``1(System.Collections.Generic.IEnumerable{``0},System.Action{``0})">
+            <summary>
+            Performs the specified action on each item in the collection.
+            </summary>
+            <typeparam name="T">The type of the items in the collection.</typeparam>
+            <param name="source">The collection on whose items to perform the action.</param>
+            <param name="action">The action to perform on each item of the collection.</param>
+        </member>
+        <member name="T:IrcDotNet.Collections.ReadOnlyDictionary`2">
+            <summary>
+            Represents a read-only collection of keys and values.
+            </summary>
+            <typeparam name="TKey">The type of the keys in the dictionary.</typeparam>
+            <typeparam name="TValue">The type of the values in the dictionary.</typeparam>
+        </member>
+        <member name="M:IrcDotNet.Collections.ReadOnlyDictionary`2.#ctor(System.Collections.Generic.IDictionary{`0,`1})">
+            <summary>
+            Initializes a new instance of the <see cref="T:IrcDotNet.Collections.ReadOnlyDictionary`2"/> class.
+            </summary>
+            <param name="dictionary">The dictionary to wrap.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="dictionary"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:IrcDotNet.Collections.ReadOnlyDictionary`2.ContainsKey(`0)">
+            <summary>
+            Determines whether the dictionary contains the specified key.
+            </summary>
+            <param name="key">The key to locate in the dictionary.</param>
+            <returns><see langword="true"/> if the dictionary contains an element with the specified key;
+            <see langword="false"/>, otherwise.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="key"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:IrcDotNet.Collections.ReadOnlyDictionary`2.TryGetValue(`0,`1@)">
+            <summary>
+            Gets the value associated with the specified key.
+            </summary>
+            <param name="key">The key of the value to get.</param>
+            <param name="value">When this method returns, contains the value associated with the specified key, if the
+            key is found; otherwise, the default value for the type of the value parameter. This parameter is passed
+            uninitialized.</param>
+            <returns><see langword="true"/> if the dictionary contains an element with the specified key;
+            <see langword="false"/>, otherwise.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="key"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:IrcDotNet.Collections.ReadOnlyDictionary`2.GetEnumerator">
+            <summary>
+            Returns an enumerator that iterates through the dictionary.
+            </summary>
+            <returns>An enumerator for the dictionary.</returns>
+        </member>
+        <member name="P:IrcDotNet.Collections.ReadOnlyDictionary`2.Keys">
+            <summary>
+            Gets a collection containing the keys in the dictionary.
+            </summary>
+            <value>A collection containing the keys in the dictionary.</value>
+        </member>
+        <member name="P:IrcDotNet.Collections.ReadOnlyDictionary`2.Values">
+            <summary>
+            Gets a collection containing the values in the dictionary.
+            </summary>
+            <value>A collection containing the values in the dictionary.</value>
+        </member>
+        <member name="P:IrcDotNet.Collections.ReadOnlyDictionary`2.Item(`0)">
+            <summary>
+            Gets or sets the element with the specified key.
+            </summary>
+            <value>The element with the specified key.</value>
+            <exception cref="T:System.NotSupportedException">This operation is not supported on a read-only dictionary.
+            </exception>
+        </member>
+        <member name="P:IrcDotNet.Collections.ReadOnlyDictionary`2.Count">
+            <summary>
+            Gets the number of key/value pairs contained in the dictionary.
+            </summary>
+            <value>The number of key/value pairs contained in the dictionary.</value>
+        </member>
+        <member name="T:IrcDotNet.Collections.ReadOnlySet`1">
+            <summary>
+            Represents a read-only set of values.
+            </summary>
+            <typeparam name="T">The type of elements in the set.</typeparam>
+        </member>
+        <member name="T:System.Collections.Generic.ISet`1">
+            <summary>
+            Provides the base interface for the abstraction of sets.
+            </summary>
+            <typeparam name="T">The type of elements in the set.</typeparam>
+        </member>
+        <member name="M:IrcDotNet.Collections.ReadOnlySet`1.#ctor(System.Collections.Generic.ISet{`0})">
+            <summary>
+            Initializes a new instance of the <see cref="T:IrcDotNet.Collections.ReadOnlySet`1"/> class.
+            </summary>
+            <param name="set">The set to wrap.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="set"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:IrcDotNet.Collections.ReadOnlySet`1.IsProperSubsetOf(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            Determines whether the set is a proper subset of the specified collection.
+            </summary>
+            <param name="other">The collection to compare to the current set.</param>
+            <returns>
+            <see langword="true"/> if the set is a proper subset of <paramref name="other"/>;
+            <see langword="false"/>, otherwise.
+            </returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="other"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:IrcDotNet.Collections.ReadOnlySet`1.IsProperSupersetOf(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            Determines whether the set is a proper superset of the specified collection.
+            </summary>
+            <param name="other">The collection to compare to the current set.</param>
+            <returns>
+            <see langword="true"/> if the set is a proper superset of <paramref name="other"/>;
+            <see langword="false"/>, otherwise.
+            </returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="other"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:IrcDotNet.Collections.ReadOnlySet`1.IsSubsetOf(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            Determines whether the set is a subset of the specified collection.
+            </summary>
+            <param name="other">The collection to compare to the current set.</param>
+            <returns>
+            <see langword="true"/> if the set is a subset of <paramref name="other"/>;
+            <see langword="false"/>, otherwise.
+            </returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="other"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:IrcDotNet.Collections.ReadOnlySet`1.IsSupersetOf(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            Determines whether the set is a superset of the specified collection.
+            </summary>
+            <param name="other">The collection to compare to the current set.</param>
+            <returns>
+            <see langword="true"/> if the set is a superset of <paramref name="other"/>;
+            <see langword="false"/>, otherwise.
+            </returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="other"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:IrcDotNet.Collections.ReadOnlySet`1.Overlaps(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            Determines whether the set and the specified collection share common elements.
+            </summary>
+            <param name="other">The collection to compare to the current set.</param>
+            <returns>
+            <see langword="true"/> if the set and <paramref name="other"/> share at least one common element;
+            <see langword="false"/>, otherwise.
+            </returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="other"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:IrcDotNet.Collections.ReadOnlySet`1.SetEquals(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            Determines whether the set and the specified collection contain the same elements.
+            </summary>
+            <param name="other">The collection to compare to the current set.</param>
+            <returns>
+            <see langword="true"/> if the set and <paramref name="other"/> are equal;
+            <see langword="false"/>, otherwise.
+            </returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="other"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:IrcDotNet.Collections.ReadOnlySet`1.Contains(`0)">
+            <summary>
+            Determines whether the set contains the specified element.
+            </summary>
+            <param name="item">The element to locate in the set.</param>
+            <returns><see langword="true"/> if the set contains the specified element;
+            <see langword="false"/>, otherwise.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="item"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:IrcDotNet.Collections.ReadOnlySet`1.CopyTo(`0[])">
+            <inheritdoc cref="M:IrcDotNet.Collections.ReadOnlySet`1.CopyTo(`0[],System.Int32)"/>
+        </member>
+        <member name="M:IrcDotNet.Collections.ReadOnlySet`1.CopyTo(`0[],System.Int32)">
+            <summary>
+            Copies the elements of the set to an array.
+            </summary>
+            <param name="array">The one-dimensional array that is the destination of the elements copied from the
+            set. The array must have zero-based indexing.</param>
+            <param name="arrayIndex">The zero-based index in <paramref name="array"/> at which copying begins.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="array"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="arrayIndex"/> is less than 0.</exception>
+            <exception cref="T:System.ArgumentException"><paramref name="arrayIndex"/> is greater than the length of the
+            destination array.</exception>
+        </member>
+        <member name="M:IrcDotNet.Collections.ReadOnlySet`1.GetEnumerator">
+            <summary>
+            Returns an enumerator that iterates through the set.
+            </summary>
+            <returns>An enumerator for the set.</returns>
+        </member>
+        <member name="P:IrcDotNet.Collections.ReadOnlySet`1.Count">
+            <summary>
+            Gets the number of elements that are contained in the set.
+            </summary>
+            <value>The number of elements that are contained in the set.</value>
+        </member>
         <member name="T:IrcDotNet.Ctcp.CtcpClient">
             <summary>
-            Provides methods for communicating with a server using CTCP (Client to Client Protocol), which operates over a
-            connection to an IRC server.
-            Do not inherit unless the protocol itself is being extended.
+            Represents a client that communicates with a server using CTCP (Client to Client Protocol), operating over an
+            IRC connection.
+            
+            Do not inherit this class unless the protocol itself is being extended.
             </summary>
+            <remarks>
+            All collection objects must be locked on the <see cref="P:System.Collections.ICollection.SyncRoot"/> object for thread-safety.
+            They can however be used safely without locking within event handlers.
+            </remarks>
+            <threadsafety static="true" instance="true"/>
+            <seealso cref="P:IrcDotNet.Ctcp.CtcpClient.IrcClient"/>
         </member>
         <member name="M:IrcDotNet.Ctcp.CtcpClient.#ctor(IrcDotNet.IrcClient)">
             <summary>
@@ -93,10 +328,10 @@
         <member name="M:IrcDotNet.Ctcp.CtcpClient.WriteMessage(System.Collections.Generic.IList{IrcDotNet.IIrcMessageTarget},IrcDotNet.Ctcp.CtcpClient.CtcpMessage)">
             <inheritdoc cref="M:IrcDotNet.Ctcp.CtcpClient.WriteMessage(System.Collections.Generic.IList{IrcDotNet.IIrcMessageTarget},System.String,System.Boolean)"/>
             <param name="message">The message to write.</param>
-            <exception cref="T:System.ArgumentException">
-            <paramref name="message"/> contains more than 15 many parameters. -or-
-            The value of <see cref="F:IrcDotNet.Ctcp.CtcpClient.CtcpMessage.Tag"/> of <paramref name="message"/> is invalid.
+            <exception cref="T:System.ArgumentException"><paramref name="message"/> contains more than 15 many parameters.
             </exception>
+            <exception cref="T:System.ArgumentException">The value of <see cref="F:IrcDotNet.Ctcp.CtcpClient.CtcpMessage.Tag"/> of <paramref name="message"/>
+            is invalid.</exception>
         </member>
         <member name="M:IrcDotNet.Ctcp.CtcpClient.WriteMessage(System.Collections.Generic.IList{IrcDotNet.IIrcMessageTarget},System.String,System.Boolean)">
             <summary>
@@ -309,8 +544,9 @@
         </member>
         <member name="T:IrcDotNet.Ctcp.CtcpClient.CtcpMessage">
             <summary>
-            Represents a message that is sent/received by the client/server using the CTCP protocol.
+            Represents a raw CTCP message that is sent/received by <see cref="T:IrcDotNet.Ctcp.CtcpClient"/>.
             </summary>
+            <seealso cref="T:IrcDotNet.Ctcp.CtcpClient"/>
         </member>
         <member name="F:IrcDotNet.Ctcp.CtcpClient.CtcpMessage.Source">
             <summary>
@@ -359,6 +595,7 @@
             <summary>
             Provides data for events that are raised when a CTCP message or notice is sent or received.
             </summary>
+            <threadsafety static="true" instance="false"/>
         </member>
         <member name="M:IrcDotNet.Ctcp.CtcpMessageEventArgs.#ctor(IrcDotNet.IrcUser,System.Collections.Generic.IList{IrcDotNet.IIrcMessageTarget},System.String)">
             <summary>
@@ -392,11 +629,13 @@
             <summary>
             Provides data for the <see cref="E:IrcDotNet.Ctcp.CtcpClient.TimeResponseReceived"/> event.
             </summary>
+            <threadsafety static="true" instance="false"/>
         </member>
         <member name="T:IrcDotNet.Ctcp.CtcpResponseReceivedEventArgs">
             <summary>
             Provides data for events that indicate a response to a CTCP request.
             </summary>
+            <threadsafety static="true" instance="false"/>
         </member>
         <member name="M:IrcDotNet.Ctcp.CtcpResponseReceivedEventArgs.#ctor(IrcDotNet.IrcUser)">
             <summary>
@@ -426,6 +665,7 @@
             <summary>
             Provides data for the <see cref="E:IrcDotNet.Ctcp.CtcpClient.VersionResponseReceived"/> event.
             </summary>
+            <threadsafety static="true" instance="false"/>
         </member>
         <member name="M:IrcDotNet.Ctcp.CtcpVersionResponseReceivedEventArgs.#ctor(IrcDotNet.IrcUser,System.String)">
             <summary>
@@ -443,6 +683,7 @@
             <summary>
             Provides data for the <see cref="E:IrcDotNet.Ctcp.CtcpClient.ErrorMessageReceived"/> event.
             </summary>
+            <threadsafety static="true" instance="false"/>
         </member>
         <member name="M:IrcDotNet.Ctcp.CtcpErrorMessageReceivedEventArgs.#ctor(IrcDotNet.IrcUser,System.String)">
             <summary>
@@ -482,6 +723,7 @@
             <summary>
             Provides data for the <see cref="E:IrcDotNet.Ctcp.CtcpClient.PingResponseReceived"/> event.
             </summary>
+            <threadsafety static="true" instance="false"/>
         </member>
         <member name="M:IrcDotNet.Ctcp.CtcpPingResponseReceivedEventArgs.#ctor(IrcDotNet.IrcUser,System.TimeSpan)">
             <inheritdoc/>
@@ -502,6 +744,7 @@
             Provides data for the <see cref="E:IrcDotNet.Ctcp.CtcpClient.RawMessageSent"/> and
             <see cref="E:IrcDotNet.Ctcp.CtcpClient.RawMessageReceived"/> events.
             </summary>
+            <threadsafety static="true" instance="false"/>
         </member>
         <member name="M:IrcDotNet.Ctcp.CtcpRawMessageEventArgs.#ctor(IrcDotNet.Ctcp.CtcpClient.CtcpMessage)">
             <summary>
@@ -610,8 +853,9 @@
         </member>
         <member name="T:IrcDotNet.IrcChannel">
             <summary>
-            Represents an IRC channel that resides on a specific <see cref="T:IrcDotNet.IrcClient"/>.
+            Represents an IRC channel that exists on a specific <see cref="T:IrcDotNet.IrcClient"/>.
             </summary>
+            <threadsafety static="true" instance="false"/>
         </member>
         <member name="M:IrcDotNet.IrcChannel.GetChannelUser(IrcDotNet.IrcUser)">
             <summary>
@@ -671,8 +915,8 @@
         </member>
         <member name="M:IrcDotNet.IrcChannel.SetModes(System.Collections.Generic.IEnumerable{System.Char},System.Collections.Generic.IEnumerable{System.Char},System.Collections.Generic.IEnumerable{System.String})">
             <inheritdoc cref="M:IrcDotNet.IrcChannel.SetModes(System.String,System.Collections.Generic.IEnumerable{System.String})"/>
-            <exception cref="T:System.ArgumentNullException"><paramref name="setModes"/> is <see langword="null"/>. -or-
-            <paramref name="unsetModes"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="setModes"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="unsetModes"/> is <see langword="null"/>.</exception>
         </member>
         <member name="M:IrcDotNet.IrcChannel.SetModes(System.String,System.String[])">
             <inheritdoc cref="M:IrcDotNet.IrcChannel.SetModes(System.String,System.Collections.Generic.IEnumerable{System.String})"/>
@@ -899,6 +1143,7 @@
             <summary>
             Represents a collection of <see cref="T:IrcDotNet.IrcChannel"/> objects.
             </summary>
+            <threadsafety static="true" instance="false"/>
             <seealso cref="T:IrcDotNet.IrcChannel"/>
         </member>
         <member name="M:IrcDotNet.IrcChannelCollection.Join(System.String[])">
@@ -927,12 +1172,6 @@
             <param name="channels">A collection of the names of channels to leave.</param>
             <param name="comment">The comment to send the server upon leaving the channel, or <see langword="null"/> for
             no comment.</param>
-        </member>
-        <member name="M:IrcDotNet.IrcChannelCollection.OnCollectionChanged(System.Collections.Specialized.NotifyCollectionChangedEventArgs)">
-            <summary>
-            Raises the <see cref="E:System.Collections.ObjectModel.ReadOnlyObservableCollection`1.CollectionChanged"/> event.
-            </summary>
-            <param name="e">The <see cref="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs"/> instance containing the event data.</param>
         </member>
         <member name="P:IrcDotNet.IrcChannelCollection.Client">
             <summary>
@@ -970,8 +1209,11 @@
         </member>
         <member name="T:IrcDotNet.IrcChannelUser">
             <summary>
-            Represents an IRC user that resides on a specific channel on a specific <see cref="T:IrcDotNet.IrcClient"/>.
+            Represents an IRC user that exists on a specific channel on a specific <see cref="T:IrcDotNet.IrcClient"/>.
             </summary>
+            <threadsafety static="true" instance="false"/>
+            <seealso cref="T:IrcDotNet.IrcUser"/>
+            <seealso cref="T:IrcDotNet.IrcChannel"/>
         </member>
         <member name="M:IrcDotNet.IrcChannelUser.Kick(System.String)">
             <summary>
@@ -981,12 +1223,12 @@
         </member>
         <member name="M:IrcDotNet.IrcChannelUser.Op">
             <summary>
-            Ops the user in the channel.
+            Gives the user operator privileges in the channel.
             </summary>
         </member>
         <member name="M:IrcDotNet.IrcChannelUser.DeOp">
             <summary>
-            Deops the user in the channel.
+            Removes operator privileges from the user in the channel.
             </summary>
         </member>
         <member name="M:IrcDotNet.IrcChannelUser.Voice">
@@ -1049,6 +1291,7 @@
             <summary>
             Represents a collection of <see cref="T:IrcDotNet.IrcChannelUser"/> objects.
             </summary>
+            <threadsafety static="true" instance="false"/>
             <seealso cref="T:IrcDotNet.IrcChannelUser"/>
         </member>
         <member name="M:IrcDotNet.IrcChannelUserCollection.GetUsers">
@@ -1056,12 +1299,6 @@
             Gets a collection of all users that correspond to the channel users in the collection.
             </summary>
             <returns>A collection of users.</returns>
-        </member>
-        <member name="M:IrcDotNet.IrcChannelUserCollection.OnCollectionChanged(System.Collections.Specialized.NotifyCollectionChangedEventArgs)">
-            <summary>
-            Raises the <see cref="E:System.Collections.ObjectModel.ReadOnlyObservableCollection`1.CollectionChanged"/> event.
-            </summary>
-            <param name="e">The <see cref="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs"/> instance containing the event data.</param>
         </member>
         <member name="P:IrcDotNet.IrcChannelUserCollection.Channel">
             <summary>
@@ -1071,9 +1308,15 @@
         </member>
         <member name="T:IrcDotNet.IrcClient">
             <summary>
-            Provides methods for communicating with a server using the IRC (Internet Relay Chat) protocol.
-            Do not inherit unless the protocol itself is being extended.
+            Represents a client that communicates with a server using the IRC (Internet Relay Chat) protocol.
+            
+            Do not inherit this class unless the protocol itself is being extended.
             </summary>
+            <remarks>
+            All collection objects must be locked on the <see cref="P:System.Collections.ICollection.SyncRoot"/> object for thread-safety.
+            They can however be used safely without locking within event handlers.
+            </remarks>
+            <threadsafety static="true" instance="true"/>
         </member>
         <member name="M:IrcDotNet.IrcClient.#ctor">
             <summary>
@@ -1094,7 +1337,7 @@
             <summary>
             Releases all resources used by the <see cref="T:IrcDotNet.IrcClient"/>.
             </summary>
-            <param name="disposing"><see langword="true"/> if the user is actively disposing the object;
+            <param name="disposing"><see langword="true"/> if the consumer is actively disposing the object;
             <see langword="false"/> if the garbage collector is finalizing the object.</param>
         </member>
         <member name="M:IrcDotNet.IrcClient.ListChannels(System.String[])">
@@ -1113,7 +1356,7 @@
             </summary>
             <param name="targetServer">The name of the server from which to request the MOTD, or <see langword="null"/>
             for the current server.</param>
-            <exception cref="T:System.ObjectDisposedException">The object has already been been disposed.</exception>
+            <exception cref="T:System.ObjectDisposedException">The current instance has already been disposed.</exception>
         </member>
         <member name="M:IrcDotNet.IrcClient.GetNetworkInfo(System.String,System.String)">
             <summary>
@@ -1126,49 +1369,27 @@
             to match the entire network.</param>
             <param name="targetServer">The name of the server to which to forward the message, or <see langword="null"/>
             for the current server.</param>
-            <exception cref="T:System.ObjectDisposedException">The object has already been been disposed.</exception>
+            <exception cref="T:System.ObjectDisposedException">The current instance has already been disposed.</exception>
         </member>
         <member name="M:IrcDotNet.IrcClient.GetServerVersion(System.String)">
             <summary>
             Requests the version of the specified server.
             </summary>
             <param name="targetServer">The name of the server whose version to request.</param>
-            <exception cref="T:System.ObjectDisposedException">The object has already been been disposed.</exception>
+            <exception cref="T:System.ObjectDisposedException">The current instance has already been disposed.</exception>
         </member>
-        <member name="M:IrcDotNet.IrcClient.GetServerStats(System.String,System.String)">
+        <member name="M:IrcDotNet.IrcClient.GetServerStatistics(System.Nullable{System.Char},System.String)">
             <summary>
             Requests statistics about the specified server.
             </summary>
-            <param name="query">The query that indicates to the server what statistics to return.
-            The syntax for this value is dependent on the implementation of the server, but should support the following
-            query characters:
-            <list type="bullet">
-              <listheader>
-                <term>Character</term>
-                <description>Query</description>
-              </listheader>
-              <item>
-                <term>l</term>
-                <description>A list of connections of the server and information about them.</description>
-              </item>
-              <item>
-                <term>m</term>
-                <description>The usage count for each of the commands supported by the server.</description>
-              </item>
-              <item>
-                <term>o</term>
-                <description>A list of all server operators.</description>
-              </item>
-              <item>
-                <term>u</term>
-                <description>The duration for which the server has been running since its last start.</description>
-              </item>
-            </list></param>
+            <param name="query">The query character that indicates which server statistics to return.
+            The set of valid query characters is dependent on the implementation of the particular IRC server.
+            </param>
             <param name="targetServer">The name of the server whose statistics to request.</param>
-            <exception cref="T:System.ObjectDisposedException">The object has already been been disposed.</exception>
             <remarks>
-            Support for the processing of responses to this request is not yet implemented.
+            The server may not accept the command if <paramref name="query"/> is unspecified.
             </remarks>
+            <exception cref="T:System.ObjectDisposedException">The current instance has already been disposed.</exception>
         </member>
         <member name="M:IrcDotNet.IrcClient.GetServerLinks(System.String,System.String)">
             <summary>
@@ -1181,21 +1402,21 @@
             to match the entire network.</param>
             <param name="targetServer">The name of the server to which to forward the request, or <see langword="null"/>
             for the current server.</param>
-            <exception cref="T:System.ObjectDisposedException">The object has already been been disposed.</exception>
+            <exception cref="T:System.ObjectDisposedException">The current instance has already been disposed.</exception>
         </member>
         <member name="M:IrcDotNet.IrcClient.GetServerTime(System.String)">
             <summary>
             Requests the local time on the specified server.
             </summary>
             <param name="targetServer">The name of the server whose local time to request.</param>
-            <exception cref="T:System.ObjectDisposedException">The object has already been been disposed.</exception>
+            <exception cref="T:System.ObjectDisposedException">The current instance has already been disposed.</exception>
         </member>
         <member name="M:IrcDotNet.IrcClient.Ping(System.String)">
             <summary>
             Sends a ping to the specified server.
             </summary>
             <param name="targetServer">The name of the server to ping.</param>
-            <exception cref="T:System.ObjectDisposedException">The object has already been been disposed.</exception>
+            <exception cref="T:System.ObjectDisposedException">The current instance has already been disposed.</exception>
         </member>
         <member name="M:IrcDotNet.IrcClient.QueryWho(System.String,System.Boolean)">
             <summary>
@@ -1206,7 +1427,7 @@
             all users are matched.</param>
             <param name="onlyOperators"><see langword="true"/> to match only server operators; 
             <see langword="false"/> to match all users.</param>
-            <exception cref="T:System.ObjectDisposedException">The object has already been been disposed.</exception>
+            <exception cref="T:System.ObjectDisposedException">The current instance has already been disposed.</exception>
         </member>
         <member name="M:IrcDotNet.IrcClient.QueryWhoIs(System.String[])">
             <inheritdoc cref="M:IrcDotNet.IrcClient.QueryWhoIs(System.Collections.Generic.IEnumerable{System.String})"/>
@@ -1218,7 +1439,7 @@
             </summary>
             <param name="nickNameMasks">A collection of wildcard expressions for matching against nick names of users.
             </param>
-            <exception cref="T:System.ObjectDisposedException">The object has already been been disposed.</exception>
+            <exception cref="T:System.ObjectDisposedException">The current instance has already been disposed.</exception>
             <exception cref="T:System.ArgumentNullException"><paramref name="nickNameMasks"/> is <see langword="null"/>.</exception>
         </member>
         <member name="M:IrcDotNet.IrcClient.QueryWhoWas(System.String[])">
@@ -1231,16 +1452,19 @@
             <param name="nickNames">The nick names of the users to query.</param>
             <param name="entriesCount">The maximum number of entries to return from the query. A negative value
             specifies to return an unlimited number of entries.</param>
-            <exception cref="T:System.ObjectDisposedException">The object has already been been disposed.</exception>
+            <exception cref="T:System.ObjectDisposedException">The current instance has already been disposed.</exception>
             <exception cref="T:System.ArgumentNullException"><paramref name="nickNames"/> is <see langword="null"/>.</exception>
         </member>
         <member name="M:IrcDotNet.IrcClient.Quit(System.Int32,System.String)">
             <inheritdoc cref="M:IrcDotNet.IrcClient.Quit(System.String)"/>
             <summary>
-            Quits the server, giving the specified comment. Waits the specified time before forcibly disconnecting.
+            Quits the server, giving the specified comment. Waits the specified duration of time before forcibly
+            disconnecting.
             </summary>
             <param name="timeout">The number of milliseconds to wait before forcibly disconnecting.</param>
-            <exception cref="T:System.ObjectDisposedException">The object has already been been disposed.</exception>
+            <remarks>
+            </remarks>
+            <exception cref="T:System.ObjectDisposedException">The current instance has already been disposed.</exception>
         </member>
         <member name="M:IrcDotNet.IrcClient.Quit(System.String)">
             <summary>
@@ -1249,21 +1473,29 @@
             <param name="comment">The comment to send to the server.</param>
             <remarks>
             Note that because this message is not sent immediately, calling <see cref="M:IrcDotNet.IrcClient.Disconnect"/> immediately after
-            this will likely disconnect the client before it has a chance to send the command.
+            this will likely disconnect the client before it has a chance to quit the server properly.
+            Quitting the server should automatically disconnect the client.
             </remarks>
-            <exception cref="T:System.ObjectDisposedException">The object has already been been disposed.</exception>
+            <exception cref="T:System.ObjectDisposedException">The current instance has already been disposed.</exception>
         </member>
         <member name="M:IrcDotNet.IrcClient.SendRawMessage(System.String)">
             <summary>
             Sends the specified raw message to the server.
             </summary>
             <param name="message">The text (single line) of the message to send the server.</param>
-            <exception cref="T:System.ObjectDisposedException">The object has already been been disposed.</exception>
+            <exception cref="T:System.ObjectDisposedException">The current instance has already been disposed.</exception>
             <exception cref="T:System.ArgumentNullException"><paramref name="message"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:IrcDotNet.IrcClient.HandleStatsEntryReceived(System.Int32,IrcDotNet.IrcClient.IrcMessage)">
+            <summary>
+            Handles the specified statistical entry for the server, received in response to a STATS message.
+            </summary>
+            <param name="type">The type of the statistical entry for the server.</param>
+            <param name="message">The message that contains the statistical entry.</param>
         </member>
         <member name="M:IrcDotNet.IrcClient.HandleISupportParameter(System.String,System.String)">
             <summary>
-            Handles the specified parameter of an ISUPPORT message received from the server upon registration.
+            Handles the specified parameter value of an ISUPPORT message, received from the server upon registration.
             </summary>
             <param name="paramName">The name of the parameter.</param>
             <param name="paramValue">The value of the parameter, or <see langword="null"/> if it does not have a value.
@@ -1411,12 +1643,14 @@
         </member>
         <member name="M:IrcDotNet.IrcClient.WriteMessage(System.String,System.String,System.Collections.Generic.IEnumerable{System.String})">
             <inheritdoc cref="M:IrcDotNet.IrcClient.WriteMessage(System.String,System.String,System.String[])"/>
+            <exception cref="T:System.ObjectDisposedException">The current instance has already been disposed.</exception>
         </member>
         <member name="M:IrcDotNet.IrcClient.WriteMessage(System.String,System.String,System.String[])">
             <inheritdoc cref="M:IrcDotNet.IrcClient.WriteMessage(IrcDotNet.IrcClient.IrcMessage)"/>
             <param name="prefix">The message prefix that represents the source of the message.</param>
             <param name="command">The name of the command.</param>
             <param name="parameters">A collection of the parameters to the command.</param>
+            <exception cref="T:System.ObjectDisposedException">The current instance has already been disposed.</exception>
         </member>
         <member name="M:IrcDotNet.IrcClient.WriteMessage(IrcDotNet.IrcClient.IrcMessage)">
             <inheritdoc cref="M:IrcDotNet.IrcClient.WriteMessage(System.String,System.Object)"/>
@@ -1424,12 +1658,13 @@
             Writes the specified message (prefix, command, and parameters) to the network stream.
             </summary>
             <param name="message">The message to write.</param>
-            <exception cref="T:System.ArgumentException">
-            <paramref name="message"/> contains more than 15 many parameters. -or-
-            The value of <see cref="F:IrcDotNet.IrcClient.IrcMessage.Command"/> of <paramref name="message"/> is invalid. -or-
-            The value of one of the items of <see cref="F:IrcDotNet.IrcClient.IrcMessage.Parameters"/> of <paramref name="message"/> is
-            invalid.
+            <exception cref="T:System.ArgumentException"><paramref name="message"/> contains more than 15 many parameters.
             </exception>
+            <exception cref="T:System.ArgumentException">The value of <see cref="F:IrcDotNet.IrcClient.IrcMessage.Command"/> of
+            <paramref name="message"/> is invalid.</exception>
+            <exception cref="T:System.ArgumentException">The value of one of the items of <see cref="F:IrcDotNet.IrcClient.IrcMessage.Parameters"/> of
+            <paramref name="message"/> is invalid.</exception>
+            <exception cref="T:System.ObjectDisposedException">The current instance has already been disposed.</exception>
         </member>
         <member name="M:IrcDotNet.IrcClient.Connect(System.Uri,IrcDotNet.IrcRegistrationInfo)">
             <inheritdoc cref="M:IrcDotNet.IrcClient.Connect(System.String,System.Int32,System.Boolean,IrcDotNet.IrcRegistrationInfo)"/>
@@ -1455,37 +1690,31 @@
         </member>
         <member name="M:IrcDotNet.IrcClient.Connect(System.Net.EndPoint,System.Boolean,IrcDotNet.IrcRegistrationInfo)">
             <summary>
-            Connects to a server using the specified host and user information.
+            Connects asynchronously to the specified server.
             </summary>
             <param name="remoteEndPoint">The network endpoint (IP address and port) of the server to which to connect.
             </param>
             <param name="useSsl"><see langword="true"/> to connect to the server via SSL; <see langword="false"/>,
             otherwise</param>
-            <param name="registrationInfo">The information used for registering the client. The type of the object may
-            be either <see cref="T:IrcDotNet.IrcUserRegistrationInfo"/> or <see cref="T:IrcDotNet.IrcServiceRegistrationInfo"/>.</param>
-            <exception cref="T:System.ObjectDisposedException">The object has already been been disposed.</exception>
+            <param name="registrationInfo">The information used for registering the client.
+            The type of the object may be either <see cref="T:IrcDotNet.IrcUserRegistrationInfo"/> or
+            <see cref="T:IrcDotNet.IrcServiceRegistrationInfo"/>.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="registrationInfo"/> is <see langword="null"/>.
+            </exception>
+            <exception cref="T:System.ArgumentException"><paramref name="registrationInfo"/> does not specify valid registration
+            information.</exception>
+            <exception cref="T:System.ObjectDisposedException">The current instance has already been disposed.</exception>
         </member>
         <member name="M:IrcDotNet.IrcClient.Disconnect">
             <summary>
-            Disconnects immediately from the server.
+            Disconnects asynchronously from the server.
             </summary>
-            <exception cref="T:System.ObjectDisposedException">The object has already been been disposed.</exception>
+            <exception cref="T:System.ObjectDisposedException">The current instance has already been disposed.</exception>
             <remarks>
             This method closes the client connection immediately and forcibly, and does not send a quit message to the
             server. To disconnect from the IRC server gracefully, call <see cref="M:IrcDotNet.IrcClient.Quit(System.String)"/> and wait for the
             connection to be closed.
             </remarks>
-        </member>
-        <member name="M:IrcDotNet.IrcClient.DisconnectInternal">
-            <summary>
-            Disconnects from the server. Does nothing if client object has already been disposed.
-            </summary>
-        </member>
-        <member name="M:IrcDotNet.IrcClient.CheckDisposed">
-            <summary>
-            Throws an exception if the object has been disposed; otherwise, simply returns immediately.
-            </summary>
-            <exception cref="T:System.ObjectDisposedException">The object has already been disposed.</exception>
         </member>
         <member name="M:IrcDotNet.IrcClient.OnConnected(System.EventArgs)">
             <summary>
@@ -1600,6 +1829,13 @@
             Raises the <see cref="E:IrcDotNet.IrcClient.ServerLinksListReceived"/> event.
             </summary>
             <param name="e">The <see cref="T:IrcDotNet.IrcServerLinksListReceivedEventArgs"/> instance containing the event data.
+            </param>
+        </member>
+        <member name="M:IrcDotNet.IrcClient.OnServerStatsReceived(IrcDotNet.IrcServerStatsReceivedEventArgs)">
+            <summary>
+            Raises the <see cref="E:IrcDotNet.IrcClient.ServerStatsReceived"/> event.
+            </summary>
+            <param name="e">The <see cref="T:IrcDotNet.IrcServerStatsReceivedEventArgs"/> instance containing the event data.
             </param>
         </member>
         <member name="M:IrcDotNet.IrcClient.OnWhoReplyReceived(IrcDotNet.IrcNameEventArgs)">
@@ -1741,6 +1977,78 @@
             </summary>
             <param name="message">The message received from the server.</param>
         </member>
+        <member name="M:IrcDotNet.IrcClient.ProcessMessageStatsLinkInfo(IrcDotNet.IrcClient.IrcMessage)">
+            <summary>
+            Process RPL_STATSLINKINFO responses from the server.
+            </summary>
+            <param name="message">The message received from the server.</param>
+        </member>
+        <member name="M:IrcDotNet.IrcClient.ProcessMessageStatsCommands(IrcDotNet.IrcClient.IrcMessage)">
+            <summary>
+            Process RPL_STATSCOMMANDS responses from the server.
+            </summary>
+            <param name="message">The message received from the server.</param>
+        </member>
+        <member name="M:IrcDotNet.IrcClient.ProcessMessageStatsCLine(IrcDotNet.IrcClient.IrcMessage)">
+            <summary>
+            Process RPL_STATSCLINE responses from the server.
+            </summary>
+            <param name="message">The message received from the server.</param>
+        </member>
+        <member name="M:IrcDotNet.IrcClient.ProcessMessageStatsNLine(IrcDotNet.IrcClient.IrcMessage)">
+            <summary>
+            Process RPL_STATSNLINE responses from the server.
+            </summary>
+            <param name="message">The message received from the server.</param>
+        </member>
+        <member name="M:IrcDotNet.IrcClient.ProcessMessageStatsILine(IrcDotNet.IrcClient.IrcMessage)">
+            <summary>
+            Process RPL_STATSILINE responses from the server.
+            </summary>
+            <param name="message">The message received from the server.</param>
+        </member>
+        <member name="M:IrcDotNet.IrcClient.ProcessMessageStatsKLine(IrcDotNet.IrcClient.IrcMessage)">
+            <summary>
+            Process RPL_STATSKLINE responses from the server.
+            </summary>
+            <param name="message">The message received from the server.</param>
+        </member>
+        <member name="M:IrcDotNet.IrcClient.ProcessMessageStatsYLine(IrcDotNet.IrcClient.IrcMessage)">
+            <summary>
+            Process RPL_STATSYLINE responses from the server.
+            </summary>
+            <param name="message">The message received from the server.</param>
+        </member>
+        <member name="M:IrcDotNet.IrcClient.ProcessMessageEndOfStats(IrcDotNet.IrcClient.IrcMessage)">
+            <summary>
+            Process RPL_ENDOFSTATS responses from the server.
+            </summary>
+            <param name="message">The message received from the server.</param>
+        </member>
+        <member name="M:IrcDotNet.IrcClient.ProcessMessageStatsLLine(IrcDotNet.IrcClient.IrcMessage)">
+            <summary>
+            Process RPL_STATSLLINE responses from the server.
+            </summary>
+            <param name="message">The message received from the server.</param>
+        </member>
+        <member name="M:IrcDotNet.IrcClient.ProcessMessageStatsUpTime(IrcDotNet.IrcClient.IrcMessage)">
+            <summary>
+            Process RPL_STATSUPTIME responses from the server.
+            </summary>
+            <param name="message">The message received from the server.</param>
+        </member>
+        <member name="M:IrcDotNet.IrcClient.ProcessMessageStatsOLine(IrcDotNet.IrcClient.IrcMessage)">
+            <summary>
+            Process RPL_STATSOLINE responses from the server.
+            </summary>
+            <param name="message">The message received from the server.</param>
+        </member>
+        <member name="M:IrcDotNet.IrcClient.ProcessMessageStatsHLine(IrcDotNet.IrcClient.IrcMessage)">
+            <summary>
+            Process RPL_STATSHLINE responses from the server.
+            </summary>
+            <param name="message">The message received from the server.</param>
+        </member>
         <member name="M:IrcDotNet.IrcClient.ProcessMessageLUserClient(IrcDotNet.IrcClient.IrcMessage)">
             <summary>
             Process RPL_LUSERCLIENT responses from the server.
@@ -1771,15 +2079,15 @@
             </summary>
             <param name="message">The message received from the server.</param>
         </member>
-        <member name="M:IrcDotNet.IrcClient.ProcessMessageReplyIsOn(IrcDotNet.IrcClient.IrcMessage)">
-            <summary>
-            Process RPL_ISON responses from the server.
-            </summary>
-            <param name="message">The message received from the server.</param>
-        </member>
         <member name="M:IrcDotNet.IrcClient.ProcessMessageReplyAway(IrcDotNet.IrcClient.IrcMessage)">
             <summary>
             Process RPL_AWAY responses from the server.
+            </summary>
+            <param name="message">The message received from the server.</param>
+        </member>
+        <member name="M:IrcDotNet.IrcClient.ProcessMessageReplyIsOn(IrcDotNet.IrcClient.IrcMessage)">
+            <summary>
+            Process RPL_ISON responses from the server.
             </summary>
             <param name="message">The message received from the server.</param>
         </member>
@@ -1813,6 +2121,18 @@
             </summary>
             <param name="message">The message received from the server.</param>
         </member>
+        <member name="M:IrcDotNet.IrcClient.ProcessMessageReplyWhoWasUser(IrcDotNet.IrcClient.IrcMessage)">
+            <summary>
+            Process RPL_WHOWASUSER responses from the server.
+            </summary>
+            <param name="message">The message received from the server.</param>
+        </member>
+        <member name="M:IrcDotNet.IrcClient.ProcessMessageReplyEndOfWho(IrcDotNet.IrcClient.IrcMessage)">
+            <summary>
+            Process RPL_ENDOFWHO responses from the server.
+            </summary>
+            <param name="message">The message received from the server.</param>
+        </member>
         <member name="M:IrcDotNet.IrcClient.ProcessMessageReplyWhoIsIdle(IrcDotNet.IrcClient.IrcMessage)">
             <summary>
             Process RPL_WHOISIDLE responses from the server.
@@ -1828,30 +2148,6 @@
         <member name="M:IrcDotNet.IrcClient.ProcessMessageReplyWhoIsChannels(IrcDotNet.IrcClient.IrcMessage)">
             <summary>
             Process RPL_WHOISCHANNELS responses from the server.
-            </summary>
-            <param name="message">The message received from the server.</param>
-        </member>
-        <member name="M:IrcDotNet.IrcClient.ProcessMessageReplyWhoWasUser(IrcDotNet.IrcClient.IrcMessage)">
-            <summary>
-            Process RPL_WHOWASUSER responses from the server.
-            </summary>
-            <param name="message">The message received from the server.</param>
-        </member>
-        <member name="M:IrcDotNet.IrcClient.ProcessMessageReplyEndOfWhoWas(IrcDotNet.IrcClient.IrcMessage)">
-            <summary>
-            Process RPL_ENDOFWHOWAS responses from the server.
-            </summary>
-            <param name="message">The message received from the server.</param>
-        </member>
-        <member name="M:IrcDotNet.IrcClient.ProcessMessageReplyWhoReply(IrcDotNet.IrcClient.IrcMessage)">
-            <summary>
-            Process RPL_WHOREPLY responses from the server.
-            </summary>
-            <param name="message">The message received from the server.</param>
-        </member>
-        <member name="M:IrcDotNet.IrcClient.ProcessMessageReplyEndOfWho(IrcDotNet.IrcClient.IrcMessage)">
-            <summary>
-            Process RPL_ENDOFWHO responses from the server.
             </summary>
             <param name="message">The message received from the server.</param>
         </member>
@@ -1891,15 +2187,15 @@
             </summary>
             <param name="message">The message received from the server.</param>
         </member>
-        <member name="M:IrcDotNet.IrcClient.ProcessMessageReplyNameReply(IrcDotNet.IrcClient.IrcMessage)">
+        <member name="M:IrcDotNet.IrcClient.ProcessMessageReplyWhoReply(IrcDotNet.IrcClient.IrcMessage)">
             <summary>
-            Process RPL_NAMEREPLY responses from the server.
+            Process RPL_WHOREPLY responses from the server.
             </summary>
             <param name="message">The message received from the server.</param>
         </member>
-        <member name="M:IrcDotNet.IrcClient.ProcessMessageReplyEndOfNames(IrcDotNet.IrcClient.IrcMessage)">
+        <member name="M:IrcDotNet.IrcClient.ProcessMessageReplyNameReply(IrcDotNet.IrcClient.IrcMessage)">
             <summary>
-            Process RPL_ENDOFNAMES responses from the server.
+            Process RPL_NAMEREPLY responses from the server.
             </summary>
             <param name="message">The message received from the server.</param>
         </member>
@@ -1912,6 +2208,18 @@
         <member name="M:IrcDotNet.IrcClient.ProcessMessageReplyEndOfLinks(IrcDotNet.IrcClient.IrcMessage)">
             <summary>
             Process RPL_ENDOFLINKS responses from the server.
+            </summary>
+            <param name="message">The message received from the server.</param>
+        </member>
+        <member name="M:IrcDotNet.IrcClient.ProcessMessageReplyEndOfNames(IrcDotNet.IrcClient.IrcMessage)">
+            <summary>
+            Process RPL_ENDOFNAMES responses from the server.
+            </summary>
+            <param name="message">The message received from the server.</param>
+        </member>
+        <member name="M:IrcDotNet.IrcClient.ProcessMessageReplyEndOfWhoWas(IrcDotNet.IrcClient.IrcMessage)">
+            <summary>
+            Process RPL_ENDOFWHOWAS responses from the server.
             </summary>
             <param name="message">The message received from the server.</param>
         </member>
@@ -1985,7 +2293,7 @@
         </member>
         <member name="M:IrcDotNet.IrcClient.SendMessageOper(System.String,System.String)">
             <summary>
-            Sends a request for server operator priveleges.
+            Sends a request for server operator privileges.
             </summary>
             <param name="userName">The user name with which to register.</param>
             <param name="password">The password with which to register.</param>
@@ -2423,8 +2731,8 @@
             Occurs when the client has connected to the server.
             </summary>
             <remarks>
-            Note that the <see cref="P:IrcDotNet.IrcClient.LocalUser"/> object is not set at this point, but is accessible when the
-            <see cref="E:IrcDotNet.IrcClient.Registered"/> event is raised.
+            Note that the <see cref="P:IrcDotNet.IrcClient.LocalUser"/> object is not yet set when this event occurs, but is only accessible
+            when the <see cref="E:IrcDotNet.IrcClient.Registered"/> event is raised.
             </remarks>
         </member>
         <member name="E:IrcDotNet.IrcClient.ConnectFailed">
@@ -2439,7 +2747,7 @@
         </member>
         <member name="E:IrcDotNet.IrcClient.Error">
             <summary>
-            Occurs when the client encounters an error during execution.
+            Occurs when the client encounters an error during execution, while connected.
             </summary>
         </member>
         <member name="E:IrcDotNet.IrcClient.RawMessageSent">
@@ -2466,6 +2774,9 @@
             <summary>
             Occurs when the connection has been registered.
             </summary>
+            <remarks>
+            The <see cref="P:IrcDotNet.IrcClient.LocalUser"/> object is set when this event occurs.
+            </remarks>
         </member>
         <member name="E:IrcDotNet.IrcClient.ClientInfoReceived">
             <summary>
@@ -2516,12 +2827,17 @@
         </member>
         <member name="E:IrcDotNet.IrcClient.ServerTimeReceived">
             <summary>
-            Occurs when the local date/time of a specific server has been received from the server.
+            Occurs when the local date/time for a specific server has been received from the server.
             </summary>
         </member>
         <member name="E:IrcDotNet.IrcClient.ServerLinksListReceived">
             <summary>
             Occurs when a list of server links has been received from the server.
+            </summary>
+        </member>
+        <member name="E:IrcDotNet.IrcClient.ServerStatsReceived">
+            <summary>
+            Occurs when server statistics have been received from the server.
             </summary>
         </member>
         <member name="E:IrcDotNet.IrcClient.WhoReplyReceived">
@@ -2552,10 +2868,11 @@
         </member>
         <member name="T:IrcDotNet.IrcClient.IrcMessage">
             <summary>
-            Represents a message that is sent/received by the client/server using the IRC protocol.
+            Represents a raw IRC message that is sent/received by <see cref="T:IrcDotNet.IrcClient"/>.
             A message contains a prefix (representing the source), a command name (a word or three-digit number),
-            and an arbitrary number of parameters (up to a maximum of 15).
+            and any number of parameters (up to a maximum of 15).
             </summary>
+            <seealso cref="T:IrcDotNet.IrcClient"/>
         </member>
         <member name="F:IrcDotNet.IrcClient.IrcMessage.Source">
             <summary>
@@ -2597,6 +2914,7 @@
             <summary>
             Provides data for the <see cref="E:IrcDotNet.IrcClient.ChannelListReceived"/> event.
             </summary>
+            <threadsafety static="true" instance="false"/>
         </member>
         <member name="M:IrcDotNet.IrcChannelListReceivedEventArgs.#ctor(System.Collections.Generic.IList{IrcDotNet.IrcChannelInfo})">
             <summary>
@@ -2614,6 +2932,7 @@
             <summary>
             Provides data for the <see cref="E:IrcDotNet.IrcClient.ServerVersionInfoReceived"/> event.
             </summary>
+            <threadsafety static="true" instance="false"/>
         </member>
         <member name="M:IrcDotNet.IrcServerVersionInfoEventArgs.#ctor(System.String,System.String,System.String,System.String)">
             <summary>
@@ -2652,6 +2971,7 @@
             <summary>
             Provides data for the <see cref="E:IrcDotNet.IrcClient.ServerTimeReceived"/> event.
             </summary>
+            <threadsafety static="true" instance="false"/>
         </member>
         <member name="M:IrcDotNet.IrcServerTimeEventArgs.#ctor(System.String,System.String)">
             <summary>
@@ -2676,6 +2996,7 @@
             <summary>
             Provides data for the <see cref="E:IrcDotNet.IrcClient.ServerLinksListReceived"/> event.
             </summary>
+            <threadsafety static="true" instance="false"/>
         </member>
         <member name="M:IrcDotNet.IrcServerLinksListReceivedEventArgs.#ctor(System.Collections.Generic.IList{IrcDotNet.IrcServerInfo})">
             <summary>
@@ -2689,16 +3010,36 @@
             </summary>
             <value>The list of server links.</value>
         </member>
+        <member name="T:IrcDotNet.IrcServerStatsReceivedEventArgs">
+            <summary>
+            Provides data for the <see cref="E:IrcDotNet.IrcClient.ServerStatsReceived"/> event.
+            </summary>
+            <threadsafety static="true" instance="false"/>
+        </member>
+        <member name="M:IrcDotNet.IrcServerStatsReceivedEventArgs.#ctor(System.Collections.Generic.IList{IrcDotNet.IrcServerStatisticalEntry})">
+            <summary>
+            Initializes a new instance of the <see cref="T:IrcDotNet.IrcServerStatsReceivedEventArgs"/> class.
+            </summary>
+            <param name="entries">A list of statistical entries that was returned by the server.</param>
+        </member>
+        <member name="P:IrcDotNet.IrcServerStatsReceivedEventArgs.Entries">
+            <summary>
+            Gets the list of statistical entries that was returned by the server.
+            </summary>
+            <value>The list of statistical entries.</value>
+        </member>
         <member name="T:IrcDotNet.IrcPreviewMessageEventArgs">
             <summary>
             <inheritdoc select="/summary/node()"/>
             Gives the option to handle the preview event and thus stop the normal event from being raised.
             </summary>
+            <threadsafety static="true" instance="false"/>
         </member>
         <member name="T:IrcDotNet.IrcMessageEventArgs">
             <summary>
             Provides data for events that are raised when an IRC message or notice is sent or received.
             </summary>
+            <threadsafety static="true" instance="false"/>
         </member>
         <member name="M:IrcDotNet.IrcMessageEventArgs.#ctor(IrcDotNet.IIrcMessageSource,System.Collections.Generic.IList{IrcDotNet.IIrcMessageTarget},System.String,System.Text.Encoding)">
             <summary>
@@ -2757,16 +3098,19 @@
             <summary>
             Provides data for the <see cref="E:IrcDotNet.IrcClient.PingReceived"/> event.
             </summary>
+            <threadsafety static="true" instance="false"/>
         </member>
         <member name="T:IrcDotNet.IrcChannelEventArgs">
             <summary>
             Provides data for events that concern an <see cref="T:IrcDotNet.IrcChannel"/>.
             </summary>
+            <threadsafety static="true" instance="false"/>
         </member>
         <member name="T:IrcDotNet.IrcCommentEventArgs">
             <summary>
             Provides data for events that specify a name.
             </summary>
+            <threadsafety static="true" instance="false"/>
         </member>
         <member name="M:IrcDotNet.IrcCommentEventArgs.#ctor(System.String)">
             <summary>
@@ -2810,6 +3154,7 @@
             <summary>
             Provides data for events that concern an <see cref="T:IrcDotNet.IrcChannelUser"/>.
             </summary>
+            <threadsafety static="true" instance="false"/>
         </member>
         <member name="M:IrcDotNet.IrcChannelUserEventArgs.#ctor(IrcDotNet.IrcChannelUser,System.String)">
             <inheritdoc/>
@@ -2828,6 +3173,7 @@
             <summary>
             Provides data for events that concern an <see cref="T:IrcDotNet.IrcUser"/>.
             </summary>
+            <threadsafety static="true" instance="false"/>
         </member>
         <member name="M:IrcDotNet.IrcUserEventArgs.#ctor(IrcDotNet.IrcUser,System.String)">
             <inheritdoc/>
@@ -2846,6 +3192,7 @@
             <summary>
             Provides data for events that specify a comment.
             </summary>
+            <threadsafety static="true" instance="false"/>
         </member>
         <member name="M:IrcDotNet.IrcNameEventArgs.#ctor(System.String)">
             <summary>
@@ -2863,6 +3210,7 @@
             <summary>
             Provides data for the <see cref="E:IrcDotNet.IrcClient.PingReceived"/> and <see cref="E:IrcDotNet.IrcClient.PongReceived"/> events.
             </summary>
+            <threadsafety static="true" instance="false"/>
         </member>
         <member name="M:IrcDotNet.IrcPingOrPongReceivedEventArgs.#ctor(System.String)">
             <summary>
@@ -2880,6 +3228,7 @@
             <summary>
             Provides data for events that specify information about a server.
             </summary>
+            <threadsafety static="true" instance="false"/>
         </member>
         <member name="M:IrcDotNet.IrcServerInfoEventArgs.#ctor(System.String,System.Int32)">
             <summary>
@@ -2904,6 +3253,7 @@
             <summary>
             Provides data for the <see cref="E:IrcDotNet.IrcClient.ErrorMessageReceived"/> event.
             </summary>
+            <threadsafety static="true" instance="false"/>
         </member>
         <member name="M:IrcDotNet.IrcErrorMessageEventArgs.#ctor(System.String)">
             <summary>
@@ -2921,6 +3271,7 @@
             <summary>
             Provides data for the <see cref="E:IrcDotNet.IrcClient.ProtocolError"/> event.
             </summary>
+            <threadsafety static="true" instance="false"/>
         </member>
         <member name="M:IrcDotNet.IrcProtocolErrorEventArgs.#ctor(System.Int32,System.Collections.Generic.IList{System.String},System.String)">
             <summary>
@@ -2953,6 +3304,7 @@
             Provides data for the <see cref="E:IrcDotNet.IrcClient.RawMessageSent"/> and
             <see cref="E:IrcDotNet.IrcClient.RawMessageReceived"/> events.
             </summary>
+            <threadsafety static="true" instance="false"/>
         </member>
         <member name="M:IrcDotNet.IrcRawMessageEventArgs.#ctor(IrcDotNet.IrcClient.IrcMessage,System.String)">
             <summary>
@@ -2977,6 +3329,7 @@
             <summary>
             Provides data for the <see cref="E:IrcDotNet.IrcClient.Error"/> event.
             </summary>
+            <threadsafety static="true" instance="false"/>
         </member>
         <member name="M:IrcDotNet.IrcErrorEventArgs.#ctor(System.Exception)">
             <summary>
@@ -2996,11 +3349,13 @@
             The local user is the user as which the client has connected and registered, and may be either a normal user or
             service.
             </summary>
+            <threadsafety static="true" instance="false"/>
         </member>
         <member name="T:IrcDotNet.IrcUser">
             <summary>
-            Represents an IRC user that resides on a specific <see cref="T:IrcDotNet.IrcClient"/>.
+            Represents an IRC user that exists on a specific <see cref="T:IrcDotNet.IrcClient"/>.
             </summary>
+            <threadsafety static="true" instance="false"/>
         </member>
         <member name="M:IrcDotNet.IrcUser.WhoIs">
             <summary>
@@ -3138,9 +3493,9 @@
         </member>
         <member name="P:IrcDotNet.IrcUser.Client">
             <summary>
-            Gets the client to which the user belongs.
+            Gets the client on which the user exists.
             </summary>
-            <value>The client to which the user belongs.</value>
+            <value>The client on which the user exists.</value>
         </member>
         <member name="E:IrcDotNet.IrcUser.NickNameChanged">
             <summary>
@@ -3193,8 +3548,8 @@
             <param name="targets">A collection of the names of targets to which to send the message.</param>
             <param name="text">The ASCII-encoded text of the message to send.</param>
             <param name="encoding">The encoding in which to send the value of <paramref name="text"/>.</param>
-            <exception cref="T:System.ArgumentNullException"><paramref name="targets"/> is <see langword="null"/>. -or-
-            <paramref name="text"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="targets"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="text"/> is <see langword="null"/>.</exception>
         </member>
         <member name="M:IrcDotNet.IrcLocalUser.SendNotice(IrcDotNet.IIrcMessageTarget,System.String)">
             <inheritdoc cref="M:IrcDotNet.IrcLocalUser.SendNotice(System.Collections.Generic.IEnumerable{IrcDotNet.IIrcMessageTarget},System.String)"/>
@@ -3219,8 +3574,8 @@
             <param name="targets">A collection of the names of targets to which to send the notice.</param>
             <param name="text">The ASCII-encoded text of the notice to send.</param>
             <param name="encoding">The encoding in which to send the value of <paramref name="text"/>.</param>
-            <exception cref="T:System.ArgumentNullException"><paramref name="targets"/> is <see langword="null"/>. -or-
-            <paramref name="text"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="targets"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="text"/> is <see langword="null"/>.</exception>
         </member>
         <member name="M:IrcDotNet.IrcLocalUser.SetNickName(System.String)">
             <summary>
@@ -3258,8 +3613,8 @@
         </member>
         <member name="M:IrcDotNet.IrcLocalUser.SetModes(System.Collections.Generic.IEnumerable{System.Char},System.Collections.Generic.IEnumerable{System.Char})">
             <inheritdoc cref="M:IrcDotNet.IrcLocalUser.SetModes(System.String)"/>
-            <exception cref="T:System.ArgumentNullException"><paramref name="setModes"/> is <see langword="null"/>. -or-
-            <paramref name="unsetModes"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="setModes"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="unsetModes"/> is <see langword="null"/>.</exception>
         </member>
         <member name="M:IrcDotNet.IrcLocalUser.SetModes(System.String)">
             <summary>
@@ -3444,11 +3799,13 @@
             <summary>
             Provides information used by an <see cref="T:IrcDotNet.IrcClient"/> for registering the connection as a service.
             </summary>
+            <threadsafety static="true" instance="false"/>
         </member>
         <member name="T:IrcDotNet.IrcRegistrationInfo">
             <summary>
             Provides information used by an <see cref="T:IrcDotNet.IrcClient"/> for registering the connection with the server.
             </summary>
+            <threadsafety static="true" instance="false"/>
         </member>
         <member name="M:IrcDotNet.IrcRegistrationInfo.#ctor">
             <summary>
@@ -3491,6 +3848,7 @@
             <summary>
             Provides information used by an <see cref="T:IrcDotNet.IrcClient"/> for registering the connection as a user.
             </summary>
+            <threadsafety static="true" instance="false"/>
         </member>
         <member name="M:IrcDotNet.IrcUserRegistrationInfo.#ctor">
             <summary>
@@ -3523,6 +3881,7 @@
             <summary>
             Represents an IRC server from the view of a particular client.
             </summary>
+            <threadsafety static="true" instance="false"/>
         </member>
         <member name="M:IrcDotNet.IrcServer.ToString">
             <summary>
@@ -3540,6 +3899,7 @@
             <summary>
             Stores information about a particular server in an IRC network.
             </summary>
+            <threadsafety static="true" instance="false"/>
         </member>
         <member name="F:IrcDotNet.IrcServerInfo.HostName">
             <summary>
@@ -3548,7 +3908,7 @@
         </member>
         <member name="F:IrcDotNet.IrcServerInfo.HopCount">
             <summary>
-            The hop count of the server from the client server.
+            The hop count of the server from the local server.
             </summary>
         </member>
         <member name="F:IrcDotNet.IrcServerInfo.Info">
@@ -3561,8 +3921,86 @@
             Initializes a new instance of the <see cref="T:IrcDotNet.IrcServerInfo"/> class with the specified properties.
             </summary>
             <param name="hostName">The host name of the server.</param>
-            <param name="hopCount">The hop count of the server from the client server.</param>
+            <param name="hopCount">The hop count of the server from the local server.</param>
             <param name="info">A string containing arbitrary information about the server.</param>
+        </member>
+        <member name="T:IrcDotNet.IrcServerStatisticalEntry">
+            <summary>
+            Stores a statistical entry for an IRC server.
+            </summary>
+        </member>
+        <member name="F:IrcDotNet.IrcServerStatisticalEntry.Type">
+            <summary>
+            The type of the statistical entry.
+            </summary>
+        </member>
+        <member name="F:IrcDotNet.IrcServerStatisticalEntry.Parameters">
+            <summary>
+            The list of parameters of the statistical entry.
+            </summary>
+        </member>
+        <member name="T:IrcDotNet.IrcServerStatisticalEntryCommonType">
+            <summary>
+            Defines the types of statistical entries for an IRC server.
+            </summary>
+            <remarks>
+            These entry types correspond to the STATS replies described in the RFC for the IRC protocol.
+            </remarks>
+        </member>
+        <member name="F:IrcDotNet.IrcServerStatisticalEntryCommonType.Connection">
+            <summary>
+            An active connection to the server.
+            </summary>
+        </member>
+        <member name="F:IrcDotNet.IrcServerStatisticalEntryCommonType.Command">
+            <summary>
+            A command supported by the server.
+            </summary>
+        </member>
+        <member name="F:IrcDotNet.IrcServerStatisticalEntryCommonType.AllowedServerConnect">
+            <summary>
+            A server to which the local server may connect.
+            </summary>
+        </member>
+        <member name="F:IrcDotNet.IrcServerStatisticalEntryCommonType.AllowedServerAccept">
+            <summary>
+            A server from which the local server may accept connections.
+            </summary>
+        </member>
+        <member name="F:IrcDotNet.IrcServerStatisticalEntryCommonType.AllowedClient">
+            <summary>
+            A client that may connect to the server.
+            </summary>
+        </member>
+        <member name="F:IrcDotNet.IrcServerStatisticalEntryCommonType.BannedClient">
+            <summary>
+             A client that is banned from connecting to the server.
+            </summary>
+        </member>
+        <member name="F:IrcDotNet.IrcServerStatisticalEntryCommonType.ConnectionClass">
+            <summary>
+            A connection class defined by the server.
+            </summary>
+        </member>
+        <member name="F:IrcDotNet.IrcServerStatisticalEntryCommonType.LeafDepth">
+            <summary>
+            The leaf depth of a server in the network.
+            </summary>
+        </member>
+        <member name="F:IrcDotNet.IrcServerStatisticalEntryCommonType.Uptime">
+            <summary>
+            The uptime of the server.
+            </summary>
+        </member>
+        <member name="F:IrcDotNet.IrcServerStatisticalEntryCommonType.AllowedOperator">
+            <summary>
+            An operator on the server.
+            </summary>
+        </member>
+        <member name="F:IrcDotNet.IrcServerStatisticalEntryCommonType.HubServer">
+            <summary>
+            A hub server within the network.
+            </summary>
         </member>
         <member name="T:IrcDotNet.IrcStandardFloodPreventer">
             <summary>
@@ -3576,6 +4014,7 @@
             bursts so long as the high rate is not sustained, else a delay is introduced between the sending of
             successive messages, such that the data.
             </remarks>
+            <threadsafety static="true" instance="false"/>
         </member>
         <member name="M:IrcDotNet.IrcStandardFloodPreventer.#ctor(System.Int32,System.Int64)">
             <summary>
@@ -3607,23 +4046,24 @@
             <summary>
             Represents a mask of an IRC server name or host name, used for specifying the targets of a message.
             </summary>
+            <threadsafety static="true" instance="false"/>
         </member>
         <member name="M:IrcDotNet.IrcTargetMask.#ctor(System.String)">
             <summary>
-            Initializes a new instance of the <see cref="T:IrcDotNet.IrcTargetMask"/> class.
+            Initializes a new instance of the <see cref="T:IrcDotNet.IrcTargetMask"/> class with the specified target mask
+            identifier.
             </summary>
-            <param name="targetMask">A wildcard expression for matching agsint server names or host names.
+            <param name="targetMask">A wildcard expression for matching against server names or host names.
             If the first character is '$', the mask is a server mask; if the first character is '#', the mask is a host
             mask.</param>
             <exception cref="T:System.ArgumentNullException"><paramref name="targetMask"/> is <see langword="null"/></exception>
-            <exception cref="T:System.ArgumentException">
-            <paramref name="targetMask"/> is too short. -or-
-            <paramref name="targetMask"/> does not respresent a known mask type.
+            <exception cref="T:System.ArgumentException">The length of <paramref name="targetMask"/> is too short.</exception>
+            <exception cref="T:System.ArgumentException"><paramref name="targetMask"/> does not represent a known mask type.
             </exception>
         </member>
         <member name="M:IrcDotNet.IrcTargetMask.#ctor(IrcDotNet.IrcTargetMaskType,System.String)">
             <summary>
-            Initializes a new instance of the <see cref="T:IrcDotNet.IrcTargetMask"/> class.
+            Initializes a new instance of the <see cref="T:IrcDotNet.IrcTargetMask"/> class with the specified type and mask.
             </summary>
             <param name="type">The type.</param>
             <param name="mask">The mask.</param>
@@ -3649,7 +4089,7 @@
         </member>
         <member name="T:IrcDotNet.IrcTargetMaskType">
             <summary>
-            Defines the type of a target mask.
+            Defines the types of a target mask.
             </summary>
         </member>
         <member name="F:IrcDotNet.IrcTargetMaskType.ServerMask">
@@ -3666,65 +4106,14 @@
             <summary>
             Represents a collection of <see cref="T:IrcDotNet.IrcUser"/> objects.
             </summary>
+            <threadsafety static="true" instance="false"/>
             <seealso cref="T:IrcDotNet.IrcUser"/>
-        </member>
-        <member name="M:IrcDotNet.IrcUserCollection.OnCollectionChanged(System.Collections.Specialized.NotifyCollectionChangedEventArgs)">
-            <summary>
-            Raises the <see cref="E:System.Collections.ObjectModel.ReadOnlyObservableCollection`1.CollectionChanged"/> event.
-            </summary>
-            <param name="e">The <see cref="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs"/> instance containing the event data.</param>
         </member>
         <member name="P:IrcDotNet.IrcUserCollection.Client">
             <summary>
             Gets the client to which the collection of users belongs.
             </summary>
             <value>The client to which the collection of users belongs.</value>
-        </member>
-        <member name="T:IrcDotNet.IrcUtilities">
-            <summary>
-            Contains common utilities for functionality relating to IRC.
-            </summary>
-        </member>
-        <member name="M:IrcDotNet.IrcUtilities.UpdateModes(System.Collections.Generic.ICollection{System.Char},System.String,System.Collections.Generic.IEnumerable{System.String},System.Collections.Generic.ICollection{System.Char},System.Action{System.Boolean,System.Char,System.String})">
-            <summary>
-            Updates the specified collection of mode characters from the specified mode string.
-            Optionally outputs any mode parameters.
-            </summary>
-            <param name="collection">A collection of mode characters, to which changes are made.</param>
-            <param name="newModes">A mode string. A mode string is of the form `( "+" / "-" ) *( mode character )`,
-            and specifies mode changes.</param>
-            <param name="newModeParameters">A collection of all mode parameters for the specified mode string.</param>
-            <param name="modesWithParameters">A collection of all modes that take parameters..</param>
-            <param name="handleModeParameter">A function that is called whenever a mode parameter is found for a certain
-            mode character. The first argument is <see langword="true"/> if the mode is being added; false if it is
-            being removed. The second argument is the mode character. The third argument is the mode parameter.</param>
-            <exception cref="T:System.ArgumentNullException">
-            <paramref name="collection"/> is <see langword="null"/>. -or-
-            <paramref name="newModes"/> is <see langword="null"/>. -or-
-            <paramref name="modesWithParameters"/> is <see langword="null"/> and <paramref name="newModeParameters"/>
-            is specified. -or-
-            <paramref name="handleModeParameter"/> is <see langword="null"/> and <paramref name="newModeParameters"/>
-            is specified.
-            </exception>
-            <exception cref="T:System.ArgumentException"><paramref name="newModeParameters"/> does not contain enough mode
-            parameters for the specified mode string, <paramref name="newModes"/>.</exception>
-        </member>
-        <member name="T:IrcDotNet.MessageProcessorAttribute">
-            <summary>
-            Indicates that a method processes messages for a given command.
-            </summary>
-        </member>
-        <member name="M:IrcDotNet.MessageProcessorAttribute.#ctor(System.String)">
-            <summary>
-            Initializes a new instance of the <see cref="T:IrcDotNet.MessageProcessorAttribute"/> class.
-            </summary>
-            <param name="command">The name of the command for which messages are processed.</param>
-        </member>
-        <member name="P:IrcDotNet.MessageProcessorAttribute.Command">
-            <summary>
-            Gets the name of the command for which messages are processed.
-            </summary>
-            <value>The name of the command.</value>
         </member>
         <member name="T:IrcDotNet.Properties.Resources">
             <summary>
@@ -3742,174 +4131,222 @@
               resource lookups using this strongly typed resource class.
             </summary>
         </member>
-        <member name="P:IrcDotNet.Properties.Resources.ErrorMessageCannotSetUserMode">
+        <member name="P:IrcDotNet.Properties.Resources.MessageCannotSetUserMode">
             <summary>
               Looks up a localized string similar to Cannot set user mode for &apos;{0}&apos;..
             </summary>
         </member>
-        <member name="P:IrcDotNet.Properties.Resources.ErrorMessageInvalidChannelType">
+        <member name="P:IrcDotNet.Properties.Resources.MessageInvalidChannelType">
             <summary>
               Looks up a localized string similar to The channel type &apos;{0}&apos; sent by the server is invalid..
             </summary>
         </member>
-        <member name="P:IrcDotNet.Properties.Resources.ErrorMessageInvalidCommand">
+        <member name="P:IrcDotNet.Properties.Resources.MessageInvalidCommand">
             <summary>
               Looks up a localized string similar to The message command &apos;{0}&apos; is invalid..
             </summary>
         </member>
-        <member name="P:IrcDotNet.Properties.Resources.ErrorMessageInvalidCommandDefinition">
+        <member name="P:IrcDotNet.Properties.Resources.MessageInvalidCommandDefinition">
             <summary>
               Looks up a localized string similar to The command definition &apos;{0}&apos; is invalid..
             </summary>
         </member>
-        <member name="P:IrcDotNet.Properties.Resources.ErrorMessageInvalidMessageCommand">
+        <member name="P:IrcDotNet.Properties.Resources.MessageInvalidMessageCommand">
             <summary>
               Looks up a localized string similar to The command &apos;{0}&apos; was not recognised..
             </summary>
         </member>
-        <member name="P:IrcDotNet.Properties.Resources.ErrorMessageInvalidMiddleParameter">
+        <member name="P:IrcDotNet.Properties.Resources.MessageInvalidMiddleParameter">
             <summary>
               Looks up a localized string similar to The non-trailing parameter &apos;{0}&apos; is invalid..
             </summary>
         </member>
-        <member name="P:IrcDotNet.Properties.Resources.ErrorMessageInvalidNickName">
+        <member name="P:IrcDotNet.Properties.Resources.MessageInvalidNickName">
             <summary>
               Looks up a localized string similar to The specified nick name is invalid..
             </summary>
         </member>
-        <member name="P:IrcDotNet.Properties.Resources.ErrorMessageInvalidPassword">
+        <member name="P:IrcDotNet.Properties.Resources.MessageInvalidPassword">
             <summary>
               Looks up a localized string similar to The specified password is invalid..
             </summary>
         </member>
-        <member name="P:IrcDotNet.Properties.Resources.ErrorMessageInvalidPrefix">
+        <member name="P:IrcDotNet.Properties.Resources.MessageInvalidPrefix">
             <summary>
               Looks up a localized string similar to The message prefix &apos;{0}&apos; is invalid..
             </summary>
         </member>
-        <member name="P:IrcDotNet.Properties.Resources.ErrorMessageInvalidQuotedChar">
+        <member name="P:IrcDotNet.Properties.Resources.MessageInvalidQuotedChar">
             <summary>
               Looks up a localized string similar to The quoted character &apos;{0}&apos; was not recognised..
             </summary>
         </member>
-        <member name="P:IrcDotNet.Properties.Resources.ErrorMessageInvalidRealName">
+        <member name="P:IrcDotNet.Properties.Resources.MessageInvalidRealName">
             <summary>
               Looks up a localized string similar to The specified real name is invalid..
             </summary>
         </member>
-        <member name="P:IrcDotNet.Properties.Resources.ErrorMessageInvalidRegistrationInfoObject">
+        <member name="P:IrcDotNet.Properties.Resources.MessageInvalidRegistrationInfoObject">
             <summary>
               Looks up a localized string similar to The object provided for registration info is of an unknown type..
             </summary>
         </member>
-        <member name="P:IrcDotNet.Properties.Resources.ErrorMessageInvalidServiceRegistrationInfo">
+        <member name="P:IrcDotNet.Properties.Resources.MessageInvalidServiceRegistrationInfo">
             <summary>
               Looks up a localized string similar to The registration info for a service must have a valid nick name and description..
             </summary>
         </member>
-        <member name="P:IrcDotNet.Properties.Resources.ErrorMessageInvalidSource">
+        <member name="P:IrcDotNet.Properties.Resources.MessageInvalidSource">
             <summary>
               Looks up a localized string similar to The source &apos;{0}&apos; of the message was not recognised as either a server or user..
             </summary>
         </member>
-        <member name="P:IrcDotNet.Properties.Resources.ErrorMessageInvalidTag">
+        <member name="P:IrcDotNet.Properties.Resources.MessageInvalidTag">
             <summary>
               Looks up a localized string similar to The message tag &apos;{0}&apos; is invalid..
             </summary>
         </member>
-        <member name="P:IrcDotNet.Properties.Resources.ErrorMessageInvalidTargetName">
+        <member name="P:IrcDotNet.Properties.Resources.MessageInvalidTargetName">
             <summary>
               Looks up a localized string similar to A target name may not contain any &apos;,&apos; character..
             </summary>
         </member>
-        <member name="P:IrcDotNet.Properties.Resources.ErrorMessageInvalidTrailingParameter">
+        <member name="P:IrcDotNet.Properties.Resources.MessageInvalidTrailingParameter">
             <summary>
               Looks up a localized string similar to The trailing parameter &apos;{0}&apos; is invalid..
             </summary>
         </member>
-        <member name="P:IrcDotNet.Properties.Resources.ErrorMessageInvalidUrlScheme">
+        <member name="P:IrcDotNet.Properties.Resources.MessageInvalidUrlScheme">
             <summary>
               Looks up a localized string similar to The URL scheme &apos;{0}&apos; is not valid..
             </summary>
         </member>
-        <member name="P:IrcDotNet.Properties.Resources.ErrorMessageInvalidUserMode">
+        <member name="P:IrcDotNet.Properties.Resources.MessageInvalidUserMode">
             <summary>
               Looks up a localized string similar to The specified user mode is invalid..
             </summary>
         </member>
-        <member name="P:IrcDotNet.Properties.Resources.ErrorMessageInvalidUserName">
+        <member name="P:IrcDotNet.Properties.Resources.MessageInvalidUserName">
             <summary>
               Looks up a localized string similar to The specified user name is invalid..
             </summary>
         </member>
-        <member name="P:IrcDotNet.Properties.Resources.ErrorMessageInvalidUserRegistrationInfo">
+        <member name="P:IrcDotNet.Properties.Resources.MessageInvalidUserRegistrationInfo">
             <summary>
               Looks up a localized string similar to The registration info for a user must have a valid nick name and user name..
             </summary>
         </member>
-        <member name="P:IrcDotNet.Properties.Resources.ErrorMessageISupportPrefixInvalid">
+        <member name="P:IrcDotNet.Properties.Resources.MessageISupportPrefixInvalid">
             <summary>
               Looks up a localized string similar to The ISUPPORT message sent by the server contains an invalid PREFIX parameter..
             </summary>
         </member>
-        <member name="P:IrcDotNet.Properties.Resources.ErrorMessageNotEnoughModeParameters">
+        <member name="P:IrcDotNet.Properties.Resources.MessageNotEnoughModeParameters">
             <summary>
               Looks up a localized string similar to Not enough mode parameters were specified for the given modes..
             </summary>
         </member>
-        <member name="P:IrcDotNet.Properties.Resources.ErrorMessageNoValidAddress">
+        <member name="P:IrcDotNet.Properties.Resources.MessageNoValidAddress">
             <summary>
               Looks up a localized string similar to The host name &apos;{0}&apos; does not resolve to a valid IP address..
             </summary>
         </member>
-        <member name="P:IrcDotNet.Properties.Resources.ErrorMessageRawMessageTooLong">
+        <member name="P:IrcDotNet.Properties.Resources.MessageRawMessageTooLong">
             <summary>
               Looks up a localized string similar to The length of a raw message must not exceed {0} characters..
             </summary>
         </member>
-        <member name="P:IrcDotNet.Properties.Resources.ErrorMessageSourceNotUser">
+        <member name="P:IrcDotNet.Properties.Resources.MessageSourceNotUser">
             <summary>
               Looks up a localized string similar to The message source &apos;{0}&apos; is not a user..
             </summary>
         </member>
-        <member name="P:IrcDotNet.Properties.Resources.ErrorMessageTargetMaskInvalidType">
+        <member name="P:IrcDotNet.Properties.Resources.MessageTargetMaskInvalidType">
             <summary>
               Looks up a localized string similar to The type of the given target mask &apos;{0}&apos; is invalid..
             </summary>
         </member>
-        <member name="P:IrcDotNet.Properties.Resources.ErrorMessageTargetMaskTooShort">
+        <member name="P:IrcDotNet.Properties.Resources.MessageTargetMaskTooShort">
             <summary>
               Looks up a localized string similar to The target mask must be contain at least two characters..
             </summary>
         </member>
-        <member name="P:IrcDotNet.Properties.Resources.ErrorMessageTooManyModeParameters">
+        <member name="P:IrcDotNet.Properties.Resources.MessageTooManyModeParameters">
             <summary>
               Looks up a localized string similar to No more than 3 mode parameters may be sent per message..
             </summary>
         </member>
-        <member name="P:IrcDotNet.Properties.Resources.ErrorMessageTooManyParams">
+        <member name="P:IrcDotNet.Properties.Resources.MessageTooManyParams">
             <summary>
               Looks up a localized string similar to No more than 15 command parameters may be specified..
             </summary>
         </member>
-        <member name="P:IrcDotNet.Properties.Resources.ErrorMessageValueCannotBeEmptyString">
+        <member name="P:IrcDotNet.Properties.Resources.MessageValueCannotBeEmptyString">
             <summary>
               Looks up a localized string similar to The value cannot be an empty string.
             </summary>
         </member>
-        <member name="T:IrcDotNet.ReflectionUtilities">
+        <member name="T:System.Tuple">
             <summary>
-            Utilities for reflection of managed entities.
+            Provides static methods for creating tuple objects.
             </summary>
         </member>
-        <member name="M:IrcDotNet.ReflectionUtilities.GetAttributedMethods``2(System.Object)">
+        <member name="M:System.Tuple.Create``2(``0,``1)">
             <summary>
-            Gets a collection of methods of the specified object that have an attribute of the specified type.
+            Creates a new 2-tuple, or pair.
             </summary>
-            <typeparam name="TAttribute">The type of the attribute.</typeparam>
-            <typeparam name="TDelegate">The type of the method delegates.</typeparam>
-            <param name="obj">The object whose methods to get.</param>
-            <returns>A collection of methods that have an attribute of the specified type.</returns>
+            <typeparam name="T1">The type of the first component of the tuple.</typeparam>
+            <typeparam name="T2">The type of the second component of the tuple.</typeparam>
+            <param name="item1">The value of the first component of the tuple.</param>
+            <param name="item2">The value of the second component of the tuple.</param>
+            <returns>A 2-tuple whose value is (item1, item2).</returns>
         </member>
+        <member name="M:System.Tuple.Create``3(``0,``1,``2)">
+            <summary>
+            Creates a new 3-tuple, or triple.
+            </summary>
+            <typeparam name="T1">The type of the first component of the tuple.</typeparam>
+            <typeparam name="T2">The type of the second component of the tuple.</typeparam>
+            <typeparam name="T3">The type of the third component of the tuple.</typeparam>
+            <param name="item1">The value of the first component of the tuple.</param>
+            <param name="item2">The value of the second component of the tuple.</param>
+            <param name="item3">The value of the third component of the tuple.</param>
+            <returns>A 3-tuple whose value is (item1, item2, item3).</returns>
+        </member>
+        <member name="T:System.Tuple`2">
+            <summary>
+            Represents a 2-tuple, or pair.
+            </summary>
+            <typeparam name="T1">The type of the tuple's first component.</typeparam>
+            <typeparam name="T2">The type of the tuple's second component.</typeparam>
+        </member>
+        <member name="M:System.Tuple`2.#ctor(`0,`1)">
+            <summary>
+            Initializes a new instance of the <see cref="T:System.Tuple`2"/> class.
+            </summary>
+            <param name="item1">The value of the tuple's first component.</param>
+            <param name="item2">The value of the tuple's second component.</param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "P:System.Tuple`2.Item1" -->
+        <!-- Badly formed XML comment ignored for member "P:System.Tuple`2.Item2" -->
+        <member name="T:System.Tuple`3">
+            <summary>
+            Represents a 3-tuple, or triple.
+            </summary>
+            <typeparam name="T1">The type of the tuple's first component.</typeparam>
+            <typeparam name="T2">The type of the tuple's second component.</typeparam>
+            <typeparam name="T3">The type of the tuple's third component.</typeparam>
+        </member>
+        <member name="M:System.Tuple`3.#ctor(`0,`1,`2)">
+            <summary>
+            Initializes a new instance of the <see cref="T:System.Tuple`3"/> class.
+            </summary>
+            <param name="item1">The value of the tuple's first component.</param>
+            <param name="item2">The value of the tuple's second component.</param>
+            <param name="item3">The value of the tuple's third component.</param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "P:System.Tuple`3.Item1" -->
+        <!-- Badly formed XML comment ignored for member "P:System.Tuple`3.Item2" -->
+        <!-- Badly formed XML comment ignored for member "P:System.Tuple`3.Item3" -->
     </members>
 </doc>
