@@ -1,87 +1,140 @@
-﻿using System.Data.Linq;
+﻿using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Data.Linq;
 using System.Data.Linq.Mapping;
 
 namespace derpirc.Data.Settings
 {
-    [Table(Name = "Sessions")]
+    [Table(Name = "Session")]
     public partial class Session : BaseNotify, IBaseModel, ISession
     {
+        [Column(IsVersion = true)]
+        private Binary version;
+        private EntitySet<SessionServer> _servers;
+        private EntitySet<SessionNetwork> _networks;
+
+        #region Primitive Properties
+
         [Column(IsPrimaryKey = true, IsDbGenerated = true)]
         public int Id { get; set; }
         [Column(CanBeNull = false)]
-        public int NetworkId { get; set; }
-        private EntityRef<Network> _network;
-        [Association(Name = "Network_Item", ThisKey = "NetworkId", OtherKey = "Id", IsForeignKey = true)]
-        public Network Network
+
+        #endregion
+
+        #region Navigation Properties
+
+        [Association(Name = "Server_Items", ThisKey = "Id", OtherKey = "SessionId", DeleteRule = "NO ACTION")]
+        public ICollection<SessionServer> Servers
         {
             get
             {
-                return this._network.Entity;
-            }
-            set
-            {
-                Network previousValue = this._network.Entity;
-                if (previousValue != value || this._network.HasLoadedOrAssignedValue == false)
+                if (_servers == null)
                 {
-                    this.RaisePropertyChanged();
-                    if ((previousValue != null))
-                    {
-                        this._network.Entity = null;
-                    }
-                    this._network.Entity = value;
-                    if ((value != null))
-                    {
-                        this.NetworkId = value.Id;
-                    }
-                    else
-                    {
-                        this.NetworkId = default(int);
-                    }
-                    this.RaisePropertyChanged(() => NetworkId);
-                    this.RaisePropertyChanged(() => Network);
+                    var newCollection = new FixupCollection<SessionServer>();
+                    newCollection.CollectionChanged += FixupServers;
+                    _servers.SetSource(newCollection);
+                    //_servers = newCollection
                 }
-            }
-        }
-        [Column(CanBeNull = false)]
-        public int ServerId { get; set; }
-        private EntityRef<Server> _server;
-        [Association(Name = "Server_Item", ThisKey = "ServerId", OtherKey = "Id", IsForeignKey = true)]
-        public Server Server
-        {
-            get
-            {
-                return this._server.Entity;
+                return _servers;
             }
             set
             {
-                Server previousValue = this._server.Entity;
-                if (previousValue != value || this._server.HasLoadedOrAssignedValue == false)
+                if (!ReferenceEquals(_servers, value))
                 {
-                    this.RaisePropertyChanged();
-                    if ((previousValue != null))
+                    var previousValue = _servers;
+                    if (previousValue != null)
                     {
-                        this._server.Entity = null;
+                        previousValue.CollectionChanged -= FixupServers;
                     }
-                    this._server.Entity = value;
-                    if ((value != null))
+                    _servers.SetSource(value);
+                    //_servers = value;
+                    var newValue = value as FixupCollection<SessionServer>;
+                    if (newValue != null)
                     {
-                        this.ServerId = value.Id;
+                        newValue.CollectionChanged += FixupServers;
                     }
-                    else
-                    {
-                        this.ServerId = default(int);
-                    }
-                    this.RaisePropertyChanged(() => ServerId);
-                    this.RaisePropertyChanged(() => Server);
                 }
             }
         }
 
-        [Column(IsVersion = true)]
-        private Binary version;
+        [Association(Name = "Network_Items", ThisKey = "Id", OtherKey = "SessionId", DeleteRule = "NO ACTION")]
+        public ICollection<SessionNetwork> Networks
+        {
+            get
+            {
+                if (_networks == null)
+                {
+                    var newCollection = new FixupCollection<SessionNetwork>();
+                    newCollection.CollectionChanged += FixupNetworks;
+                    _networks.SetSource(newCollection);
+                    //_networks = newCollection
+                }
+                return _networks;
+            }
+            set
+            {
+                if (!ReferenceEquals(_networks, value))
+                {
+                    var previousValue = _servers;
+                    if (previousValue != null)
+                    {
+                        previousValue.CollectionChanged -= FixupNetworks;
+                    }
+                    _networks.SetSource(value);
+                    //_networks = value;
+                    var newValue = value as FixupCollection<SessionNetwork>;
+                    if (newValue != null)
+                    {
+                        newValue.CollectionChanged += FixupNetworks;
+                    }
+                }
+            }
+        }
+
+        #endregion
+
+        #region Association Fixup
+
+        private void FixupServers(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.NewItems != null)
+            {
+                foreach (SessionServer item in e.NewItems)
+                    item.Session = this;
+            }
+            if (e.OldItems != null)
+            {
+                foreach (SessionServer item in e.OldItems)
+                {
+                    if (ReferenceEquals(item.Session, this))
+                        item.Session = null;
+                }
+            }
+        }
+
+        private void FixupNetworks(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.NewItems != null)
+            {
+                foreach (SessionNetwork item in e.NewItems)
+                    item.Session = this;
+            }
+            if (e.OldItems != null)
+            {
+                foreach (SessionNetwork item in e.OldItems)
+                {
+                    if (ReferenceEquals(item.Session, this))
+                        item.Session = null;
+                }
+            }
+        }
+
+        #endregion
 
         public Session()
         {
+            _servers = new EntitySet<SessionServer>();
+            _networks = new EntitySet<SessionNetwork>();
         }
     }
 }

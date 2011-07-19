@@ -20,5 +20,7 @@ namespace derpirc.Data
         Table<Network> Networks { get; }
         Table<Server> Servers { get; }
         Table<Session> Session { get; }
+        Table<SessionServer> SessionServers { get; }
+        Table<SessionNetwork> SessionNetworks { get; }
     }
 }

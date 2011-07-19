@@ -83,9 +83,13 @@
     <Compile Include="Settings\INetwork.cs" />
     <Compile Include="Settings\IServer.cs" />
     <Compile Include="Settings\ISession.cs" />
+    <Compile Include="Settings\ISessionNetwork.cs" />
+    <Compile Include="Settings\ISessionServer.cs" />
     <Compile Include="Settings\IUser.cs" />
     <Compile Include="Settings\Network.cs" />
     <Compile Include="Settings\Server.cs" />
+    <Compile Include="Settings\SessionNetwork.cs" />
+    <Compile Include="Settings\SessionServer.cs" />
     <Compile Include="Settings\User.cs" />
     <Compile Include="Settings\Session.cs" />
     <Compile Include="SqlRepository.cs" />

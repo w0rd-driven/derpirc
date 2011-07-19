@@ -194,6 +194,18 @@ namespace derpirc.Data
         }
         private Table<Settings.Session> _session;
 
+        public Table<Settings.SessionServer> SessionServers
+        {
+            get { return _sessionServers ?? (_sessionServers = GetTable<Settings.SessionServer>()); }
+        }
+        private Table<Settings.SessionServer> _sessionServers;
+
+        public Table<Settings.SessionNetwork> SessionNetworks
+        {
+            get { return _sessionNetworks ?? (_sessionNetworks = GetTable<Settings.SessionNetwork>()); }
+        }
+        private Table<Settings.SessionNetwork> _sessionNetworks;
+
         #endregion
     }
 }

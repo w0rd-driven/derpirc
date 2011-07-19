@@ -101,10 +101,48 @@ namespace derpirc.Data.Settings
 
         public static Session CreateSession()
         {
-            // HACK: Manually link a server with a network entity
             var result = new Session();
-            result.ServerId = 0;
-            result.NetworkId = 0;
+            result.Servers.Add(new SessionServer()
+            {
+                Session = result,
+                SessionId = result.Id,
+                BasedOnId = 1,
+                DisplayName = "Random server",
+                HostName = "irc.efnet.org",
+                Ports = "6667",
+                Group = "EFNet",
+            });
+            result.Servers.Add(new SessionServer()
+            {
+                Session = result,
+                SessionId = result.Id,
+                BasedOnId = 2,
+                DisplayName = "Random server",
+                HostName = "irc.powerprecision.com",
+                Ports = "6667",
+                Group = "PowerPrecision",
+            });
+            result.Networks.Add(new SessionNetwork()
+            {
+                Session = result,
+                SessionId = result.Id,
+                BasedOnId = 1,
+                Name = "EFNet",
+                IsJoinEnabled = true,
+                JoinChannels = "#wp7, #xna",
+                JoinDelay = 2,
+            });
+            result.Networks.Add(new SessionNetwork()
+            {
+                Session = result,
+                SessionId = result.Id,
+                BasedOnId = 2,
+                Name = "PowerPrecision",
+                IsJoinEnabled = true,
+                JoinChannels = "#wp7, #xna",
+                JoinDelay = 2,
+            });
+
             return result;
         }
     }
