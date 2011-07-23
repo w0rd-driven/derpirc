@@ -6,6 +6,11 @@ namespace derpirc.Data.Settings
     [Table]
     public partial class Client : BaseNotify, IBaseModel, IClient
     {
+        [Column(IsVersion = true)]
+        private Binary version;
+
+        #region Primitive Properties
+
         [Column(IsPrimaryKey = true, IsDbGenerated = true)]
         public int Id { get; set; }
         [Column(CanBeNull = true)]
@@ -23,8 +28,7 @@ namespace derpirc.Data.Settings
         [Column(CanBeNull = true)]
         public bool AutoScrollOnOutput { get; set; }
 
-        [Column(IsVersion = true)]
-        private Binary version;
+        #endregion
 
         public Client()
         {

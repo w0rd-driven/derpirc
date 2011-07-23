@@ -22,6 +22,7 @@ namespace derpirc.Data.Settings
             {
                 DisplayName = "Random server",
                 HostName = "irc.efnet.org",
+                Port = 6667,
                 Ports = "6667",
                 Group = "EFNet",
             });
@@ -29,6 +30,7 @@ namespace derpirc.Data.Settings
             {
                 DisplayName = "Random server",
                 HostName = "irc.freenode.net",
+                Port = 6667,
                 Ports = "6667",
                 Group = "Freenode",
             });
@@ -36,6 +38,7 @@ namespace derpirc.Data.Settings
             {
                 DisplayName = "Random server",
                 HostName = "irc.dal.net",
+                Port = 6667,
                 Ports = "6667",
                 Group = "DALnet",
             });
@@ -43,6 +46,7 @@ namespace derpirc.Data.Settings
             {
                 DisplayName = "Random server",
                 HostName = "irc.powerprecision.com",
+                Port = 6667,
                 Ports = "6667",
                 Group = "PowerPrecision",
             });
@@ -50,6 +54,7 @@ namespace derpirc.Data.Settings
             {
                 DisplayName = "Random server",
                 HostName = "irc",
+                Port = 6667,
                 Ports = "6667",
                 Group = "Fake",
             });
@@ -102,40 +107,57 @@ namespace derpirc.Data.Settings
         public static Session CreateSession()
         {
             var result = new Session();
-            result.Servers.Add(new SessionServer()
+            result.Servers = CreateSessionServers(result);
+            result.Networks = CreateSessionNetworks(result);
+            return result;
+        }
+
+        public static List<SessionServer> CreateSessionServers(Session session)
+        {
+            var result = new List<SessionServer>();
+            result.Add(new SessionServer()
             {
-                Session = result,
-                SessionId = result.Id,
+                Session = session,
+                SessionId = session.Id,
                 BasedOnId = 1,
                 DisplayName = "Random server",
                 HostName = "irc.efnet.org",
+                Port = 6667,
                 Ports = "6667",
                 Group = "EFNet",
             });
-            result.Servers.Add(new SessionServer()
+            result.Add(new SessionServer()
             {
-                Session = result,
-                SessionId = result.Id,
+                Session = session,
+                SessionId = session.Id,
                 BasedOnId = 2,
                 DisplayName = "Random server",
                 HostName = "irc.powerprecision.com",
+                Port = 6667,
                 Ports = "6667",
                 Group = "PowerPrecision",
             });
-            result.Networks.Add(new SessionNetwork()
+
+            return result;
+        }
+
+        public static List<SessionNetwork> CreateSessionNetworks(Session session)
+        {
+            var result = new List<SessionNetwork>();
+            result.Add(new SessionNetwork()
             {
-                Session = result,
-                SessionId = result.Id,
+                Session = session,
+                SessionId = session.Id,
                 BasedOnId = 1,
                 Name = "EFNet",
                 IsJoinEnabled = true,
                 JoinChannels = "#wp7, #xna",
                 JoinDelay = 2,
             });
-            result.Networks.Add(new SessionNetwork()
+            result.Add(new SessionNetwork()
             {
-                Session = result,
-                SessionId = result.Id,
+                Session = session,
+                SessionId = session.Id,
                 BasedOnId = 2,
                 Name = "PowerPrecision",
                 IsJoinEnabled = true,

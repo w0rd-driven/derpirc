@@ -6,6 +6,11 @@ namespace derpirc.Data.Settings
     [Table]
     public partial class User : BaseNotify, IBaseModel, IUser
     {
+        [Column(IsVersion = true)]
+        private Binary version;
+
+        #region Primitive Properties
+
         [Column(IsPrimaryKey = true, IsDbGenerated = true)]
         public int Id { get; set; }
         [Column(CanBeNull = false)]
@@ -19,8 +24,7 @@ namespace derpirc.Data.Settings
         [Column(CanBeNull = true)]
         public string QuitMessage { get; set; }
 
-        [Column(IsVersion = true)]
-        private Binary version;
+        #endregion
 
         public User()
         {

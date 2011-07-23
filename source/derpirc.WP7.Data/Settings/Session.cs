@@ -18,6 +18,7 @@ namespace derpirc.Data.Settings
         [Column(IsPrimaryKey = true, IsDbGenerated = true)]
         public int Id { get; set; }
         [Column(CanBeNull = false)]
+        public string Name { get; set; }
 
         #endregion
 
@@ -133,6 +134,7 @@ namespace derpirc.Data.Settings
 
         public Session()
         {
+            Name = "Default";
             _servers = new EntitySet<SessionServer>();
             _networks = new EntitySet<SessionNetwork>();
         }

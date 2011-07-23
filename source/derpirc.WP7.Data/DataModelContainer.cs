@@ -119,19 +119,26 @@ namespace derpirc.Data
         {
             var client = Factory.CreateClient();
             this.Client.InsertOnSubmit(client);
+            //TODO: Remove after testing
+            this.SubmitChanges();
 
             var user = Factory.CreateUser();
             this.User.InsertOnSubmit(user);
+            //TODO: Remove after testing
+            this.SubmitChanges();
 
             var servers = Factory.CreateServers();
             this.Servers.InsertAllOnSubmit(servers);
+            //TODO: Remove after testing
+            this.SubmitChanges();
 
             var networks = Factory.CreateNetworks();
             this.Networks.InsertAllOnSubmit(networks);
+            //TODO: Remove after testing
+            this.SubmitChanges();
 
-            //var session = Factory.CreateSession();
-            //this.Session.InsertOnSubmit(session);
-
+            var session = Factory.CreateSession();
+            this.Session.InsertOnSubmit(session);
             this.SubmitChanges();
         }
 
