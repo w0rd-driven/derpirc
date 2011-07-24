@@ -141,7 +141,7 @@ namespace derpirc.Core
             result.SummaryId = channelSummary.Id;
             result.Source = eventArgs.Source.Name;
             //result.Command = command;
-            result.RawContent = eventArgs.Text;
+            result.Text = eventArgs.Text;
 
             return result;
         }

@@ -9,7 +9,7 @@ namespace derpirc.Data
     {
         [Column(IsVersion = true)]
         private Binary version;
-        private EntityRef<ChannelSummary> _details;
+        private EntityRef<ChannelSummary> _summary;
 
         [Column(IsPrimaryKey = true, IsDbGenerated = true)]
         public int Id { get; set; }
@@ -19,18 +19,18 @@ namespace derpirc.Data
         [Association(Name = "Summary_Item", ThisKey = "SummaryId", OtherKey = "Id", IsForeignKey = true)]
         public ChannelSummary Summary
         {
-            get { return _details.Entity; }
+            get { return _summary.Entity; }
             set
             {
-                ChannelSummary previousValue = _details.Entity;
-                if (previousValue != value || _details.HasLoadedOrAssignedValue == false)
+                ChannelSummary previousValue = _summary.Entity;
+                if (previousValue != value || _summary.HasLoadedOrAssignedValue == false)
                 {
                     this.RaisePropertyChanged();
                     if ((previousValue != null))
                     {
-                        _details.Entity = null;
+                        _summary.Entity = null;
                     }
-                    _details.Entity = value;
+                    _summary.Entity = value;
                     if ((value != null))
                     {
                         SummaryId = value.Id;
@@ -49,19 +49,13 @@ namespace derpirc.Data
         [Column(CanBeNull = true)]
         public bool IsRead { get; set; }
         [Column(CanBeNull = true)]
-        public string Command { get; set; }
-        [Column(CanBeNull = true)]
-        public byte[] Parameters { get; set; }
-        [Column(CanBeNull = true)]
-        public string Prefix { get; set; }
-        [Column(CanBeNull = true)]
         public string Source { get; set; }
         [Column(CanBeNull = true)]
-        public string RawContent { get; set; }
+        public string Text { get; set; }
 
         public ChannelMessage()
         {
-            _details = default(EntityRef<ChannelSummary>);
+            _summary = default(EntityRef<ChannelSummary>);
         }
     }
 }

@@ -128,11 +128,11 @@ namespace derpirc.Data
             _context = new DataModelContainer();
         }
 
-        public bool InitializeDatabase()
+        public bool InitializeDatabase(bool wipe)
         {
             var context = (_context as DataModelContainer);
             // HACK: Wipe database for testing only. REMEMBER TO REMOVE THIS
-            context.InitializeDatabase(true);
+            context.InitializeDatabase(wipe);
             return context.DatabaseExists();
         }
 
