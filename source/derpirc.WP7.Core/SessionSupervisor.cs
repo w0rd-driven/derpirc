@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text.RegularExpressions;
+using derpirc.Data;
 using derpirc.Data.Settings;
 using IrcDotNet;
-using derpirc.Data;
-using System.Threading;
 
 namespace derpirc.Core
 {
@@ -21,9 +20,11 @@ namespace derpirc.Core
         private IList<IrcClient> _clients;
         private IList<int> _clientStates;
 
+        private ChannelsSupervisor _channelSupervisor;
+
         // EFNet: Welcome to the $network Internet Relay Chat Network $nick
         // PowerPrecision: Welcome to the $network IRC Network $nick!$email@$host
-        private Regex welcomeRegex = new Regex("^.*?Welcome to the (.*?) (IRC|Internet Relay Chat) Network (.*)", RegexOptions.Compiled);
+        private static readonly Regex welcomeRegex = new Regex("^.*?Welcome to the (.*?) (IRC|Internet Relay Chat) Network (.*)", RegexOptions.Compiled);
 
         public SessionSupervisor(DataUnitOfWork unitOfWork)
         {
@@ -43,6 +44,8 @@ namespace derpirc.Core
             //_unitOfWork.InitializeDatabase();
             var session = _unitOfWork.Sessions.FindBy(x => x.Name == "Default").FirstOrDefault();
             _session = session;
+            // HACK: LazyLoad this somewhere else and inject the dependency
+            _channelSupervisor = new ChannelsSupervisor(_unitOfWork);
         }
 
         public void Connect()
@@ -126,8 +129,7 @@ namespace derpirc.Core
             client.LocalUser.NickNameChanged += LocalUser_NickNameChanged;
             client.LocalUser.NoticeReceived += LocalUser_NoticeReceived;
             client.LocalUser.MessageReceived += LocalUser_MessageReceived;
-            client.LocalUser.JoinedChannel += LocalUser_JoinedChannel;
-            client.LocalUser.LeftChannel += LocalUser_LeftChannel;
+            _channelSupervisor.LocalUsers.Add(client.LocalUser);
             //ProcessSession(client);
             //OnClientRegistered(client);
         }
@@ -140,19 +142,19 @@ namespace derpirc.Core
 
         private void LocalUser_NickNameChanged(object sender, EventArgs e)
         {
-            var localUser = (IrcLocalUser)sender;
+            var localUser = sender as IrcLocalUser;
             //OnLocalUserNickNameChanged(localUser, e);
         }
 
         private void LocalUser_NoticeReceived(object sender, IrcMessageEventArgs e)
         {
-            var localUser = (IrcLocalUser)sender;
+            var localUser = sender as IrcLocalUser;
             //OnLocalUserNoticeReceived(localUser, e);
         }
 
         private void LocalUser_MessageReceived(object sender, IrcMessageEventArgs e)
         {
-            var localUser = (IrcLocalUser)sender;
+            var localUser = sender as IrcLocalUser;
             if (e.Source is IrcUser)
             {
                 // Read message and process if it is chat command.
@@ -160,56 +162,6 @@ namespace derpirc.Core
                     return;
             }
             //OnLocalUserMessageReceived(localUser, e);
-        }
-
-        private void LocalUser_JoinedChannel(object sender, IrcChannelEventArgs e)
-        {
-            var localUser = (IrcLocalUser)sender;
-            e.Channel.UserJoined += Channel_UserJoined;
-            e.Channel.UserLeft += Channel_UserLeft;
-            e.Channel.MessageReceived += Channel_MessageReceived;
-            e.Channel.NoticeReceived += Channel_NoticeReceived;
-            //OnLocalUserJoinedChannel(localUser, e);
-        }
-
-        private void LocalUser_LeftChannel(object sender, IrcChannelEventArgs e)
-        {
-            var localUser = (IrcLocalUser)sender;
-            e.Channel.UserJoined -= Channel_UserJoined;
-            e.Channel.UserLeft -= Channel_UserLeft;
-            e.Channel.MessageReceived -= Channel_MessageReceived;
-            e.Channel.NoticeReceived -= Channel_NoticeReceived;
-            //OnLocalUserJoinedChannel(localUser, e);
-        }
-
-        private void Channel_UserLeft(object sender, IrcChannelUserEventArgs e)
-        {
-            var channel = (IrcChannel)sender;
-            //OnChannelUserJoined(channel, e);
-        }
-
-        private void Channel_UserJoined(object sender, IrcChannelUserEventArgs e)
-        {
-            var channel = (IrcChannel)sender;
-            //OnChannelUserLeft(channel, e);
-        }
-
-        private void Channel_NoticeReceived(object sender, IrcMessageEventArgs e)
-        {
-            var channel = (IrcChannel)sender;
-            //OnChannelNoticeReceived(channel, e);
-        }
-
-        private void Channel_MessageReceived(object sender, IrcMessageEventArgs e)
-        {
-            var channel = (IrcChannel)sender;
-            if (e.Source is IrcUser)
-            {
-                // Read message and process if it is chat command.
-                //if (ReadChatCommand(channel.Client, e))
-                    return;
-            }
-            //OnChannelMessageReceived(channel, e);
         }
 
         private void ProcessSession(IrcClient client)
