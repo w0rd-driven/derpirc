@@ -10,7 +10,6 @@ namespace derpirc.Data.Settings
         private Binary version;
         private EntityRef<Network> _network;
         private EntityRef<Session> _session;
-        private EntityRef<SessionServer> _server;
 
         #region Primitive Properties
 
@@ -95,44 +94,12 @@ namespace derpirc.Data.Settings
             }
         }
 
-        [Column(CanBeNull = true)]
-        public int ServerId { get; set; }
-        [Association(Name = "Server_Item", ThisKey = "ServerId", OtherKey = "Id", IsForeignKey = false)]
-        public SessionServer Server
-        {
-            get { return _server.Entity; }
-            set
-            {
-                SessionServer previousValue = _server.Entity;
-                if (previousValue != value || _server.HasLoadedOrAssignedValue == false)
-                {
-                    this.RaisePropertyChanged();
-                    if ((previousValue != null))
-                    {
-                        _server.Entity = null;
-                    }
-                    _server.Entity = value;
-                    if ((value != null))
-                    {
-                        ServerId = value.Id;
-                    }
-                    else
-                    {
-                        ServerId = default(int);
-                    }
-                    this.RaisePropertyChanged(() => ServerId);
-                    this.RaisePropertyChanged(() => Server);
-                }
-            }
-        }
-
         #endregion
 
         public SessionNetwork()
         {
             _network = default(EntityRef<Network>);
             _session = default(EntityRef<Session>);
-            _server = default(EntityRef<SessionServer>);
         }
     }
 }

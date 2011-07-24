@@ -7,7 +7,5 @@ namespace derpirc.Data.Settings
         Network Network { get; set; }
         int SessionId { get; set; }
         Session Session { get; set; }
-        int ServerId { get; set; }
-        SessionServer Server { get; set; }
     }
 }
