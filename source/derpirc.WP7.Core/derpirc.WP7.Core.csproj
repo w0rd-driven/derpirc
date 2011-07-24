@@ -60,6 +60,15 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="SessionSupervisor.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\derpirc.WP7.Data\derpirc.WP7.Data.csproj">
+      <Project>{26539181-F41F-45BB-82BD-92274DDEC3F7}</Project>
+      <Name>derpirc.WP7.Data</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.$(TargetFrameworkProfile).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.CSharp.targets" />
   <ProjectExtensions />
