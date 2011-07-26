@@ -12,7 +12,7 @@ namespace derpirc.Data
         int Count { get; set; }
         int UnreadCount { get; set; }
         int ServerId { get; set; }
-        Server Server { get; set; }
+        SessionServer Server { get; set; }
         // Not used because we segregate into Channel/Mention/Message tables
         //ICollection<IMessage> Messages { get; set; }
     }

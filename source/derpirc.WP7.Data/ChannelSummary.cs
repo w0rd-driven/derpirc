@@ -6,15 +6,12 @@ using derpirc.Data.Settings;
 
 namespace derpirc.Data
 {
-    /// <summary>
-    /// List-based Item
-    /// </summary>
     [Table]
     public class ChannelSummary : BaseNotify, IBaseModel, IMessageSummary
     {
         [Column(IsVersion = true)]
         private Binary version;
-        private EntityRef<Server> _server;
+        private EntityRef<SessionServer> _server;
         private EntitySet<ChannelMessage> _messages;
 
         #region Primitive Properties
@@ -42,7 +39,7 @@ namespace derpirc.Data
         [Column(CanBeNull = false)]
         public int ServerId { get; set; }
         [Association(Name = "Server_Item", ThisKey = "ServerId", OtherKey = "Id", IsForeignKey = false)]
-        public Server Server
+        public SessionServer Server
         {
             get
             {
@@ -50,7 +47,7 @@ namespace derpirc.Data
             }
             set
             {
-                Server previousValue = this._server.Entity;
+                SessionServer previousValue = this._server.Entity;
                 if (previousValue != value || this._server.HasLoadedOrAssignedValue == false)
                 {
                     this.RaisePropertyChanged();
@@ -132,7 +129,7 @@ namespace derpirc.Data
 
         public ChannelSummary()
         {
-            _server = default(EntityRef<Server>);
+            _server = default(EntityRef<SessionServer>);
             _messages = new EntitySet<ChannelMessage>();
             //_messages = new EntitySet<ChannelMessage>(new Action<ChannelMessage>(attach_Messages), new Action<ChannelMessage>(detach_Messages));
             //TODO: Link up Detail collection events to get LastItemId, LastItem, Count, and UnreadCount

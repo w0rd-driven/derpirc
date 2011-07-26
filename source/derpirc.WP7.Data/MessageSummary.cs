@@ -4,22 +4,36 @@ using derpirc.Data.Settings;
 
 namespace derpirc.Data
 {
-    /// <summary>
-    /// List-based Item
-    /// </summary>
     [Table]
     public class MessageSummary : BaseNotify, IBaseModel, IMessageSummary
     {
         [Column(IsVersion = true)]
         private Binary version;
+        private EntityRef<SessionServer> _server;
+
+        #region Primitive Properties
 
         [Column(IsPrimaryKey = true, IsDbGenerated = true)]
         public int Id { get; set; }
         [Column(CanBeNull = false)]
+        public string Name { get; set; }
+
+        [Column(CanBeNull = true)]
+        public int LastItemId { get; set; }
+        public IMessage LastItem { get; set; }
+
+        [Column(CanBeNull = true)]
+        public int Count { get; set; }
+        [Column(CanBeNull = true)]
+        public int UnreadCount { get; set; }
+
+        #endregion
+
+        #region Navigation Properties
+
         public int ServerId { get; set; }
-        private EntityRef<Server> _server;
         [Association(Name = "Server_Item", ThisKey = "ServerId", OtherKey = "Id", IsForeignKey = true)]
-        public Server Server
+        public SessionServer Server
         {
             get
             {
@@ -27,7 +41,7 @@ namespace derpirc.Data
             }
             set
             {
-                Server previousValue = this._server.Entity;
+                SessionServer previousValue = this._server.Entity;
                 if (previousValue != value || this._server.HasLoadedOrAssignedValue == false)
                 {
                     this.RaisePropertyChanged();
@@ -49,26 +63,12 @@ namespace derpirc.Data
                 }
             }
         }
-        [Column(CanBeNull = false)]
-        public string Name { get; set; }
 
-        [Column(CanBeNull = false)]
-        public int LastItemId { get; set; }
-        public IMessage LastItem { get; set; }
-
-        [Column(CanBeNull = false)]
-        // 1:1 with IMessageSummary
-        public int DetailId { get; set; }
-        // TODO: Implement with MessageDetail
-
-        [Column(CanBeNull = true)]
-        public int Count { get; set; }
-        [Column(CanBeNull = true)]
-        public int UnreadCount { get; set; }
+        #endregion
 
         public MessageSummary()
         {
-
+            _server = default(EntityRef<SessionServer>);
         }
     }
 }
