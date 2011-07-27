@@ -181,11 +181,13 @@ namespace derpirc.Core
 
         private SessionServer GetServer(int clientId)
         {
+            // TODO: Error handling make sure _session != null
             return _session.Servers.FirstOrDefault(x => x.BasedOnId == clientId); ;
         }
 
         private SessionServer GetServer(int clientId, string serverName)
         {
+            // TODO: Error handling make sure _session != null
             var result = _session.Servers.FirstOrDefault(x => x.BasedOnId == clientId);
             if (result != null)
             {

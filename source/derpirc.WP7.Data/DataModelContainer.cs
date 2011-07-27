@@ -83,7 +83,6 @@ namespace derpirc.Data
                 base.CreateDatabase();
 
                 // Populate the database with system data
-                // TODO: Factory.Create() goes here...
                 GenerateSystemData();
             }
             catch (Exception ex)

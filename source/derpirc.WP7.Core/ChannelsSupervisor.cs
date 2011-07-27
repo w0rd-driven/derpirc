@@ -112,6 +112,7 @@ namespace derpirc.Core
             {
                 channelSummary = new ChannelSummary();
                 channelSummary.Name = channel.Name.ToLower();
+                // HACK: Get server from dependency injection somehow
                 _unitOfWork.Channels.Add(channelSummary);
                 _unitOfWork.Commit();
                 // TODO: Bubble up a UI event

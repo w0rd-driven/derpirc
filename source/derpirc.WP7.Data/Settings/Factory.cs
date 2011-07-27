@@ -107,6 +107,7 @@ namespace derpirc.Data.Settings
         public static Session CreateSession()
         {
             var result = new Session();
+            result.Name = "Default";
             result.Servers = CreateSessionServers(result);
             result.Networks = CreateSessionNetworks(result);
             return result;

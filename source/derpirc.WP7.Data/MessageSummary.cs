@@ -31,8 +31,9 @@ namespace derpirc.Data
 
         #region Navigation Properties
 
+        [Column(CanBeNull = false)]
         public int ServerId { get; set; }
-        [Association(Name = "Server_Item", ThisKey = "ServerId", OtherKey = "Id", IsForeignKey = true)]
+        [Association(Name = "Server_Item", ThisKey = "ServerId", OtherKey = "Id", IsForeignKey = false)]
         public SessionServer Server
         {
             get
