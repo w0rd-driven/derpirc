@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text.RegularExpressions;
 using derpirc.Data;
-using derpirc.Data.Settings;
 using IrcDotNet;
-using System.Collections.Specialized;
+using derpirc.Data.Settings;
 
 namespace derpirc.Core
 {
@@ -16,6 +15,8 @@ namespace derpirc.Core
         private const int _quitTimeout = 1000;
         private string _quitMessage;
         private DataUnitOfWork _unitOfWork;
+        private Session _session;
+
         // Regex for splitting space-separated list of command parts until first parameter that begins with '/'.
         private static readonly Regex commandPartsSplitRegex = new Regex("(?<! /.*) ", RegexOptions.Compiled);
 
@@ -29,9 +30,10 @@ namespace derpirc.Core
             private set { }
         }
 
-        public ChannelsSupervisor(DataUnitOfWork unitOfWork)
+        public ChannelsSupervisor(DataUnitOfWork unitOfWork, Session session)
         {
             _unitOfWork = unitOfWork;
+            _session = session;
             _localUsers = new ObservableCollection<IrcLocalUser>();
             _localUsers.CollectionChanged += new NotifyCollectionChangedEventHandler(LocalUsers_CollectionChanged);
             _channels = new ObservableCollection<IrcChannel>();
@@ -112,28 +114,40 @@ namespace derpirc.Core
             {
                 channelSummary = new ChannelSummary();
                 channelSummary.Name = channel.Name.ToLower();
-                // HACK: Get server from dependency injection somehow
+                // HACK: Get server from _session via dependency injection
+                var clientId = -1;
+                int.TryParse(channel.Client.ClientId, out clientId);
+                var server = GetServer(clientId);
+                channelSummary.Server = server;
+                channelSummary.ServerId = server.Id;
+
                 _unitOfWork.Channels.Add(channelSummary);
                 _unitOfWork.Commit();
-                // TODO: Bubble up a UI event
             }
             return channelSummary;
+        }
+
+        private SessionServer GetServer(int clientId)
+        {
+            // TODO: Error handling make sure _session != null
+            return _session.Servers.FirstOrDefault(x => x.BasedOnId == clientId); ;
         }
 
         private ChannelMessage GetIrcMessage(ChannelSummary channelSummary, IrcMessageEventArgs eventArgs)
         {
             var result = new ChannelMessage();
             var line = eventArgs.Text;
-            if (line.Length > 1 && line.StartsWith("."))
-            {
-                // Process command.
-                var parts = commandPartsSplitRegex.Split(line.Substring(1)).Select(p => p.TrimStart('/')).ToArray();
-                var command = parts.First();
-                var parameters = parts.Skip(1).ToArray();
 
-                //result.Parameters = parameters;
-                //ReadChatCommand(client, eventArgs.Source, eventArgs.Targets, command, parameters);
-            }
+            //if (line.Length > 1 && line.StartsWith("."))
+            //{
+            //    // Process command.
+            //    var parts = commandPartsSplitRegex.Split(line.Substring(1)).Select(p => p.TrimStart('/')).ToArray();
+            //    var command = parts.First();
+            //    var parameters = parts.Skip(1).ToArray();
+
+            //    //result.Parameters = parameters;
+            //    //ReadChatCommand(client, eventArgs.Source, eventArgs.Targets, command, parameters);
+            //}
 
             // Set values
             result.TimeStamp = DateTime.Now;

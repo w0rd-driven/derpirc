@@ -45,7 +45,7 @@ namespace derpirc.Core
             var session = _unitOfWork.Sessions.FindBy(x => x.Name == "Default").FirstOrDefault();
             _session = session;
             // HACK: LazyLoad this somewhere else and inject the dependency
-            _channelSupervisor = new ChannelsSupervisor(_unitOfWork);
+            _channelSupervisor = new ChannelsSupervisor(_unitOfWork, _session);
         }
 
         public void Connect()
