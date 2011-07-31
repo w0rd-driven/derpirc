@@ -13,25 +13,64 @@
     <FontFamily x:Key="FontFamilyNormal">/derpirc;component/Fonts/Fonts.zip#monofur</FontFamily>
     <!-- Styles -->
     <Style x:Key="TextBlockBase" TargetType="TextBlock">
-        <Setter Property="FontFamily" Value="{StaticResource FontFamilyNormal}"/>
-        <Setter Property="FontSize" Value="{StaticResource PhoneFontSizeNormal}"/>
-        <Setter Property="Foreground" Value="{StaticResource PhoneForegroundBrush}"/>
-        <Setter Property="Margin" Value="{StaticResource PhoneHorizontalMargin}"/>
+        <Setter Property="FontFamily" Value="{StaticResource FontFamilyNormal}" />
+        <Setter Property="FontSize" Value="{StaticResource PhoneFontSizeNormal}" />
+        <Setter Property="Foreground" Value="{StaticResource PhoneForegroundBrush}" />
+        <Setter Property="Margin" Value="{StaticResource PhoneHorizontalMargin}" />
     </Style>
     <Style x:Key="TextNormalStyle" TargetType="TextBlock" BasedOn="{StaticResource TextBlockBase}">
         <Setter Property="TextWrapping" Value="Wrap" />
         <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
     <Style x:Key="TextSmallStyle" TargetType="TextBlock" BasedOn="{StaticResource TextBlockBase}">
-        <Setter Property="FontSize" Value="{StaticResource PhoneFontSizeSmall}"/>
+        <Setter Property="FontSize" Value="{StaticResource PhoneFontSizeSmall}" />
         <Setter Property="TextWrapping" Value="Wrap" />
         <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
     <Style x:Key="TextSubtleStyle" TargetType="TextBlock" BasedOn="{StaticResource TextBlockBase}">
-        <Setter Property="FontSize" Value="{StaticResource PhoneFontSizeSmall}"/>
-        <Setter Property="Foreground" Value="{StaticResource PhoneSubtleBrush}"/>
+        <Setter Property="FontSize" Value="{StaticResource PhoneFontSizeSmall}" />
+        <Setter Property="Foreground" Value="{StaticResource PhoneSubtleBrush}" />
         <Setter Property="TextWrapping" Value="Wrap" />
         <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+    <Style x:Key="GridDetailMyMessage" TargetType="Grid">
+        <Setter Property="Margin" Value="120,10,20,0" />
+    </Style>
+    <Style x:Key="GridDetailTheirMessage" TargetType="Grid">
+        <Setter Property="Margin" Value="20,10,120,0" />
+    </Style>
+    <Style x:Key="DetailMessageStyle" TargetType="TextBlock" BasedOn="{StaticResource TextBlockBase}">
+        <Setter Property="Margin" Value="5" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+        <Setter Property="TextTrimming" Value="WordEllipsis" />
+    </Style>
+    <Style x:Key="DetailTimeStampStyle" TargetType="TextBlock" BasedOn="{StaticResource TextBlockBase}">
+        <Setter Property="FontSize" Value="{StaticResource PhoneFontSizeSmall}" />
+        <Setter Property="Foreground" Value="{StaticResource PhoneSubtleBrush}" />
+        <Setter Property="HorizontalAlignment" Value="Right" />
+        <Setter Property="Margin" Value="5" />
+    </Style>
+    <Style x:Key="DetailSourceStyle" TargetType="TextBlock"  BasedOn="{StaticResource TextBlockBase}">
+        <Setter Property="FontSize" Value="{StaticResource PhoneFontSizeSmall}" />
+        <Setter Property="Margin" Value="5" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+    <Style x:Key="SummaryMessageStyle" TargetType="TextBlock"  BasedOn="{StaticResource TextBlockBase}">
+        <Setter Property="Foreground" Value="{StaticResource PhoneAccentBrush}" />
+        <Setter Property="Margin" Value="5" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+        <Setter Property="TextTrimming" Value="WordEllipsis" />
+    </Style>
+    <Style x:Key="SummaryTimeStampStyle" TargetType="TextBlock"  BasedOn="{StaticResource TextBlockBase}">
+        <Setter Property="FontSize" Value="{StaticResource PhoneFontSizeSmall}" />
+        <Setter Property="Foreground" Value="{StaticResource PhoneSubtleBrush}" />
+        <Setter Property="HorizontalAlignment" Value="Right"/>
+        <Setter Property="Margin" Value="5" />
+    </Style>
+    <Style x:Key="SummarySourceStyle" TargetType="TextBlock"  BasedOn="{StaticResource TextBlockBase}">
+        <Setter Property="FontSize" Value="{StaticResource PhoneFontSizeSmall}" />
+        <Setter Property="Margin" Value="5" />
+        <Setter Property="TextWrapping" Value="Wrap" />
     </Style>
     <Style x:Key="PageTitleStyle" TargetType="TextBlock" BasedOn="{StaticResource TextNormalStyle}">
         <Setter Property="FontSize" Value="{StaticResource PhoneFontSizeExtraLarge}"/>
@@ -114,4 +153,51 @@
         </Setter>
     </Style>
     <!-- DataTemplates -->
+    <DataTemplate x:Key="TemplateDetailMyMessage">
+        <Grid Style="{StaticResource GridDetailMyMessage}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Rectangle Fill="{StaticResource PhoneAccentBrush}"
+                       Grid.RowSpan="2" />
+            <TextBlock Text="{Binding Text}" 
+                       Style="{StaticResource DetailMessageStyle}"/>
+            <TextBlock Text="{Binding TimeStamp}"
+                       Style="{StaticResource DetailTimeStampStyle}"
+                       Grid.Row="1" />
+            <Path Data="m 0,0 l 16,0 l 0,16 l -16,-16"
+                  Fill="{StaticResource PhoneAccentBrush}"
+                  Margin="0,0,10,0"
+                  HorizontalAlignment="Right"
+                  Grid.Row="2" />
+        </Grid>
+    </DataTemplate>
+    <DataTemplate x:Key="TemplateDetailTheirMessage">
+        <Grid Style="{StaticResource GridDetailTheirMessage}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <TextBlock Text="{Binding Source}"
+                       Style="{StaticResource DetailSourceStyle}" />
+            <Path Data="m 0,0 l 0,16 l 16,0 l -16,-16"
+                  Fill="{StaticResource PhoneAccentBrush}"
+                  Margin="10,0,0,0"
+                  Grid.Row="1" />
+            <Rectangle Fill="{StaticResource PhoneAccentBrush}"
+                       Grid.Row="2"
+                       Grid.RowSpan="2" />
+            <TextBlock Text="{Binding Text}" 
+                       Style="{StaticResource DetailMessageStyle}" 
+                       Grid.Row="2" />
+            <TextBlock Text="{Binding TimeStamp}"
+                       Style="{StaticResource DetailTimeStampStyle}"
+                       Grid.Row="3" />
+        </Grid>
+    </DataTemplate>
+
 </ResourceDictionary>

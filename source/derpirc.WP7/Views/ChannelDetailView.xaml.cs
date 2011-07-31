@@ -3,14 +3,14 @@
 namespace derpirc.Views
 {
     /// <summary>
-    /// Description for MessageDetailView.
+    /// Description for ChannelDetailView.
     /// </summary>
-    public partial class MessageDetailView : PhoneApplicationPage
+    public partial class ChannelDetailView : PhoneApplicationPage
     {
         /// <summary>
-        /// Initializes a new instance of the MessageDetailView class.
+        /// Initializes a new instance of the ChannelDetailView class.
         /// </summary>
-        public MessageDetailView()
+        public ChannelDetailView()
         {
             InitializeComponent();
         }

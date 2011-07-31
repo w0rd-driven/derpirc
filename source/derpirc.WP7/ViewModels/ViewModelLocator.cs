@@ -5,6 +5,7 @@ namespace derpirc.ViewModels
     public class ViewModelLocator
     {
         #region MainViewModel
+
         private static MainViewModel _mainViewModel;
 
         /// <summary>
@@ -50,9 +51,11 @@ namespace derpirc.ViewModels
             if (_mainViewModel == null)
                 _mainViewModel = new MainViewModel();
         }
+
         #endregion
 
         #region ChannelsViewModel
+
         private static ChannelsViewModel _channelsViewModel;
 
         /// <summary>
@@ -98,9 +101,61 @@ namespace derpirc.ViewModels
             if (_channelsViewModel == null)
                 _channelsViewModel = new ChannelsViewModel();
         }
+
+        #endregion
+
+        #region ChannelDetailViewModel
+
+        private static ChannelDetailViewModel _channelDetailViewModel;
+
+        /// <summary>
+        /// Gets the ChannelDetailViewModel property.
+        /// </summary>
+        public static ChannelDetailViewModel ChannelDetailStatic
+        {
+            get
+            {
+                if (_channelDetailViewModel == null)
+                    CreateChannelDetail();
+
+                return _channelDetailViewModel;
+            }
+        }
+
+        /// <summary>
+        /// Gets the ChannelDetailViewModel property.
+        /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance",
+            "CA1822:MarkMembersAsStatic",
+            Justification = "This non-static member is needed for data binding purposes.")]
+        public ChannelDetailViewModel ChannelDetailViewModel
+        {
+            get { return ChannelDetailStatic; }
+        }
+
+        /// <summary>
+        /// Provides a deterministic way to delete the ChannelDetailViewModel property.
+        /// </summary>
+        public static void ClearChannelDetail()
+        {
+            if (_channelDetailViewModel != null)
+                _channelDetailViewModel.Cleanup();
+            _channelDetailViewModel = null;
+        }
+
+        /// <summary>
+        /// Provides a deterministic way to create the ChannelDetailViewModel property.
+        /// </summary>
+        public static void CreateChannelDetail()
+        {
+            if (_channelDetailViewModel == null)
+                _channelDetailViewModel = new ChannelDetailViewModel();
+        }
+
         #endregion
 
         #region MessagesViewModel
+
         private static MessagesViewModel _messagesViewModel;
 
         /// <summary>
@@ -146,6 +201,57 @@ namespace derpirc.ViewModels
             if (_messagesViewModel == null)
                 _messagesViewModel = new MessagesViewModel();
         }
+
+        #endregion
+
+        #region MessageDetailViewModel
+
+        private static MessageDetailViewModel _messageDetailViewModel;
+
+        /// <summary>
+        /// Gets the MessageDetailViewModel property.
+        /// </summary>
+        public static MessageDetailViewModel MessageDetailStatic
+        {
+            get
+            {
+                if (_messageDetailViewModel == null)
+                    CreateMessageDetail();
+
+                return _messageDetailViewModel;
+            }
+        }
+
+        /// <summary>
+        /// Gets the MessageDetailViewModel property.
+        /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance",
+            "CA1822:MarkMembersAsStatic",
+            Justification = "This non-static member is needed for data binding purposes.")]
+        public MessageDetailViewModel MessageDetailViewModel
+        {
+            get { return MessageDetailStatic; }
+        }
+
+        /// <summary>
+        /// Provides a deterministic way to delete the MessageDetailViewModel property.
+        /// </summary>
+        public static void ClearMessageDetail()
+        {
+            if (_messageDetailViewModel != null)
+                _messageDetailViewModel.Cleanup();
+            _messageDetailViewModel = null;
+        }
+
+        /// <summary>
+        /// Provides a deterministic way to create the MessageDetailViewModel property.
+        /// </summary>
+        public static void CreateMessageDetail()
+        {
+            if (_messageDetailViewModel == null)
+                _messageDetailViewModel = new MessageDetailViewModel();
+        }
+
         #endregion
 
         /// <summary>
@@ -170,7 +276,9 @@ namespace derpirc.ViewModels
         {
             ClearMain();
             ClearChannels();
+            ClearChannelDetail();
             ClearMessages();
+            ClearMessageDetail();
         }
     }
 }

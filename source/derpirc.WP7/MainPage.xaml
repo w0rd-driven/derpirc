@@ -1,24 +1,23 @@
-﻿<phone:PhoneApplicationPage 
-    x:Class="derpirc.MainPage"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:i="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
-    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
-    xmlns:controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls"
-    xmlns:blend="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
-    xmlns:command="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Extras.WP71"
-    xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
-    xmlns:views="clr-namespace:derpirc.Views"
-    mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="696" 
-    FontFamily="{StaticResource PhoneFontFamilyNormal}"
-    FontSize="{StaticResource PhoneFontSizeNormal}"
-    Foreground="{StaticResource PhoneForegroundBrush}"
-    SupportedOrientations="PortraitOrLandscape"  Orientation="Portrait"
-    shell:SystemTray.IsVisible="True"
-    DataContext="{Binding MainViewModel, Source={StaticResource Locator}}">
+﻿<phone:PhoneApplicationPage x:Class="derpirc.MainPage"
+                            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                            xmlns:i="http://schemas.microsoft.com/expression/blend/2008"
+                            xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+                            xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+                            xmlns:controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls"
+                            xmlns:blend="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+                            xmlns:command="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Extras.WP71"
+                            xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
+                            xmlns:views="clr-namespace:derpirc.Views"
+                            mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="696" 
+                            FontFamily="{StaticResource PhoneFontFamilyNormal}"
+                            FontSize="{StaticResource PhoneFontSizeNormal}"
+                            Foreground="{StaticResource PhoneForegroundBrush}"
+                            SupportedOrientations="PortraitOrLandscape" Orientation="Portrait"
+                            shell:SystemTray.IsVisible="True"
+                            DataContext="{Binding MainViewModel, Source={StaticResource Locator}}">
 
     <Grid x:Name="LayoutRoot" Background="Transparent">
         <blend:Interaction.Triggers>
@@ -26,9 +25,10 @@
                 <command:EventToCommand Command="{Binding LayoutRootCommand}" CommandParameter="{Binding ElementName=LayoutRoot}" PassEventArgsToCommand="True"/>
             </blend:EventTrigger>
         </blend:Interaction.Triggers>
+        
         <controls:Pivot Title="derpirc" Style="{StaticResource SmallPivotStyle}" Margin="-2,0,2,0">
             <controls:PivotItem Header="Channels" Style="{StaticResource SmallPivotItemStyle}">
-                <ListBox x:Name="ListBoxChannels" Margin="0,0,-12,0" ItemsSource="{Binding Channels.View}" ItemContainerStyle="{StaticResource SmallPivotListBoxStyle}">
+                <ListBox x:Name="ChannelSummaryListBox" Margin="0,0,-12,0" ItemsSource="{Binding Channels.View}" ItemContainerStyle="{StaticResource SmallPivotListBoxStyle}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <Grid>
@@ -47,10 +47,26 @@
                                     <TextBlock Text="{Binding Model.Count}" Foreground="{StaticResource PhoneAccentBrush}" FontSize="{StaticResource PhoneFontSizeLarge}" />
                                 </StackPanel>
                                 <Button Content="X" Grid.Column="2" Name="buttonRemove" />
-                                <toolkit:WrapPanel Orientation="Horizontal" Grid.Row="2" Grid.ColumnSpan="3">
-                                    <TextBlock Text="This is trying to be a super really long message but it'll look retarded" TextWrapping="Wrap" Style="{StaticResource PhoneTextNormalStyle}" />
-                                    <TextBlock Text="Timestamp" Style="{StaticResource PhoneTextSmallStyle}" Foreground="{StaticResource PhoneAccentBrush}" />
-                                </toolkit:WrapPanel>
+                                <Grid Grid.ColumnSpan="3" Grid.Row="2">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="This is trying to be a super really long message but it'll look retarded"
+                                               Style="{StaticResource SummaryMessageStyle}"/>
+                                    <TextBlock Text="TimeStamp"
+                                               Style="{StaticResource SummaryTimeStampStyle}"
+                                               Grid.Row="1" />
+                                    <TextBlock Text="Source @ [ServerName]"
+                                               Style="{StaticResource SummarySourceStyle}"
+                                               Grid.Row="2" />
+                                </Grid>
                             </Grid>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
@@ -58,12 +74,12 @@
             </controls:PivotItem>
  
             <controls:PivotItem Header="Mentions" Style="{StaticResource SmallPivotItemStyle}">
-                <ListBox x:Name="ListBoxMentions" Margin="0,0,-12,0" ItemsSource="{Binding Mentions}">
+                <ListBox x:Name="MentionSummaryListBox" Margin="0,0,-12,0" ItemsSource="{Binding Mentions}">
                 </ListBox>
             </controls:PivotItem>
             
             <controls:PivotItem Header="Messages" Style="{StaticResource SmallPivotItemStyle}" >
-                <ListBox x:Name="ListBoxMessages" Margin="0,0,-12,0" ItemsSource="{Binding Messages.View}" ItemContainerStyle="{StaticResource SmallPivotListBoxStyle}" DataContext="{Binding}">
+                <ListBox x:Name="MessageSummaryListBox" Margin="0,0,-12,0" ItemsSource="{Binding Messages.View}" ItemContainerStyle="{StaticResource SmallPivotListBoxStyle}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <Grid>
@@ -82,10 +98,26 @@
                                     <TextBlock Text="{Binding Model.Count}" Foreground="{StaticResource PhoneAccentBrush}" FontSize="{StaticResource PhoneFontSizeLarge}" />
                                 </StackPanel>
                                 <Button Content="X" Grid.Column="2" Name="buttonRemove" />
-                                <toolkit:WrapPanel Orientation="Horizontal" Grid.Row="2" Grid.ColumnSpan="3">
-                                    <TextBlock Text="This is trying to be a super really long message but it'll look retarded" TextWrapping="Wrap" Style="{StaticResource PhoneTextNormalStyle}" />
-                                    <TextBlock Text="Timestamp" Style="{StaticResource PhoneTextSmallStyle}" Foreground="{StaticResource PhoneAccentBrush}" />
-                                </toolkit:WrapPanel>
+                                <Grid Grid.ColumnSpan="3" Grid.Row="2">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="This is trying to be a super really long message but it'll look retarded"
+                                               Style="{StaticResource SummaryMessageStyle}"/>
+                                    <TextBlock Text="TimeStamp"
+                                               Style="{StaticResource SummaryTimeStampStyle}"
+                                               Grid.Row="1" />
+                                    <TextBlock Text="Source @ [ServerName]"
+                                               Style="{StaticResource SummarySourceStyle}"
+                                               Grid.Row="2" />
+                                </Grid>
                             </Grid>
                         </DataTemplate>
                     </ListBox.ItemTemplate>

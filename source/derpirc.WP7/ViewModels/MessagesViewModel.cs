@@ -5,6 +5,12 @@ namespace derpirc.ViewModels
 {
     public class MessagesViewModel : ViewModelBase
     {
+        #region Commands
+
+        #endregion
+
+        #region Properties
+
         private MessageSummary _model;
         public MessageSummary Model
         {
@@ -20,6 +26,8 @@ namespace derpirc.ViewModels
             }
         }
 
+        #endregion
+
         /// <summary>
         /// Initializes a new instance of the ChannelViewModel class.
         /// </summary>
@@ -30,12 +38,9 @@ namespace derpirc.ViewModels
         /// </summary>
         public MessagesViewModel(MessageSummary model)
         {
-            Model = model;
             if (IsInDesignMode)
             {
                 // code runs in blend --> create design time data.
-                model.Id = 0;
-                model.ServerId = 0;
                 model.Name = "w0rd-driven";
                 //del.LastItem = new IMessage();
                 model.Count = 4;
@@ -43,12 +48,11 @@ namespace derpirc.ViewModels
             else
             {
                 // code runs "for real": connect to service, etc...
-                model.Id = 0;
-                model.ServerId = 0;
                 model.Name = "w0rd-driven";
                 //del.LastItem = new IMessage();
                 model.Count = 4;
             }
+            Model = model;
         }
 
         public override void Cleanup()
