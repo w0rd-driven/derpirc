@@ -87,17 +87,17 @@
     <Compile Include="Views\ChannelDetailView.xaml.cs">
       <DependentUpon>ChannelDetailView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\ChannelsView.xaml.cs">
-      <DependentUpon>ChannelsView.xaml</DependentUpon>
+    <Compile Include="Views\ChannelSummaryView.xaml.cs">
+      <DependentUpon>ChannelSummaryView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\MentionsView.xaml.cs">
-      <DependentUpon>MentionsView.xaml</DependentUpon>
+    <Compile Include="Views\MentionSummaryView.xaml.cs">
+      <DependentUpon>MentionSummaryView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MessageDetailView.xaml.cs">
       <DependentUpon>MessageDetailView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\MessagesView.xaml.cs">
-      <DependentUpon>MessagesView.xaml</DependentUpon>
+    <Compile Include="Views\MessageSummaryView.xaml.cs">
+      <DependentUpon>MessageSummaryView.xaml</DependentUpon>
     </Compile>
     <BlendEmbeddedFont Include="Fonts\monof55.ttf">
       <All>True</All>
@@ -129,9 +129,9 @@
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModels\ChannelsViewModel.cs" />
-    <Compile Include="ViewModels\MessagesViewModel.cs" />
-    <Compile Include="ViewModels\MentionsViewModel.cs" />
+    <Compile Include="ViewModels\ChannelSummaryViewModel.cs" />
+    <Compile Include="ViewModels\MessageSummaryViewModel.cs" />
+    <Compile Include="ViewModels\MentionSummaryViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <ApplicationDefinition Include="App.xaml">
       <SubType>Designer</SubType>
@@ -153,11 +153,11 @@
       <SubType>Form</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\ChannelsView.xaml">
+    <Page Include="Views\ChannelSummaryView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\MentionsView.xaml">
+    <Page Include="Views\MentionSummaryView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -165,7 +165,7 @@
       <SubType>Form</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\MessagesView.xaml">
+    <Page Include="Views\MessageSummaryView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

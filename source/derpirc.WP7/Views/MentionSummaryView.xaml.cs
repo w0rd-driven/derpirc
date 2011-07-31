@@ -12,9 +12,9 @@ using System.Windows.Shapes;
 
 namespace derpirc.Views
 {
-    public partial class MentionsView : UserControl
+    public partial class MentionSummaryView : UserControl
     {
-        public MentionsView()
+        public MentionSummaryView()
         {
             InitializeComponent();
         }

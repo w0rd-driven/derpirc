@@ -12,9 +12,9 @@ using System.Windows.Shapes;
 
 namespace derpirc.Views
 {
-    public partial class MessagesView : UserControl
+    public partial class ChannelSummaryView : UserControl
     {
-        public MessagesView()
+        public ChannelSummaryView()
         {
             InitializeComponent();
         }

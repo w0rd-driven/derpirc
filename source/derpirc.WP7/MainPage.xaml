@@ -41,10 +41,10 @@
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Text="{Binding Model.Name}" VerticalAlignment="Center" Style="{StaticResource PhoneTextLargeStyle}" TextWrapping="Wrap" />
+                                <TextBlock Text="{Binding ChannelName}" VerticalAlignment="Center" Style="{StaticResource PhoneTextLargeStyle}" TextWrapping="Wrap" />
                                 <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right">
                                     <TextBlock Text="Unread:" Style="{StaticResource PhoneTextSmallStyle}" />
-                                    <TextBlock Text="{Binding Model.Count}" Foreground="{StaticResource PhoneAccentBrush}" FontSize="{StaticResource PhoneFontSizeLarge}" />
+                                    <TextBlock Text="{Binding UnreadCount}" Foreground="{StaticResource PhoneAccentBrush}" FontSize="{StaticResource PhoneFontSizeLarge}" />
                                 </StackPanel>
                                 <Button Content="X" Grid.Column="2" Name="buttonRemove" />
                                 <Grid Grid.ColumnSpan="3" Grid.Row="2">
@@ -58,12 +58,12 @@
                                         <ColumnDefinition Width="Auto" />
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Text="This is trying to be a super really long message but it'll look retarded"
+                                    <TextBlock Text="{Binding MessageText}"
                                                Style="{StaticResource SummaryMessageStyle}"/>
-                                    <TextBlock Text="TimeStamp"
+                                    <TextBlock Text="{Binding MessageTimeStamp}"
                                                Style="{StaticResource SummaryTimeStampStyle}"
                                                Grid.Row="1" />
-                                    <TextBlock Text="Source @ [ServerName]"
+                                    <TextBlock Text="{Binding MessageSource}"
                                                Style="{StaticResource SummarySourceStyle}"
                                                Grid.Row="2" />
                                 </Grid>
@@ -74,7 +74,48 @@
             </controls:PivotItem>
  
             <controls:PivotItem Header="Mentions" Style="{StaticResource SmallPivotItemStyle}">
-                <ListBox x:Name="MentionSummaryListBox" Margin="0,0,-12,0" ItemsSource="{Binding Mentions}">
+                <ListBox x:Name="MentionSummaryListBox" Margin="0,0,-12,0" ItemsSource="{Binding Mentions.View}" ItemContainerStyle="{StaticResource SmallPivotListBoxStyle}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="{Binding NickName}" VerticalAlignment="Center" Style="{StaticResource PhoneTextLargeStyle}" TextWrapping="Wrap" />
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right">
+                                    <TextBlock Text="Unread:" Style="{StaticResource PhoneTextSmallStyle}" />
+                                    <TextBlock Text="{Binding UnreadCount}" Foreground="{StaticResource PhoneAccentBrush}" FontSize="{StaticResource PhoneFontSizeLarge}" />
+                                </StackPanel>
+                                <Button Content="X" Grid.Column="2" Name="buttonRemove" />
+                                <Grid Grid.ColumnSpan="3" Grid.Row="2">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="{Binding MessageText}"
+                                               Style="{StaticResource SummaryMessageStyle}"/>
+                                    <TextBlock Text="{Binding MessageTimeStamp}"
+                                               Style="{StaticResource SummaryTimeStampStyle}"
+                                               Grid.Row="1" />
+                                    <TextBlock Text="{Binding MessageSource}"
+                                               Style="{StaticResource SummarySourceStyle}"
+                                               Grid.Row="2" />
+                                </Grid>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
                 </ListBox>
             </controls:PivotItem>
             
@@ -92,10 +133,10 @@
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Text="{Binding Model.Name}" VerticalAlignment="Center" Style="{StaticResource PhoneTextLargeStyle}" TextWrapping="Wrap" />
+                                <TextBlock Text="{Binding NickName}" VerticalAlignment="Center" Style="{StaticResource PhoneTextLargeStyle}" TextWrapping="Wrap" />
                                 <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right">
                                     <TextBlock Text="Unread:" Style="{StaticResource PhoneTextSmallStyle}" />
-                                    <TextBlock Text="{Binding Model.Count}" Foreground="{StaticResource PhoneAccentBrush}" FontSize="{StaticResource PhoneFontSizeLarge}" />
+                                    <TextBlock Text="{Binding UnreadCount}" Foreground="{StaticResource PhoneAccentBrush}" FontSize="{StaticResource PhoneFontSizeLarge}" />
                                 </StackPanel>
                                 <Button Content="X" Grid.Column="2" Name="buttonRemove" />
                                 <Grid Grid.ColumnSpan="3" Grid.Row="2">
@@ -109,12 +150,12 @@
                                         <ColumnDefinition Width="Auto" />
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Text="This is trying to be a super really long message but it'll look retarded"
+                                    <TextBlock Text="{Binding MessageText}"
                                                Style="{StaticResource SummaryMessageStyle}"/>
-                                    <TextBlock Text="TimeStamp"
+                                    <TextBlock Text="{Binding MessageTimeStamp}"
                                                Style="{StaticResource SummaryTimeStampStyle}"
                                                Grid.Row="1" />
-                                    <TextBlock Text="Source @ [ServerName]"
+                                    <TextBlock Text="{Binding MessageSource}"
                                                Style="{StaticResource SummarySourceStyle}"
                                                Grid.Row="2" />
                                 </Grid>
