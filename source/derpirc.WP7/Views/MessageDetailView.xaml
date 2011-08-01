@@ -41,7 +41,7 @@
             <ListBox x:Name="MessagesListBox"
                      ItemsSource="{Binding Messages.View}"
                      ItemContainerStyle="{StaticResource SmallPivotListBoxStyle}"
-                     ItemTemplate="{StaticResource TemplateDetailMyMessage}" />
+                     ItemTemplate="{StaticResource TemplateDetailMessageSelector}" />
 
             <Grid Grid.Row="2" Style="{StaticResource GridDetailMyMessage}">
                 <Grid.RowDefinitions>

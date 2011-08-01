@@ -7,6 +7,7 @@
                     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
                     xmlns:controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls"
                     xmlns:primitives="clr-namespace:Microsoft.Phone.Controls.Primitives;assembly=Microsoft.Phone.Controls"
+                    xmlns:helpers="clr-namespace:derpirc.Helpers"
                     >
     <!-- Converters -->
     <!-- Fonts -->
@@ -199,5 +200,58 @@
                        Grid.Row="3" />
         </Grid>
     </DataTemplate>
-
+    <DataTemplate x:Key="TemplateDetailMessageSelector">
+        <helpers:MessageTemplateSelector Content="{Binding}">
+            <helpers:MessageTemplateSelector.TemplateMyMessage>
+                <DataTemplate>
+                    <Grid Style="{StaticResource GridDetailMyMessage}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Rectangle Fill="{StaticResource PhoneAccentBrush}"
+                                   Grid.RowSpan="2" />
+                        <TextBlock Text="{Binding Text}" 
+                                   Style="{StaticResource DetailMessageStyle}"/>
+                        <TextBlock Text="{Binding TimeStamp}"
+                                   Style="{StaticResource DetailTimeStampStyle}"
+                                   Grid.Row="1" />
+                        <Path Data="m 0,0 l 16,0 l 0,16 l -16,-16"
+                              Fill="{StaticResource PhoneAccentBrush}"
+                              Margin="0,0,10,0"
+                              HorizontalAlignment="Right"
+                              Grid.Row="2" />
+                    </Grid>
+                </DataTemplate>
+            </helpers:MessageTemplateSelector.TemplateMyMessage>
+            <helpers:MessageTemplateSelector.TemplateTheirMessage>
+                <DataTemplate>
+                    <Grid Style="{StaticResource GridDetailTheirMessage}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <TextBlock Text="{Binding Source}"
+                                   Style="{StaticResource DetailSourceStyle}" />
+                        <Path Data="m 0,0 l 0,16 l 16,0 l -16,-16"
+                              Fill="{StaticResource PhoneAccentBrush}"
+                              Margin="10,0,0,0"
+                              Grid.Row="1" />
+                        <Rectangle Fill="{StaticResource PhoneAccentBrush}"
+                                   Grid.Row="2"
+                                   Grid.RowSpan="2" />
+                        <TextBlock Text="{Binding Text}" 
+                                   Style="{StaticResource DetailMessageStyle}" 
+                                   Grid.Row="2" />
+                        <TextBlock Text="{Binding TimeStamp}"
+                                   Style="{StaticResource DetailTimeStampStyle}"
+                                   Grid.Row="3" />
+                    </Grid>
+                </DataTemplate>
+            </helpers:MessageTemplateSelector.TemplateTheirMessage>
+        </helpers:MessageTemplateSelector>
+    </DataTemplate>
 </ResourceDictionary>
