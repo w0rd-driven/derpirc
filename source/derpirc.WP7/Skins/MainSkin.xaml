@@ -161,15 +161,18 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <Rectangle Fill="{StaticResource PhoneAccentBrush}"
+            <Rectangle Name="MessageContainer"
+                       Fill="{StaticResource PhoneAccentBrush}"
                        Grid.RowSpan="2" />
-            <TextBlock Text="{Binding Text}" 
+            <TextBlock Name="MessageText"
+                       Text="{Binding Text}" 
                        Style="{StaticResource DetailMessageStyle}"/>
-            <TextBlock Text="{Binding TimeStamp}"
+            <TextBlock Name="MessageTimeStamp"
+                       Text="{Binding TimeStamp}"
                        Style="{StaticResource DetailTimeStampStyle}"
                        Grid.Row="1" />
             <Path Data="m 0,0 l 16,0 l 0,16 l -16,-16"
-                  Fill="{StaticResource PhoneAccentBrush}"
+                  Fill="{Binding Fill, ElementName=MessageContainer}"
                   Margin="0,0,10,0"
                   HorizontalAlignment="Right"
                   Grid.Row="2" />
@@ -183,19 +186,23 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <TextBlock Text="{Binding Source}"
+            <TextBlock Name="MessageSource"
+                       Text="{Binding Source}"
                        Style="{StaticResource DetailSourceStyle}" />
             <Path Data="m 0,0 l 0,16 l 16,0 l -16,-16"
-                  Fill="{StaticResource PhoneAccentBrush}"
+                  Fill="{Binding Fill, ElementName=MessageContainer}"
                   Margin="10,0,0,0"
                   Grid.Row="1" />
-            <Rectangle Fill="{StaticResource PhoneAccentBrush}"
+            <Rectangle Name="MessageContainer"
+                       Fill="{StaticResource PhoneAccentBrush}"
                        Grid.Row="2"
                        Grid.RowSpan="2" />
-            <TextBlock Text="{Binding Text}" 
+            <TextBlock Name="MessageText"
+                       Text="{Binding Text}" 
                        Style="{StaticResource DetailMessageStyle}" 
                        Grid.Row="2" />
-            <TextBlock Text="{Binding TimeStamp}"
+            <TextBlock Name="MessageTimeStamp"
+                       Text="{Binding TimeStamp}"
                        Style="{StaticResource DetailTimeStampStyle}"
                        Grid.Row="3" />
         </Grid>
@@ -210,15 +217,18 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-                        <Rectangle Fill="{StaticResource PhoneAccentBrush}"
+                        <Rectangle Name="MessageContainer"
+                                   Fill="{StaticResource PhoneAccentBrush}"
                                    Grid.RowSpan="2" />
-                        <TextBlock Text="{Binding Text}" 
+                        <TextBlock Name="MessageText"
+                                   Text="{Binding Text}" 
                                    Style="{StaticResource DetailMessageStyle}"/>
-                        <TextBlock Text="{Binding TimeStamp}"
+                        <TextBlock Name="MessageTimeStamp"
+                                   Text="{Binding TimeStamp}"
                                    Style="{StaticResource DetailTimeStampStyle}"
                                    Grid.Row="1" />
                         <Path Data="m 0,0 l 16,0 l 0,16 l -16,-16"
-                              Fill="{StaticResource PhoneAccentBrush}"
+                              Fill="{Binding Fill, ElementName=MessageContainer}"
                               Margin="0,0,10,0"
                               HorizontalAlignment="Right"
                               Grid.Row="2" />
@@ -234,19 +244,23 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-                        <TextBlock Text="{Binding Source}"
+                        <TextBlock Name="MessageSource"
+                                   Text="{Binding Source}"
                                    Style="{StaticResource DetailSourceStyle}" />
                         <Path Data="m 0,0 l 0,16 l 16,0 l -16,-16"
-                              Fill="{StaticResource PhoneAccentBrush}"
+                              Fill="{Binding Fill, ElementName=MessageContainer}"
                               Margin="10,0,0,0"
                               Grid.Row="1" />
-                        <Rectangle Fill="{StaticResource PhoneAccentBrush}"
+                        <Rectangle Name="MessageContainer"
+                                   Fill="{StaticResource PhoneAccentBrush}"
                                    Grid.Row="2"
                                    Grid.RowSpan="2" />
-                        <TextBlock Text="{Binding Text}" 
+                        <TextBlock Name="MessageText"
+                                   Text="{Binding Text}" 
                                    Style="{StaticResource DetailMessageStyle}" 
                                    Grid.Row="2" />
-                        <TextBlock Text="{Binding TimeStamp}"
+                        <TextBlock Name="MessageTimeStamp"
+                                   Text="{Binding TimeStamp}"
                                    Style="{StaticResource DetailTimeStampStyle}"
                                    Grid.Row="3" />
                     </Grid>
