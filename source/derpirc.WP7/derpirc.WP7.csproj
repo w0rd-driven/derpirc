@@ -84,6 +84,7 @@
     <Compile Include="Helpers\DataTemplateSelector.cs" />
     <Compile Include="Helpers\INavigationService.cs" />
     <Compile Include="Helpers\MessageTemplateSelector.cs" />
+    <Compile Include="Helpers\WatermarkBehavior.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\ChannelDetailViewModel.cs" />
     <Compile Include="ViewModels\MentionDetailViewModel.cs" />

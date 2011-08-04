@@ -5,6 +5,8 @@
                             xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
                             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                            xmlns:blend="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+                            xmlns:helpers="clr-namespace:derpirc.Helpers"
                             mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="696"
                             FontFamily="{StaticResource PhoneFontFamilyNormal}"
                             FontSize="{StaticResource PhoneFontSizeNormal}"
@@ -52,9 +54,10 @@
                          Text="{Binding SendMessage, Mode=TwoWay}"
                          BorderThickness="0"
                          Margin="-12">
-                    <!--<blend:Interaction.Behaviors>
-                        <helpers:WatermarkBehavior Text="{Binding SendWatermark}" Foreground="DarkGray" />
-                    </blend:Interaction.Behaviors>-->
+                    <blend:Interaction.Behaviors>
+                        <helpers:WatermarkBehavior Watermark="{Binding SendWatermark}"
+                                                   Foreground="{StaticResource PhoneTextBoxReadOnlyBrush}" />
+                    </blend:Interaction.Behaviors>
                 </TextBox>
                 <Path Data="m 0,0 l 16,0 l 0,16 l -16,-16"
                       Fill="LightGray"
