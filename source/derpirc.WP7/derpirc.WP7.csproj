@@ -84,10 +84,14 @@
     <Compile Include="Helpers\MessageTemplateSelector.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\ChannelDetailViewModel.cs" />
+    <Compile Include="ViewModels\MentionDetailViewModel.cs" />
     <Compile Include="ViewModels\MessageDetailViewModel.cs" />
     <Compile Include="ViewModels\ViewModelLocator.cs" />
     <Compile Include="Views\ChannelDetailView.xaml.cs">
       <DependentUpon>ChannelDetailView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MentionDetailView.xaml.cs">
+      <DependentUpon>MentionDetailView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MessageDetailView.xaml.cs">
       <DependentUpon>MessageDetailView.xaml</DependentUpon>
@@ -145,6 +149,10 @@
     <Page Include="Views\ChannelDetailView.xaml">
       <SubType>Form</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\MentionDetailView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\MessageDetailView.xaml">
       <SubType>Form</SubType>

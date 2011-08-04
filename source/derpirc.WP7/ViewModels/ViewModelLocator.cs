@@ -204,6 +204,56 @@ namespace derpirc.ViewModels
 
         #endregion
 
+        #region MentionDetailViewModel
+
+        private static MentionDetailViewModel _mentionDetailViewModel;
+
+        /// <summary>
+        /// Gets the MentionDetailViewModel property.
+        /// </summary>
+        public static MentionDetailViewModel MentionDetailStatic
+        {
+            get
+            {
+                if (_mentionDetailViewModel == null)
+                    CreateMentionDetail();
+
+                return _mentionDetailViewModel;
+            }
+        }
+
+        /// <summary>
+        /// Gets the MentionDetailViewModel property.
+        /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance",
+            "CA1822:MarkMembersAsStatic",
+            Justification = "This non-static member is needed for data binding purposes.")]
+        public MentionDetailViewModel MentionDetailViewModel
+        {
+            get { return MentionDetailStatic; }
+        }
+
+        /// <summary>
+        /// Provides a deterministic way to delete the MentionDetailViewModel property.
+        /// </summary>
+        public static void ClearMentionDetail()
+        {
+            if (_mentionDetailViewModel != null)
+                _mentionDetailViewModel.Cleanup();
+            _mentionDetailViewModel = null;
+        }
+
+        /// <summary>
+        /// Provides a deterministic way to create the MentionDetailViewModel property.
+        /// </summary>
+        public static void CreateMentionDetail()
+        {
+            if (_mentionDetailViewModel == null)
+                _mentionDetailViewModel = new MentionDetailViewModel();
+        }
+
+        #endregion
+
         #region MessageSummaryViewModel
 
         private static MessageSummaryViewModel _messagesViewModel;
@@ -327,6 +377,7 @@ namespace derpirc.ViewModels
             ClearMain();
             ClearChannelSummary();
             ClearMentionSummary();
+            ClearMentionDetail();
             ClearChannelDetail();
             ClearMessageSummary();
             ClearMessageDetail();
