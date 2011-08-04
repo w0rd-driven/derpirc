@@ -83,6 +83,7 @@
     <Compile Include="Helpers\ApplicationFrameNavigationService.cs" />
     <Compile Include="Helpers\DataTemplateSelector.cs" />
     <Compile Include="Helpers\INavigationService.cs" />
+    <Compile Include="Helpers\LittleWatson.cs" />
     <Compile Include="Helpers\MessageTemplateSelector.cs" />
     <Compile Include="Helpers\WatermarkBehavior.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
