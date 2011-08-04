@@ -10,7 +10,7 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 
-namespace derpirc.Views
+namespace derpirc.Pages
 {
     public partial class ChannelSummaryView : UserControl
     {
