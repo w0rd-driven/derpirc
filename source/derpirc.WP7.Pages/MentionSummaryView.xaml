@@ -1,10 +1,12 @@
-﻿<UserControl x:Class="derpirc.Pages.MentionSummaryView"
+﻿<UserControl 
+             x:Class="derpirc.Pages.MentionSummaryView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
              xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:edc="clr-namespace:Microsoft.Expression.Controls;assembly=Microsoft.Expression.Drawing"
              mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="696"
              FontFamily="{StaticResource PhoneFontFamilyNormal}"
              FontSize="{StaticResource PhoneFontSizeNormal}"
@@ -22,10 +24,7 @@
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
         <TextBlock Text="{Binding NickName}" VerticalAlignment="Center" Style="{StaticResource PhoneTextLargeStyle}" TextWrapping="Wrap" />
-        <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right">
-            <TextBlock Text="Unread:" Style="{StaticResource PhoneTextSmallStyle}" />
-            <TextBlock Text="{Binding UnreadCount}" Foreground="{StaticResource PhoneAccentBrush}" FontSize="{StaticResource PhoneFontSizeLarge}" />
-        </StackPanel>
+		<edc:Callout Content="{Binding UnreadCount}" AnchorPoint="0.15,1.2" CalloutStyle="Rectangle" Grid.Column="1" Fill="{StaticResource PhoneDisabledBrush}" Height="40" Width="50" VerticalAlignment="Center" HorizontalAlignment="Right" FontSize="{StaticResource PhoneFontSizeMediumLarge}" />
         <Button Content="X" Grid.Column="2" Name="buttonRemove" />
         <Grid Grid.ColumnSpan="3" Grid.Row="2">
             <Grid.RowDefinitions>
