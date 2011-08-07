@@ -297,6 +297,7 @@
                   Height="12"
                   Width="20"
                   Stretch="Fill"
+                  HorizontalAlignment="Left"
                   Margin="10,0,0,0"
                   Grid.Row="1" />
             <Border x:Name="MessageContainer" Grid.Row="2" Background="{StaticResource PhoneAccentBrush}">
@@ -359,6 +360,7 @@
                               Height="12"
                               Width="20"
                               Stretch="Fill"
+                              HorizontalAlignment="Left"
                               Margin="10,0,0,0"
                               Grid.Row="1" />
                         <Border x:Name="MessageContainer" Grid.Row="2" Background="{StaticResource PhoneAccentBrush}">
