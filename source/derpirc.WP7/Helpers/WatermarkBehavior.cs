@@ -6,6 +6,7 @@ using System.Windows.Media;
 
 namespace derpirc.Helpers
 {
+    // Also includes UpdateOnTextChangedBehavior
     public class WatermarkBehavior : Behavior<TextBox>
     {
         public static readonly DependencyProperty WatermarkProperty = DependencyProperty.Register(
@@ -21,11 +22,21 @@ namespace derpirc.Helpers
             set { SetValue(WatermarkProperty, value); }
         }
 
+        public static readonly DependencyProperty ForegroundProperty = DependencyProperty.Register(
+                   "Foreground",
+                   typeof(Brush),
+                   typeof(WatermarkBehavior),
+                   new PropertyMetadata(new SolidColorBrush(Colors.Black)));
+
+        [Description("Gets or sets the watermark foreground brush")]
+        public Brush Foreground
+        {
+            get { return GetValue(ForegroundProperty) as Brush; }
+            set { SetValue(ForegroundProperty, value); }
+        }
+
         private bool _hasWatermark;
         private Brush _textBoxForeground;
-
-        public string Text { get; set; }
-        public Brush Foreground { get; set; }
 
         protected override void OnAttached()
         {
@@ -34,8 +45,24 @@ namespace derpirc.Helpers
             base.OnAttached();
             if (Watermark != null)
                 SetWatermarkText();
+            AssociatedObject.TextChanged += TextChanged;
             AssociatedObject.GotFocus += GotFocus;
             AssociatedObject.LostFocus += LostFocus;
+        }
+
+        protected override void OnDetaching()
+        {
+            base.OnDetaching();
+            AssociatedObject.TextChanged -= TextChanged;
+            AssociatedObject.GotFocus -= GotFocus;
+            AssociatedObject.LostFocus -= LostFocus;
+        }
+
+        private void TextChanged(object sender, TextChangedEventArgs e)
+        {
+            var binding = AssociatedObject.GetBindingExpression(TextBox.TextProperty);
+            if (binding != null)
+                binding.UpdateSource();
         }
 
         private void LostFocus(object sender, RoutedEventArgs e)
@@ -63,13 +90,6 @@ namespace derpirc.Helpers
             AssociatedObject.Foreground = Foreground;
             AssociatedObject.Text = Watermark;
             _hasWatermark = true;
-        }
-
-        protected override void OnDetaching()
-        {
-            base.OnDetaching();
-            AssociatedObject.GotFocus -= GotFocus;
-            AssociatedObject.LostFocus -= LostFocus;
         }
     }
 }
