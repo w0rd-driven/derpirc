@@ -167,6 +167,9 @@
   <ItemGroup>
     <Resource Include="ApplicationIcon.png" />
     <Resource Include="Background.png" />
+    <Content Include="Icons\appbar.send.text.rest.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="SplashScreenImage.jpg" />
   </ItemGroup>
   <ItemGroup>
