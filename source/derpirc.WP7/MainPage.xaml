@@ -4,6 +4,7 @@
                             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                             xmlns:i="http://schemas.microsoft.com/expression/blend/2008"
+                            xmlns:edc="clr-namespace:Microsoft.Expression.Controls;assembly=Microsoft.Expression.Drawing"
                             xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
                             xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
                             xmlns:controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls"
@@ -47,10 +48,9 @@
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Text="{Binding ChannelName}" VerticalAlignment="Center" Style="{StaticResource PhoneTextLargeStyle}" TextWrapping="Wrap" />
-                                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right">
-                                    <TextBlock Text="Unread:" Style="{StaticResource PhoneTextSmallStyle}" />
-                                    <TextBlock Text="{Binding UnreadCount}" Foreground="{StaticResource PhoneAccentBrush}" FontSize="{StaticResource PhoneFontSizeLarge}" />
-                                </StackPanel>
+                                <edc:Callout x:Name="calloutUnreadCount" Content="{Binding UnreadCount}" CalloutStyle="Rectangle" AnchorPoint="0.15,1.2" Grid.Column="1"
+                                             Fill="{StaticResource PhoneDisabledBrush}" Height="40" Width="50" VerticalAlignment="Center" HorizontalAlignment="Right"
+                                             FontSize="{StaticResource PhoneFontSizeMediumLarge}" />
                                 <Button Content="X" Grid.Column="2" Name="buttonRemove" />
                                 <Grid Grid.ColumnSpan="3" Grid.Row="2">
                                     <Grid.RowDefinitions>
@@ -63,12 +63,15 @@
                                         <ColumnDefinition Width="Auto" />
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Text="{Binding MessageText}"
-                                               Style="{StaticResource SummaryMessageStyle}"/>
-                                    <TextBlock Text="{Binding MessageTimeStamp}"
+                                    <TextBlock x:Name="textBlockMessageText"
+                                               Text="{Binding MessageText}"
+                                               Style="{StaticResource SummaryMessageStyle}" />
+                                    <TextBlock x:Name="textBlockMessageTimeStamp"
+                                               Text="{Binding MessageTimeStamp}"
                                                Style="{StaticResource SummaryTimeStampStyle}"
                                                Grid.Row="1" />
-                                    <TextBlock Text="{Binding MessageSource}"
+                                    <TextBlock x:Name="textBlockMessageSource"
+                                               Text="{Binding MessageSource}"
                                                Style="{StaticResource SummarySourceStyle}"
                                                Grid.Row="2" />
                                 </Grid>
@@ -98,10 +101,9 @@
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Text="{Binding NickName}" VerticalAlignment="Center" Style="{StaticResource PhoneTextLargeStyle}" TextWrapping="Wrap" />
-                                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right">
-                                    <TextBlock Text="Unread:" Style="{StaticResource PhoneTextSmallStyle}" />
-                                    <TextBlock Text="{Binding UnreadCount}" Foreground="{StaticResource PhoneAccentBrush}" FontSize="{StaticResource PhoneFontSizeLarge}" />
-                                </StackPanel>
+                                <edc:Callout x:Name="calloutUnreadCount" Content="{Binding UnreadCount}" CalloutStyle="Rectangle" AnchorPoint="0.15,1.2" Grid.Column="1"
+                                             Fill="{StaticResource PhoneDisabledBrush}" Height="40" Width="50" VerticalAlignment="Center" HorizontalAlignment="Right"
+                                             FontSize="{StaticResource PhoneFontSizeMediumLarge}" />
                                 <Button Content="X" Grid.Column="2" Name="buttonRemove" />
                                 <Grid Grid.ColumnSpan="3" Grid.Row="2">
                                     <Grid.RowDefinitions>
@@ -114,12 +116,15 @@
                                         <ColumnDefinition Width="Auto" />
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Text="{Binding MessageText}"
-                                               Style="{StaticResource SummaryMessageStyle}"/>
-                                    <TextBlock Text="{Binding MessageTimeStamp}"
+                                    <TextBlock x:Name="textBlockMessageText"
+                                               Text="{Binding MessageText}"
+                                               Style="{StaticResource SummaryMessageStyle}" />
+                                    <TextBlock x:Name="textBlockMessageTimeStamp"
+                                               Text="{Binding MessageTimeStamp}"
                                                Style="{StaticResource SummaryTimeStampStyle}"
                                                Grid.Row="1" />
-                                    <TextBlock Text="{Binding MessageSource}"
+                                    <TextBlock x:Name="textBlockMessageSource"
+                                               Text="{Binding MessageSource}"
                                                Style="{StaticResource SummarySourceStyle}"
                                                Grid.Row="2" />
                                 </Grid>
@@ -149,10 +154,9 @@
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Text="{Binding NickName}" VerticalAlignment="Center" Style="{StaticResource PhoneTextLargeStyle}" TextWrapping="Wrap" />
-                                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right">
-                                    <TextBlock Text="Unread:" Style="{StaticResource PhoneTextSmallStyle}" />
-                                    <TextBlock Text="{Binding UnreadCount}" Foreground="{StaticResource PhoneAccentBrush}" FontSize="{StaticResource PhoneFontSizeLarge}" />
-                                </StackPanel>
+                                <edc:Callout x:Name="calloutUnreadCount" Content="{Binding UnreadCount}" CalloutStyle="Rectangle" AnchorPoint="0.15,1.2" Grid.Column="1"
+                                             Fill="{StaticResource PhoneDisabledBrush}" Height="40" Width="50" VerticalAlignment="Center" HorizontalAlignment="Right"
+                                             FontSize="{StaticResource PhoneFontSizeMediumLarge}" />
                                 <Button Content="X" Grid.Column="2" Name="buttonRemove" />
                                 <Grid Grid.ColumnSpan="3" Grid.Row="2">
                                     <Grid.RowDefinitions>
@@ -165,12 +169,15 @@
                                         <ColumnDefinition Width="Auto" />
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Text="{Binding MessageText}"
-                                               Style="{StaticResource SummaryMessageStyle}"/>
-                                    <TextBlock Text="{Binding MessageTimeStamp}"
+                                    <TextBlock x:Name="textBlockMessageText"
+                                               Text="{Binding MessageText}"
+                                               Style="{StaticResource SummaryMessageStyle}" />
+                                    <TextBlock x:Name="textBlockMessageTimeStamp"
+                                               Text="{Binding MessageTimeStamp}"
                                                Style="{StaticResource SummaryTimeStampStyle}"
                                                Grid.Row="1" />
-                                    <TextBlock Text="{Binding MessageSource}"
+                                    <TextBlock x:Name="textBlockMessageSource"
+                                               Text="{Binding MessageSource}"
                                                Style="{StaticResource SummarySourceStyle}"
                                                Grid.Row="2" />
                                 </Grid>

@@ -25,7 +25,9 @@
 			<ColumnDefinition Width="Auto" />
 		</Grid.ColumnDefinitions>
 		<TextBlock Text="{Binding ChannelName}" VerticalAlignment="Center" Style="{StaticResource PhoneTextLargeStyle}" TextWrapping="Wrap" />
-		<edc:Callout Content="{Binding UnreadCount}" AnchorPoint="0.15,1.2" CalloutStyle="Rectangle" Grid.Column="1" Fill="{StaticResource PhoneDisabledBrush}" Height="40" Width="50" VerticalAlignment="Center" HorizontalAlignment="Right" FontSize="{StaticResource PhoneFontSizeMediumLarge}" />
+        <edc:Callout x:Name="calloutUnreadCount" Content="{Binding UnreadCount}" CalloutStyle="Rectangle" AnchorPoint="0.15,1.2" Grid.Column="1"
+                     Fill="{StaticResource PhoneDisabledBrush}" Height="40" Width="50" VerticalAlignment="Center" HorizontalAlignment="Right"
+                     FontSize="{StaticResource PhoneFontSizeMediumLarge}" />
 		<Button Content="X" Grid.Column="2" x:Name="buttonRemove" />
 		<Grid Grid.ColumnSpan="3" Grid.Row="2">
 			<Grid.RowDefinitions>
@@ -38,14 +40,17 @@
 				<ColumnDefinition Width="Auto" />
 				<ColumnDefinition Width="Auto" />
 			</Grid.ColumnDefinitions>
-			<TextBlock Text="{Binding MessageText}"
-				Style="{StaticResource SummaryMessageStyle}"/>
-			<TextBlock Text="{Binding MessageTimeStamp}"
-				Style="{StaticResource SummaryTimeStampStyle}"
-				Grid.Row="1" />
-			<TextBlock Text="{Binding MessageSource}"
-				Style="{StaticResource SummarySourceStyle}"
-				Grid.Row="2" />
+            <TextBlock x:Name="textBlockMessageText"
+                       Text="{Binding MessageText}"
+                       Style="{StaticResource SummaryMessageStyle}" />
+            <TextBlock x:Name="textBlockMessageTimeStamp"
+                       Text="{Binding MessageTimeStamp}"
+                       Style="{StaticResource SummaryTimeStampStyle}"
+                       Grid.Row="1" />
+            <TextBlock x:Name="textBlockMessageSource"
+                       Text="{Binding MessageSource}"
+                       Style="{StaticResource SummarySourceStyle}"
+                       Grid.Row="2" />
 		</Grid>
 	</Grid>
 </UserControl>
