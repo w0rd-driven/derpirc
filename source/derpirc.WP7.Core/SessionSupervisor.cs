@@ -19,6 +19,7 @@ namespace derpirc.Core
         private Session _session;
         private IList<IrcClient> _clients;
         private IList<int> _clientStates;
+        private IrcRegistrationInfo _registrationData;
 
         private ChannelsSupervisor _channelSupervisor;
 
@@ -37,26 +38,46 @@ namespace derpirc.Core
 
         public void Initialize()
         {
-            _clients.Add(InitializeClient());
-            _clients.Add(InitializeClient());
-            // TODO: Database
-            //_unitOfWork = new DataUnitOfWork();
-            //_unitOfWork.InitializeDatabase();
+            // Assume database is at least populated with Default Factory settings
+
+            // HACK: Test First Init
+            _unitOfWork.InitializeDatabase(true);
+
             var session = _unitOfWork.Sessions.FindBy(x => x.Name == "Default").FirstOrDefault();
             _session = session;
+            var servers = _session.Servers.ToList();
+            servers.ForEach(item =>
+            {
+                var serverName = string.Empty;
+                serverName = item.HostName;
+                // HACK: Fix up special Factory.Create case
+                if (item.Server == null)
+                {
+                    var basedOnServer = GetBasedOnServer(serverName);
+                    if (basedOnServer != null)
+                    {
+                        item.Server = basedOnServer;
+                        item.BasedOnId = basedOnServer.Id;
+                    }
+                }
+                var client = InitializeClient();
+                client.ClientId = item.Id.ToString();
+                _clients.Add(client);
+            });
+
             // HACK: LazyLoad this somewhere else and inject the dependency
+            _unitOfWork.Commit();
             _channelSupervisor = new ChannelsSupervisor(_unitOfWork, _session);
         }
 
         public void Connect()
         {
-            var registrationData = GetRegistrationInfo();
+            _registrationData = GetRegistrationInfo();
             for (int index = 0; index < _clients.Count; index++)
             {
                 var client = _clients[index];
-                client.ClientId = (index + 1).ToString();
-                var server = GetServer(index + 1);
-                client.Connect(server.HostName, server.Port, false, registrationData);
+                var server = GetServer(client.ClientId);
+                client.Connect(server.HostName, server.Port, false, _registrationData);
             }
         }
 
@@ -99,7 +120,6 @@ namespace derpirc.Core
         private void Client_Connected(object sender, EventArgs e)
         {
             var client = sender as IrcClient;
-            _clientStates.Add(0);
             // TODO: Pass through a standard OnConnected event
         }
 
@@ -115,6 +135,7 @@ namespace derpirc.Core
 
         private void Client_Error(object sender, IrcErrorEventArgs e)
         {
+            var client = sender as IrcClient;
             if (e.Error.Message == "No such host is known")
             {
                 // TODO: Could not resolve hostname
@@ -133,6 +154,7 @@ namespace derpirc.Core
             client.LocalUser.NoticeReceived += LocalUser_NoticeReceived;
             client.LocalUser.MessageReceived += LocalUser_MessageReceived;
             _channelSupervisor.LocalUsers.Add(client.LocalUser);
+            _clientStates.Add(0);
             //ProcessSession(client);
             //OnClientRegistered(client);
         }
@@ -178,15 +200,23 @@ namespace derpirc.Core
                 var matchedServer = GetServer(clientId, client.ServerName);
                 var matchedNetwork = GetNetwork(client.WelcomeMessage);
                 LinkSession(matchedServer, matchedNetwork);
-                JoinSession(matchedServer, client);
+                // TODO: Wire up settings UI call for IsAutoJoinSession
+                //JoinSession(matchedServer, client);
             }
         }
 
-        private SessionServer GetServer(int clientId)
+        private Server GetBasedOnServer(string hostName)
         {
+            return _unitOfWork.Servers.FindBy(x => x.HostName == hostName).FirstOrDefault();
+        }
+
+        private SessionServer GetServer(string clientId)
+        {
+            var integerId = -1;
+            int.TryParse(clientId, out integerId);
             // TODO: Error handling make sure _session != null
             // Also make sure session is created first either through Committing defaults or whatever need be.
-            return _session.Servers.FirstOrDefault(x => x.Id == clientId);
+            return _session.Servers.FirstOrDefault(x => x.Id == integerId);
         }
 
         private SessionServer GetServer(int clientId, string serverName)
@@ -195,7 +225,7 @@ namespace derpirc.Core
             var result = _session.Servers.FirstOrDefault(x => x.Id == clientId);
             if (result != null)
             {
-                result.HostName = serverName;
+                result.HostName = serverName.ToLower();
             }
             return result;
         }
@@ -211,7 +241,7 @@ namespace derpirc.Core
             var result = _session.Networks.FirstOrDefault(x => x.Name.ToLower() == networkName.ToLower());
             if (result != null)
             {
-                result.Name = networkName;
+                result.Name = networkName.ToLower();
             }
             return result;
         }

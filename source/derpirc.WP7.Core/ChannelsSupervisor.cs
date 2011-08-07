@@ -117,9 +117,7 @@ namespace derpirc.Core
 
         private ChannelSummary GetChannelSummary(IrcChannel channel)
         {
-            var clientId = -1;
-            int.TryParse(channel.Client.ClientId, out clientId);
-            var server = GetServer(clientId);
+            var server = GetServerByName(channel.Client.ServerName);
             var channelSummary = _unitOfWork.Channels.FindBy(x => x.ServerId == server.Id && x.Name == channel.Name.ToLower()).FirstOrDefault();
             if (channelSummary == null)
             {
@@ -135,17 +133,16 @@ namespace derpirc.Core
             return channelSummary;
         }
 
-        private SessionServer GetServer(int clientId)
+        private SessionServer GetServerByName(string serverName)
         {
             // TODO: Error handling make sure _session != null
-            return _session.Servers.FirstOrDefault(x => x.Id == clientId);
+            return _session.Servers.FirstOrDefault(x => x.HostName == serverName);
         }
 
         private ChannelMessage GetIrcMessage(ChannelSummary channelSummary, IrcMessageEventArgs eventArgs)
         {
             var result = new ChannelMessage();
-            var line = eventArgs.Text;
-
+            //var line = eventArgs.Text;
             //if (line.Length > 1 && line.StartsWith("."))
             //{
             //    // Process command.
