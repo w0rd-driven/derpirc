@@ -76,6 +76,7 @@
     <Compile Include="IMessageSummary.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="MessageTypeEnum.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings\Client.cs" />
     <Compile Include="Settings\Factory.cs" />

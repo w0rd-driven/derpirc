@@ -23,6 +23,8 @@ namespace derpirc.Data
         public string Source { get; set; }
         [Column(CanBeNull = true)]
         public string Text { get; set; }
+        [Column(CanBeNull = true)]
+        public MessageType Type { get; set; }
 
         #endregion
 

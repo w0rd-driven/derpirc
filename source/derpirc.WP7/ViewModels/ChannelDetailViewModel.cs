@@ -210,32 +210,7 @@ namespace derpirc.ViewModels
             if (IsInDesignMode)
             {
                 // Code runs in Blend --> create design time data.
-                Model = new ChannelSummary();
-                Model.Name = "#Test";
-                Model.Topic = "This is a test topic";
-                Model.Count = 20;
-                ServerName = "irc.efnet.org";
-                _messagesList = new ObservableCollection<ChannelMessage>();
-                _messagesList.Add(new ChannelMessage()
-                {
-                    Summary = Model,
-                    SummaryId = Model.Id,
-                    Source = "w0rd-driven",
-                    Text = "urmom!",
-                    TimeStamp = DateTime.Now,
-                });
-                _messagesList.Add(new ChannelMessage()
-                {
-                    Summary = Model,
-                    SummaryId = Model.Id,
-                    Source = "w0rd-driven",
-                    Text = "urmom!",
-                    TimeStamp = DateTime.Now,
-                });
-                ChannelName = Model.Name;
-                ChannelTopic = Model.Topic;
-                SendWatermark = string.Format("chat on {0}", ServerName);
-                Messages = new CollectionViewSource() { Source = _messagesList };
+                Init();
             }
             else
             {
@@ -254,7 +229,7 @@ namespace derpirc.ViewModels
             SendWatermark = string.Format("chat on {0}", ServerName);
         }
 
-        private void OnNavigatedTo(IDictionary<string, string> queryString)
+        private void Init()
         {
             Model = new ChannelSummary();
             Model.Name = "#Test";
@@ -269,19 +244,26 @@ namespace derpirc.ViewModels
                 Source = "w0rd-driven",
                 Text = "urmom!",
                 TimeStamp = DateTime.Now,
+                Type = MessageType.Theirs,
             });
             _messagesList.Add(new ChannelMessage()
             {
                 Summary = Model,
                 SummaryId = Model.Id,
-                Source = "w0rd-driven",
-                Text = "urmom!",
+                Source = "derpirc",
+                Text = "no, urmom!",
                 TimeStamp = DateTime.Now,
+                Type = MessageType.Mine,
             });
             ChannelName = Model.Name;
             ChannelTopic = Model.Topic;
             SendWatermark = string.Format("chat on {0}", ServerName);
             Messages = new CollectionViewSource() { Source = _messagesList };
+        }
+
+        private void OnNavigatedTo(IDictionary<string, string> queryString)
+        {
+            Init();
             //TODO: Link Model and VM via Events
         }
 

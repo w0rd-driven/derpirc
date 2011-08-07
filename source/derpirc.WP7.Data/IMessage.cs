@@ -13,5 +13,6 @@ namespace derpirc.Data
         // IrcDotNet.IIrcMessageSource
         string Source { get; set; }
         string Text { get; set; }
+        MessageType Type { get; set; }
     }
 }

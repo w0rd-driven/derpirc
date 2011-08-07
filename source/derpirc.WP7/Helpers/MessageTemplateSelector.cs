@@ -21,10 +21,15 @@ namespace derpirc.Helpers
             var entity = item as Data.ChannelMessage;
             if (entity != null)
             {
-                if (entity.Source == "w0rd-driven")
-                    return TemplateMyMessage;
-                else
-                    return TemplateTheirMessage;
+                switch (entity.Type)
+                {
+                    case derpirc.Data.MessageType.Mine:
+                        return TemplateMyMessage;
+                    case derpirc.Data.MessageType.Theirs:
+                        return TemplateTheirMessage;
+                    default:
+                        break;
+                }
             }
 
             return base.SelectTemplate(item, container);
