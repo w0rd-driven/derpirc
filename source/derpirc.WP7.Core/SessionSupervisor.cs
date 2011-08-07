@@ -22,8 +22,8 @@ namespace derpirc.Core
 
         private ChannelsSupervisor _channelSupervisor;
 
-        // EFNet: Welcome to the $network Internet Relay Chat Network $nick
-        // PowerPrecision: Welcome to the $network IRC Network $nick!$email@$host
+        // EFNet: Welcome to the $server Internet Relay Chat Network $nick
+        // PowerPrecision: Welcome to the $server IRC Network $nick!$email@$host
         private static readonly Regex welcomeRegex = new Regex("^.*?Welcome to the (.*?) (IRC|Internet Relay Chat) Network (.*)", RegexOptions.Compiled);
 
         public SessionSupervisor(DataUnitOfWork unitOfWork)
@@ -115,7 +115,10 @@ namespace derpirc.Core
 
         private void Client_Error(object sender, IrcErrorEventArgs e)
         {
-            throw new NotImplementedException();
+            if (e.Error.Message == "No such host is known")
+            {
+                // TODO: Could not resolve hostname
+            }
         }
 
         private void Client_ErrorMessageReceived(object sender, IrcErrorMessageEventArgs e)
@@ -182,13 +185,14 @@ namespace derpirc.Core
         private SessionServer GetServer(int clientId)
         {
             // TODO: Error handling make sure _session != null
-            return _session.Servers.FirstOrDefault(x => x.BasedOnId == clientId); ;
+            // Also make sure session is created first either through Committing defaults or whatever need be.
+            return _session.Servers.FirstOrDefault(x => x.Id == clientId);
         }
 
         private SessionServer GetServer(int clientId, string serverName)
         {
             // TODO: Error handling make sure _session != null
-            var result = _session.Servers.FirstOrDefault(x => x.BasedOnId == clientId);
+            var result = _session.Servers.FirstOrDefault(x => x.Id == clientId);
             if (result != null)
             {
                 result.HostName = serverName;
@@ -210,6 +214,18 @@ namespace derpirc.Core
                 result.Name = networkName;
             }
             return result;
+        }
+
+        private User GetUser()
+        {
+            var sessionUser = Factory.CreateUser();
+            //var sessionUser = _unitOfWork.User.FindBy(x => x.Name == channel.Name.ToLower()).FirstOrDefault();
+            //if (sessionUser == null)
+            //{
+            //    sessionUser = Factory.CreateUser();
+            //    _unitOfWork.Commit();
+            //}
+            return sessionUser;
         }
 
         private void LinkSession(SessionServer server, SessionNetwork network)

@@ -60,6 +60,7 @@ namespace derpirc.Core
             e.Channel.UserLeft += Channel_UserLeft;
             e.Channel.MessageReceived += Channel_MessageReceived;
             e.Channel.NoticeReceived += Channel_NoticeReceived;
+            JoinChannel(e.Channel);
             //OnLocalUserJoinedChannel(localUser, e);
         }
 
@@ -107,17 +108,24 @@ namespace derpirc.Core
             //OnChannelNoticeReceived(channel, e);
         }
 
+        private void JoinChannel(IrcChannel channel)
+        {
+            // Create the ChannelSummary record early
+            var channelSummary = GetChannelSummary(channel);
+            // TODO: Bubble up a UI event
+        }
+
         private ChannelSummary GetChannelSummary(IrcChannel channel)
         {
-            var channelSummary = _unitOfWork.Channels.FindBy(x => x.Name == channel.Name.ToLower()).FirstOrDefault();
+            var clientId = -1;
+            int.TryParse(channel.Client.ClientId, out clientId);
+            var server = GetServer(clientId);
+            var channelSummary = _unitOfWork.Channels.FindBy(x => x.ServerId == server.Id && x.Name == channel.Name.ToLower()).FirstOrDefault();
             if (channelSummary == null)
             {
                 channelSummary = new ChannelSummary();
                 channelSummary.Name = channel.Name.ToLower();
                 // HACK: Get server from _session via dependency injection
-                var clientId = -1;
-                int.TryParse(channel.Client.ClientId, out clientId);
-                var server = GetServer(clientId);
                 channelSummary.Server = server;
                 channelSummary.ServerId = server.Id;
 
@@ -130,7 +138,7 @@ namespace derpirc.Core
         private SessionServer GetServer(int clientId)
         {
             // TODO: Error handling make sure _session != null
-            return _session.Servers.FirstOrDefault(x => x.BasedOnId == clientId); ;
+            return _session.Servers.FirstOrDefault(x => x.Id == clientId);
         }
 
         private ChannelMessage GetIrcMessage(ChannelSummary channelSummary, IrcMessageEventArgs eventArgs)
