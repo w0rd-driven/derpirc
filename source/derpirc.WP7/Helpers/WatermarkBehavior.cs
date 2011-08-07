@@ -22,18 +22,7 @@ namespace derpirc.Helpers
             set { SetValue(WatermarkProperty, value); }
         }
 
-        public static readonly DependencyProperty ForegroundProperty = DependencyProperty.Register(
-                   "Foreground",
-                   typeof(Brush),
-                   typeof(WatermarkBehavior),
-                   new PropertyMetadata(new SolidColorBrush(Colors.Black)));
-
-        [Description("Gets or sets the watermark foreground brush")]
-        public Brush Foreground
-        {
-            get { return GetValue(ForegroundProperty) as Brush; }
-            set { SetValue(ForegroundProperty, value); }
-        }
+        public Brush Foreground { get; set; }
 
         private bool _hasWatermark;
         private Brush _textBoxForeground;
