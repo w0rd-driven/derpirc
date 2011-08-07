@@ -11,9 +11,23 @@ namespace derpirc.Data
         private Binary version;
         private EntityRef<ChannelSummary> _summary;
 
+        #region Primitive Properties
+
         [Column(IsPrimaryKey = true, IsDbGenerated = true)]
         public int Id { get; set; }
-        // 1:M with IMessageSummary
+        [Column(CanBeNull = true)]
+        public DateTime TimeStamp { get; set; }
+        [Column(CanBeNull = true)]
+        public bool IsRead { get; set; }
+        [Column(CanBeNull = true)]
+        public string Source { get; set; }
+        [Column(CanBeNull = true)]
+        public string Text { get; set; }
+
+        #endregion
+
+        #region Navigation Properties
+
         [Column(CanBeNull = false)]
         public int SummaryId { get; set; }
         [Association(Name = "Summary_Item", ThisKey = "SummaryId", OtherKey = "Id", IsForeignKey = true)]
@@ -44,14 +58,8 @@ namespace derpirc.Data
                 }
             }
         }
-        [Column(CanBeNull = true)]
-        public DateTime TimeStamp { get; set; }
-        [Column(CanBeNull = true)]
-        public bool IsRead { get; set; }
-        [Column(CanBeNull = true)]
-        public string Source { get; set; }
-        [Column(CanBeNull = true)]
-        public string Text { get; set; }
+
+        #endregion
 
         public ChannelMessage()
         {

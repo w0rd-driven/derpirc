@@ -45,18 +45,18 @@ namespace derpirc.ViewModels
             }
         }
 
-        private string _serverName;
-        public string ServerName
+        private string _networkName;
+        public string NetworkName
         {
-            get { return _serverName; }
+            get { return _networkName; }
             set
             {
-                if (_serverName == value)
+                if (_networkName == value)
                     return;
 
-                var oldValue = _serverName;
-                _serverName = value;
-                RaisePropertyChanged(() => ServerName);
+                var oldValue = _networkName;
+                _networkName = value;
+                RaisePropertyChanged(() => NetworkName);
             }
         }
 
@@ -180,9 +180,14 @@ namespace derpirc.ViewModels
             // HACK: Temporary
             model.Name = "#Test";
             model.Topic = "This is a test topic";
+            var network = new Data.Settings.SessionNetwork()
+            {
+                Name = "EFNet",
+            };
             model.Server = new Data.Settings.SessionServer()
             {
-                DisplayName = "irc.efnet.org",
+                HostName = "irc.efnet.org",
+                Network = network,
             };
             model.LastItem = new ChannelMessage()
             {
@@ -206,12 +211,12 @@ namespace derpirc.ViewModels
 
             Model = model;
             ChannelName = Model.Name;
-            ServerName = Model.Server.DisplayName;
+            NetworkName = Model.Server.Network.Name;
             ChannelTopic = Model.Topic;
             UnreadCount = Model.UnreadCount;
             LastMessage = Model.LastItem as ChannelMessage;
             MessageIsRead = LastMessage.IsRead;
-            MessageSource = LastMessage.Source + " on " + ServerName;
+            MessageSource = LastMessage.Source + " on " + NetworkName;
             MessageText = LastMessage.Text;
             MessageTimeStamp = LastMessage.TimeStamp;
         }
