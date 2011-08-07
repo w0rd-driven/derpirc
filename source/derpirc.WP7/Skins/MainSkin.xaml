@@ -8,6 +8,7 @@
                     xmlns:controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls"
                     xmlns:primitives="clr-namespace:Microsoft.Phone.Controls.Primitives;assembly=Microsoft.Phone.Controls"
                     xmlns:helpers="clr-namespace:derpirc.Helpers"
+                    xmlns:edc="clr-namespace:Microsoft.Expression.Controls;assembly=Microsoft.Expression.Drawing"
                     mc:Ignorable="d">
     <!-- Converters -->
     <!-- Fonts -->
@@ -51,24 +52,24 @@
         <Setter Property="HorizontalAlignment" Value="Right" />
         <Setter Property="Margin" Value="5" />
     </Style>
-    <Style x:Key="DetailSourceStyle" TargetType="TextBlock"  BasedOn="{StaticResource TextBlockBase}">
+    <Style x:Key="DetailSourceStyle" TargetType="TextBlock" BasedOn="{StaticResource TextBlockBase}">
         <Setter Property="FontSize" Value="{StaticResource PhoneFontSizeSmall}" />
         <Setter Property="Margin" Value="5" />
         <Setter Property="TextWrapping" Value="Wrap" />
     </Style>
-    <Style x:Key="SummaryMessageStyle" TargetType="TextBlock"  BasedOn="{StaticResource TextBlockBase}">
+    <Style x:Key="SummaryMessageStyle" TargetType="TextBlock" BasedOn="{StaticResource TextBlockBase}">
         <Setter Property="Foreground" Value="{StaticResource PhoneAccentBrush}" />
         <Setter Property="Margin" Value="5" />
         <Setter Property="TextWrapping" Value="Wrap" />
         <Setter Property="TextTrimming" Value="WordEllipsis" />
     </Style>
-    <Style x:Key="SummaryTimeStampStyle" TargetType="TextBlock"  BasedOn="{StaticResource TextBlockBase}">
+    <Style x:Key="SummaryTimeStampStyle" TargetType="TextBlock" BasedOn="{StaticResource TextBlockBase}">
         <Setter Property="FontSize" Value="{StaticResource PhoneFontSizeSmall}" />
         <Setter Property="Foreground" Value="{StaticResource PhoneSubtleBrush}" />
         <Setter Property="HorizontalAlignment" Value="Right"/>
         <Setter Property="Margin" Value="5" />
     </Style>
-    <Style x:Key="SummarySourceStyle" TargetType="TextBlock"  BasedOn="{StaticResource TextBlockBase}">
+    <Style x:Key="SummarySourceStyle" TargetType="TextBlock" BasedOn="{StaticResource TextBlockBase}">
         <Setter Property="FontSize" Value="{StaticResource PhoneFontSizeSmall}" />
         <Setter Property="Margin" Value="5" />
         <Setter Property="TextWrapping" Value="Wrap" />
@@ -93,6 +94,7 @@
         <Setter Property="HorizontalAlignment" Value="Stretch"/>
     </Style>
     <Style x:Key="HyperlinkButtonContentStyle" TargetType="HyperlinkButton">
+        <Setter Property="FontFamily" Value="{StaticResource FontFamilyNormal}"/>
         <Setter Property="Foreground" Value="{StaticResource PhoneForegroundBrush}" />
         <Setter Property="Background" Value="{StaticResource PhoneBackgroundBrush}" />
         <Setter Property="Padding" Value="0" />
@@ -238,11 +240,11 @@
                         <Border x:Name="EnabledBorder" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Margin="{StaticResource PhoneTouchTargetOverhang}">
                             <ContentControl x:Name="ContentElement" BorderThickness="0" HorizontalContentAlignment="Stretch" Margin="{StaticResource PhoneTextBoxInnerMargin}" Padding="{TemplateBinding Padding}" VerticalContentAlignment="Stretch"/>
                         </Border>
-                        <Path x:Name="PathTickRight" Data="m 0,0 l 16,0 l 0,16 l -16,-16" Margin="0,0,22,0" Stretch="Fill" UseLayoutRounding="False" Height="12" Width="16" VerticalAlignment="Bottom" HorizontalAlignment="Right" d:LayoutOverrides="GridBox" StrokeThickness="3">
-                            <Path.Fill>
-                                <SolidColorBrush Color="{StaticResource PhoneTextBoxColor}"/>
-                            </Path.Fill>
-                        </Path>
+                    	<Path x:Name="PathTickRight" Data="m 0,0 l 16,0 l 0,16 l -16,-16" Margin="0,0,22,0" Stretch="Fill" UseLayoutRounding="False" Height="12" Width="20" VerticalAlignment="Bottom" HorizontalAlignment="Right" d:LayoutOverrides="GridBox" StrokeThickness="3">
+                    		<Path.Fill>
+                    			<SolidColorBrush Color="{StaticResource PhoneTextBoxColor}"/>
+                    		</Path.Fill>
+                    	</Path>
                         <Border x:Name="DisabledOrReadonlyBorder" BorderBrush="{StaticResource PhoneDisabledBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="Transparent" Margin="{StaticResource PhoneTouchTargetOverhang}" Visibility="Collapsed">
                             <TextBox x:Name="DisabledOrReadonlyContent" Background="Transparent" Foreground="{StaticResource PhoneDisabledBrush}" FontWeight="{TemplateBinding FontWeight}" FontStyle="{TemplateBinding FontStyle}" FontSize="{TemplateBinding FontSize}" FontFamily="{TemplateBinding FontFamily}" IsReadOnly="True" SelectionForeground="{TemplateBinding SelectionForeground}" SelectionBackground="{TemplateBinding SelectionBackground}" TextAlignment="{TemplateBinding TextAlignment}" TextWrapping="{TemplateBinding TextWrapping}" Text="{TemplateBinding Text}" Template="{StaticResource PhoneDisabledTextBoxTemplate}"/>
                         </Border>
@@ -257,26 +259,26 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <Rectangle Name="MessageContainer"
-                       Fill="{StaticResource PhoneAccentBrush}"
-                       Grid.RowSpan="2" />
-            <TextBlock Name="MessageText"
-                       Text="{Binding Text}" 
-                       Style="{StaticResource DetailMessageStyle}"/>
-            <TextBlock Name="MessageTimeStamp"
-                       Text="{Binding TimeStamp}"
-                       Style="{StaticResource DetailTimeStampStyle}"
-                       Grid.Row="1" />
-            <Path Data="m 0,0 l 16,0 l 0,16 l -16,-16"
-                  Fill="{Binding Fill, ElementName=MessageContainer}"
+            <Border x:Name="MessageContainer" Background="{StaticResource PhoneAccentBrush}">
+                <StackPanel>
+                    <TextBlock x:Name="MessageText"
+                               Text="{Binding Text}"
+                               Style="{StaticResource DetailMessageStyle}" />
+                    <TextBlock x:Name="MessageTimeStamp"
+                               Text="{Binding TimeStamp}"
+                               Style="{StaticResource DetailTimeStampStyle}" />
+                </StackPanel>
+       	    </Border>
+            <Path x:Name="PathTick"
+                  Data="m 0,0 l 16,0 l 0,16 l -16,-16"
+           	      Fill="{Binding Background, ElementName=MessageContainer}"
                   Height="12"
-                  Width="16"
+                  Width="20"
                   Stretch="Fill"
                   HorizontalAlignment="Right"
                   Margin="0,0,10,0"
-                  Grid.Row="2" />
+                  Grid.Row="1" />
         </Grid>
     </DataTemplate>
     <DataTemplate x:Key="TemplateDetailTheirMessage">
@@ -285,30 +287,28 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <TextBlock Name="MessageSource"
+            <TextBlock x:Name="MessageSource"
                        Text="{Binding Source}"
                        Style="{StaticResource DetailSourceStyle}" />
-            <Path Data="m 0,0 l 0,16 l 16,0 l -16,-16"
-                  Fill="{Binding Fill, ElementName=MessageContainer}"
+        	<Path x:Name="PathTick"
+                  Data="m 0,0 l 0,16 l 16,0 l -16,-16"
+                  Fill="{Binding Background, ElementName=MessageContainer}"
                   Height="12"
-                  Width="16"
+                  Width="20"
                   Stretch="Fill"
                   Margin="10,0,0,0"
                   Grid.Row="1" />
-            <Rectangle Name="MessageContainer"
-                       Fill="{StaticResource PhoneAccentBrush}"
-                       Grid.Row="2"
-                       Grid.RowSpan="2" />
-            <TextBlock Name="MessageText"
-                       Text="{Binding Text}" 
-                       Style="{StaticResource DetailMessageStyle}" 
-                       Grid.Row="2" />
-            <TextBlock Name="MessageTimeStamp"
-                       Text="{Binding TimeStamp}"
-                       Style="{StaticResource DetailTimeStampStyle}"
-                       Grid.Row="3" />
+            <Border x:Name="MessageContainer" Grid.Row="2" Background="{StaticResource PhoneAccentBrush}">
+                <StackPanel>
+                    <TextBlock x:Name="MessageText"
+                               Text="{Binding Text}"
+                               Style="{StaticResource DetailMessageStyle}" />
+                    <TextBlock x:Name="MessageTimeStamp"
+                               Text="{Binding TimeStamp}"
+                               Style="{StaticResource DetailTimeStampStyle}" />
+                </StackPanel>
+       	    </Border>
         </Grid>
     </DataTemplate>
     <DataTemplate x:Key="TemplateDetailMessageSelector">
@@ -319,26 +319,26 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-                        <Rectangle Name="MessageContainer"
-                                   Fill="{StaticResource PhoneAccentBrush}"
-                                   Grid.RowSpan="2" />
-                        <TextBlock Name="MessageText"
-                                   Text="{Binding Text}" 
-                                   Style="{StaticResource DetailMessageStyle}"/>
-                        <TextBlock Name="MessageTimeStamp"
-                                   Text="{Binding TimeStamp}"
-                                   Style="{StaticResource DetailTimeStampStyle}"
-                                   Grid.Row="1" />
-                        <Path Data="m 0,0 l 16,0 l 0,16 l -16,-16"
-                              Fill="{Binding Fill, ElementName=MessageContainer}"
+                        <Border x:Name="MessageContainer" Background="{StaticResource PhoneAccentBrush}">
+                            <StackPanel>
+                                <TextBlock x:Name="MessageText"
+                                           Text="{Binding Text}"
+                                           Style="{StaticResource DetailMessageStyle}" />
+                                <TextBlock x:Name="MessageTimeStamp"
+                                           Text="{Binding TimeStamp}"
+                                           Style="{StaticResource DetailTimeStampStyle}" />
+                            </StackPanel>
+                   	    </Border>
+                        <Path x:Name="PathTick"
+                              Data="m 0,0 l 16,0 l 0,16 l -16,-16"
+                       	      Fill="{Binding Background, ElementName=MessageContainer}"
                               Height="12"
-                              Width="16"
+                              Width="20"
                               Stretch="Fill"
                               HorizontalAlignment="Right"
                               Margin="0,0,10,0"
-                              Grid.Row="2" />
+                              Grid.Row="1" />
                     </Grid>
                 </DataTemplate>
             </helpers:MessageTemplateSelector.TemplateMyMessage>
@@ -349,30 +349,28 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-                        <TextBlock Name="MessageSource"
+                        <TextBlock x:Name="MessageSource"
                                    Text="{Binding Source}"
                                    Style="{StaticResource DetailSourceStyle}" />
-                        <Path Data="m 0,0 l 0,16 l 16,0 l -16,-16"
-                              Fill="{Binding Fill, ElementName=MessageContainer}"
+                        <Path x:Name="PathTick"
+                              Data="m 0,0 l 0,16 l 16,0 l -16,-16"
+                              Fill="{Binding Background, ElementName=MessageContainer}"
                               Height="12"
-                              Width="16"
+                              Width="20"
                               Stretch="Fill"
                               Margin="10,0,0,0"
                               Grid.Row="1" />
-                        <Rectangle Name="MessageContainer"
-                                   Fill="{StaticResource PhoneAccentBrush}"
-                                   Grid.Row="2"
-                                   Grid.RowSpan="2" />
-                        <TextBlock Name="MessageText"
-                                   Text="{Binding Text}" 
-                                   Style="{StaticResource DetailMessageStyle}" 
-                                   Grid.Row="2" />
-                        <TextBlock Name="MessageTimeStamp"
-                                   Text="{Binding TimeStamp}"
-                                   Style="{StaticResource DetailTimeStampStyle}"
-                                   Grid.Row="3" />
+                        <Border x:Name="MessageContainer" Grid.Row="2" Background="{StaticResource PhoneAccentBrush}">
+                           <StackPanel>
+                                <TextBlock x:Name="MessageText"
+                                           Text="{Binding Text}"
+                                           Style="{StaticResource DetailMessageStyle}" />
+                                <TextBlock x:Name="MessageTimeStamp"
+                                           Text="{Binding TimeStamp}"
+                                           Style="{StaticResource DetailTimeStampStyle}" />
+                            </StackPanel>
+                   	    </Border>
                     </Grid>
                 </DataTemplate>
             </helpers:MessageTemplateSelector.TemplateTheirMessage>
