@@ -63,12 +63,16 @@ namespace derpirc
         // This code will not execute when the application is reactivated
         private void Application_Launching(object sender, LaunchingEventArgs e)
         {
+            //Save the event type for later reference by the application.
+            //ApplicationState.ApplicationStartup = AppOpenState.Launching;
         }
 
         // Code to execute when the application is activated (brought to foreground)
         // This code will not execute when the application is first launched
         private void Application_Activated(object sender, ActivatedEventArgs e)
         {
+            //Save the event type for later reference by the application.
+            //ApplicationState.ApplicationStartup = AppOpenState.Activated;
             // Ensure that application state is restored appropriately
         }
 
@@ -76,6 +80,7 @@ namespace derpirc
         // This code will not execute when the application is closing
         private void Application_Deactivated(object sender, DeactivatedEventArgs e)
         {
+            //ApplicationState.ApplicationStartup = AppOpenState.Deactivated;
         }
 
         // Code to execute when the application is closing (eg, user hit Back)
@@ -83,7 +88,6 @@ namespace derpirc
         private void Application_Closing(object sender, ClosingEventArgs e)
         {
             // Ensure that required application state is persisted here.
-            // HACK: May or may not need VMLocator.Cleanup here
             ViewModelLocator.Cleanup();
         }
 

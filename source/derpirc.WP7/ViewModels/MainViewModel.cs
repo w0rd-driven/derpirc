@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Data;
 using derpirc.Helpers;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using Microsoft.Phone.Controls;
 
 namespace derpirc.ViewModels
 {
@@ -19,6 +21,16 @@ namespace derpirc.ViewModels
             {
                 return _layoutRootCommand ?? (_layoutRootCommand =
                     new RelayCommand<FrameworkElement>(sender => this.LayoutRoot = sender));
+            }
+        }
+
+        RelayCommand<PivotItemEventArgs> _pivotItemLoadedCommand;
+        public RelayCommand<PivotItemEventArgs> PivotItemLoadedCommand
+        {
+            get
+            {
+                return _pivotItemLoadedCommand ?? (_pivotItemLoadedCommand =
+                    new RelayCommand<PivotItemEventArgs>(eventArgs => PivotItemLoaded(eventArgs)));
             }
         }
 
@@ -181,29 +193,78 @@ namespace derpirc.ViewModels
 
         #endregion
 
+        private BackgroundWorker worker = new BackgroundWorker();
+
         public MainViewModel()
         {
+            // TODO: For demo purposes, place initialization of everything here and in design mode. Otherwise, use state to determine what to construct.
+            // HACK: Execution order: 1
             navigationService = new ApplicationFrameNavigationService(((App)Application.Current).RootFrame);
 
             _channelsList = new ObservableCollection<ChannelSummaryViewModel>();
-            var channel = new ChannelSummaryViewModel();
-            _channelsList.Add(channel);
             Channels = new CollectionViewSource() { Source = _channelsList };
-
             _mentionsList = new ObservableCollection<MentionSummaryViewModel>();
-            var mention = new MentionSummaryViewModel();
-            _mentionsList.Add(mention);
             Mentions = new CollectionViewSource() { Source = _mentionsList };
-
             _messagesList = new ObservableCollection<MessageSummaryViewModel>();
-            var message = new MessageSummaryViewModel();
-            _messagesList.Add(message);
             Messages = new CollectionViewSource() { Source = _messagesList };
 
-            //var unitOfWork = new Data.DataUnitOfWork();
-            //unitOfWork.InitializeDatabase(true);
-            //var sessionSupervisor = new Core.SessionSupervisor(unitOfWork);
+            var unitOfWork = new Data.DataUnitOfWork();
+            var sessionSupervisor = new Core.SessionSupervisor(unitOfWork);
+            this.worker.DoWork += new DoWorkEventHandler(DeferStartupWork);
         }
+
+        internal void DeferStartup(Action completed)
+        {
+            this.worker.RunWorkerAsync(completed);
+        }
+
+        private void DeferStartupWork(object sender, DoWorkEventArgs e)
+        {
+            Action completed = e.Argument as Action;
+            //lock (threadLock)
+            //{
+            //    ApplicationState.AppLaunchInitialization();
+
+            //    this.SetDefaultCategoryAndUnits();
+            //    ApplicationState.Favorites =
+            //        FavoriteCollection.LoadFromFile() ?? new FavoriteCollection();
+            //}
+
+            if (completed != null)
+            {
+                completed();
+            }
+        }
+
+        void RootLoaded(FrameworkElement sender)
+        {
+            // HACK: Execution order: 2
+            LayoutRoot = sender;
+        }
+
+        void PivotItemLoaded(PivotItemEventArgs eventArgs)
+        {
+            // HACK: Execution order: 3
+            // You can use PivotItemLoaded or SelectedItem/Index binding. This gets called every time the PivotItem shows so you need to track an IsVMLoaded
+            if (eventArgs.Item.Header.ToString() == "Channels")
+            {
+                var channel = new ChannelSummaryViewModel();
+                _channelsList.Add(channel);
+                Channels.View.Refresh();
+            }
+            if (eventArgs.Item.Header.ToString() == "Mentions")
+            {
+                var mention = new MentionSummaryViewModel();
+                _mentionsList.Add(mention);
+                Mentions.View.Refresh();
+            }
+            if (eventArgs.Item.Header.ToString() == "Messages")
+            {
+                var message = new MessageSummaryViewModel();
+                _messagesList.Add(message);
+                Messages.View.Refresh();
+            }
+         }
 
         private void SelectChannel()
         {
@@ -218,6 +279,58 @@ namespace derpirc.ViewModels
         private void SelectMessage()
         {
             NavigationService.Navigate(new Uri("/Views/MessageDetailView.xaml", UriKind.Relative));
+        }
+
+        private void OnNavigatedTo()
+        {
+            //Application launch
+            //Application Activation when the app was tombstoned.
+            //  Retrieve the application state from either the PhoneApplicationService or PageApplicationService objects.
+            //Application Activation when the app was not tombstoned.
+            //  This case is essentially a No Op.
+            //Application Activation when the application state was not fully saved before exiting. 
+            //  This can occur if the user presses the Start button before you application completes its first time initialization.
+            //Special cases
+            //  The application is tombstoned before it fully initializes on Launch
+            //  The application is activated but the application was not tombstoned
+
+            //if (ApplicationState.ApplicationStartup == AppOpenState.Launching)
+            //{
+            //    // Initial application startup.
+            //    this.AllowNavigation = false;
+            //    this.SetDefaults();
+            //    // Initialization of the app deferred until the page has rendered. See
+            //    // the MainPage_LayoutUpdated handler.
+            //    return;
+            //}
+            //if (ApplicationState.ApplicationStartup == AppOpenState.Activated &&
+            //     !isPageActivated)
+            //{
+            //    // We are returning to the application, but we were not tombstoned.
+            //    ApplicationState.ApplicationStartup = AppOpenState.None;
+            //    return;
+            //}
+            //if (ApplicationState.RetrieveAppObjects(false))
+            //{
+            //    this.RefreshStateFromAppState();
+            //    this.AllowNavigation = true;
+            //}
+            //else
+            //{
+            //    this.AllowNavigation = false;
+            //    // Slight possibility that we did not complete 1st time init because of 
+            //    // of a app deactivate immediately after start. Protect against this and
+            //    // perform application 1st time startup sequence.
+            //    this.SetDefaults();
+            //    this.DeferStartup(notifyOfLoadCompleted);
+            //}
+            //ApplicationState.ApplicationStartup = AppOpenState.None;
+        }
+
+        void OnNavigatedFrom()
+        {
+            //Save required state in either the Phone Application service or Page Application service depending on the structure of your application.
+            //Clear the flag indicating that the page constructor has been called.
         }
 
         public void LoadData()

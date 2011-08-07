@@ -28,6 +28,11 @@
         </blend:Interaction.Triggers>
         
         <controls:Pivot Title="derpirc" Style="{StaticResource SmallPivotStyle}" Margin="-2,0,2,0">
+            <blend:Interaction.Triggers>
+                <blend:EventTrigger EventName="LoadedPivotItem">
+                    <command:EventToCommand Command="{Binding PivotItemLoadedCommand}" PassEventArgsToCommand="True"/>
+                </blend:EventTrigger>
+            </blend:Interaction.Triggers>
             <controls:PivotItem Header="Channels" Style="{StaticResource SmallPivotItemStyle}">
                 <ListBox x:Name="ChannelSummaryListBox" Margin="0,0,-12,0" ItemsSource="{Binding Channels.View}" SelectedItem="{Binding SelectedChannel, Mode=TwoWay}" ItemContainerStyle="{StaticResource SmallPivotListBoxStyle}">
                     <blend:Interaction.Triggers>
