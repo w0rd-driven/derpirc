@@ -173,8 +173,12 @@
     <Content Include="Icons\appbar.send.text.rest.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Resource Include="Icons\appbar.switcher.rest.png" />
-    <Resource Include="Icons\stat.high.96.png" />
+    <Content Include="Icons\appbar.switcher.rest.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Icons\stat.high.96.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="SplashScreenImage.jpg" />
   </ItemGroup>
   <ItemGroup>

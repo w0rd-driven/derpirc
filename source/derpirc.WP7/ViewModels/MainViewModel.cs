@@ -193,7 +193,12 @@ namespace derpirc.ViewModels
 
         #endregion
 
-        private BackgroundWorker worker = new BackgroundWorker();
+        private BackgroundWorker _worker;
+        private Data.DataUnitOfWork _unitOfWork;
+
+        private DateTime _lastRefreshChannels;
+        private DateTime _lastRefreshMentions;
+        private DateTime _lastRefreshMessages;
 
         public MainViewModel()
         {
@@ -208,14 +213,16 @@ namespace derpirc.ViewModels
             _messagesList = new ObservableCollection<MessageSummaryViewModel>();
             Messages = new CollectionViewSource() { Source = _messagesList };
 
-            var unitOfWork = new Data.DataUnitOfWork();
-            var sessionSupervisor = new Core.SessionSupervisor(unitOfWork);
-            this.worker.DoWork += new DoWorkEventHandler(DeferStartupWork);
+            _worker = new BackgroundWorker();
+            _worker.DoWork += new DoWorkEventHandler(DeferStartupWork);
+
+            _unitOfWork = new Data.DataUnitOfWork();
+            var sessionSupervisor = new Core.SessionSupervisor(_unitOfWork);
         }
 
         internal void DeferStartup(Action completed)
         {
-            this.worker.RunWorkerAsync(completed);
+            _worker.RunWorkerAsync(completed);
         }
 
         private void DeferStartupWork(object sender, DoWorkEventArgs e)
@@ -251,18 +258,24 @@ namespace derpirc.ViewModels
                 var channel = new ChannelSummaryViewModel();
                 _channelsList.Add(channel);
                 Channels.View.Refresh();
+                _lastRefreshChannels = DateTime.Now;
+                return;
             }
             if (eventArgs.Item.Header.ToString() == "Mentions")
             {
                 var mention = new MentionSummaryViewModel();
                 _mentionsList.Add(mention);
                 Mentions.View.Refresh();
+                _lastRefreshMentions = DateTime.Now;
+                return;
             }
             if (eventArgs.Item.Header.ToString() == "Messages")
             {
                 var message = new MessageSummaryViewModel();
                 _messagesList.Add(message);
                 Messages.View.Refresh();
+                _lastRefreshMessages = DateTime.Now;
+                return;
             }
          }
 
