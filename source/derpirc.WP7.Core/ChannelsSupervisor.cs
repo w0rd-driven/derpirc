@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Text.RegularExpressions;
 using derpirc.Data;
-using IrcDotNet;
 using derpirc.Data.Settings;
+using IrcDotNet;
 
 namespace derpirc.Core
 {
@@ -33,14 +32,14 @@ namespace derpirc.Core
 
         public event EventHandler<ChannelStatusEventArgs> ChannelJoined;
         public event EventHandler<ChannelStatusEventArgs> ChannelLeft;
-        public event EventHandler<ChannelItemEventArgs> MessageReceived;
-        public event EventHandler<MentionItemEventArgs> MentionReceived;
+        public event EventHandler<ChannelItemEventArgs> ChannelItemReceived;
+        public event EventHandler<MentionItemEventArgs> MentionItemReceived;
 
         public ChannelsSupervisor(DataUnitOfWork unitOfWork, Session session)
         {
             _unitOfWork = unitOfWork;
             _session = session;
-            _localUsers = new ObservableCollection<IrcLocalUser>();
+            _localUsers = new FixupCollection<IrcLocalUser>();
             _localUsers.CollectionChanged += new NotifyCollectionChangedEventHandler(LocalUsers_CollectionChanged);
             //_channels = new ObservableCollection<IrcChannel>();
             //_channelSummaries = new ObservableCollection<ChannelSummary>();
@@ -55,11 +54,10 @@ namespace derpirc.Core
                     var newItem = item as IrcLocalUser;
                     newItem.JoinedChannel += LocalUser_JoinedChannel;
                     newItem.LeftChannel += LocalUser_LeftChannel;
-                    //newItem.NickNameChanged += LocalUser_NickNameChanged;
                 }
             }
         }
-        
+
         private void LocalUser_JoinedChannel(object sender, IrcChannelEventArgs e)
         {
             var localUser = sender as IrcLocalUser;
@@ -106,27 +104,27 @@ namespace derpirc.Core
             var isMention = e.Text.Contains(channel.Client.LocalUser.NickName);
             if (isMention)
             {
-                var mentionSummary = GetMentionSummary(channel);
-                var mentionMessage = GetIrcMessage(mentionSummary, e, messageType);
-                mentionSummary.Messages.Add(mentionMessage);
+                var summary = GetMentionSummary(channel);
+                var message = GetIrcMessage(summary, e, messageType);
+                summary.Messages.Add(message);
                 _unitOfWork.Commit();
                 var eventArgs = new MentionItemEventArgs()
                 {
-                    Mention = mentionSummary,
-                    Message = mentionMessage,
+                    User = summary,
+                    Message = message,
                 };
                 OnMentionItemReceived(eventArgs);
             }
             else
             {
-                var channelSummary = GetChannelSummary(channel);
-                var channelMessage = GetIrcMessage(channelSummary, e, messageType);
-                channelSummary.Messages.Add(channelMessage);
+                var summary = GetChannelSummary(channel);
+                var message = GetIrcMessage(summary, e, messageType);
+                summary.Messages.Add(message);
                 _unitOfWork.Commit();
                 var eventArgs = new ChannelItemEventArgs()
                 {
-                    Channel = channelSummary,
-                    Message = channelMessage,
+                    Channel = summary,
+                    Message = message,
                 };
                 OnChannelItemReceived(eventArgs);
             }
@@ -158,42 +156,6 @@ namespace derpirc.Core
                 Status = ChannelStatusTypeEnum.Leave,
             };
             OnChannelLeft(eventArgs);
-        }
-
-        private void OnChannelJoined(ChannelStatusEventArgs e)
-        {
-            var handler = ChannelJoined;
-            if (handler != null)
-            {
-                handler.Invoke(this, e);
-            }
-        }
-
-        private void OnChannelLeft(ChannelStatusEventArgs e)
-        {
-            var handler = ChannelLeft;
-            if (handler != null)
-            {
-                handler.Invoke(this, e);
-            }
-        }
-
-        private void OnChannelItemReceived(ChannelItemEventArgs e)
-        {
-            var handler = MessageReceived;
-            if (handler != null)
-            {
-                handler.Invoke(this, e);
-            }
-        }
-
-        private void OnMentionItemReceived(MentionItemEventArgs e)
-        {
-            var handler = MentionReceived;
-            if (handler != null)
-            {
-                handler.Invoke(this, e);
-            }
         }
 
         private ChannelSummary GetChannelSummary(IrcChannel channel)
@@ -230,6 +192,7 @@ namespace derpirc.Core
             return result;
         }
 
+        // TODO: static method
         private SessionServer GetServerByName(string serverName)
         {
             // TODO: Error handling make sure _session != null
@@ -262,6 +225,42 @@ namespace derpirc.Core
             result.Text = eventArgs.Text;
             result.Type = messageType;
             return result;
+        }
+
+        private void OnChannelJoined(ChannelStatusEventArgs e)
+        {
+            var handler = ChannelJoined;
+            if (handler != null)
+            {
+                handler.Invoke(this, e);
+            }
+        }
+
+        private void OnChannelLeft(ChannelStatusEventArgs e)
+        {
+            var handler = ChannelLeft;
+            if (handler != null)
+            {
+                handler.Invoke(this, e);
+            }
+        }
+
+        private void OnChannelItemReceived(ChannelItemEventArgs e)
+        {
+            var handler = ChannelItemReceived;
+            if (handler != null)
+            {
+                handler.Invoke(this, e);
+            }
+        }
+
+        private void OnMentionItemReceived(MentionItemEventArgs e)
+        {
+            var handler = MentionItemReceived;
+            if (handler != null)
+            {
+                handler.Invoke(this, e);
+            }
         }
     }
 }

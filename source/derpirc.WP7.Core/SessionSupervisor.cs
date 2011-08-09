@@ -22,12 +22,14 @@ namespace derpirc.Core
         private IrcRegistrationInfo _registrationData;
 
         private ChannelsSupervisor _channelSupervisor;
+        private MessagesSupervisor _messageSupervisor;
 
         // HACK: UI facing
         public event EventHandler<ChannelStatusEventArgs> ChannelJoined;
         public event EventHandler<ChannelStatusEventArgs> ChannelLeft;
-        public event EventHandler<ChannelItemEventArgs> MessageReceived;
-        public event EventHandler<MentionItemEventArgs> MentionReceived;
+        public event EventHandler<ChannelItemEventArgs> ChannelItemReceived;
+        public event EventHandler<MentionItemEventArgs> MentionItemReceived;
+        public event EventHandler<MessageItemEventArgs> MessageItemReceived;
 
         // EFNet: Welcome to the $server Internet Relay Chat Network $nick
         // PowerPrecision: Welcome to the $server IRC Network $nick!$email@$host
@@ -76,8 +78,11 @@ namespace derpirc.Core
             _channelSupervisor = new ChannelsSupervisor(_unitOfWork, _session);
             _channelSupervisor.ChannelJoined += new EventHandler<ChannelStatusEventArgs>(_channelSupervisor_ChannelJoined);
             _channelSupervisor.ChannelLeft += new EventHandler<ChannelStatusEventArgs>(_channelSupervisor_ChannelLeft);
-            _channelSupervisor.MessageReceived += new EventHandler<ChannelItemEventArgs>(_channelSupervisor_MessageReceived);
-            _channelSupervisor.MentionReceived += new EventHandler<MentionItemEventArgs>(_channelSupervisor_MentionReceived);
+            _channelSupervisor.ChannelItemReceived += new EventHandler<ChannelItemEventArgs>(_channelSupervisor_MessageReceived);
+            _channelSupervisor.MentionItemReceived += new EventHandler<MentionItemEventArgs>(_channelSupervisor_MentionReceived);
+
+            _messageSupervisor = new MessagesSupervisor(_unitOfWork, _session);
+            _messageSupervisor.MessageItemReceived += new EventHandler<MessageItemEventArgs>(_messageSupervisor_MessageReceived);
         }
 
         void _channelSupervisor_ChannelJoined(object sender, ChannelStatusEventArgs e)
@@ -100,7 +105,7 @@ namespace derpirc.Core
 
         void _channelSupervisor_MessageReceived(object sender, ChannelItemEventArgs e)
         {
-            var handler = MessageReceived;
+            var handler = ChannelItemReceived;
             if (handler != null)
             {
                 handler.Invoke(sender, e);
@@ -109,7 +114,16 @@ namespace derpirc.Core
 
         void _channelSupervisor_MentionReceived(object sender, MentionItemEventArgs e)
         {
-            var handler = MentionReceived;
+            var handler = MentionItemReceived;
+            if (handler != null)
+            {
+                handler.Invoke(sender, e);
+            }
+        }
+
+        void _messageSupervisor_MessageReceived(object sender, MessageItemEventArgs e)
+        {
+            var handler = MessageItemReceived;
             if (handler != null)
             {
                 handler.Invoke(sender, e);
@@ -201,10 +215,8 @@ namespace derpirc.Core
         private void Client_Registered(object sender, EventArgs e)
         {
             var client = sender as IrcClient;
-            client.LocalUser.NickNameChanged += LocalUser_NickNameChanged;
-            client.LocalUser.NoticeReceived += LocalUser_NoticeReceived;
-            client.LocalUser.MessageReceived += LocalUser_MessageReceived;
             _channelSupervisor.LocalUsers.Add(client.LocalUser);
+            _messageSupervisor.LocalUsers.Add(client.LocalUser);
             _clientStates.Add(0);
             //ProcessSession(client);
             //OnClientRegistered(client);
@@ -214,30 +226,6 @@ namespace derpirc.Core
         {
             var client = sender as IrcClient;
             ProcessSession(client);
-        }
-
-        private void LocalUser_NickNameChanged(object sender, EventArgs e)
-        {
-            var localUser = sender as IrcLocalUser;
-            //OnLocalUserNickNameChanged(localUser, e);
-        }
-
-        private void LocalUser_NoticeReceived(object sender, IrcMessageEventArgs e)
-        {
-            var localUser = sender as IrcLocalUser;
-            //OnLocalUserNoticeReceived(localUser, e);
-        }
-
-        private void LocalUser_MessageReceived(object sender, IrcMessageEventArgs e)
-        {
-            var localUser = sender as IrcLocalUser;
-            if (e.Source is IrcUser)
-            {
-                // Read message and process if it is chat command.
-                //if (ReadChatCommand(localUser.Client, e))
-                    return;
-            }
-            //OnLocalUserMessageReceived(localUser, e);
         }
 
         private void ProcessSession(IrcClient client)

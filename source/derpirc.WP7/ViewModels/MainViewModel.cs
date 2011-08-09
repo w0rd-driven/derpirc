@@ -224,8 +224,9 @@ namespace derpirc.ViewModels
             _sessionSupervisor = new Core.SessionSupervisor(_unitOfWork);
             _sessionSupervisor.ChannelJoined += new EventHandler<Core.ChannelStatusEventArgs>(_sessionSupervisor_ChannelJoined);
             _sessionSupervisor.ChannelLeft += new EventHandler<Core.ChannelStatusEventArgs>(_sessionSupervisor_ChannelLeft);
-            _sessionSupervisor.MessageReceived += new EventHandler<Core.ChannelItemEventArgs>(_sessionSupervisor_MessageReceived);
-            _sessionSupervisor.MentionReceived += new EventHandler<Core.MentionItemEventArgs>(_sessionSupervisor_MentionReceived);
+            _sessionSupervisor.ChannelItemReceived += new EventHandler<Core.ChannelItemEventArgs>(_sessionSupervisor_ChannelItemReceived);
+            _sessionSupervisor.MentionItemReceived += new EventHandler<Core.MentionItemEventArgs>(_sessionSupervisor_MentionItemReceived);
+            _sessionSupervisor.MessageItemReceived += new EventHandler<Core.MessageItemEventArgs>(_sessionSupervisor_MessageItemReceived);
         }
 
         void _sessionSupervisor_ChannelJoined(object sender, Core.ChannelStatusEventArgs e)
@@ -254,7 +255,7 @@ namespace derpirc.ViewModels
         {
         }
 
-        void _sessionSupervisor_MessageReceived(object sender, Core.ChannelItemEventArgs e)
+        void _sessionSupervisor_ChannelItemReceived(object sender, Core.ChannelItemEventArgs e)
         {
             var foundChannel = _channelsList.Where(x => x.ChannelName == e.Channel.Name && x.Model.ServerId == e.Channel.ServerId).FirstOrDefault();
             if (foundChannel == null)
@@ -276,14 +277,14 @@ namespace derpirc.ViewModels
             }
         }
 
-        void _sessionSupervisor_MentionReceived(object sender, Core.MentionItemEventArgs e)
+        void _sessionSupervisor_MentionItemReceived(object sender, Core.MentionItemEventArgs e)
         {
-            var foundChannel = _mentionsList.Where(x => x.NickName == e.Mention.Name && x.Model.ServerId == e.Mention.ServerId).FirstOrDefault();
+            var foundChannel = _mentionsList.Where(x => x.NickName == e.User.Name && x.Model.ServerId == e.User.ServerId).FirstOrDefault();
             if (foundChannel == null)
             {
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
-                    var mentionSummary = new MentionSummaryViewModel(e.Mention);
+                    var mentionSummary = new MentionSummaryViewModel(e.User);
                     _mentionsList.Add(mentionSummary);
                     Mentions.View.Refresh();
                 });
@@ -292,8 +293,30 @@ namespace derpirc.ViewModels
             {
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
-                    foundChannel.Model = e.Mention;
+                    foundChannel.Model = e.User;
                     Mentions.View.Refresh();
+                });
+            }
+        }
+
+        void _sessionSupervisor_MessageItemReceived(object sender, Core.MessageItemEventArgs e)
+        {
+            var foundChannel = _messagesList.Where(x => x.NickName == e.User.Name && x.Model.ServerId == e.User.ServerId).FirstOrDefault();
+            if (foundChannel == null)
+            {
+                DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                {
+                    var mentionSummary = new MessageSummaryViewModel(e.User);
+                    _messagesList.Add(mentionSummary);
+                    Messages.View.Refresh();
+                });
+            }
+            else
+            {
+                DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                {
+                    foundChannel.Model = e.User;
+                    Messages.View.Refresh();
                 });
             }
         }
