@@ -21,6 +21,8 @@ namespace derpirc.ViewModels
             get { return _model; }
             set
             {
+                if (value != null)
+                    UpdateViewModel(value);
                 if (_model == value)
                     return;
 
@@ -177,32 +179,30 @@ namespace derpirc.ViewModels
         /// </summary>
         public ChannelSummaryViewModel(ChannelSummary model)
         {
-            // HACK: Temporary
-            model.Name = "#Test";
-            model.Topic = "This is a test topic";
-            var network = new Data.Settings.SessionNetwork()
-            {
-                Name = "EFNet",
-            };
-            model.Server = new Data.Settings.SessionServer()
-            {
-                HostName = "irc.efnet.org",
-                Network = network,
-            };
-            model.LastItem = new ChannelMessage()
-            {
-                Summary = model,
-                SummaryId = model.Id,
-                IsRead = false,
-                Source = "w0rd-driven",
-                Text = "urmom!",
-                TimeStamp = DateTime.Now,
-            };
-            model.UnreadCount = 20;
-
             if (IsInDesignMode)
             {
                 // code runs in blend --> create design time data.
+                model.Name = "#Test";
+                model.Topic = "This is a test topic";
+                var network = new Data.Settings.SessionNetwork()
+                {
+                    Name = "EFNet",
+                };
+                model.Server = new Data.Settings.SessionServer()
+                {
+                    HostName = "irc.efnet.org",
+                    Network = network,
+                };
+                model.LastItem = new ChannelMessage()
+                {
+                    Summary = model,
+                    SummaryId = model.Id,
+                    IsRead = false,
+                    Source = "w0rd-driven",
+                    Text = "urmom!",
+                    TimeStamp = DateTime.Now,
+                };
+                model.UnreadCount = 20;
             }
             else
             {
@@ -210,15 +210,22 @@ namespace derpirc.ViewModels
             }
 
             Model = model;
-            ChannelName = Model.Name;
-            NetworkName = Model.Server.Network.Name;
-            ChannelTopic = Model.Topic;
-            UnreadCount = Model.UnreadCount;
-            LastMessage = Model.LastItem as ChannelMessage;
-            MessageIsRead = LastMessage.IsRead;
-            MessageSource = LastMessage.Source + " on " + NetworkName;
-            MessageText = LastMessage.Text;
-            MessageTimeStamp = LastMessage.TimeStamp;
+        }
+
+        private void UpdateViewModel(ChannelSummary model)
+        {
+            ChannelName = model.Name;
+            NetworkName = model.Server.Network.Name;
+            ChannelTopic = model.Topic;
+            UnreadCount = model.UnreadCount;
+            if (model.LastItem != null)
+            {
+                LastMessage = model.LastItem as ChannelMessage;
+                MessageIsRead = LastMessage.IsRead;
+                MessageSource = LastMessage.Source + " on " + NetworkName;
+                MessageText = LastMessage.Text;
+                MessageTimeStamp = LastMessage.TimeStamp;
+            }
         }
 
         public override void Cleanup()

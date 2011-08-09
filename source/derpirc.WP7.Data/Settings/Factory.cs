@@ -133,7 +133,7 @@ namespace derpirc.Data.Settings
                 SessionId = session.Id,
                 BasedOnId = 2,
                 DisplayName = "Random server",
-                HostName = "irc.powerprecision.com",
+                HostName = "irc.node-3.net",
                 Port = 6667,
                 Ports = "6667",
                 Group = "PowerPrecision",

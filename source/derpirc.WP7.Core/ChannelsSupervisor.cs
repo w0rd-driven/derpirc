@@ -30,17 +30,21 @@ namespace derpirc.Core
             private set { }
         }
 
+        public event EventHandler<ChannelStatusEventArgs> ChannelJoined;
+        public event EventHandler<ChannelStatusEventArgs> ChannelLeft;
+        public event EventHandler<ChannelMessageEventArgs> MessageReceived;
+
         public ChannelsSupervisor(DataUnitOfWork unitOfWork, Session session)
         {
             _unitOfWork = unitOfWork;
             _session = session;
             _localUsers = new ObservableCollection<IrcLocalUser>();
             _localUsers.CollectionChanged += new NotifyCollectionChangedEventHandler(LocalUsers_CollectionChanged);
-            _channels = new ObservableCollection<IrcChannel>();
-            _channelSummaries = new ObservableCollection<ChannelSummary>();
+            //_channels = new ObservableCollection<IrcChannel>();
+            //_channelSummaries = new ObservableCollection<ChannelSummary>();
         }
 
-        void LocalUsers_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void LocalUsers_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == NotifyCollectionChangedAction.Add)
             {
@@ -49,6 +53,7 @@ namespace derpirc.Core
                     var newItem = item as IrcLocalUser;
                     newItem.JoinedChannel += LocalUser_JoinedChannel;
                     newItem.LeftChannel += LocalUser_LeftChannel;
+                    //newItem.NickNameChanged += LocalUser_NickNameChanged;
                 }
             }
         }
@@ -61,7 +66,6 @@ namespace derpirc.Core
             e.Channel.MessageReceived += Channel_MessageReceived;
             e.Channel.NoticeReceived += Channel_NoticeReceived;
             JoinChannel(e.Channel);
-            //OnLocalUserJoinedChannel(localUser, e);
         }
 
         private void LocalUser_LeftChannel(object sender, IrcChannelEventArgs e)
@@ -71,7 +75,7 @@ namespace derpirc.Core
             e.Channel.UserLeft -= Channel_UserLeft;
             e.Channel.MessageReceived -= Channel_MessageReceived;
             e.Channel.NoticeReceived -= Channel_NoticeReceived;
-            //OnLocalUserJoinedChannel(localUser, e);
+            LeaveChannel(e.Channel);
         }
 
         private void Channel_UserJoined(object sender, IrcChannelUserEventArgs e)
@@ -91,15 +95,21 @@ namespace derpirc.Core
         private void Channel_MessageReceived(object sender, IrcMessageEventArgs e)
         {
             var channel = sender as IrcChannel;
+            var messageType = MessageType.Theirs;
             if (e.Source is IrcUser)
             {
+                messageType = MessageType.Mine;
             }
             var channelSummary = GetChannelSummary(channel);
-            var channelMessage = GetIrcMessage(channelSummary, e);
+            var channelMessage = GetIrcMessage(channelSummary, e, messageType);
             channelSummary.Messages.Add(channelMessage);
             _unitOfWork.Commit();
-            // TODO: Bubble up a UI event
-            //OnChannelMessageReceived(channel, e);
+            var eventArgs = new ChannelMessageEventArgs()
+            {
+                Channel = channelSummary,
+                Message = channelMessage,
+            };
+            OnChannelMessageReceived(eventArgs);
         }
 
         private void Channel_NoticeReceived(object sender, IrcMessageEventArgs e)
@@ -110,9 +120,51 @@ namespace derpirc.Core
 
         private void JoinChannel(IrcChannel channel)
         {
-            // Create the ChannelSummary record early
             var channelSummary = GetChannelSummary(channel);
-            // TODO: Bubble up a UI event
+            var eventArgs = new ChannelStatusEventArgs()
+            {
+                Channel = channelSummary,
+                Status = ChannelStatusTypeEnum.Join,
+            };
+            OnChannelJoined(eventArgs);
+        }
+
+        private void LeaveChannel(IrcChannel channel)
+        {
+            var channelSummary = GetChannelSummary(channel);
+            var eventArgs = new ChannelStatusEventArgs()
+            {
+                Channel = channelSummary,
+                Status = ChannelStatusTypeEnum.Leave,
+            };
+            OnChannelLeft(eventArgs);
+        }
+
+        private void OnChannelJoined(ChannelStatusEventArgs e)
+        {
+            var handler = ChannelJoined;
+            if (handler != null)
+            {
+                handler.Invoke(this, e);
+            }
+        }
+
+        private void OnChannelLeft(ChannelStatusEventArgs e)
+        {
+            var handler = ChannelLeft;
+            if (handler != null)
+            {
+                handler.Invoke(this, e);
+            }
+        }
+
+        private void OnChannelMessageReceived(ChannelMessageEventArgs e)
+        {
+            var handler = MessageReceived;
+            if (handler != null)
+            {
+                handler.Invoke(this, e);
+            }
         }
 
         private ChannelSummary GetChannelSummary(IrcChannel channel)
@@ -139,7 +191,7 @@ namespace derpirc.Core
             return _session.Servers.FirstOrDefault(x => x.HostName == serverName);
         }
 
-        private ChannelMessage GetIrcMessage(ChannelSummary channelSummary, IrcMessageEventArgs eventArgs)
+        private ChannelMessage GetIrcMessage(ChannelSummary channelSummary, IrcMessageEventArgs eventArgs, MessageType messageType)
         {
             var result = new ChannelMessage();
             //var line = eventArgs.Text;
@@ -162,6 +214,7 @@ namespace derpirc.Core
             result.Source = eventArgs.Source.Name;
             //result.Command = command;
             result.Text = eventArgs.Text;
+            result.Type = messageType;
 
             return result;
         }

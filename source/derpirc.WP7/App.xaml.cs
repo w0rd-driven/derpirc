@@ -13,6 +13,7 @@ using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using derpirc.ViewModels;
+using GalaSoft.MvvmLight.Threading;
 
 namespace derpirc
 {
@@ -132,6 +133,8 @@ namespace derpirc
 
             // Ensure we don't initialize again
             phoneApplicationInitialized = true;
+
+            DispatcherHelper.Initialize();
         }
 
         // Do not add any additional code to this method

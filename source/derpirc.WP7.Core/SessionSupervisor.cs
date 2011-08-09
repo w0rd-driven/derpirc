@@ -23,6 +23,11 @@ namespace derpirc.Core
 
         private ChannelsSupervisor _channelSupervisor;
 
+        // HACK: UI facing
+        public event EventHandler<ChannelStatusEventArgs> ChannelJoined;
+        public event EventHandler<ChannelStatusEventArgs> ChannelLeft;
+        public event EventHandler<ChannelMessageEventArgs> MessageReceived;
+
         // EFNet: Welcome to the $server Internet Relay Chat Network $nick
         // PowerPrecision: Welcome to the $server IRC Network $nick!$email@$host
         private static readonly Regex welcomeRegex = new Regex("^.*?Welcome to the (.*?) (IRC|Internet Relay Chat) Network (.*)", RegexOptions.Compiled);
@@ -68,6 +73,36 @@ namespace derpirc.Core
             // HACK: LazyLoad this somewhere else and inject the dependency
             _unitOfWork.Commit();
             _channelSupervisor = new ChannelsSupervisor(_unitOfWork, _session);
+            _channelSupervisor.ChannelJoined += new EventHandler<ChannelStatusEventArgs>(_channelSupervisor_ChannelJoined);
+            _channelSupervisor.ChannelLeft += new EventHandler<ChannelStatusEventArgs>(_channelSupervisor_ChannelLeft);
+            _channelSupervisor.MessageReceived += new EventHandler<ChannelMessageEventArgs>(_channelSupervisor_MessageReceived);
+        }
+
+        void _channelSupervisor_ChannelJoined(object sender, ChannelStatusEventArgs e)
+        {
+            var handler = ChannelJoined;
+            if (handler != null)
+            {
+                handler.Invoke(sender, e);
+            }
+        }
+
+        void _channelSupervisor_ChannelLeft(object sender, ChannelStatusEventArgs e)
+        {
+            var handler = ChannelLeft;
+            if (handler != null)
+            {
+                handler.Invoke(sender, e);
+            }
+        }
+
+        void _channelSupervisor_MessageReceived(object sender, ChannelMessageEventArgs e)
+        {
+            var handler = MessageReceived;
+            if (handler != null)
+            {
+                handler.Invoke(sender, e);
+            }
         }
 
         public void Connect()
@@ -88,6 +123,11 @@ namespace derpirc.Core
             {
                 item.Quit(_quitTimeout, _quitMessage);
             }
+        }
+
+        public void SendMessage(ChannelSummary channel, string message)
+        {
+            //_channelSupervisor.SendMessage(channel, message);
         }
 
         private IrcUserRegistrationInfo GetRegistrationInfo()
@@ -201,7 +241,7 @@ namespace derpirc.Core
                 var matchedNetwork = GetNetwork(client.WelcomeMessage);
                 LinkSession(matchedServer, matchedNetwork);
                 // TODO: Wire up settings UI call for IsAutoJoinSession
-                //JoinSession(matchedServer, client);
+                JoinSession(matchedServer, client);
             }
         }
 

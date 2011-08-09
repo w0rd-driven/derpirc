@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Data;
+using derpirc.Data;
 using derpirc.Helpers;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Threading;
 using Microsoft.Phone.Controls;
 
 namespace derpirc.ViewModels
@@ -195,6 +198,7 @@ namespace derpirc.ViewModels
 
         private BackgroundWorker _worker;
         private Data.DataUnitOfWork _unitOfWork;
+        private Core.SessionSupervisor _sessionSupervisor;
 
         private DateTime _lastRefreshChannels;
         private DateTime _lastRefreshMentions;
@@ -217,7 +221,58 @@ namespace derpirc.ViewModels
             _worker.DoWork += new DoWorkEventHandler(DeferStartupWork);
 
             _unitOfWork = new Data.DataUnitOfWork();
-            var sessionSupervisor = new Core.SessionSupervisor(_unitOfWork);
+            _sessionSupervisor = new Core.SessionSupervisor(_unitOfWork);
+            _sessionSupervisor.ChannelJoined += new EventHandler<Core.ChannelStatusEventArgs>(_sessionSupervisor_ChannelJoined);
+            _sessionSupervisor.ChannelLeft += new EventHandler<Core.ChannelStatusEventArgs>(_sessionSupervisor_ChannelLeft);
+            _sessionSupervisor.MessageReceived += new EventHandler<Core.ChannelMessageEventArgs>(_sessionSupervisor_MessageReceived);
+        }
+
+        void _sessionSupervisor_ChannelJoined(object sender, Core.ChannelStatusEventArgs e)
+        {
+            var foundChannel = _channelsList.Where(x => x.ChannelName == e.Channel.Name && x.Model.ServerId == e.Channel.ServerId).FirstOrDefault();
+            if (foundChannel == null)
+            {
+                DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                {
+                    var channelSummary = new ChannelSummaryViewModel(e.Channel);
+                    _channelsList.Add(channelSummary);
+                    Channels.View.Refresh();
+                });
+            }
+            else
+            {
+                DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                {
+                    foundChannel.Model = e.Channel;
+                    Channels.View.Refresh();
+                });
+            }
+        }
+
+        void _sessionSupervisor_ChannelLeft(object sender, Core.ChannelStatusEventArgs e)
+        {
+        }
+
+        void _sessionSupervisor_MessageReceived(object sender, Core.ChannelMessageEventArgs e)
+        {
+            var foundChannel = _channelsList.Where(x => x.ChannelName == e.Channel.Name && x.Model.ServerId == e.Channel.ServerId).FirstOrDefault();
+            if (foundChannel == null)
+            {
+                DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                {
+                    var channelSummary = new ChannelSummaryViewModel(e.Channel);
+                    _channelsList.Add(channelSummary);
+                    Channels.View.Refresh();
+                });
+            }
+            else
+            {
+                DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                {
+                    foundChannel.Model = e.Channel;
+                    Channels.View.Refresh();
+                });
+            }
         }
 
         internal void DeferStartup(Action completed)
@@ -255,25 +310,25 @@ namespace derpirc.ViewModels
             // You can use PivotItemLoaded or SelectedItem/Index binding. This gets called every time the PivotItem shows so you need to track an IsVMLoaded
             if (eventArgs.Item.Header.ToString() == "Channels")
             {
-                var channel = new ChannelSummaryViewModel();
-                _channelsList.Add(channel);
-                Channels.View.Refresh();
+                //var channel = new ChannelSummaryViewModel();
+                //_channelsList.Add(channel);
+                //Channels.View.Refresh();
                 _lastRefreshChannels = DateTime.Now;
                 return;
             }
             if (eventArgs.Item.Header.ToString() == "Mentions")
             {
-                var mention = new MentionSummaryViewModel();
-                _mentionsList.Add(mention);
-                Mentions.View.Refresh();
+                //var mention = new MentionSummaryViewModel();
+                //_mentionsList.Add(mention);
+                //Mentions.View.Refresh();
                 _lastRefreshMentions = DateTime.Now;
                 return;
             }
             if (eventArgs.Item.Header.ToString() == "Messages")
             {
-                var message = new MessageSummaryViewModel();
-                _messagesList.Add(message);
-                Messages.View.Refresh();
+                //var message = new MessageSummaryViewModel();
+                //_messagesList.Add(message);
+                //Messages.View.Refresh();
                 _lastRefreshMessages = DateTime.Now;
                 return;
             }
@@ -281,17 +336,68 @@ namespace derpirc.ViewModels
 
         private void SelectChannel()
         {
-            NavigationService.Navigate(new Uri("/Views/ChannelDetailView.xaml", UriKind.Relative));
+            var id = string.Empty;
+            var name = string.Empty;
+            var uriString = string.Empty;
+
+            if (SelectedChannel != null)
+            {
+                id = SelectedChannel.Model.Id.ToString();
+                name = SelectedChannel.Model.Name.Substring(1);
+            }
+            else
+            {
+                id = "1";
+                name = "wp7";
+            }
+            uriString = string.Format("/Views/ChannelDetailView.xaml?id={0}&name={1}", 
+                Uri.EscapeUriString(id), Uri.EscapeUriString(name));
+            var uri = new Uri(uriString, UriKind.Relative);
+            NavigationService.Navigate(uri);
         }
 
         private void SelectMention()
         {
-            NavigationService.Navigate(new Uri("/Views/MentionDetailView.xaml", UriKind.Relative));
+            var id = string.Empty;
+            var name = string.Empty;
+            var uriString = string.Empty;
+
+            if (SelectedMention != null)
+            {
+                id = SelectedMention.Model.Id.ToString();
+                name = SelectedMention.Model.Name.Substring(1);
+            }
+            else
+            {
+                id = "1";
+                name = "w0rd-driven";
+            }
+            uriString = string.Format("/Views/MentionDetailView.xaml?id={0}&name={1}", 
+                Uri.EscapeUriString(id), Uri.EscapeUriString(name));
+            var uri = new Uri(uriString, UriKind.Relative);
+            NavigationService.Navigate(uri);
         }
 
         private void SelectMessage()
         {
-            NavigationService.Navigate(new Uri("/Views/MessageDetailView.xaml", UriKind.Relative));
+            var id = string.Empty;
+            var name = string.Empty;
+            var uriString = string.Empty;
+
+            if (SelectedMessage != null)
+            {
+                id = SelectedMessage.Model.Id.ToString();
+                name = SelectedMessage.Model.Name.Substring(1);
+            }
+            else
+            {
+                id = "1";
+                name = "w0rd-driven";
+            }
+            uriString = string.Format("/Views/MessageDetailView.xaml?id={0}&name={1}",
+                Uri.EscapeUriString(id), Uri.EscapeUriString(name));
+            var uri = new Uri(uriString, UriKind.Relative);
+            NavigationService.Navigate(uri);
         }
 
         private void OnNavigatedTo()
@@ -349,6 +455,11 @@ namespace derpirc.ViewModels
         public void LoadData()
         {
             this.IsDataLoaded = true;
+        }
+
+        public void Send(ChannelSummary channel, string message)
+        {
+            _sessionSupervisor.SendMessage(channel, message);
         }
     }
 }
