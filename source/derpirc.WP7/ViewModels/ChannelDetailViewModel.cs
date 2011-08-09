@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Data;
 using derpirc.Data;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Threading;
 
 namespace derpirc.ViewModels
 {
@@ -97,6 +99,8 @@ namespace derpirc.ViewModels
             get { return _model; }
             set
             {
+                if (value != null)
+                    UpdateViewModel(value);
                 if (_model == value)
                     return;
 
@@ -202,6 +206,8 @@ namespace derpirc.ViewModels
 
         #endregion
 
+        private Data.DataUnitOfWork _unitOfWork;
+
         /// <summary>
         /// Initializes a new instance of the ChannelDetailViewModel class.
         /// </summary>
@@ -210,17 +216,22 @@ namespace derpirc.ViewModels
             if (IsInDesignMode)
             {
                 // Code runs in Blend --> create design time data.
-                Init();
+                DesignTime();
             }
             else
             {
                 // Code runs "for real": Connect to service, etc...
             }
+            _messagesList = new ObservableCollection<ChannelMessage>();
+            Messages = new CollectionViewSource() { Source = _messagesList };
+            _unitOfWork = new DataUnitOfWork();
+            _unitOfWork.InitializeDatabase(false);
         }
 
         public void Send()
         {
-
+            ViewModelLocator.MainStatic.Send(Model, SendMessage);
+            SendMessage = string.Empty;
         }
 
         public void Switch()
@@ -229,13 +240,12 @@ namespace derpirc.ViewModels
             SendWatermark = string.Format("chat on {0}", ServerName);
         }
 
-        private void Init()
+        private void DesignTime()
         {
             Model = new ChannelSummary();
             Model.Name = "#Test";
             Model.Topic = "This is a test topic";
             Model.Count = 20;
-            ServerName = "irc.efnet.org";
             _messagesList = new ObservableCollection<ChannelMessage>();
             _messagesList.Add(new ChannelMessage()
             {
@@ -255,16 +265,44 @@ namespace derpirc.ViewModels
                 TimeStamp = DateTime.Now,
                 Type = MessageType.Mine,
             });
-            ChannelName = Model.Name;
-            ChannelTopic = Model.Topic;
-            SendWatermark = string.Format("chat on {0}", ServerName);
-            Messages = new CollectionViewSource() { Source = _messagesList };
         }
 
         private void OnNavigatedTo(IDictionary<string, string> queryString)
         {
-            Init();
             //TODO: Link Model and VM via Events
+            var id = string.Empty;
+            var name = string.Empty;
+            queryString.TryGetValue("id", out id);
+            queryString.TryGetValue("name", out name);
+            name = "#" + name;
+            var integerId = -1;
+            int.TryParse(id, out integerId);
+            try
+            {
+                var model = _unitOfWork.Channels.FindBy(x => x.Name == name).FirstOrDefault();
+                if (model != null)
+                    UpdateViewModel(model);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        private void UpdateViewModel(ChannelSummary model)
+        {
+            ChannelName = model.Name;
+            ChannelTopic = model.Topic;
+            ServerName = model.Server.HostName;
+            SendWatermark = string.Format("chat on {0}", ServerName);
+            DispatcherHelper.CheckBeginInvokeOnUI(() =>
+            {
+                model.Messages.ToList().ForEach(item =>
+                {
+                    _messagesList.Add(item);
+                });
+            });
+            Messages.View.Refresh();
         }
 
         public override void Cleanup()
