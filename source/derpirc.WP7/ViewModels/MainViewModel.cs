@@ -224,7 +224,8 @@ namespace derpirc.ViewModels
             _sessionSupervisor = new Core.SessionSupervisor(_unitOfWork);
             _sessionSupervisor.ChannelJoined += new EventHandler<Core.ChannelStatusEventArgs>(_sessionSupervisor_ChannelJoined);
             _sessionSupervisor.ChannelLeft += new EventHandler<Core.ChannelStatusEventArgs>(_sessionSupervisor_ChannelLeft);
-            _sessionSupervisor.MessageReceived += new EventHandler<Core.ChannelMessageEventArgs>(_sessionSupervisor_MessageReceived);
+            _sessionSupervisor.MessageReceived += new EventHandler<Core.ChannelItemEventArgs>(_sessionSupervisor_MessageReceived);
+            _sessionSupervisor.MentionReceived += new EventHandler<Core.MentionItemEventArgs>(_sessionSupervisor_MentionReceived);
         }
 
         void _sessionSupervisor_ChannelJoined(object sender, Core.ChannelStatusEventArgs e)
@@ -253,7 +254,7 @@ namespace derpirc.ViewModels
         {
         }
 
-        void _sessionSupervisor_MessageReceived(object sender, Core.ChannelMessageEventArgs e)
+        void _sessionSupervisor_MessageReceived(object sender, Core.ChannelItemEventArgs e)
         {
             var foundChannel = _channelsList.Where(x => x.ChannelName == e.Channel.Name && x.Model.ServerId == e.Channel.ServerId).FirstOrDefault();
             if (foundChannel == null)
@@ -271,6 +272,28 @@ namespace derpirc.ViewModels
                 {
                     foundChannel.Model = e.Channel;
                     Channels.View.Refresh();
+                });
+            }
+        }
+
+        void _sessionSupervisor_MentionReceived(object sender, Core.MentionItemEventArgs e)
+        {
+            var foundChannel = _mentionsList.Where(x => x.NickName == e.Mention.Name && x.Model.ServerId == e.Mention.ServerId).FirstOrDefault();
+            if (foundChannel == null)
+            {
+                DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                {
+                    var mentionSummary = new MentionSummaryViewModel(e.Mention);
+                    _mentionsList.Add(mentionSummary);
+                    Mentions.View.Refresh();
+                });
+            }
+            else
+            {
+                DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                {
+                    foundChannel.Model = e.Mention;
+                    Mentions.View.Refresh();
                 });
             }
         }

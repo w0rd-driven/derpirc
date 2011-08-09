@@ -21,6 +21,8 @@ namespace derpirc.ViewModels
             get { return _model; }
             set
             {
+                if (value != null)
+                    UpdateViewModel(value);
                 if (_model == value)
                     return;
 
@@ -162,31 +164,29 @@ namespace derpirc.ViewModels
         /// </summary>
         public MessageSummaryViewModel(MessageSummary model)
         {
-            // HACK: Temporary
-            model.Name = "w0rd-driven";
-            var network = new Data.Settings.SessionNetwork()
-            {
-                Name = "EFNet",
-            };
-            model.Server = new Data.Settings.SessionServer()
-            {
-                HostName = "irc.efnet.org",
-                Network = network,
-            };
-            model.LastItem = new ChannelItem()
-            {
-                //Summary = model,
-                SummaryId = model.Id,
-                IsRead = false,
-                Source = "w0rd-driven",
-                Text = "urmom!",
-                TimeStamp = DateTime.Now,
-            };
-            model.UnreadCount = 4;
-
             if (IsInDesignMode)
             {
                 // code runs in blend --> create design time data.
+                model.Name = "w0rd-driven";
+                var network = new Data.Settings.SessionNetwork()
+                {
+                    Name = "EFNet",
+                };
+                model.Server = new Data.Settings.SessionServer()
+                {
+                    HostName = "irc.efnet.org",
+                    Network = network,
+                };
+                model.LastItem = new ChannelItem()
+                {
+                    //Summary = model,
+                    SummaryId = model.Id,
+                    IsRead = false,
+                    Source = "w0rd-driven",
+                    Text = "urmom!",
+                    TimeStamp = DateTime.Now,
+                };
+                model.UnreadCount = 4;
             }
             else
             {
@@ -194,14 +194,21 @@ namespace derpirc.ViewModels
             }
 
             Model = model;
-            NickName = Model.Name;
-            NetworkName = Model.Server.Network.Name;
-            UnreadCount = Model.UnreadCount;
-            LastMessage = Model.LastItem as MessageItem;
-            MessageIsRead = LastMessage.IsRead;
-            MessageSource = NetworkName;
-            MessageText = LastMessage.Text;
-            MessageTimeStamp = LastMessage.TimeStamp;
+        }
+
+        private void UpdateViewModel(MessageSummary model)
+        {
+            NickName = model.Name;
+            NetworkName = model.Server.Network.Name;
+            UnreadCount = model.UnreadCount;
+            if (model.LastItem != null)
+            {
+                LastMessage = model.LastItem as MessageItem;
+                MessageIsRead = LastMessage.IsRead;
+                MessageSource = NetworkName;
+                MessageText = LastMessage.Text;
+                MessageTimeStamp = LastMessage.TimeStamp;
+            }
         }
 
         public override void Cleanup()

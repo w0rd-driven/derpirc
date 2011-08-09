@@ -3,7 +3,7 @@ using derpirc.Data;
 
 namespace derpirc.Core
 {
-    public class ChannelMessageEventArgs : EventArgs
+    public class ChannelItemEventArgs : EventArgs
     {
         public ChannelSummary Channel { get; set; }
         public ChannelItem Message { get; set; }

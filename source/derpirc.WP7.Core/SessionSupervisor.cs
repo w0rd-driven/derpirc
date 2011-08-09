@@ -26,7 +26,8 @@ namespace derpirc.Core
         // HACK: UI facing
         public event EventHandler<ChannelStatusEventArgs> ChannelJoined;
         public event EventHandler<ChannelStatusEventArgs> ChannelLeft;
-        public event EventHandler<ChannelMessageEventArgs> MessageReceived;
+        public event EventHandler<ChannelItemEventArgs> MessageReceived;
+        public event EventHandler<MentionItemEventArgs> MentionReceived;
 
         // EFNet: Welcome to the $server Internet Relay Chat Network $nick
         // PowerPrecision: Welcome to the $server IRC Network $nick!$email@$host
@@ -75,7 +76,8 @@ namespace derpirc.Core
             _channelSupervisor = new ChannelsSupervisor(_unitOfWork, _session);
             _channelSupervisor.ChannelJoined += new EventHandler<ChannelStatusEventArgs>(_channelSupervisor_ChannelJoined);
             _channelSupervisor.ChannelLeft += new EventHandler<ChannelStatusEventArgs>(_channelSupervisor_ChannelLeft);
-            _channelSupervisor.MessageReceived += new EventHandler<ChannelMessageEventArgs>(_channelSupervisor_MessageReceived);
+            _channelSupervisor.MessageReceived += new EventHandler<ChannelItemEventArgs>(_channelSupervisor_MessageReceived);
+            _channelSupervisor.MentionReceived += new EventHandler<MentionItemEventArgs>(_channelSupervisor_MentionReceived);
         }
 
         void _channelSupervisor_ChannelJoined(object sender, ChannelStatusEventArgs e)
@@ -96,9 +98,18 @@ namespace derpirc.Core
             }
         }
 
-        void _channelSupervisor_MessageReceived(object sender, ChannelMessageEventArgs e)
+        void _channelSupervisor_MessageReceived(object sender, ChannelItemEventArgs e)
         {
             var handler = MessageReceived;
+            if (handler != null)
+            {
+                handler.Invoke(sender, e);
+            }
+        }
+
+        void _channelSupervisor_MentionReceived(object sender, MentionItemEventArgs e)
+        {
+            var handler = MentionReceived;
             if (handler != null)
             {
                 handler.Invoke(sender, e);

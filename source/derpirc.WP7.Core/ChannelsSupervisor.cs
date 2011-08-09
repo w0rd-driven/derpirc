@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
@@ -32,7 +33,8 @@ namespace derpirc.Core
 
         public event EventHandler<ChannelStatusEventArgs> ChannelJoined;
         public event EventHandler<ChannelStatusEventArgs> ChannelLeft;
-        public event EventHandler<ChannelMessageEventArgs> MessageReceived;
+        public event EventHandler<ChannelItemEventArgs> MessageReceived;
+        public event EventHandler<MentionItemEventArgs> MentionReceived;
 
         public ChannelsSupervisor(DataUnitOfWork unitOfWork, Session session)
         {
@@ -98,18 +100,36 @@ namespace derpirc.Core
             var messageType = MessageType.Theirs;
             if (e.Source is IrcUser)
             {
-                messageType = MessageType.Mine;
+                messageType = MessageType.Theirs;
             }
-            var channelSummary = GetChannelSummary(channel);
-            var channelMessage = GetIrcMessage(channelSummary, e, messageType);
-            channelSummary.Messages.Add(channelMessage);
-            _unitOfWork.Commit();
-            var eventArgs = new ChannelMessageEventArgs()
+
+            var isMention = e.Text.Contains(channel.Client.LocalUser.NickName);
+            if (isMention)
             {
-                Channel = channelSummary,
-                Message = channelMessage,
-            };
-            OnChannelMessageReceived(eventArgs);
+                var mentionSummary = GetMentionSummary(channel);
+                var mentionMessage = GetIrcMessage(mentionSummary, e, messageType);
+                mentionSummary.Messages.Add(mentionMessage);
+                _unitOfWork.Commit();
+                var eventArgs = new MentionItemEventArgs()
+                {
+                    Mention = mentionSummary,
+                    Message = mentionMessage,
+                };
+                OnMentionItemReceived(eventArgs);
+            }
+            else
+            {
+                var channelSummary = GetChannelSummary(channel);
+                var channelMessage = GetIrcMessage(channelSummary, e, messageType);
+                channelSummary.Messages.Add(channelMessage);
+                _unitOfWork.Commit();
+                var eventArgs = new ChannelItemEventArgs()
+                {
+                    Channel = channelSummary,
+                    Message = channelMessage,
+                };
+                OnChannelItemReceived(eventArgs);
+            }
         }
 
         private void Channel_NoticeReceived(object sender, IrcMessageEventArgs e)
@@ -158,9 +178,18 @@ namespace derpirc.Core
             }
         }
 
-        private void OnChannelMessageReceived(ChannelMessageEventArgs e)
+        private void OnChannelItemReceived(ChannelItemEventArgs e)
         {
             var handler = MessageReceived;
+            if (handler != null)
+            {
+                handler.Invoke(this, e);
+            }
+        }
+
+        private void OnMentionItemReceived(MentionItemEventArgs e)
+        {
+            var handler = MentionReceived;
             if (handler != null)
             {
                 handler.Invoke(this, e);
@@ -170,19 +199,35 @@ namespace derpirc.Core
         private ChannelSummary GetChannelSummary(IrcChannel channel)
         {
             var server = GetServerByName(channel.Client.ServerName);
-            var channelSummary = _unitOfWork.Channels.FindBy(x => x.ServerId == server.Id && x.Name == channel.Name.ToLower()).FirstOrDefault();
-            if (channelSummary == null)
+            var result = _unitOfWork.Channels.FindBy(x => x.ServerId == server.Id && x.Name == channel.Name.ToLower()).FirstOrDefault();
+            if (result == null)
             {
-                channelSummary = new ChannelSummary();
-                channelSummary.Name = channel.Name.ToLower();
-                // HACK: Get server from _session via dependency injection
-                channelSummary.Server = server;
-                channelSummary.ServerId = server.Id;
+                result = new ChannelSummary();
+                result.Name = channel.Name.ToLower();
+                result.Server = server;
+                result.ServerId = server.Id;
 
-                _unitOfWork.Channels.Add(channelSummary);
+                _unitOfWork.Channels.Add(result);
                 _unitOfWork.Commit();
             }
-            return channelSummary;
+            return result;
+        }
+
+        private MentionSummary GetMentionSummary(IrcChannel channel)
+        {
+            var server = GetServerByName(channel.Client.ServerName);
+            var result = _unitOfWork.Mentions.FindBy(x => x.ServerId == server.Id && x.Name == channel.Name.ToLower()).FirstOrDefault();
+            if (result == null)
+            {
+                result = new MentionSummary();
+                result.Name = channel.Name.ToLower();
+                result.Server = server;
+                result.ServerId = server.Id;
+
+                _unitOfWork.Mentions.Add(result);
+                _unitOfWork.Commit();
+            }
+            return result;
         }
 
         private SessionServer GetServerByName(string serverName)
@@ -191,31 +236,31 @@ namespace derpirc.Core
             return _session.Servers.FirstOrDefault(x => x.HostName == serverName);
         }
 
-        private ChannelItem GetIrcMessage(ChannelSummary channelSummary, IrcMessageEventArgs eventArgs, MessageType messageType)
+        private ChannelItem GetIrcMessage(ChannelSummary summary, IrcMessageEventArgs eventArgs, MessageType messageType)
         {
             var result = new ChannelItem();
-            //var line = eventArgs.Text;
-            //if (line.Length > 1 && line.StartsWith("."))
-            //{
-            //    // Process command.
-            //    var parts = commandPartsSplitRegex.Split(line.Substring(1)).Select(p => p.TrimStart('/')).ToArray();
-            //    var command = parts.First();
-            //    var parameters = parts.Skip(1).ToArray();
-
-            //    //result.Parameters = parameters;
-            //    //ReadChatCommand(client, eventArgs.Source, eventArgs.Targets, command, parameters);
-            //}
-
             // Set values
             result.TimeStamp = DateTime.Now;
             result.IsRead = false;
-            result.Summary = channelSummary;
-            result.SummaryId = channelSummary.Id;
+            result.Summary = summary;
+            result.SummaryId = summary.Id;
             result.Source = eventArgs.Source.Name;
-            //result.Command = command;
             result.Text = eventArgs.Text;
             result.Type = messageType;
+            return result;
+        }
 
+        private MentionItem GetIrcMessage(MentionSummary summary, IrcMessageEventArgs eventArgs, MessageType messageType)
+        {
+            var result = new MentionItem();
+            // Set values
+            result.TimeStamp = DateTime.Now;
+            result.IsRead = false;
+            result.Summary = summary;
+            result.SummaryId = summary.Id;
+            result.Source = eventArgs.Source.Name;
+            result.Text = eventArgs.Text;
+            result.Type = messageType;
             return result;
         }
     }
