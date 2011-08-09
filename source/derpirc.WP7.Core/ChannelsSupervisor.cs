@@ -191,9 +191,9 @@ namespace derpirc.Core
             return _session.Servers.FirstOrDefault(x => x.HostName == serverName);
         }
 
-        private ChannelMessage GetIrcMessage(ChannelSummary channelSummary, IrcMessageEventArgs eventArgs, MessageType messageType)
+        private ChannelItem GetIrcMessage(ChannelSummary channelSummary, IrcMessageEventArgs eventArgs, MessageType messageType)
         {
-            var result = new ChannelMessage();
+            var result = new ChannelItem();
             //var line = eventArgs.Text;
             //if (line.Length > 1 && line.StartsWith("."))
             //{

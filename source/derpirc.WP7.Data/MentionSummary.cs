@@ -20,7 +20,7 @@ namespace derpirc.Data
 
         [Column(CanBeNull = true)]
         public int LastItemId { get; set; }
-        public IMessage LastItem { get; set; }
+        public IMessageItem LastItem { get; set; }
 
         [Column(CanBeNull = true)]
         public int Count { get; set; }

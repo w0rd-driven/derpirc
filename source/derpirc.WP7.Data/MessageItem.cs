@@ -5,11 +5,11 @@ using System.Data.Linq.Mapping;
 namespace derpirc.Data
 {
     [Table]
-    public class ChannelMessage: BaseNotify, IBaseModel, IMessage
+    public class MessageItem : BaseNotify, IBaseModel, IMessageItem
     {
         [Column(IsVersion = true)]
         private Binary version;
-        private EntityRef<ChannelSummary> _summary;
+        private EntityRef<MessageSummary> _summary;
 
         #region Primitive Properties
 
@@ -33,12 +33,12 @@ namespace derpirc.Data
         [Column(CanBeNull = false)]
         public int SummaryId { get; set; }
         [Association(Name = "Summary_Item", ThisKey = "SummaryId", OtherKey = "Id", IsForeignKey = true)]
-        public ChannelSummary Summary
+        public MessageSummary Summary
         {
             get { return _summary.Entity; }
             set
             {
-                ChannelSummary previousValue = _summary.Entity;
+                MessageSummary previousValue = _summary.Entity;
                 if (previousValue != value || _summary.HasLoadedOrAssignedValue == false)
                 {
                     this.RaisePropertyChanged();
@@ -63,9 +63,9 @@ namespace derpirc.Data
 
         #endregion
 
-        public ChannelMessage()
+        public MessageItem()
         {
-            _summary = default(EntityRef<ChannelSummary>);
+            _summary = default(EntityRef<MessageSummary>);
         }
     }
 }

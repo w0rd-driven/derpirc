@@ -77,8 +77,8 @@ namespace derpirc.ViewModels
             }
         }
 
-        private ChannelMessage _lastMessage;
-        public ChannelMessage LastMessage
+        private ChannelItem _lastMessage;
+        public ChannelItem LastMessage
         {
             get { return _lastMessage; }
             set
@@ -193,7 +193,7 @@ namespace derpirc.ViewModels
                     HostName = "irc.efnet.org",
                     Network = network,
                 };
-                model.LastItem = new ChannelMessage()
+                model.LastItem = new ChannelItem()
                 {
                     Summary = model,
                     SummaryId = model.Id,
@@ -220,7 +220,7 @@ namespace derpirc.ViewModels
             UnreadCount = model.UnreadCount;
             if (model.LastItem != null)
             {
-                LastMessage = model.LastItem as ChannelMessage;
+                LastMessage = model.LastItem as ChannelItem;
                 MessageIsRead = LastMessage.IsRead;
                 MessageSource = LastMessage.Source + " on " + NetworkName;
                 MessageText = LastMessage.Text;

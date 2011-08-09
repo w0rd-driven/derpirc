@@ -13,7 +13,7 @@ namespace derpirc.Data
         [Column(IsVersion = true)]
         private Binary version;
         private EntityRef<SessionServer> _server;
-        private EntitySet<ChannelMessage> _messages;
+        private EntitySet<ChannelItem> _messages;
 
         #region Primitive Properties
 
@@ -26,7 +26,7 @@ namespace derpirc.Data
 
         [Column(CanBeNull = true)]
         public int LastItemId { get; set; }
-        public IMessage LastItem { get; set; }
+        public IMessageItem LastItem { get; set; }
 
         [Column(CanBeNull = true)]
         public int Count { get; set; }
@@ -72,7 +72,7 @@ namespace derpirc.Data
         }
 
         [Association(Name = "Message_Items", ThisKey = "Id", OtherKey = "SummaryId", DeleteRule = "NO ACTION")]
-        public ICollection<ChannelMessage> Messages
+        public ICollection<ChannelItem> Messages
         {
             get
             {
@@ -89,7 +89,7 @@ namespace derpirc.Data
                     }
                     _messages.SetSource(value);
                     //_messages = value;
-                    var newValue = value as FixupCollection<ChannelMessage>;
+                    var newValue = value as FixupCollection<ChannelItem>;
                     if (newValue != null)
                     {
                         newValue.CollectionChanged += FixupMessages;
@@ -106,14 +106,14 @@ namespace derpirc.Data
         {
             if (e.NewItems != null)
             {
-                foreach (ChannelMessage item in e.NewItems)
+                foreach (ChannelItem item in e.NewItems)
                     item.Summary = this;
                 // HACK: Not locking can cause weird behaviors during commits. 
                 UpdateMessageCounts();
             }
             if (e.OldItems != null)
             {
-                foreach (ChannelMessage item in e.OldItems)
+                foreach (ChannelItem item in e.OldItems)
                 {
                     if (ReferenceEquals(item.Summary, this))
                         item.Summary = null;
@@ -126,7 +126,7 @@ namespace derpirc.Data
         public ChannelSummary()
         {
             _server = default(EntityRef<SessionServer>);
-            _messages = new EntitySet<ChannelMessage>();
+            _messages = new EntitySet<ChannelItem>();
             _messages.CollectionChanged += FixupMessages;
             //_messages = new EntitySet<ChannelMessage>(new Action<ChannelMessage>(attach_Messages), new Action<ChannelMessage>(detach_Messages));
         }
@@ -134,7 +134,7 @@ namespace derpirc.Data
         private void UpdateMessageCounts()
         {
             var lastIndex = _messages.Count - 1;
-            var lastItem = _messages[lastIndex] as ChannelMessage;
+            var lastItem = _messages[lastIndex] as ChannelItem;
             LastItem = lastItem;
             LastItemId = lastItem.Id;
             Count = _messages.Count;

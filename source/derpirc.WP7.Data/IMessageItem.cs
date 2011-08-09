@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace derpirc.Data
 {
-    public interface IMessage
+    public interface IMessageItem
     {
         // Foreign keys
         // 1:M from IMessageSummary

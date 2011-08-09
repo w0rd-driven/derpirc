@@ -151,11 +151,11 @@ namespace derpirc.Data
         }
         private Table<ChannelSummary> _channels;
 
-        public Table<ChannelMessage> ChannelMessages
+        public Table<ChannelItem> ChannelItems
         {
-            get { return _channelMessages ?? (_channelMessages = GetTable<ChannelMessage>()); }
+            get { return _channelItems ?? (_channelItems = GetTable<ChannelItem>()); }
         }
-        private Table<ChannelMessage> _channelMessages;
+        private Table<ChannelItem> _channelItems;
 
         public Table<MentionSummary> Mentions
         {
@@ -163,11 +163,23 @@ namespace derpirc.Data
         }
         private Table<MentionSummary> _mentions;
 
+        public Table<MentionItem> MentionItems
+        {
+            get { return _mentionItems ?? (_mentionItems = GetTable<MentionItem>()); }
+        }
+        private Table<MentionItem> _mentionItems;
+
         public Table<MessageSummary> Messages
         {
             get { return _messages ?? (_messages = GetTable<MessageSummary>()); }
         }
         private Table<MessageSummary> _messages;
+
+        public Table<MessageItem> MessageItems
+        {
+            get { return _messageItems ?? (_messageItems = GetTable<MessageItem>()); }
+        }
+        private Table<MessageItem> _messageItems;
 
         // Settings
         public Table<Settings.Client> Client

@@ -6,6 +6,6 @@ namespace derpirc.Core
     public class ChannelMessageEventArgs : EventArgs
     {
         public ChannelSummary Channel { get; set; }
-        public ChannelMessage Message { get; set; }
+        public ChannelItem Message { get; set; }
     }
 }

@@ -155,11 +155,11 @@ namespace derpirc.ViewModels
             }
         }
 
-        private ObservableCollection<ChannelMessage> _messagesList;
+        private ObservableCollection<ChannelItem> _messagesList;
         public CollectionViewSource Messages { get; set; }
 
-        private ChannelMessage _selectedItem;
-        public ChannelMessage SelectedItem
+        private ChannelItem _selectedItem;
+        public ChannelItem SelectedItem
         {
             get { return _selectedItem; }
             set
@@ -222,7 +222,7 @@ namespace derpirc.ViewModels
             {
                 // Code runs "for real": Connect to service, etc...
             }
-            _messagesList = new ObservableCollection<ChannelMessage>();
+            _messagesList = new ObservableCollection<ChannelItem>();
             Messages = new CollectionViewSource() { Source = _messagesList };
             _unitOfWork = new DataUnitOfWork();
             _unitOfWork.InitializeDatabase(false);
@@ -246,8 +246,8 @@ namespace derpirc.ViewModels
             Model.Name = "#Test";
             Model.Topic = "This is a test topic";
             Model.Count = 20;
-            _messagesList = new ObservableCollection<ChannelMessage>();
-            _messagesList.Add(new ChannelMessage()
+            _messagesList = new ObservableCollection<ChannelItem>();
+            _messagesList.Add(new ChannelItem()
             {
                 Summary = Model,
                 SummaryId = Model.Id,
@@ -256,7 +256,7 @@ namespace derpirc.ViewModels
                 TimeStamp = DateTime.Now,
                 Type = MessageType.Theirs,
             });
-            _messagesList.Add(new ChannelMessage()
+            _messagesList.Add(new ChannelItem()
             {
                 Summary = Model,
                 SummaryId = Model.Id,

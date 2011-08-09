@@ -58,8 +58,9 @@
     </Compile>
     <Compile Include="BaseModel.cs" />
     <Compile Include="BaseNotify.cs" />
-    <Compile Include="ChannelMessage.cs" />
+    <Compile Include="ChannelItem.cs" />
     <Compile Include="ChannelSummary.cs" />
+    <Compile Include="MessageItem.cs" />
     <Compile Include="DataModel.cs" />
     <Compile Include="DataModelContainer.cs" />
     <Compile Include="DataUnitOfWork.cs" />
@@ -67,10 +68,11 @@
     <Compile Include="IEntity.cs" />
     <Compile Include="IRepository.cs" />
     <Compile Include="IUnitOfWork.cs" />
+    <Compile Include="MentionItem.cs" />
     <Compile Include="MentionSummary.cs" />
     <Compile Include="MessageSummary.cs" />
     <Compile Include="IBaseModel.cs" />
-    <Compile Include="IMessage.cs">
+    <Compile Include="IMessageItem.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="IMessageSummary.cs">
