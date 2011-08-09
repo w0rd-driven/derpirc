@@ -14,6 +14,6 @@ namespace derpirc.Data
         int ServerId { get; set; }
         SessionServer Server { get; set; }
         // Not used because we segregate into Channel/Mention/Message tables
-        //ICollection<IMessage> Messages { get; set; }
+        //ICollection<IMessageItem> Messages { get; set; }
     }
 }
