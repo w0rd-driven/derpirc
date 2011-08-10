@@ -233,14 +233,17 @@ namespace derpirc.Core
             var clientId = -1;
             int.TryParse(client.ClientId, out clientId);
             var index = clientId - 1;
-            if (_clientStates[index] == 0)
+            if (_clientStates.Count >= index)
             {
-                _clientStates[index] = 1;
-                var matchedServer = GetServer(clientId, client.ServerName);
-                var matchedNetwork = GetNetwork(client.WelcomeMessage);
-                LinkSession(matchedServer, matchedNetwork);
-                // TODO: Wire up settings UI call for IsAutoJoinSession
-                JoinSession(matchedServer, client);
+                if (_clientStates[index] == 0)
+                {
+                    _clientStates[index] = 1;
+                    var matchedServer = GetServer(clientId, client.ServerName);
+                    var matchedNetwork = GetNetwork(client.WelcomeMessage);
+                    LinkSession(matchedServer, matchedNetwork);
+                    // TODO: Wire up settings UI call for IsAutoJoinSession
+                    JoinSession(matchedServer, client);
+                }
             }
         }
 

@@ -197,7 +197,7 @@ namespace derpirc.ViewModels
         #endregion
 
         private BackgroundWorker _worker;
-        private Data.DataUnitOfWork _unitOfWork;
+        private DataUnitOfWork _unitOfWork;
         private Core.SessionSupervisor _sessionSupervisor;
 
         private DateTime _lastRefreshChannels;
@@ -220,7 +220,7 @@ namespace derpirc.ViewModels
             _worker = new BackgroundWorker();
             _worker.DoWork += new DoWorkEventHandler(DeferStartupWork);
 
-            _unitOfWork = new Data.DataUnitOfWork();
+            _unitOfWork = new DataUnitOfWork();
             _sessionSupervisor = new Core.SessionSupervisor(_unitOfWork);
             _sessionSupervisor.ChannelJoined += new EventHandler<Core.ChannelStatusEventArgs>(_sessionSupervisor_ChannelJoined);
             _sessionSupervisor.ChannelLeft += new EventHandler<Core.ChannelStatusEventArgs>(_sessionSupervisor_ChannelLeft);

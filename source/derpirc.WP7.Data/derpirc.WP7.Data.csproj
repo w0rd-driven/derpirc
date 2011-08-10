@@ -60,6 +60,7 @@
     <Compile Include="BaseNotify.cs" />
     <Compile Include="ChannelItem.cs" />
     <Compile Include="ChannelSummary.cs" />
+    <Compile Include="FileModeEnum.cs" />
     <Compile Include="MessageItem.cs" />
     <Compile Include="DataModel.cs" />
     <Compile Include="DataModelContainer.cs" />
