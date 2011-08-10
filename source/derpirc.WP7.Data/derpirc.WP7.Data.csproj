@@ -66,7 +66,6 @@
     <Compile Include="DataModelContainer.cs" />
     <Compile Include="DataUnitOfWork.cs" />
     <Compile Include="IDataModelContainer.cs" />
-    <Compile Include="IEntity.cs" />
     <Compile Include="IRepository.cs" />
     <Compile Include="IUnitOfWork.cs" />
     <Compile Include="MentionItem.cs" />
