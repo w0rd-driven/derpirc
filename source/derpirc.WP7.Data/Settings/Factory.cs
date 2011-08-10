@@ -152,7 +152,7 @@ namespace derpirc.Data.Settings
                 BasedOnId = 1,
                 Name = "EFNet",
                 IsJoinEnabled = true,
-                JoinChannels = "#wp7, #xna",
+                JoinChannels = "#wp7test",
                 JoinDelay = 2,
             });
             result.Add(new SessionNetwork()

@@ -207,7 +207,6 @@ namespace derpirc.ViewModels
         #endregion
 
         private Data.DataUnitOfWork _unitOfWork;
-        private Data.DataModelContainer _dataContext;
 
         /// <summary>
         /// Initializes a new instance of the ChannelDetailViewModel class.
@@ -228,7 +227,6 @@ namespace derpirc.ViewModels
             _unitOfWork = new DataUnitOfWork();
             _unitOfWork.FileMode = FileMode.ReadOnly;
             _unitOfWork.InitializeDatabase(false);
-            //_dataContext = new DataModelContainer();
         }
 
         public void Send()
@@ -283,9 +281,6 @@ namespace derpirc.ViewModels
             try
             {
                 var model = _unitOfWork.Channels.FindBy(x => x.Name == name).FirstOrDefault();
-                //var model = (from channel in _dataContext.Channels
-                //             where channel.Name == name
-                //             select channel).FirstOrDefault();
                 if (model != null)
                     UpdateViewModel(model);
             }
