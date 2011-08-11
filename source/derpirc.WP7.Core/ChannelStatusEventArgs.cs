@@ -6,6 +6,6 @@ namespace derpirc.Core
     public class ChannelStatusEventArgs : EventArgs
     {
         public ChannelSummary Channel { get; set; }
-        public ChannelStatusTypeEnum Status { get; set; }
+        public ChannelStatusType Status { get; set; }
     }
 }

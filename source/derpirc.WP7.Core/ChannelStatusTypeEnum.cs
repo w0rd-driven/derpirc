@@ -1,7 +1,7 @@
 ﻿
 namespace derpirc.Core
 {
-    public enum ChannelStatusTypeEnum
+    public enum ChannelStatusType
     {
         Join = 0,
         Leave = 1,

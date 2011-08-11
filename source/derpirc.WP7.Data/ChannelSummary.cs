@@ -39,7 +39,7 @@ namespace derpirc.Data
 
         [Column(CanBeNull = false)]
         public int ServerId { get; set; }
-        [Association(Name = "Server_Item", ThisKey = "ServerId", OtherKey = "Id", IsForeignKey = false)]
+        [Association(Name = "Server_Item", ThisKey = "ServerId", OtherKey = "Id", IsForeignKey = true)]
         public SessionServer Server
         {
             get
@@ -49,16 +49,18 @@ namespace derpirc.Data
             set
             {
                 SessionServer previousValue = this._server.Entity;
-                if (previousValue != value || this._server.HasLoadedOrAssignedValue == false)
+                if ((previousValue != value) || (this._server.HasLoadedOrAssignedValue == false))
                 {
                     this.RaisePropertyChanged();
                     if ((previousValue != null))
                     {
                         this._server.Entity = null;
+                        //previousValue.Channels.Remove(this);
                     }
                     this._server.Entity = value;
                     if ((value != null))
                     {
+                        //value.Channels.Add(this);
                         this.ServerId = value.Id;
                     }
                     else
@@ -128,7 +130,7 @@ namespace derpirc.Data
             _server = default(EntityRef<SessionServer>);
             _messages = new EntitySet<ChannelItem>();
             _messages.CollectionChanged += FixupMessages;
-            //_messages = new EntitySet<ChannelMessage>(new Action<ChannelMessage>(attach_Messages), new Action<ChannelMessage>(detach_Messages));
+            //_messages = new EntitySet<ChannelMessage>(new Action<ChannelItem>(attach_Messages), new Action<ChannelItem>(detach_Messages));
         }
 
         private void UpdateMessageCounts()
@@ -141,18 +143,18 @@ namespace derpirc.Data
             UnreadCount = _messages.Count(x => x.IsRead == false);
         }
 
-        //void attach_Messages(ChannelMessage entity)
-        //{
-        ////    this.RaisePropertyChanged();
-        //    UpdateMessageCounts();
-        //    entity.Summary = this;
-        //}
+        void attach_Messages(ChannelItem entity)
+        {
+            //    this.RaisePropertyChanged();
+            UpdateMessageCounts();
+            entity.Summary = this;
+        }
 
-        //void detach_Messages(ChannelMessage entity)
-        //{
-        ////    this.RaisePropertyChanged();
-        //    UpdateMessageCounts();
-        //    entity.Summary = null;
-        //}
+        void detach_Messages(ChannelItem entity)
+        {
+            //    this.RaisePropertyChanged();
+            UpdateMessageCounts();
+            entity.Summary = null;
+        }
     }
 }

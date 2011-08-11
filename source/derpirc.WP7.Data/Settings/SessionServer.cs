@@ -1,4 +1,6 @@
-﻿using System.Data.Linq;
+﻿using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Data.Linq;
 using System.Data.Linq.Mapping;
 
 namespace derpirc.Data.Settings
@@ -11,6 +13,7 @@ namespace derpirc.Data.Settings
         private EntityRef<Server> _server;
         private EntityRef<Session> _session;
         private EntityRef<SessionNetwork> _network;
+        private EntitySet<ChannelSummary> _channels;
 
         #region Primitive Properties
 
@@ -130,6 +133,54 @@ namespace derpirc.Data.Settings
             }
         }
 
+        [Association(Name = "Channel_Items", ThisKey = "Id", OtherKey = "ServerId", DeleteRule = "NO ACTION")]
+        public ICollection<ChannelSummary> Channels
+        {
+            get
+            {
+                return _channels;
+            }
+            set
+            {
+                if (!ReferenceEquals(_channels, value))
+                {
+                    var previousValue = _channels;
+                    if (previousValue != null)
+                    {
+                        previousValue.CollectionChanged -= FixupChannels;
+                    }
+                    _channels.SetSource(value);
+                    //_messages = value;
+                    var newValue = value as FixupCollection<ChannelSummary>;
+                    if (newValue != null)
+                    {
+                        newValue.CollectionChanged += FixupChannels;
+                    }
+                }
+            }
+        }
+
+        #endregion
+
+        #region Association Fixup
+
+        private void FixupChannels(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.NewItems != null)
+            {
+                foreach (ChannelSummary item in e.NewItems)
+                    item.Server = this;
+            }
+            if (e.OldItems != null)
+            {
+                foreach (ChannelSummary item in e.OldItems)
+                {
+                    if (ReferenceEquals(item.Server, this))
+                        item.Server = null;
+                }
+            }
+        }
+
         #endregion
 
         public SessionServer()
@@ -137,6 +188,21 @@ namespace derpirc.Data.Settings
             _server = default(EntityRef<Server>);
             _session = default(EntityRef<Session>);
             _network = default(EntityRef<SessionNetwork>);
+            _channels = new EntitySet<ChannelSummary>();
+            _channels.CollectionChanged += FixupChannels;
+            //_channels = new EntitySet<ChannelSummary>(new Action<ChannelSummary>(attach_Channels), new Action<ChannelSummary>(detach_Channels));
+        }
+
+        private void attach_Channels(ChannelSummary entity)
+        {
+            //this.RaisePropertyChanged();
+            entity.Server = this;
+        }
+
+        private void detach_Channels(ChannelSummary entity)
+        {
+            //this.RaisePropertyChanged();
+            entity.Server = null;
         }
     }
 }

@@ -142,7 +142,7 @@ namespace derpirc.Core
             var eventArgs = new ChannelStatusEventArgs()
             {
                 Channel = channelSummary,
-                Status = ChannelStatusTypeEnum.Join,
+                Status = ChannelStatusType.Join,
             };
             OnChannelJoined(eventArgs);
         }
@@ -153,7 +153,7 @@ namespace derpirc.Core
             var eventArgs = new ChannelStatusEventArgs()
             {
                 Channel = channelSummary,
-                Status = ChannelStatusTypeEnum.Leave,
+                Status = ChannelStatusType.Leave,
             };
             OnChannelLeft(eventArgs);
         }
@@ -161,15 +161,11 @@ namespace derpirc.Core
         private ChannelSummary GetChannelSummary(IrcChannel channel)
         {
             var server = GetServerByName(channel.Client.ServerName);
-            var result = _unitOfWork.Channels.FindBy(x => x.ServerId == server.Id && x.Name == channel.Name.ToLower()).FirstOrDefault();
+            var result = server.Channels.FirstOrDefault(x => x.ServerId == server.Id && x.Name == channel.Name.ToLower());
             if (result == null)
             {
-                result = new ChannelSummary();
-                result.Name = channel.Name.ToLower();
-                result.Server = server;
-                result.ServerId = server.Id;
-
-                _unitOfWork.Channels.Add(result);
+                result = new ChannelSummary() { Name = channel.Name };
+                server.Channels.Add(result);
                 _unitOfWork.Commit();
             }
             return result;
@@ -196,7 +192,7 @@ namespace derpirc.Core
         private SessionServer GetServerByName(string serverName)
         {
             // TODO: Error handling make sure _session != null
-            return _session.Servers.FirstOrDefault(x => x.HostName == serverName);
+            return _session.Servers.FirstOrDefault(x => x.HostName.ToLower() == serverName.ToLower());
         }
 
         private ChannelItem GetIrcMessage(ChannelSummary summary, IrcMessageEventArgs eventArgs, MessageType messageType)

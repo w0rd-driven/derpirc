@@ -1,4 +1,5 @@
-﻿
+﻿using System.Collections.Generic;
+
 namespace derpirc.Data.Settings
 {
     public interface ISessionServer
@@ -9,5 +10,6 @@ namespace derpirc.Data.Settings
         Session Session { get; set; }
         int NetworkId { get; set; }
         SessionNetwork Network { get; set; }
+        ICollection<ChannelSummary> Channels { get; set; }
     }
 }

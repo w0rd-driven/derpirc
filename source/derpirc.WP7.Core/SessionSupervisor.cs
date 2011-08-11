@@ -233,7 +233,7 @@ namespace derpirc.Core
             var clientId = -1;
             int.TryParse(client.ClientId, out clientId);
             var index = clientId - 1;
-            if (_clientStates.Count >= index)
+            if (_clientStates.Count > index)
             {
                 if (_clientStates[index] == 0)
                 {
