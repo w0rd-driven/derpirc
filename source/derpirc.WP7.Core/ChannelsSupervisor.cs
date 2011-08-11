@@ -104,7 +104,7 @@ namespace derpirc.Core
             var isMention = e.Text.Contains(channel.Client.LocalUser.NickName);
             if (isMention)
             {
-                var summary = GetMentionSummary(channel);
+                var summary = GetMentionSummary(e.Source as IrcUser);
                 var message = GetIrcMessage(summary, e, messageType);
                 summary.Messages.Add(message);
                 _unitOfWork.Commit();
@@ -164,25 +164,21 @@ namespace derpirc.Core
             var result = server.Channels.FirstOrDefault(x => x.ServerId == server.Id && x.Name == channel.Name.ToLower());
             if (result == null)
             {
-                result = new ChannelSummary() { Name = channel.Name };
+                result = new ChannelSummary() { Name = channel.Name.ToLower() };
                 server.Channels.Add(result);
                 _unitOfWork.Commit();
             }
             return result;
         }
 
-        private MentionSummary GetMentionSummary(IrcChannel channel)
+        private MentionSummary GetMentionSummary(IrcUser user)
         {
-            var server = GetServerByName(channel.Client.ServerName);
-            var result = _unitOfWork.Mentions.FindBy(x => x.ServerId == server.Id && x.Name == channel.Name.ToLower()).FirstOrDefault();
+            var server = GetServerByName(user.Client.ServerName);
+            var result = server.Mentions.FirstOrDefault(x => x.ServerId == server.Id && x.Name == user.NickName.ToLower());
             if (result == null)
             {
-                result = new MentionSummary();
-                result.Name = channel.Name.ToLower();
-                result.Server = server;
-                result.ServerId = server.Id;
-
-                _unitOfWork.Mentions.Add(result);
+                result = new MentionSummary() { Name = user.NickName.ToLower() };
+                server.Mentions.Add(result);
                 _unitOfWork.Commit();
             }
             return result;

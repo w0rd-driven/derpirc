@@ -14,6 +14,8 @@ namespace derpirc.Data.Settings
         private EntityRef<Session> _session;
         private EntityRef<SessionNetwork> _network;
         private EntitySet<ChannelSummary> _channels;
+        private EntitySet<MentionSummary> _mentions;
+        private EntitySet<MessageSummary> _messages;
 
         #region Primitive Properties
 
@@ -49,7 +51,7 @@ namespace derpirc.Data.Settings
             set
             {
                 Server previousValue = this._server.Entity;
-                if (previousValue != value || this._server.HasLoadedOrAssignedValue == false)
+                if ((previousValue != value || this._server.HasLoadedOrAssignedValue == false))
                 {
                     this.RaisePropertyChanged();
                     if ((previousValue != null))
@@ -80,7 +82,7 @@ namespace derpirc.Data.Settings
             set
             {
                 Session previousValue = _session.Entity;
-                if (previousValue != value || _session.HasLoadedOrAssignedValue == false)
+                if ((previousValue != value || this._server.HasLoadedOrAssignedValue == false))
                 {
                     this.RaisePropertyChanged();
                     if ((previousValue != null))
@@ -111,7 +113,7 @@ namespace derpirc.Data.Settings
             set
             {
                 SessionNetwork previousValue = _network.Entity;
-                if (previousValue != value || _network.HasLoadedOrAssignedValue == false)
+                if ((previousValue != value || this._server.HasLoadedOrAssignedValue == false))
                 {
                     this.RaisePropertyChanged();
                     if ((previousValue != null))
@@ -150,11 +152,62 @@ namespace derpirc.Data.Settings
                         previousValue.CollectionChanged -= FixupChannels;
                     }
                     _channels.SetSource(value);
-                    //_messages = value;
                     var newValue = value as FixupCollection<ChannelSummary>;
                     if (newValue != null)
                     {
                         newValue.CollectionChanged += FixupChannels;
+                    }
+                }
+            }
+        }
+
+        [Association(Name = "Mention_Items", ThisKey = "Id", OtherKey = "ServerId", DeleteRule = "NO ACTION")]
+        public ICollection<MentionSummary> Mentions
+        {
+            get
+            {
+                return _mentions;
+            }
+            set
+            {
+                if (!ReferenceEquals(_mentions, value))
+                {
+                    var previousValue = _mentions;
+                    if (previousValue != null)
+                    {
+                        previousValue.CollectionChanged -= FixupMentions;
+                    }
+                    _mentions.SetSource(value);
+                    var newValue = value as FixupCollection<MentionSummary>;
+                    if (newValue != null)
+                    {
+                        newValue.CollectionChanged += FixupMentions;
+                    }
+                }
+            }
+        }
+
+        [Association(Name = "Message_Items", ThisKey = "Id", OtherKey = "ServerId", DeleteRule = "NO ACTION")]
+        public ICollection<MessageSummary> Messages
+        {
+            get
+            {
+                return _messages;
+            }
+            set
+            {
+                if (!ReferenceEquals(_messages, value))
+                {
+                    var previousValue = _messages;
+                    if (previousValue != null)
+                    {
+                        previousValue.CollectionChanged -= FixupMessages;
+                    }
+                    _messages.SetSource(value);
+                    var newValue = value as FixupCollection<MessageSummary>;
+                    if (newValue != null)
+                    {
+                        newValue.CollectionChanged += FixupMessages;
                     }
                 }
             }
@@ -181,6 +234,40 @@ namespace derpirc.Data.Settings
             }
         }
 
+        private void FixupMentions(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.NewItems != null)
+            {
+                foreach (MentionSummary item in e.NewItems)
+                    item.Server = this;
+            }
+            if (e.OldItems != null)
+            {
+                foreach (MentionSummary item in e.OldItems)
+                {
+                    if (ReferenceEquals(item.Server, this))
+                        item.Server = null;
+                }
+            }
+        }
+
+        private void FixupMessages(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.NewItems != null)
+            {
+                foreach (MessageSummary item in e.NewItems)
+                    item.Server = this;
+            }
+            if (e.OldItems != null)
+            {
+                foreach (MessageSummary item in e.OldItems)
+                {
+                    if (ReferenceEquals(item.Server, this))
+                        item.Server = null;
+                }
+            }
+        }
+
         #endregion
 
         public SessionServer()
@@ -190,19 +277,10 @@ namespace derpirc.Data.Settings
             _network = default(EntityRef<SessionNetwork>);
             _channels = new EntitySet<ChannelSummary>();
             _channels.CollectionChanged += FixupChannels;
-            //_channels = new EntitySet<ChannelSummary>(new Action<ChannelSummary>(attach_Channels), new Action<ChannelSummary>(detach_Channels));
-        }
-
-        private void attach_Channels(ChannelSummary entity)
-        {
-            //this.RaisePropertyChanged();
-            entity.Server = this;
-        }
-
-        private void detach_Channels(ChannelSummary entity)
-        {
-            //this.RaisePropertyChanged();
-            entity.Server = null;
+            _mentions = new EntitySet<MentionSummary>();
+            _mentions.CollectionChanged += FixupMentions;
+            _messages = new EntitySet<MessageSummary>();
+            _messages.CollectionChanged += FixupMessages;
         }
     }
 }

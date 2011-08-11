@@ -56,7 +56,7 @@ namespace derpirc.Core
                 messageType = MessageType.Theirs;
             }
 
-            var summary = GetMessageSummary(localUser);
+            var summary = GetMessageSummary(e.Source as IrcUser);
             var message = GetIrcMessage(summary, e, messageType);
             summary.Messages.Add(message);
             _unitOfWork.Commit();
@@ -83,15 +83,11 @@ namespace derpirc.Core
         private MessageSummary GetMessageSummary(IrcUser user)
         {
             var server = GetServerByName(user.Client.ServerName);
-            var result = _unitOfWork.Messages.FindBy(x => x.ServerId == server.Id && x.Name == user.NickName.ToLower()).FirstOrDefault();
+            var result = server.Messages.FirstOrDefault(x => x.ServerId == server.Id && x.Name == user.NickName.ToLower());
             if (result == null)
             {
-                result = new MessageSummary();
-                result.Name = user.NickName.ToLower();
-                result.Server = server;
-                result.ServerId = server.Id;
-
-                _unitOfWork.Messages.Add(result);
+                result = new MessageSummary() { Name = user.NickName.ToLower() };
+                server.Messages.Add(result);
                 _unitOfWork.Commit();
             }
             return result;
@@ -115,7 +111,7 @@ namespace derpirc.Core
         private SessionServer GetServerByName(string serverName)
         {
             // TODO: Error handling make sure _session != null
-            return _session.Servers.FirstOrDefault(x => x.HostName == serverName);
+            return _session.Servers.FirstOrDefault(x => x.HostName.ToLower() == serverName.ToLower());
         }
 
         private void OnMessageItemReceived(MessageItemEventArgs e)

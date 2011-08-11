@@ -11,5 +11,7 @@ namespace derpirc.Data.Settings
         int NetworkId { get; set; }
         SessionNetwork Network { get; set; }
         ICollection<ChannelSummary> Channels { get; set; }
+        ICollection<MentionSummary> Mentions { get; set; }
+        ICollection<MessageSummary> Messages { get; set; }
     }
 }

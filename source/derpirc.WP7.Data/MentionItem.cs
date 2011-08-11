@@ -39,7 +39,7 @@ namespace derpirc.Data
             set
             {
                 MentionSummary previousValue = _summary.Entity;
-                if (previousValue != value || _summary.HasLoadedOrAssignedValue == false)
+                if ((previousValue != value || _summary.HasLoadedOrAssignedValue == false))
                 {
                     this.RaisePropertyChanged();
                     if ((previousValue != null))

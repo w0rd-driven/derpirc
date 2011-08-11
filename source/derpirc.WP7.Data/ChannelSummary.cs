@@ -130,7 +130,6 @@ namespace derpirc.Data
             _server = default(EntityRef<SessionServer>);
             _messages = new EntitySet<ChannelItem>();
             _messages.CollectionChanged += FixupMessages;
-            //_messages = new EntitySet<ChannelMessage>(new Action<ChannelItem>(attach_Messages), new Action<ChannelItem>(detach_Messages));
         }
 
         private void UpdateMessageCounts()
@@ -141,20 +140,6 @@ namespace derpirc.Data
             LastItemId = lastItem.Id;
             Count = _messages.Count;
             UnreadCount = _messages.Count(x => x.IsRead == false);
-        }
-
-        void attach_Messages(ChannelItem entity)
-        {
-            //    this.RaisePropertyChanged();
-            UpdateMessageCounts();
-            entity.Summary = this;
-        }
-
-        void detach_Messages(ChannelItem entity)
-        {
-            //    this.RaisePropertyChanged();
-            UpdateMessageCounts();
-            entity.Summary = null;
         }
     }
 }

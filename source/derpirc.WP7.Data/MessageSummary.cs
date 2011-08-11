@@ -37,7 +37,7 @@ namespace derpirc.Data
 
         [Column(CanBeNull = false)]
         public int ServerId { get; set; }
-        [Association(Name = "Server_Item", ThisKey = "ServerId", OtherKey = "Id", IsForeignKey = false)]
+        [Association(Name = "Server_Item", ThisKey = "ServerId", OtherKey = "Id", IsForeignKey = true)]
         public SessionServer Server
         {
             get
@@ -47,7 +47,7 @@ namespace derpirc.Data
             set
             {
                 SessionServer previousValue = this._server.Entity;
-                if (previousValue != value || this._server.HasLoadedOrAssignedValue == false)
+                if ((previousValue != value || this._server.HasLoadedOrAssignedValue == false))
                 {
                     this.RaisePropertyChanged();
                     if ((previousValue != null))
@@ -86,7 +86,6 @@ namespace derpirc.Data
                         previousValue.CollectionChanged -= FixupMessages;
                     }
                     _messages.SetSource(value);
-                    //_messages = value;
                     var newValue = value as FixupCollection<MessageItem>;
                     if (newValue != null)
                     {
