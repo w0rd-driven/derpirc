@@ -181,6 +181,21 @@ namespace derpirc.Data
         //readonly DataContext _context;
         private DataContext _context;
 
+        // Modified for http://www.yoda.arachsys.com/csharp/singleton.html #4. (Jon Skeet is a code machine)
+        private static readonly DataUnitOfWork defaultInstance = new DataUnitOfWork();
+
+        public static DataUnitOfWork Default
+        {
+            get
+            {
+                return defaultInstance;
+            }
+        }
+
+        static DataUnitOfWork()
+        {
+        }
+
         public DataUnitOfWork()
         {
             _baseConnectionString = "isostore:/IRC.sdf";
@@ -197,7 +212,18 @@ namespace derpirc.Data
 
         public void Commit()
         {
-            _context.SubmitChanges();
+            try
+            {
+                _context.SubmitChanges();
+            }
+            catch (System.InvalidOperationException)
+            {
+
+            }
+            catch (System.Exception)
+            {
+                throw;
+            }
         }
 
         private string GetConnectionString()

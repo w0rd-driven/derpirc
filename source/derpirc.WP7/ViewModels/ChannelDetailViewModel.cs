@@ -224,9 +224,10 @@ namespace derpirc.ViewModels
             }
             _messagesList = new ObservableCollection<ChannelItem>();
             Messages = new CollectionViewSource() { Source = _messagesList };
-            _unitOfWork = new DataUnitOfWork();
-            _unitOfWork.FileMode = FileMode.ReadOnly;
-            _unitOfWork.InitializeDatabase(false);
+            //_unitOfWork = new DataUnitOfWork();
+            _unitOfWork = DataUnitOfWork.Default;
+            //_unitOfWork.FileMode = FileMode.ReadOnly;
+            //_unitOfWork.InitializeDatabase(false);
         }
 
         public void Send()
@@ -272,15 +273,12 @@ namespace derpirc.ViewModels
         {
             //TODO: Link Model and VM via Events
             var id = string.Empty;
-            var name = string.Empty;
             queryString.TryGetValue("id", out id);
-            queryString.TryGetValue("name", out name);
-            name = "#" + name;
             var integerId = -1;
             int.TryParse(id, out integerId);
             try
             {
-                var model = _unitOfWork.Channels.FindBy(x => x.Name == name).FirstOrDefault();
+                var model = DataUnitOfWork.Default.Channels.FindBy(x => x.Id == integerId).FirstOrDefault();
                 if (model != null)
                     UpdateViewModel(model);
             }
@@ -298,6 +296,7 @@ namespace derpirc.ViewModels
             SendWatermark = string.Format("chat on {0}", ServerName);
             DispatcherHelper.CheckBeginInvokeOnUI(() =>
             {
+                _messagesList.Clear();
                 model.Messages.ToList().ForEach(item =>
                 {
                     _messagesList.Add(item);

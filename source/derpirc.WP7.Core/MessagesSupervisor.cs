@@ -59,7 +59,8 @@ namespace derpirc.Core
             var summary = GetMessageSummary(e.Source as IrcUser);
             var message = GetIrcMessage(summary, e, messageType);
             summary.Messages.Add(message);
-            _unitOfWork.Commit();
+            DataUnitOfWork.Default.Commit();
+            //_unitOfWork.Commit();
             var eventArgs = new MessageItemEventArgs()
             {
                 User = summary,
@@ -88,7 +89,8 @@ namespace derpirc.Core
             {
                 result = new MessageSummary() { Name = user.NickName.ToLower() };
                 server.Messages.Add(result);
-                _unitOfWork.Commit();
+                DataUnitOfWork.Default.Commit();
+                //_unitOfWork.Commit();
             }
             return result;
         }

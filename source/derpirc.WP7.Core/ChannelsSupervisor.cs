@@ -107,7 +107,8 @@ namespace derpirc.Core
                 var summary = GetMentionSummary(e.Source as IrcUser);
                 var message = GetIrcMessage(summary, e, messageType);
                 summary.Messages.Add(message);
-                _unitOfWork.Commit();
+                //_unitOfWork.Commit();
+                DataUnitOfWork.Default.Commit();
                 var eventArgs = new MentionItemEventArgs()
                 {
                     User = summary,
@@ -120,7 +121,8 @@ namespace derpirc.Core
                 var summary = GetChannelSummary(channel);
                 var message = GetIrcMessage(summary, e, messageType);
                 summary.Messages.Add(message);
-                _unitOfWork.Commit();
+                //_unitOfWork.Commit();
+                DataUnitOfWork.Default.Commit();
                 var eventArgs = new ChannelItemEventArgs()
                 {
                     Channel = summary,
@@ -166,7 +168,8 @@ namespace derpirc.Core
             {
                 result = new ChannelSummary() { Name = channel.Name.ToLower() };
                 server.Channels.Add(result);
-                _unitOfWork.Commit();
+                //_unitOfWork.Commit();
+                DataUnitOfWork.Default.Commit();
             }
             return result;
         }
@@ -179,7 +182,8 @@ namespace derpirc.Core
             {
                 result = new MentionSummary() { Name = user.NickName.ToLower() };
                 server.Mentions.Add(result);
-                _unitOfWork.Commit();
+                //_unitOfWork.Commit();
+                DataUnitOfWork.Default.Commit();
             }
             return result;
         }

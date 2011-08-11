@@ -49,9 +49,11 @@ namespace derpirc.Core
             // Assume database is at least populated with Default Factory settings
 
             // HACK: Test First Init
-            _unitOfWork.InitializeDatabase(true);
+            //_unitOfWork.InitializeDatabase(true);
+            DataUnitOfWork.Default.InitializeDatabase(true);
 
-            var session = _unitOfWork.Sessions.FindBy(x => x.Name == "Default").FirstOrDefault();
+            //var session = _unitOfWork.Sessions.FindBy(x => x.Name == "Default").FirstOrDefault();
+            var session = DataUnitOfWork.Default.Sessions.FindBy(x => x.Name == "Default").FirstOrDefault();
             _session = session;
             var servers = _session.Servers.ToList();
             servers.ForEach(item =>
@@ -74,7 +76,8 @@ namespace derpirc.Core
             });
 
             // HACK: LazyLoad this somewhere else and inject the dependency
-            _unitOfWork.Commit();
+            //_unitOfWork.Commit();
+            DataUnitOfWork.Default.Commit();
             _channelSupervisor = new ChannelsSupervisor(_unitOfWork, _session);
             _channelSupervisor.ChannelJoined += new EventHandler<ChannelStatusEventArgs>(_channelSupervisor_ChannelJoined);
             _channelSupervisor.ChannelLeft += new EventHandler<ChannelStatusEventArgs>(_channelSupervisor_ChannelLeft);
@@ -249,7 +252,8 @@ namespace derpirc.Core
 
         private Server GetBasedOnServer(string hostName)
         {
-            return _unitOfWork.Servers.FindBy(x => x.HostName == hostName).FirstOrDefault();
+            //return _unitOfWork.Servers.FindBy(x => x.HostName == hostName).FirstOrDefault();
+            return DataUnitOfWork.Default.Servers.FindBy(x => x.HostName == hostName).FirstOrDefault();
         }
 
         private SessionServer GetServer(string clientId)
@@ -304,9 +308,11 @@ namespace derpirc.Core
         {
             if (network != null)
             {
-                server.NetworkId = network.Id;
-                server.Network = network;
-                _unitOfWork.Commit();
+                network.Servers.Add(server);
+                //server.NetworkId = network.Id;
+                //server.Network = network;
+                //_unitOfWork.Commit();
+                DataUnitOfWork.Default.Commit();
             }
         }
 

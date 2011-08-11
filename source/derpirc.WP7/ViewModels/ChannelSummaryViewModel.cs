@@ -215,7 +215,8 @@ namespace derpirc.ViewModels
         private void UpdateViewModel(ChannelSummary model)
         {
             ChannelName = model.Name;
-            NetworkName = model.Server.Network.Name;
+            if (model.Server.Network != null)
+                NetworkName = model.Server.Network.Name;
             ChannelTopic = model.Topic;
             UnreadCount = model.UnreadCount;
             if (model.LastItem != null)

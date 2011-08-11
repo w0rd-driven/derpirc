@@ -199,7 +199,8 @@ namespace derpirc.ViewModels
         private void UpdateViewModel(MessageSummary model)
         {
             NickName = model.Name;
-            NetworkName = model.Server.Network.Name;
+            if (model.Server.Network != null)
+                NetworkName = model.Server.Network.Name;
             UnreadCount = model.UnreadCount;
             if (model.LastItem != null)
             {

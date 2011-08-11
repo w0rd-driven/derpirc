@@ -220,7 +220,8 @@ namespace derpirc.ViewModels
             _worker = new BackgroundWorker();
             _worker.DoWork += new DoWorkEventHandler(DeferStartupWork);
 
-            _unitOfWork = new DataUnitOfWork();
+            //_unitOfWork = new DataUnitOfWork();
+            _unitOfWork = DataUnitOfWork.Default;
             _sessionSupervisor = new Core.SessionSupervisor(_unitOfWork);
             _sessionSupervisor.ChannelJoined += new EventHandler<Core.ChannelStatusEventArgs>(_sessionSupervisor_ChannelJoined);
             _sessionSupervisor.ChannelLeft += new EventHandler<Core.ChannelStatusEventArgs>(_sessionSupervisor_ChannelLeft);
@@ -383,21 +384,16 @@ namespace derpirc.ViewModels
         private void SelectChannel()
         {
             var id = string.Empty;
-            var name = string.Empty;
             var uriString = string.Empty;
-
             if (SelectedChannel != null)
             {
                 id = SelectedChannel.Model.Id.ToString();
-                name = SelectedChannel.Model.Name.Substring(1);
             }
             else
             {
                 id = "1";
-                name = "wp7";
             }
-            uriString = string.Format("/Views/ChannelDetailView.xaml?id={0}&name={1}", 
-                Uri.EscapeUriString(id), Uri.EscapeUriString(name));
+            uriString = string.Format("/Views/ChannelDetailView.xaml?id={0}", Uri.EscapeUriString(id));
             var uri = new Uri(uriString, UriKind.Relative);
             NavigationService.Navigate(uri);
         }
@@ -405,21 +401,16 @@ namespace derpirc.ViewModels
         private void SelectMention()
         {
             var id = string.Empty;
-            var name = string.Empty;
             var uriString = string.Empty;
-
             if (SelectedMention != null)
             {
                 id = SelectedMention.Model.Id.ToString();
-                name = SelectedMention.Model.Name.Substring(1);
             }
             else
             {
                 id = "1";
-                name = "w0rd-driven";
             }
-            uriString = string.Format("/Views/MentionDetailView.xaml?id={0}&name={1}", 
-                Uri.EscapeUriString(id), Uri.EscapeUriString(name));
+            uriString = string.Format("/Views/MentionDetailView.xaml?sessionid={0}", Uri.EscapeUriString(id));
             var uri = new Uri(uriString, UriKind.Relative);
             NavigationService.Navigate(uri);
         }
@@ -427,21 +418,16 @@ namespace derpirc.ViewModels
         private void SelectMessage()
         {
             var id = string.Empty;
-            var name = string.Empty;
             var uriString = string.Empty;
-
             if (SelectedMessage != null)
             {
                 id = SelectedMessage.Model.Id.ToString();
-                name = SelectedMessage.Model.Name.Substring(1);
             }
             else
             {
                 id = "1";
-                name = "w0rd-driven";
             }
-            uriString = string.Format("/Views/MessageDetailView.xaml?id={0}&name={1}",
-                Uri.EscapeUriString(id), Uri.EscapeUriString(name));
+            uriString = string.Format("/Views/MessageDetailView.xaml?sessionid={0}", Uri.EscapeUriString(id));
             var uri = new Uri(uriString, UriKind.Relative);
             NavigationService.Navigate(uri);
         }
