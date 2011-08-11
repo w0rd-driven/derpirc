@@ -1,5 +1,7 @@
 ﻿using System.Data.Linq;
 using System.Data.Linq.Mapping;
+using System.Collections.Specialized;
+using System.Collections.Generic;
 
 namespace derpirc.Data.Settings
 {
@@ -8,8 +10,9 @@ namespace derpirc.Data.Settings
     {
         [Column(IsVersion = true)]
         private Binary version;
-        private EntityRef<Network> _network;
         private EntityRef<Session> _session;
+        private EntityRef<Network> _network;
+        private EntitySet<SessionServer> _servers;
 
         #region Primitive Properties
 
@@ -28,6 +31,37 @@ namespace derpirc.Data.Settings
         #endregion
 
         #region Navigation Properties
+
+        [Column(CanBeNull = false)]
+        public int SessionId { get; set; }
+        [Association(Name = "Session_Item", ThisKey = "SessionId", OtherKey = "Id", IsForeignKey = true)]
+        public Session Session
+        {
+            get { return _session.Entity; }
+            set
+            {
+                Session previousValue = _session.Entity;
+                if (previousValue != value || _session.HasLoadedOrAssignedValue == false)
+                {
+                    this.RaisePropertyChanged();
+                    if ((previousValue != null))
+                    {
+                        _session.Entity = null;
+                    }
+                    _session.Entity = value;
+                    if ((value != null))
+                    {
+                        SessionId = value.Id;
+                    }
+                    else
+                    {
+                        SessionId = default(int);
+                    }
+                    this.RaisePropertyChanged(() => SessionId);
+                    this.RaisePropertyChanged(() => Session);
+                }
+            }
+        }
 
         [Column(CanBeNull = true)]
         public int BasedOnId { get; set; }
@@ -63,33 +97,49 @@ namespace derpirc.Data.Settings
             }
         }
 
-        [Column(CanBeNull = false)]
-        public int SessionId { get; set; }
-        [Association(Name = "Session_Item", ThisKey = "SessionId", OtherKey = "Id", IsForeignKey = true)]
-        public Session Session
+        [Association(Name = "Server_Items", ThisKey = "Id", OtherKey = "NetworkId", DeleteRule = "NO ACTION")]
+        public ICollection<SessionServer> Servers
         {
-            get { return _session.Entity; }
+            get
+            {
+                return _servers;
+            }
             set
             {
-                Session previousValue = _session.Entity;
-                if (previousValue != value || _session.HasLoadedOrAssignedValue == false)
+                if (!ReferenceEquals(_servers, value))
                 {
-                    this.RaisePropertyChanged();
-                    if ((previousValue != null))
+                    var previousValue = _servers;
+                    if (previousValue != null)
                     {
-                        _session.Entity = null;
+                        previousValue.CollectionChanged -= FixupServers;
                     }
-                    _session.Entity = value;
-                    if ((value != null))
+                    _servers.SetSource(value);
+                    var newValue = value as FixupCollection<SessionServer>;
+                    if (newValue != null)
                     {
-                        SessionId = value.Id;
+                        newValue.CollectionChanged += FixupServers;
                     }
-                    else
-                    {
-                        SessionId = default(int);
-                    }
-                    this.RaisePropertyChanged(() => SessionId);
-                    this.RaisePropertyChanged(() => Session);
+                }
+            }
+        }
+
+        #endregion
+
+        #region Association Fixup
+
+        private void FixupServers(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.NewItems != null)
+            {
+                foreach (SessionServer item in e.NewItems)
+                    item.Network = this;
+            }
+            if (e.OldItems != null)
+            {
+                foreach (SessionServer item in e.OldItems)
+                {
+                    if (ReferenceEquals(item.Network, this))
+                        item.Network = null;
                 }
             }
         }
@@ -98,8 +148,10 @@ namespace derpirc.Data.Settings
 
         public SessionNetwork()
         {
-            _network = default(EntityRef<Network>);
             _session = default(EntityRef<Session>);
+            _network = default(EntityRef<Network>);
+            _servers = new EntitySet<SessionServer>();
+            _servers.CollectionChanged += FixupServers;
         }
     }
 }

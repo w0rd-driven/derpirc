@@ -29,13 +29,6 @@ namespace derpirc.Data.Settings
         {
             get
             {
-                if (_servers == null)
-                {
-                    var newCollection = new FixupCollection<SessionServer>();
-                    newCollection.CollectionChanged += FixupServers;
-                    _servers.SetSource(newCollection);
-                    //_servers = newCollection
-                }
                 return _servers;
             }
             set
@@ -48,7 +41,6 @@ namespace derpirc.Data.Settings
                         previousValue.CollectionChanged -= FixupServers;
                     }
                     _servers.SetSource(value);
-                    //_servers = value;
                     var newValue = value as FixupCollection<SessionServer>;
                     if (newValue != null)
                     {
@@ -63,13 +55,6 @@ namespace derpirc.Data.Settings
         {
             get
             {
-                if (_networks == null)
-                {
-                    var newCollection = new FixupCollection<SessionNetwork>();
-                    newCollection.CollectionChanged += FixupNetworks;
-                    _networks.SetSource(newCollection);
-                    //_networks = newCollection
-                }
                 return _networks;
             }
             set
@@ -82,7 +67,6 @@ namespace derpirc.Data.Settings
                         previousValue.CollectionChanged -= FixupNetworks;
                     }
                     _networks.SetSource(value);
-                    //_networks = value;
                     var newValue = value as FixupCollection<SessionNetwork>;
                     if (newValue != null)
                     {
@@ -136,7 +120,9 @@ namespace derpirc.Data.Settings
         {
             Name = "Default";
             _servers = new EntitySet<SessionServer>();
+            _servers.CollectionChanged += FixupServers;
             _networks = new EntitySet<SessionNetwork>();
+            _networks.CollectionChanged += FixupNetworks;
         }
     }
 }

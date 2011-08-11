@@ -10,8 +10,8 @@ namespace derpirc.Data.Settings
     {
         [Column(IsVersion = true)]
         private Binary version;
-        private EntityRef<Server> _server;
         private EntityRef<Session> _session;
+        private EntityRef<Server> _server;
         private EntityRef<SessionNetwork> _network;
         private EntitySet<ChannelSummary> _channels;
         private EntitySet<MentionSummary> _mentions;
@@ -38,6 +38,37 @@ namespace derpirc.Data.Settings
         #endregion
 
         #region Navigation Properties
+
+        [Column(CanBeNull = false)]
+        public int SessionId { get; set; }
+        [Association(Name = "Session_Item", ThisKey = "SessionId", OtherKey = "Id", IsForeignKey = true)]
+        public Session Session
+        {
+            get { return _session.Entity; }
+            set
+            {
+                Session previousValue = _session.Entity;
+                if ((previousValue != value || this._server.HasLoadedOrAssignedValue == false))
+                {
+                    this.RaisePropertyChanged();
+                    if ((previousValue != null))
+                    {
+                        _session.Entity = null;
+                    }
+                    _session.Entity = value;
+                    if ((value != null))
+                    {
+                        SessionId = value.Id;
+                    }
+                    else
+                    {
+                        SessionId = default(int);
+                    }
+                    this.RaisePropertyChanged(() => SessionId);
+                    this.RaisePropertyChanged(() => Session);
+                }
+            }
+        }
 
         [Column(CanBeNull = true)]
         public int BasedOnId { get; set; }
@@ -69,37 +100,6 @@ namespace derpirc.Data.Settings
                     }
                     this.RaisePropertyChanged(() => BasedOnId);
                     this.RaisePropertyChanged(() => Server);
-                }
-            }
-        }
-
-        [Column(CanBeNull = false)]
-        public int SessionId { get; set; }
-        [Association(Name = "Session_Item", ThisKey = "SessionId", OtherKey = "Id", IsForeignKey = true)]
-        public Session Session
-        {
-            get { return _session.Entity; }
-            set
-            {
-                Session previousValue = _session.Entity;
-                if ((previousValue != value || this._server.HasLoadedOrAssignedValue == false))
-                {
-                    this.RaisePropertyChanged();
-                    if ((previousValue != null))
-                    {
-                        _session.Entity = null;
-                    }
-                    _session.Entity = value;
-                    if ((value != null))
-                    {
-                        SessionId = value.Id;
-                    }
-                    else
-                    {
-                        SessionId = default(int);
-                    }
-                    this.RaisePropertyChanged(() => SessionId);
-                    this.RaisePropertyChanged(() => Session);
                 }
             }
         }
@@ -272,8 +272,8 @@ namespace derpirc.Data.Settings
 
         public SessionServer()
         {
-            _server = default(EntityRef<Server>);
             _session = default(EntityRef<Session>);
+            _server = default(EntityRef<Server>);
             _network = default(EntityRef<SessionNetwork>);
             _channels = new EntitySet<ChannelSummary>();
             _channels.CollectionChanged += FixupChannels;
