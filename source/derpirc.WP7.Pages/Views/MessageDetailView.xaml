@@ -6,6 +6,7 @@
                             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                             xmlns:blend="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+                            xmlns:command="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Extras.WP71"
                             xmlns:helpers="clr-namespace:derpirc.Helpers"
                             mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="696"
                             FontFamily="{StaticResource PhoneFontFamilyNormal}"
@@ -27,7 +28,7 @@
                        Margin="-3,-8,0,0"
                        Style="{StaticResource PhoneTextTitle1Style}" />
             <TextBlock x:Name="ServerName"
-                       Text="{Binding ServerName}"
+                       Text="{Binding NetworkName}"
                        Margin="-3,-8,0,0"
                        Style="{StaticResource TextBlockBase}" />
         </StackPanel>

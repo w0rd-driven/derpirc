@@ -18,7 +18,7 @@ namespace derpirc.Core
 
         private Session _session;
         private IList<IrcClient> _clients;
-        private IList<int> _clientStates;
+        private IDictionary<string, int> _clientStates;
         private IrcRegistrationInfo _registrationData;
 
         private ChannelsSupervisor _channelSupervisor;
@@ -27,8 +27,8 @@ namespace derpirc.Core
         // HACK: UI facing
         public event EventHandler<ChannelStatusEventArgs> ChannelJoined;
         public event EventHandler<ChannelStatusEventArgs> ChannelLeft;
-        public event EventHandler<ChannelItemEventArgs> ChannelItemReceived;
-        public event EventHandler<MentionItemEventArgs> MentionItemReceived;
+        public event EventHandler<MessageItemEventArgs> ChannelItemReceived;
+        public event EventHandler<MessageItemEventArgs> MentionItemReceived;
         public event EventHandler<MessageItemEventArgs> MessageItemReceived;
 
         // EFNet: Welcome to the $server Internet Relay Chat Network $nick
@@ -39,7 +39,7 @@ namespace derpirc.Core
         {
             _unitOfWork = unitOfWork;
             _clients = new ObservableCollection<IrcClient>();
-            _clientStates = new List<int>();
+            _clientStates = new Dictionary<string, int>();
             Initialize();
             Connect();
         }
@@ -69,8 +69,8 @@ namespace derpirc.Core
             _channelSupervisor = new ChannelsSupervisor(_unitOfWork, _session);
             _channelSupervisor.ChannelJoined += new EventHandler<ChannelStatusEventArgs>(_channelSupervisor_ChannelJoined);
             _channelSupervisor.ChannelLeft += new EventHandler<ChannelStatusEventArgs>(_channelSupervisor_ChannelLeft);
-            _channelSupervisor.ChannelItemReceived += new EventHandler<ChannelItemEventArgs>(_channelSupervisor_MessageReceived);
-            _channelSupervisor.MentionItemReceived += new EventHandler<MentionItemEventArgs>(_channelSupervisor_MentionReceived);
+            _channelSupervisor.ChannelItemReceived += new EventHandler<MessageItemEventArgs>(_channelSupervisor_MessageReceived);
+            _channelSupervisor.MentionItemReceived += new EventHandler<MessageItemEventArgs>(_channelSupervisor_MentionReceived);
 
             _messageSupervisor = new MessagesSupervisor(_unitOfWork, _session);
             _messageSupervisor.MessageItemReceived += new EventHandler<MessageItemEventArgs>(_messageSupervisor_MessageReceived);
@@ -94,7 +94,7 @@ namespace derpirc.Core
             }
         }
 
-        void _channelSupervisor_MessageReceived(object sender, ChannelItemEventArgs e)
+        void _channelSupervisor_MessageReceived(object sender, MessageItemEventArgs e)
         {
             var handler = ChannelItemReceived;
             if (handler != null)
@@ -103,7 +103,7 @@ namespace derpirc.Core
             }
         }
 
-        void _channelSupervisor_MentionReceived(object sender, MentionItemEventArgs e)
+        void _channelSupervisor_MentionReceived(object sender, MessageItemEventArgs e)
         {
             var handler = MentionItemReceived;
             if (handler != null)
@@ -208,7 +208,7 @@ namespace derpirc.Core
             var client = sender as IrcClient;
             _channelSupervisor.LocalUsers.Add(client.LocalUser);
             _messageSupervisor.LocalUsers.Add(client.LocalUser);
-            _clientStates.Add(0);
+            _clientStates.Add(client.ClientId, 0);
             //ProcessSession(client);
             //OnClientRegistered(client);
         }
@@ -221,20 +221,19 @@ namespace derpirc.Core
 
         private void ProcessSession(IrcClient client)
         {
-            var clientId = -1;
-            int.TryParse(client.ClientId, out clientId);
-            var index = clientId - 1;
-            if (_clientStates.Count > index)
+            var keyValue = -1;
+            var isParsed = false;
+            isParsed = _clientStates.TryGetValue(client.ClientId, out keyValue);
+            if (keyValue == 0)
             {
-                if (_clientStates[index] == 0)
-                {
-                    _clientStates[index] = 1;
-                    var matchedServer = GetServer(clientId, client.ServerName);
-                    var matchedNetwork = GetNetwork(client.WelcomeMessage);
-                    LinkSession(matchedServer, matchedNetwork);
-                    // TODO: Wire up settings UI call for IsAutoJoinSession
-                    JoinSession(matchedServer, client);
-                }
+                _clientStates[client.ClientId] = 1;
+                var clientId = -1;
+                int.TryParse(client.ClientId, out clientId);
+                var matchedServer = GetServer(clientId, client.ServerName);
+                var matchedNetwork = GetNetwork(client.WelcomeMessage);
+                LinkSession(matchedServer, matchedNetwork);
+                // TODO: Wire up settings UI call for IsAutoJoinSession
+                JoinSession(matchedNetwork, client);
             }
         }
 
@@ -290,7 +289,7 @@ namespace derpirc.Core
         {
             if (network != null)
             {
-                network.Servers.Add(server);
+                network.Server = server;
                 //server.NetworkId = network.Id;
                 //server.Network = network;
                 //_unitOfWork.Commit();
@@ -298,12 +297,12 @@ namespace derpirc.Core
             }
         }
 
-        private void JoinSession(SessionServer server, IrcClient client)
+        private void JoinSession(SessionNetwork network, IrcClient client)
         {
-            if (server.Network != null)
+            if (network != null)
             {
                 string[] separator = new string[] { ", " };
-                var channels = server.Network.JoinChannels.Split(separator, StringSplitOptions.RemoveEmptyEntries);
+                var channels = network.JoinChannels.Split(separator, StringSplitOptions.RemoveEmptyEntries);
                 client.Channels.Join(channels);
             }
         }

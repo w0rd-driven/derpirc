@@ -12,7 +12,10 @@ namespace derpirc.Data.Settings
         private Binary version;
         private EntityRef<Session> _session;
         private EntityRef<Network> _network;
-        private EntitySet<SessionServer> _servers;
+        private EntityRef<SessionServer> _server;
+        private EntitySet<ChannelSummary> _channels;
+        private EntitySet<MentionSummary> _mentions;
+        private EntitySet<MessageSummary> _messages;
 
         #region Primitive Properties
 
@@ -25,8 +28,6 @@ namespace derpirc.Data.Settings
         public bool IsJoinEnabled { get; set; }
         [Column(CanBeNull = true)]
         public string JoinChannels { get; set; }
-        [Column(CanBeNull = true)]
-        public int JoinDelay { get; set; }
 
         #endregion
 
@@ -97,27 +98,110 @@ namespace derpirc.Data.Settings
             }
         }
 
-        [Association(Name = "Server_Items", ThisKey = "Id", OtherKey = "NetworkId", DeleteRule = "NO ACTION")]
-        public ICollection<SessionServer> Servers
+        [Column(CanBeNull = false)]
+        public int ServerId { get; set; }
+        [Association(Name = "Server_Item", ThisKey = "ServerId", OtherKey = "Id", IsForeignKey = true)]
+        public SessionServer Server
+        {
+            get { return _server.Entity; }
+            set
+            {
+                SessionServer previousValue = _server.Entity;
+                if (previousValue != value || _server.HasLoadedOrAssignedValue == false)
+                {
+                    this.RaisePropertyChanged();
+                    if ((previousValue != null))
+                    {
+                        _server.Entity = null;
+                    }
+                    _server.Entity = value;
+                    if ((value != null))
+                    {
+                        ServerId = value.Id;
+                    }
+                    else
+                    {
+                        ServerId = default(int);
+                    }
+                    this.RaisePropertyChanged(() => ServerId);
+                    this.RaisePropertyChanged(() => Server);
+                }
+            }
+        }
+
+        [Association(Name = "Channel_Items", ThisKey = "Id", OtherKey = "NetworkId", DeleteRule = "NO ACTION")]
+        public ICollection<ChannelSummary> Channels
         {
             get
             {
-                return _servers;
+                return _channels;
             }
             set
             {
-                if (!ReferenceEquals(_servers, value))
+                if (!ReferenceEquals(_channels, value))
                 {
-                    var previousValue = _servers;
+                    var previousValue = _channels;
                     if (previousValue != null)
                     {
-                        previousValue.CollectionChanged -= FixupServers;
+                        previousValue.CollectionChanged -= FixupChannels;
                     }
-                    _servers.SetSource(value);
-                    var newValue = value as FixupCollection<SessionServer>;
+                    _channels.SetSource(value);
+                    var newValue = value as FixupCollection<ChannelSummary>;
                     if (newValue != null)
                     {
-                        newValue.CollectionChanged += FixupServers;
+                        newValue.CollectionChanged += FixupChannels;
+                    }
+                }
+            }
+        }
+
+        [Association(Name = "Mention_Items", ThisKey = "Id", OtherKey = "NetworkId", DeleteRule = "NO ACTION")]
+        public ICollection<MentionSummary> Mentions
+        {
+            get
+            {
+                return _mentions;
+            }
+            set
+            {
+                if (!ReferenceEquals(_mentions, value))
+                {
+                    var previousValue = _mentions;
+                    if (previousValue != null)
+                    {
+                        previousValue.CollectionChanged -= FixupMentions;
+                    }
+                    _mentions.SetSource(value);
+                    var newValue = value as FixupCollection<MentionSummary>;
+                    if (newValue != null)
+                    {
+                        newValue.CollectionChanged += FixupMentions;
+                    }
+                }
+            }
+        }
+
+        [Association(Name = "Message_Items", ThisKey = "Id", OtherKey = "NetworkId", DeleteRule = "NO ACTION")]
+        public ICollection<MessageSummary> Messages
+        {
+            get
+            {
+                return _messages;
+            }
+            set
+            {
+                if (!ReferenceEquals(_messages, value))
+                {
+                    var previousValue = _messages;
+                    if (previousValue != null)
+                    {
+                        previousValue.CollectionChanged -= FixupMessages;
+                    }
+                    _messages.SetSource(value);
+                    var newValue = value as FixupCollection<MessageSummary>;
+                    if (newValue != null)
+                    {
+                        newValue.CollectionChanged += FixupMessages;
                     }
                 }
             }
@@ -127,16 +211,50 @@ namespace derpirc.Data.Settings
 
         #region Association Fixup
 
-        private void FixupServers(object sender, NotifyCollectionChangedEventArgs e)
+        private void FixupChannels(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.NewItems != null)
             {
-                foreach (SessionServer item in e.NewItems)
+                foreach (ChannelSummary item in e.NewItems)
                     item.Network = this;
             }
             if (e.OldItems != null)
             {
-                foreach (SessionServer item in e.OldItems)
+                foreach (ChannelSummary item in e.OldItems)
+                {
+                    if (ReferenceEquals(item.Network, this))
+                        item.Network = null;
+                }
+            }
+        }
+
+        private void FixupMentions(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.NewItems != null)
+            {
+                foreach (MentionSummary item in e.NewItems)
+                    item.Network = this;
+            }
+            if (e.OldItems != null)
+            {
+                foreach (MentionSummary item in e.OldItems)
+                {
+                    if (ReferenceEquals(item.Network, this))
+                        item.Network = null;
+                }
+            }
+        }
+
+        private void FixupMessages(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.NewItems != null)
+            {
+                foreach (MessageSummary item in e.NewItems)
+                    item.Network = this;
+            }
+            if (e.OldItems != null)
+            {
+                foreach (MessageSummary item in e.OldItems)
                 {
                     if (ReferenceEquals(item.Network, this))
                         item.Network = null;
@@ -150,8 +268,13 @@ namespace derpirc.Data.Settings
         {
             _session = default(EntityRef<Session>);
             _network = default(EntityRef<Network>);
-            _servers = new EntitySet<SessionServer>();
-            _servers.CollectionChanged += FixupServers;
+            _server = default(EntityRef<SessionServer>);
+            _channels = new EntitySet<ChannelSummary>();
+            _channels.CollectionChanged += FixupChannels;
+            _mentions = new EntitySet<MentionSummary>();
+            _mentions.CollectionChanged += FixupMentions;
+            _messages = new EntitySet<MessageSummary>();
+            _messages.CollectionChanged += FixupMessages;
         }
     }
 }

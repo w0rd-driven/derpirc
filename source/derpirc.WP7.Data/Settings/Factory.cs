@@ -103,8 +103,10 @@ namespace derpirc.Data.Settings
         {
             var result = new Session();
             result.Name = "Default";
-            result.Servers = CreateSessionServers(result);
-            result.Networks = CreateSessionNetworks(result);
+            var servers = CreateSessionServers(result);
+            var networks = CreateSessionNetworks(result, servers);
+            result.Servers = servers;
+            result.Networks = networks;
             return result;
         }
 
@@ -137,7 +139,7 @@ namespace derpirc.Data.Settings
             return result;
         }
 
-        public static List<SessionNetwork> CreateSessionNetworks(Session session)
+        public static List<SessionNetwork> CreateSessionNetworks(Session session, List<SessionServer> servers)
         {
             var result = new List<SessionNetwork>();
             result.Add(new SessionNetwork()
@@ -145,6 +147,7 @@ namespace derpirc.Data.Settings
                 Session = session,
                 SessionId = session.Id,
                 BasedOnId = 1,
+                Server = servers[0],
                 Name = "EFNet",
                 IsJoinEnabled = true,
                 JoinChannels = "#wp7test",
@@ -154,6 +157,7 @@ namespace derpirc.Data.Settings
                 Session = session,
                 SessionId = session.Id,
                 BasedOnId = 2,
+                Server = servers[1],
                 Name = "PowerPrecision",
                 IsJoinEnabled = true,
                 JoinChannels = "#wp7, #xna",

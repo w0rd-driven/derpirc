@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using derpirc.Data;
 using GalaSoft.MvvmLight;
 
@@ -172,11 +173,12 @@ namespace derpirc.ViewModels
                 {
                     Name = "EFNet",
                 };
-                model.Server = new Data.Settings.SessionServer()
+                var server = new Data.Settings.SessionServer()
                 {
                     HostName = "irc.efnet.org",
                     Network = network,
                 };
+                model.Network = network;
                 model.LastItem = new MentionItem()
                 {
                     Summary = model,
@@ -195,11 +197,18 @@ namespace derpirc.ViewModels
             Model = model;
         }
 
+        public void LoadById(int summaryId)
+        {
+            var model = DataUnitOfWork.Default.Mentions.FindBy(x => x.Id == summaryId).FirstOrDefault();
+            if (model != null)
+                Model = model;
+        }
+
         private void UpdateViewModel(MentionSummary model)
         {
             NickName = model.Name;
-            if (model.Server.Network != null)
-                NetworkName = model.Server.Network.Name;
+            if (model.Network != null)
+                NetworkName = model.Network.Name;
             UnreadCount = model.UnreadCount;
             if (model.LastItem != null)
             {

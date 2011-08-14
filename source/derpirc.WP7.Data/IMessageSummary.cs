@@ -6,8 +6,8 @@ namespace derpirc.Data
 {
     public interface IMessageSummary
     {
-        int ServerId { get; set; }
-        SessionServer Server { get; set; }
+        int NetworkId { get; set; }
+        SessionNetwork Network { get; set; }
         string Name { get; set; }
         int LastItemId { get; set; }
         IMessageItem LastItem { get; set; }

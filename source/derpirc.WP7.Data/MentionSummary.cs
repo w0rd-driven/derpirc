@@ -12,7 +12,7 @@ namespace derpirc.Data
     {
         [Column(IsVersion = true)]
         private Binary version;
-        private EntityRef<SessionServer> _server;
+        private EntityRef<SessionNetwork> _network;
         private EntitySet<MentionItem> _messages;
 
         #region Primitive Properties
@@ -36,35 +36,37 @@ namespace derpirc.Data
         #region Navigation Properties
 
         [Column(CanBeNull = false)]
-        public int ServerId { get; set; }
-        [Association(Name = "Server_Item", ThisKey = "ServerId", OtherKey = "Id", IsForeignKey = true)]
-        public SessionServer Server
+        public int NetworkId { get; set; }
+        [Association(Name = "Network_Item", ThisKey = "NetworkId", OtherKey = "Id", IsForeignKey = true)]
+        public SessionNetwork Network
         {
             get
             {
-                return this._server.Entity;
+                return this._network.Entity;
             }
             set
             {
-                SessionServer previousValue = this._server.Entity;
-                if ((previousValue != value) || (this._server.HasLoadedOrAssignedValue == false))
+                SessionNetwork previousValue = this._network.Entity;
+                if ((previousValue != value) || (this._network.HasLoadedOrAssignedValue == false))
                 {
                     this.RaisePropertyChanged();
                     if ((previousValue != null))
                     {
-                        this._server.Entity = null;
+                        this._network.Entity = null;
+                        //previousValue.Channels.Remove(this);
                     }
-                    this._server.Entity = value;
+                    this._network.Entity = value;
                     if ((value != null))
                     {
-                        this.ServerId = value.Id;
+                        //value.Channels.Add(this);
+                        this.NetworkId = value.Id;
                     }
                     else
                     {
-                        this.ServerId = default(int);
+                        this.NetworkId = default(int);
                     }
-                    this.RaisePropertyChanged(() => ServerId);
-                    this.RaisePropertyChanged(() => Server);
+                    this.RaisePropertyChanged(() => NetworkId);
+                    this.RaisePropertyChanged(() => Network);
                 }
             }
         }
@@ -122,7 +124,7 @@ namespace derpirc.Data
 
         public MentionSummary()
         {
-            _server = default(EntityRef<SessionServer>);
+            _network = default(EntityRef<SessionNetwork>);
             _messages = new EntitySet<MentionItem>();
             _messages.CollectionChanged += FixupMessages;
         }

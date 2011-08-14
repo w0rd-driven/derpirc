@@ -163,8 +163,8 @@ namespace derpirc.Data
                         item.Server = basedOnServer;
                     }
                 }
-           });
-           this.SubmitChanges();
+            });
+            this.SubmitChanges();
         }
 
         private Server GetBasedOnServer(List<Server> servers, int id)

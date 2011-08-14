@@ -11,7 +11,6 @@
                             xmlns:blend="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
                             xmlns:command="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Extras.WP71"
                             xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
-                            xmlns:views="clr-namespace:derpirc.Views"
                             mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="696" 
                             FontFamily="{StaticResource PhoneFontFamilyNormal}"
                             FontSize="{StaticResource PhoneFontSizeNormal}"
@@ -143,7 +142,7 @@
                 <ListBox x:Name="MessageSummaryListBox" Margin="0,0,-12,0" ItemsSource="{Binding Messages.View}" SelectedItem="{Binding SelectedMessage, Mode=TwoWay}" ItemContainerStyle="{StaticResource SmallPivotListBoxStyle}">
                     <blend:Interaction.Triggers>
                         <blend:EventTrigger EventName="DoubleTap">
-                            <command:EventToCommand Command="{Binding SelectMentionCommand}" />
+                            <command:EventToCommand Command="{Binding SelectMessageCommand}" />
                         </blend:EventTrigger>
                     </blend:Interaction.Triggers>
                     <ListBox.ItemTemplate>

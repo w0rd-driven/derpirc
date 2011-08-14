@@ -32,8 +32,8 @@ namespace derpirc.Core
 
         public event EventHandler<ChannelStatusEventArgs> ChannelJoined;
         public event EventHandler<ChannelStatusEventArgs> ChannelLeft;
-        public event EventHandler<ChannelItemEventArgs> ChannelItemReceived;
-        public event EventHandler<MentionItemEventArgs> MentionItemReceived;
+        public event EventHandler<MessageItemEventArgs> ChannelItemReceived;
+        public event EventHandler<MessageItemEventArgs> MentionItemReceived;
 
         public ChannelsSupervisor(DataUnitOfWork unitOfWork, Session session)
         {
@@ -109,10 +109,11 @@ namespace derpirc.Core
                 summary.Messages.Add(message);
                 //_unitOfWork.Commit();
                 DataUnitOfWork.Default.Commit();
-                var eventArgs = new MentionItemEventArgs()
+                var eventArgs = new MessageItemEventArgs()
                 {
-                    User = summary,
-                    Message = message,
+                    NetworkId = summary.NetworkId,
+                    SummaryId = summary.Id,
+                    MessageId = message.Id,
                 };
                 OnMentionItemReceived(eventArgs);
             }
@@ -123,10 +124,11 @@ namespace derpirc.Core
                 summary.Messages.Add(message);
                 //_unitOfWork.Commit();
                 DataUnitOfWork.Default.Commit();
-                var eventArgs = new ChannelItemEventArgs()
+                var eventArgs = new MessageItemEventArgs()
                 {
-                    Channel = summary,
-                    Message = message,
+                    NetworkId = summary.NetworkId,
+                    SummaryId = summary.Id,
+                    MessageId = message.Id,
                 };
                 OnChannelItemReceived(eventArgs);
             }
@@ -143,7 +145,7 @@ namespace derpirc.Core
             var channelSummary = GetChannelSummary(channel);
             var eventArgs = new ChannelStatusEventArgs()
             {
-                Channel = channelSummary,
+                SummaryId = channelSummary.Id,
                 Status = ChannelStatusType.Join,
             };
             OnChannelJoined(eventArgs);
@@ -154,7 +156,7 @@ namespace derpirc.Core
             var channelSummary = GetChannelSummary(channel);
             var eventArgs = new ChannelStatusEventArgs()
             {
-                Channel = channelSummary,
+                SummaryId = channelSummary.Id,
                 Status = ChannelStatusType.Leave,
             };
             OnChannelLeft(eventArgs);
@@ -162,12 +164,12 @@ namespace derpirc.Core
 
         private ChannelSummary GetChannelSummary(IrcChannel channel)
         {
-            var server = GetServerByName(channel.Client.ServerName);
-            var result = server.Channels.FirstOrDefault(x => x.ServerId == server.Id && x.Name == channel.Name.ToLower());
+            var network = GetNetworkByClientId(channel.Client.ClientId);
+            var result = network.Channels.FirstOrDefault(x => x.Name == channel.Name.ToLower());
             if (result == null)
             {
                 result = new ChannelSummary() { Name = channel.Name.ToLower() };
-                server.Channels.Add(result);
+                network.Channels.Add(result);
                 //_unitOfWork.Commit();
                 DataUnitOfWork.Default.Commit();
             }
@@ -176,12 +178,12 @@ namespace derpirc.Core
 
         private MentionSummary GetMentionSummary(IrcUser user)
         {
-            var server = GetServerByName(user.Client.ServerName);
-            var result = server.Mentions.FirstOrDefault(x => x.ServerId == server.Id && x.Name == user.NickName.ToLower());
+            var network = GetNetworkByClientId(user.Client.ClientId);
+            var result = network.Mentions.FirstOrDefault(x => x.Name == user.NickName.ToLower());
             if (result == null)
             {
                 result = new MentionSummary() { Name = user.NickName.ToLower() };
-                server.Mentions.Add(result);
+                network.Mentions.Add(result);
                 //_unitOfWork.Commit();
                 DataUnitOfWork.Default.Commit();
             }
@@ -189,10 +191,12 @@ namespace derpirc.Core
         }
 
         // TODO: static method
-        private SessionServer GetServerByName(string serverName)
+        private SessionNetwork GetNetworkByClientId(string clientId)
         {
+            var integerId = -1;
+            int.TryParse(clientId, out integerId);
             // TODO: Error handling make sure _session != null
-            return _session.Servers.FirstOrDefault(x => x.HostName.ToLower() == serverName.ToLower());
+            return _session.Networks.FirstOrDefault(x => x.Id == integerId);
         }
 
         private ChannelItem GetIrcMessage(ChannelSummary summary, IrcMessageEventArgs eventArgs, MessageType messageType)
@@ -241,7 +245,7 @@ namespace derpirc.Core
             }
         }
 
-        private void OnChannelItemReceived(ChannelItemEventArgs e)
+        private void OnChannelItemReceived(MessageItemEventArgs e)
         {
             var handler = ChannelItemReceived;
             if (handler != null)
@@ -250,7 +254,7 @@ namespace derpirc.Core
             }
         }
 
-        private void OnMentionItemReceived(MentionItemEventArgs e)
+        private void OnMentionItemReceived(MessageItemEventArgs e)
         {
             var handler = MentionItemReceived;
             if (handler != null)

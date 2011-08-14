@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
-using System.Text.RegularExpressions;
 using derpirc.Data;
-using IrcDotNet;
 using derpirc.Data.Settings;
+using IrcDotNet;
 
 namespace derpirc.Core
 {
@@ -63,8 +61,9 @@ namespace derpirc.Core
             //_unitOfWork.Commit();
             var eventArgs = new MessageItemEventArgs()
             {
-                User = summary,
-                Message = message,
+                NetworkId = summary.NetworkId,
+                SummaryId = summary.Id,
+                MessageId = message.Id,
             };
             OnMessageItemReceived(eventArgs);
         }
@@ -83,14 +82,14 @@ namespace derpirc.Core
 
         private MessageSummary GetMessageSummary(IrcUser user)
         {
-            var server = GetServerByName(user.Client.ServerName);
-            var result = server.Messages.FirstOrDefault(x => x.ServerId == server.Id && x.Name == user.NickName.ToLower());
+            var network = GetNetworkByClientId(user.Client.ClientId);
+            var result = network.Messages.FirstOrDefault(x => x.Name == user.NickName.ToLower());
             if (result == null)
             {
                 result = new MessageSummary() { Name = user.NickName.ToLower() };
-                server.Messages.Add(result);
-                DataUnitOfWork.Default.Commit();
+                network.Messages.Add(result);
                 //_unitOfWork.Commit();
+                DataUnitOfWork.Default.Commit();
             }
             return result;
         }
@@ -109,11 +108,12 @@ namespace derpirc.Core
             return result;
         }
 
-        // TODO: static method
-        private SessionServer GetServerByName(string serverName)
+        private SessionNetwork GetNetworkByClientId(string clientId)
         {
+            var integerId = -1;
+            int.TryParse(clientId, out integerId);
             // TODO: Error handling make sure _session != null
-            return _session.Servers.FirstOrDefault(x => x.HostName.ToLower() == serverName.ToLower());
+            return _session.Networks.FirstOrDefault(x => x.Id == integerId);
         }
 
         private void OnMessageItemReceived(MessageItemEventArgs e)

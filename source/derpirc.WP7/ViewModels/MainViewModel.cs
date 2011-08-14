@@ -225,19 +225,20 @@ namespace derpirc.ViewModels
             _sessionSupervisor = new Core.SessionSupervisor(_unitOfWork);
             _sessionSupervisor.ChannelJoined += new EventHandler<Core.ChannelStatusEventArgs>(_sessionSupervisor_ChannelJoined);
             _sessionSupervisor.ChannelLeft += new EventHandler<Core.ChannelStatusEventArgs>(_sessionSupervisor_ChannelLeft);
-            _sessionSupervisor.ChannelItemReceived += new EventHandler<Core.ChannelItemEventArgs>(_sessionSupervisor_ChannelItemReceived);
-            _sessionSupervisor.MentionItemReceived += new EventHandler<Core.MentionItemEventArgs>(_sessionSupervisor_MentionItemReceived);
+            _sessionSupervisor.ChannelItemReceived += new EventHandler<Core.MessageItemEventArgs>(_sessionSupervisor_ChannelItemReceived);
+            _sessionSupervisor.MentionItemReceived += new EventHandler<Core.MessageItemEventArgs>(_sessionSupervisor_MentionItemReceived);
             _sessionSupervisor.MessageItemReceived += new EventHandler<Core.MessageItemEventArgs>(_sessionSupervisor_MessageItemReceived);
         }
 
         void _sessionSupervisor_ChannelJoined(object sender, Core.ChannelStatusEventArgs e)
         {
-            var foundChannel = _channelsList.Where(x => x.ChannelName == e.Channel.Name && x.Model.ServerId == e.Channel.ServerId).FirstOrDefault();
-            if (foundChannel == null)
+            var foundItem = _channelsList.Where(x => x.Model.Id == e.SummaryId).FirstOrDefault();
+            if (foundItem == null)
             {
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
-                    var channelSummary = new ChannelSummaryViewModel(e.Channel);
+                    var channelSummary = new ChannelSummaryViewModel();
+                    channelSummary.LoadById(e.SummaryId);
                     _channelsList.Add(channelSummary);
                     Channels.View.Refresh();
                 });
@@ -246,7 +247,7 @@ namespace derpirc.ViewModels
             {
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
-                    foundChannel.Model = e.Channel;
+                    foundItem.LoadById(e.SummaryId);
                     Channels.View.Refresh();
                 });
             }
@@ -256,14 +257,15 @@ namespace derpirc.ViewModels
         {
         }
 
-        void _sessionSupervisor_ChannelItemReceived(object sender, Core.ChannelItemEventArgs e)
+        void _sessionSupervisor_ChannelItemReceived(object sender, Core.MessageItemEventArgs e)
         {
-            var foundChannel = _channelsList.Where(x => x.ChannelName == e.Channel.Name && x.Model.ServerId == e.Channel.ServerId).FirstOrDefault();
-            if (foundChannel == null)
+            var foundItem = _channelsList.Where(x => x.Model.Id == e.SummaryId).FirstOrDefault();
+            if (foundItem == null)
             {
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
-                    var channelSummary = new ChannelSummaryViewModel(e.Channel);
+                    var channelSummary = new ChannelSummaryViewModel();
+                    channelSummary.LoadById(e.SummaryId);
                     _channelsList.Add(channelSummary);
                     Channels.View.Refresh();
                 });
@@ -272,20 +274,21 @@ namespace derpirc.ViewModels
             {
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
-                    foundChannel.Model = e.Channel;
+                    foundItem.LoadById(e.SummaryId);
                     Channels.View.Refresh();
                 });
             }
         }
 
-        void _sessionSupervisor_MentionItemReceived(object sender, Core.MentionItemEventArgs e)
+        void _sessionSupervisor_MentionItemReceived(object sender, Core.MessageItemEventArgs e)
         {
-            var foundChannel = _mentionsList.Where(x => x.NickName == e.User.Name && x.Model.ServerId == e.User.ServerId).FirstOrDefault();
-            if (foundChannel == null)
+            var foundItem = _mentionsList.Where(x => x.Model.Id == e.SummaryId).FirstOrDefault();
+            if (foundItem == null)
             {
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
-                    var mentionSummary = new MentionSummaryViewModel(e.User);
+                    var mentionSummary = new MentionSummaryViewModel();
+                    mentionSummary.LoadById(e.SummaryId);
                     _mentionsList.Add(mentionSummary);
                     Mentions.View.Refresh();
                 });
@@ -294,7 +297,7 @@ namespace derpirc.ViewModels
             {
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
-                    foundChannel.Model = e.User;
+                    foundItem.LoadById(e.SummaryId);
                     Mentions.View.Refresh();
                 });
             }
@@ -302,13 +305,14 @@ namespace derpirc.ViewModels
 
         void _sessionSupervisor_MessageItemReceived(object sender, Core.MessageItemEventArgs e)
         {
-            var foundChannel = _messagesList.Where(x => x.NickName == e.User.Name && x.Model.ServerId == e.User.ServerId).FirstOrDefault();
-            if (foundChannel == null)
+            var foundItem = _messagesList.Where(x => x.Model.Id == e.SummaryId).FirstOrDefault();
+            if (foundItem == null)
             {
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
-                    var mentionSummary = new MessageSummaryViewModel(e.User);
-                    _messagesList.Add(mentionSummary);
+                    var messageSummary = new MessageSummaryViewModel();
+                    messageSummary.LoadById(e.SummaryId);
+                    _messagesList.Add(messageSummary);
                     Messages.View.Refresh();
                 });
             }
@@ -316,7 +320,7 @@ namespace derpirc.ViewModels
             {
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
-                    foundChannel.Model = e.User;
+                    foundItem.LoadById(e.SummaryId);
                     Messages.View.Refresh();
                 });
             }

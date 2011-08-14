@@ -123,18 +123,18 @@ namespace derpirc.ViewModels
             }
         }
 
-        private string _serverName;
-        public string ServerName
+        private string _networkName;
+        public string NetworkName
         {
-            get { return _serverName; }
+            get { return _networkName; }
             set
             {
-                if (_serverName == value)
+                if (_networkName == value)
                     return;
 
-                var oldValue = _serverName;
-                _serverName = value;
-                RaisePropertyChanged(() => ServerName);
+                var oldValue = _networkName;
+                _networkName = value;
+                RaisePropertyChanged(() => NetworkName);
             }
         }
 
@@ -192,12 +192,37 @@ namespace derpirc.ViewModels
         /// <summary>
         /// Initializes a new instance of the MessageDetailViewModel class.
         /// </summary>
-        public MessageDetailViewModel()
+        public MessageDetailViewModel() : this(new MessageSummary()) { }
+
+        /// <summary>
+        /// Initializes a new instance of the MessageDetailViewModel class.
+        /// </summary>
+        public MessageDetailViewModel(MessageSummary model)
         {
             if (IsInDesignMode)
             {
                 // Code runs in Blend --> create design time data.
-                DesignTime();
+                model.Name = "w0rd-driven";
+                model.Count = 4;
+                _messagesList = new ObservableCollection<MessageItem>();
+                _messagesList.Add(new MessageItem()
+                {
+                    Summary = model,
+                    SummaryId = model.Id,
+                    Source = "w0rd-driven",
+                    Text = "urmom!",
+                    TimeStamp = DateTime.Now,
+                    Type = MessageType.Theirs,
+                });
+                _messagesList.Add(new MessageItem()
+                {
+                    Summary = model,
+                    SummaryId = model.Id,
+                    Source = "derpirc",
+                    Text = "no, urmom!",
+                    TimeStamp = DateTime.Now,
+                    Type = MessageType.Mine,
+                });
             }
             else
             {
@@ -205,6 +230,7 @@ namespace derpirc.ViewModels
                 _messagesList = new ObservableCollection<MessageItem>();
             }
             Messages = new CollectionViewSource() { Source = _messagesList };
+            Model = model;
         }
 
         public void Send()
@@ -215,33 +241,7 @@ namespace derpirc.ViewModels
         public void Switch()
         {
             // TODO: Wire in UI to choose where to send messages
-            SendWatermark = string.Format("chat on {0}", ServerName);
-        }
-
-        private void DesignTime()
-        {
-            Model = new MessageSummary();
-            Model.Name = "w0rd-driven";
-            Model.Count = 4;
-            _messagesList = new ObservableCollection<MessageItem>();
-            _messagesList.Add(new MessageItem()
-            {
-                Summary = Model,
-                SummaryId = Model.Id,
-                Source = "w0rd-driven",
-                Text = "urmom!",
-                TimeStamp = DateTime.Now,
-                Type = MessageType.Theirs,
-            });
-            _messagesList.Add(new MessageItem()
-            {
-                Summary = Model,
-                SummaryId = Model.Id,
-                Source = "derpirc",
-                Text = "no, urmom!",
-                TimeStamp = DateTime.Now,
-                Type = MessageType.Mine,
-            });
+            SendWatermark = string.Format("chat on {0}", NetworkName);
         }
 
         private void OnNavigatedTo(IDictionary<string, string> queryString)
@@ -259,8 +259,9 @@ namespace derpirc.ViewModels
         private void UpdateViewModel(MessageSummary model)
         {
             NickName = model.Name;
-            ServerName = model.Server.HostName;
-            SendWatermark = string.Format("chat on {0}", ServerName);
+            if (model.Network != null)
+                NetworkName = model.Network.Name;
+            SendWatermark = string.Format("chat on {0}", NetworkName);
             DispatcherHelper.CheckBeginInvokeOnUI(() =>
             {
                 _messagesList.Clear();

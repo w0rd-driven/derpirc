@@ -18,7 +18,7 @@ namespace derpirc.Helpers
 
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
         {
-            var entity = item as Data.ChannelItem;
+            var entity = item as Data.IMessageItem;
             if (entity != null)
             {
                 switch (entity.Type)

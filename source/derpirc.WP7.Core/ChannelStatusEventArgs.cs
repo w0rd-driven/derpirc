@@ -5,7 +5,7 @@ namespace derpirc.Core
 {
     public class ChannelStatusEventArgs : EventArgs
     {
-        public ChannelSummary Channel { get; set; }
+        public int SummaryId { get; set; }
         public ChannelStatusType Status { get; set; }
     }
 }

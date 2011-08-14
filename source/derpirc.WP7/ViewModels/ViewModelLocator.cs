@@ -376,9 +376,9 @@ namespace derpirc.ViewModels
         {
             ClearMain();
             ClearChannelSummary();
+            ClearChannelDetail();
             ClearMentionSummary();
             ClearMentionDetail();
-            ClearChannelDetail();
             ClearMessageSummary();
             ClearMessageDetail();
         }

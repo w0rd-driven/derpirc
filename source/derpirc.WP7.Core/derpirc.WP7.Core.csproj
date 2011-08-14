@@ -58,12 +58,10 @@
     <Compile Include="..\VersionAssemblyInfo.cs">
       <Link>Properties\VersionAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="ChannelItemEventArgs.cs" />
     <Compile Include="ChannelsSupervisor.cs" />
     <Compile Include="ChannelStatusEventArgs.cs" />
     <Compile Include="ChannelStatusTypeEnum.cs" />
     <Compile Include="MessageItemEventArgs.cs" />
-    <Compile Include="MentionItemEventArgs.cs" />
     <Compile Include="MessagesSupervisor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
