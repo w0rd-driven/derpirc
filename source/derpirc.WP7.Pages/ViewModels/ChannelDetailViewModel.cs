@@ -219,9 +219,19 @@ namespace derpirc.ViewModels
             if (IsInDesignMode)
             {
                 // Code runs in Blend --> create design time data.
-                model.Name = "#Test";
+                model.Name = "#test";
                 model.Topic = "This is a test topic";
-                model.Count = 20;
+                var network = new Data.Settings.SessionNetwork()
+                {
+                    Name = "efnet",
+                };
+                var server = new Data.Settings.SessionServer()
+                {
+                    HostName = "irc.efnet.org",
+                    Network = network,
+                };
+                model.Network = network;
+                model.UnreadCount = 4;
                 _messagesList = new ObservableCollection<ChannelItem>();
                 _messagesList.Add(new ChannelItem()
                 {
@@ -241,14 +251,19 @@ namespace derpirc.ViewModels
                     TimeStamp = DateTime.Now,
                     Type = MessageType.Mine,
                 });
+                Messages = new CollectionViewSource() { Source = _messagesList };
+                ChannelName = model.Name;
+                ChannelTopic = model.Topic;
+                if (model.Network != null)
+                    NetworkName = model.Network.Name;
+                SendWatermark = string.Format("chat on {0}", NetworkName);
             }
             else
             {
                 // Code runs "for real": Connect to service, etc...
                 _messagesList = new ObservableCollection<ChannelItem>();
+                Messages = new CollectionViewSource() { Source = _messagesList };
             }
-            Messages = new CollectionViewSource() { Source = _messagesList };
-            Model = model;
         }
 
         public void Send()
@@ -261,10 +276,6 @@ namespace derpirc.ViewModels
         {
             // TODO: Wire in UI to choose where to send messages
             SendWatermark = string.Format("chat on {0}", NetworkName);
-        }
-
-        private void DesignTime()
-        {
         }
 
         private void OnNavigatedTo(IDictionary<string, string> queryString)

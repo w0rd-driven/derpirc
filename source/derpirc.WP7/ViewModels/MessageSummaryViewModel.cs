@@ -171,7 +171,7 @@ namespace derpirc.ViewModels
                 model.Name = "w0rd-driven";
                 var network = new Data.Settings.SessionNetwork()
                 {
-                    Name = "EFNet",
+                    Name = "efnet",
                 };
                 var server = new Data.Settings.SessionServer()
                 {

@@ -183,11 +183,11 @@ namespace derpirc.ViewModels
             if (IsInDesignMode)
             {
                 // code runs in blend --> create design time data.
-                model.Name = "#Test";
+                model.Name = "#test";
                 model.Topic = "This is a test topic";
                 var network = new Data.Settings.SessionNetwork()
                 {
-                    Name = "EFNet",
+                    Name = "efnet",
                 };
                 var server = new Data.Settings.SessionServer()
                 {
@@ -234,6 +234,11 @@ namespace derpirc.ViewModels
                 MessageSource = LastMessage.Source + " on " + NetworkName;
                 MessageText = LastMessage.Text;
                 MessageTimeStamp = LastMessage.TimeStamp;
+            }
+            else
+            {
+                MessageSource = NetworkName;
+                MessageTimeStamp = DateTime.Now;
             }
         }
 

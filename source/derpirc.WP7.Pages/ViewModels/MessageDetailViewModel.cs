@@ -99,6 +99,8 @@ namespace derpirc.ViewModels
             get { return _model; }
             set
             {
+                if (value != null)
+                    UpdateViewModel(value);
                 if (_model == value)
                     return;
 
@@ -203,7 +205,17 @@ namespace derpirc.ViewModels
             {
                 // Code runs in Blend --> create design time data.
                 model.Name = "w0rd-driven";
-                model.Count = 4;
+                var network = new Data.Settings.SessionNetwork()
+                {
+                    Name = "efnet",
+                };
+                var server = new Data.Settings.SessionServer()
+                {
+                    HostName = "irc.efnet.org",
+                    Network = network,
+                };
+                model.Network = network;
+                model.UnreadCount = 4;
                 _messagesList = new ObservableCollection<MessageItem>();
                 _messagesList.Add(new MessageItem()
                 {
@@ -223,14 +235,18 @@ namespace derpirc.ViewModels
                     TimeStamp = DateTime.Now,
                     Type = MessageType.Mine,
                 });
+                Messages = new CollectionViewSource() { Source = _messagesList };
+                NickName = model.Name;
+                if (model.Network != null)
+                    NetworkName = model.Network.Name;
+                SendWatermark = string.Format("chat on {0}", NetworkName);
             }
             else
             {
                 // Code runs "for real": Connect to service, etc...
                 _messagesList = new ObservableCollection<MessageItem>();
+                Messages = new CollectionViewSource() { Source = _messagesList };
             }
-            Messages = new CollectionViewSource() { Source = _messagesList };
-            Model = model;
         }
 
         public void Send()
