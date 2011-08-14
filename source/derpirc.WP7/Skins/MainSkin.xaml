@@ -7,10 +7,12 @@
                     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
                     xmlns:controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls"
                     xmlns:primitives="clr-namespace:Microsoft.Phone.Controls.Primitives;assembly=Microsoft.Phone.Controls"
+                    xmlns:converters="clr-namespace:derpirc.Converters"
                     xmlns:helpers="clr-namespace:derpirc.Helpers"
                     xmlns:edc="clr-namespace:Microsoft.Expression.Controls;assembly=Microsoft.Expression.Drawing"
                     mc:Ignorable="d">
     <!-- Converters -->
+    <converters:RelativeDateTimeConverter x:Key="RelativeDateTimeConverter" />
     <!-- Fonts -->
     <FontFamily x:Key="FontFamilyNormal">/derpirc;component/Fonts/Fonts.zip#monofur</FontFamily>
     <!-- Styles -->
@@ -266,7 +268,7 @@
                                Text="{Binding Text}"
                                Style="{StaticResource DetailMessageStyle}" />
                     <TextBlock x:Name="MessageTimeStamp"
-                               Text="{Binding TimeStamp}"
+                               Text="{Binding TimeStamp, Converter={StaticResource RelativeDateTimeConverter}}"
                                Style="{StaticResource DetailTimeStampStyle}" />
                 </StackPanel>
        	    </Border>
@@ -306,7 +308,7 @@
                                Text="{Binding Text}"
                                Style="{StaticResource DetailMessageStyle}" />
                     <TextBlock x:Name="MessageTimeStamp"
-                               Text="{Binding TimeStamp}"
+                               Text="{Binding TimeStamp, Converter={StaticResource RelativeDateTimeConverter}}"
                                Style="{StaticResource DetailTimeStampStyle}" />
                 </StackPanel>
        	    </Border>
@@ -327,7 +329,7 @@
                                            Text="{Binding Text}"
                                            Style="{StaticResource DetailMessageStyle}" />
                                 <TextBlock x:Name="MessageTimeStamp"
-                                           Text="{Binding TimeStamp}"
+                                           Text="{Binding TimeStamp, Converter={StaticResource RelativeDateTimeConverter}}"
                                            Style="{StaticResource DetailTimeStampStyle}" />
                             </StackPanel>
                    	    </Border>
@@ -369,7 +371,7 @@
                                            Text="{Binding Text}"
                                            Style="{StaticResource DetailMessageStyle}" />
                                 <TextBlock x:Name="MessageTimeStamp"
-                                           Text="{Binding TimeStamp}"
+                                           Text="{Binding TimeStamp, Converter={StaticResource RelativeDateTimeConverter}}"
                                            Style="{StaticResource DetailTimeStampStyle}" />
                             </StackPanel>
                    	    </Border>
