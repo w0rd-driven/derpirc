@@ -1,4 +1,4 @@
-﻿<phone:PhoneApplicationPage x:Class="derpirc.Pages.SettingsView"
+﻿<phone:PhoneApplicationPage x:Class="derpirc.Views.SettingsView"
                             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                             xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
@@ -11,7 +11,7 @@
                             SupportedOrientations="PortraitOrLandscape" Orientation="Portrait"
                             mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="768"
                             shell:SystemTray.IsVisible="True"
-                            DataContext="{Binding Main, Source={StaticResource Locator}}">
+                            DataContext="{Binding SettingsViewModel, Source={StaticResource Locator}}">
 
     <Grid x:Name="LayoutRoot" Background="Transparent">
         <Grid.RowDefinitions>

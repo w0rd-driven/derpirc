@@ -196,7 +196,6 @@ namespace derpirc.ViewModels
                 model.LastItem = new ChannelItem()
                 {
                     Summary = model,
-                    SummaryId = model.Id,
                     IsRead = false,
                     Source = "w0rd-driven",
                     Text = "urmom!",

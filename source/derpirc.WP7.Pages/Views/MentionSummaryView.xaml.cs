@@ -10,11 +10,11 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 
-namespace derpirc.Pages
+namespace derpirc.Views
 {
-    public partial class MessageSummaryView : UserControl
+    public partial class MentionSummaryView : UserControl
     {
-        public MessageSummaryView()
+        public MentionSummaryView()
         {
             InitializeComponent();
         }

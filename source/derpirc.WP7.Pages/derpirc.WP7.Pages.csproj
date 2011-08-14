@@ -9,7 +9,7 @@
     <ProjectTypeGuids>{C089C8C0-30E0-4E22-80C0-CE093F111A43};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>derpirc.Pages</RootNamespace>
+    <RootNamespace>derpirc</RootNamespace>
     <AssemblyName>derpirc.Pages</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <SilverlightVersion>$(TargetFrameworkVersion)</SilverlightVersion>
@@ -43,12 +43,24 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="GalaSoft.MvvmLight.Extras.WP71">
+      <HintPath>..\..\library\MVVMLight\WP71\GalaSoft.MvvmLight.Extras.WP71.dll</HintPath>
+    </Reference>
+    <Reference Include="GalaSoft.MvvmLight.WP71">
+      <HintPath>..\..\library\MVVMLight\WP71\GalaSoft.MvvmLight.WP71.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Expression.Drawing" />
     <Reference Include="Microsoft.Phone" />
     <Reference Include="Microsoft.Phone.Interop" />
+    <Reference Include="Microsoft.Practices.ServiceLocation">
+      <HintPath>..\..\library\MVVMLight\WP71\Microsoft.Practices.ServiceLocation.dll</HintPath>
+    </Reference>
     <Reference Include="System.Windows" />
     <Reference Include="system" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Interactivity, Version=3.8.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\library\MVVMLight\WP71\System.Windows.Interactivity.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="System.Net" />
     <Reference Include="mscorlib.extensions" />
@@ -60,46 +72,75 @@
     <Compile Include="..\VersionAssemblyInfo.cs">
       <Link>Properties\VersionAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="ChannelSummaryView.xaml.cs">
+    <Compile Include="Helpers\WatermarkBehavior.cs" />
+    <Compile Include="Views\ChannelDetailView.xaml.cs">
+      <DependentUpon>ChannelDetailView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ChannelSummaryView.xaml.cs">
       <DependentUpon>ChannelSummaryView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MentionSummaryView.xaml.cs">
+    <Compile Include="Views\MentionDetailView.xaml.cs">
+      <DependentUpon>MentionDetailView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MentionSummaryView.xaml.cs">
       <DependentUpon>MentionSummaryView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MessageSummaryView.xaml.cs">
+    <Compile Include="Views\MessageDetailView.xaml.cs">
+      <DependentUpon>MessageDetailView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MessageSummaryView.xaml.cs">
       <DependentUpon>MessageSummaryView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SettingsView.xaml.cs">
+    <Compile Include="Views\SettingsView.xaml.cs">
       <DependentUpon>SettingsView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\ChannelDetailViewModel.cs" />
+    <Compile Include="ViewModels\MentionDetailViewModel.cs" />
+    <Compile Include="ViewModels\MessageDetailViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="MentionSummaryView.xaml">
+    <ApplicationDefinition Include="Views\ChannelDetailView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <ApplicationDefinition Include="Views\MentionDetailView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Page Include="Views\MentionSummaryView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="ChannelSummaryView.xaml">
+    <Page Include="Views\ChannelSummaryView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="MessageSummaryView.xaml">
+    <ApplicationDefinition Include="Views\MessageDetailView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Page Include="Views\MessageSummaryView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="SettingsView.xaml">
+    <Page Include="Views\SettingsView.xaml">
       <SubType>Form</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="ViewModels\" />
+    <ProjectReference Include="..\derpirc.WP7.Data\derpirc.WP7.Data.csproj">
+      <Project>{26539181-F41F-45BB-82BD-92274DDEC3F7}</Project>
+      <Name>derpirc.WP7.Data</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.$(TargetFrameworkProfile).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.CSharp.targets" />

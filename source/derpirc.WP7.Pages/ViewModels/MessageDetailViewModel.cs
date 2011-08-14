@@ -1,8 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
+using System.Windows.Data;
 using derpirc.Data;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Threading;
 
 namespace derpirc.ViewModels
 {
@@ -133,23 +138,23 @@ namespace derpirc.ViewModels
             }
         }
 
-        //private ObservableCollection<ChannelMessage> _messagesList;
-        //public CollectionViewSource Messages { get; set; }
+        private ObservableCollection<MessageItem> _messagesList;
+        public CollectionViewSource Messages { get; set; }
 
-        //private ChannelMessage _selectedItem;
-        //public ChannelMessage SelectedItem
-        //{
-        //    get { return _selectedItem; }
-        //    set
-        //    {
-        //        if (_selectedItem == value)
-        //            return;
+        private MessageItem _selectedItem;
+        public MessageItem SelectedItem
+        {
+            get { return _selectedItem; }
+            set
+            {
+                if (_selectedItem == value)
+                    return;
 
-        //        var oldValue = _selectedItem;
-        //        _selectedItem = value;
-        //        RaisePropertyChanged(() => SelectedItem);
-        //    }
-        //}
+                var oldValue = _selectedItem;
+                _selectedItem = value;
+                RaisePropertyChanged(() => SelectedItem);
+            }
+        }
 
         private string _sendMessage;
         public string SendMessage
@@ -192,18 +197,14 @@ namespace derpirc.ViewModels
             if (IsInDesignMode)
             {
                 // Code runs in Blend --> create design time data.
-                Model = new MessageSummary();
-                Model.Name = "w0rd-driven";
-                Model.Count = 4;
-                ServerName = "irc.efnet.org";
-                NickName = Model.Name;
-                SendWatermark = string.Format("chat on {0}", ServerName);
-                //Messages = new CollectionViewSource() { Source = _messagesList };
+                DesignTime();
             }
             else
             {
                 // Code runs "for real": Connect to service, etc...
+                _messagesList = new ObservableCollection<MessageItem>();
             }
+            Messages = new CollectionViewSource() { Source = _messagesList };
         }
 
         public void Send()
@@ -217,16 +218,58 @@ namespace derpirc.ViewModels
             SendWatermark = string.Format("chat on {0}", ServerName);
         }
 
-        private void OnNavigatedTo(IDictionary<string, string> queryString)
+        private void DesignTime()
         {
             Model = new MessageSummary();
             Model.Name = "w0rd-driven";
             Model.Count = 4;
-            ServerName = "irc.efnet.org";
-            NickName = Model.Name;
-            SendWatermark = string.Format("chat on {0}", ServerName);
-            //Messages = new CollectionViewSource() { Source = _messagesList };
+            _messagesList = new ObservableCollection<MessageItem>();
+            _messagesList.Add(new MessageItem()
+            {
+                Summary = Model,
+                SummaryId = Model.Id,
+                Source = "w0rd-driven",
+                Text = "urmom!",
+                TimeStamp = DateTime.Now,
+                Type = MessageType.Theirs,
+            });
+            _messagesList.Add(new MessageItem()
+            {
+                Summary = Model,
+                SummaryId = Model.Id,
+                Source = "derpirc",
+                Text = "no, urmom!",
+                TimeStamp = DateTime.Now,
+                Type = MessageType.Mine,
+            });
+        }
+
+        private void OnNavigatedTo(IDictionary<string, string> queryString)
+        {
             //TODO: Link Model and VM via Events
+            var id = string.Empty;
+            queryString.TryGetValue("id", out id);
+            var integerId = -1;
+            int.TryParse(id, out integerId);
+            var model = DataUnitOfWork.Default.Messages.FindBy(x => x.Id == integerId).FirstOrDefault();
+            if (model != null)
+                UpdateViewModel(model);
+        }
+
+        private void UpdateViewModel(MessageSummary model)
+        {
+            NickName = model.Name;
+            ServerName = model.Server.HostName;
+            SendWatermark = string.Format("chat on {0}", ServerName);
+            DispatcherHelper.CheckBeginInvokeOnUI(() =>
+            {
+                _messagesList.Clear();
+                model.Messages.ToList().ForEach(item =>
+                {
+                    _messagesList.Add(item);
+                });
+            });
+            Messages.View.Refresh();
         }
 
         public override void Cleanup()

@@ -177,10 +177,9 @@ namespace derpirc.ViewModels
                     HostName = "irc.efnet.org",
                     Network = network,
                 };
-                model.LastItem = new ChannelItem()
+                model.LastItem = new MessageItem()
                 {
-                    //Summary = model,
-                    SummaryId = model.Id,
+                    Summary = model,
                     IsRead = false,
                     Source = "w0rd-driven",
                     Text = "urmom!",

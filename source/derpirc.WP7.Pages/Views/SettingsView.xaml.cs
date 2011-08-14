@@ -1,6 +1,6 @@
 ﻿using Microsoft.Phone.Controls;
 
-namespace derpirc.Pages
+namespace derpirc.Views
 {
     /// <summary>
     /// Description for SettingsView.

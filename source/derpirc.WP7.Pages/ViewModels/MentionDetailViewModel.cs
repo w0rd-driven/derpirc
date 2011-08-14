@@ -11,7 +11,7 @@ using GalaSoft.MvvmLight.Threading;
 
 namespace derpirc.ViewModels
 {
-    public class ChannelDetailViewModel : ViewModelBase
+    public class MentionDetailViewModel : ViewModelBase
     {
         #region Commands
 
@@ -93,14 +93,12 @@ namespace derpirc.ViewModels
 
         public FrameworkElement LayoutRoot { get; set; }
 
-        private ChannelSummary _model;
-        public ChannelSummary Model
+        private MentionSummary _model;
+        public MentionSummary Model
         {
             get { return _model; }
             set
             {
-                if (value != null)
-                    UpdateViewModel(value);
                 if (_model == value)
                     return;
 
@@ -111,7 +109,7 @@ namespace derpirc.ViewModels
         }
 
         private string _channelName;
-        public string ChannelName
+        public string NickName
         {
             get { return _channelName; }
             set
@@ -121,7 +119,7 @@ namespace derpirc.ViewModels
 
                 var oldValue = _channelName;
                 _channelName = value;
-                RaisePropertyChanged(() => ChannelName);
+                RaisePropertyChanged(() => NickName);
             }
         }
 
@@ -140,26 +138,11 @@ namespace derpirc.ViewModels
             }
         }
 
-        private string _channelTopic;
-        public string ChannelTopic
-        {
-            get { return _channelTopic; }
-            set
-            {
-                if (_channelTopic == value)
-                    return;
-
-                var oldValue = _channelTopic;
-                _channelTopic = value;
-                RaisePropertyChanged(() => ChannelTopic);
-            }
-        }
-
-        private ObservableCollection<ChannelItem> _messagesList;
+        private ObservableCollection<MentionItem> _messagesList;
         public CollectionViewSource Messages { get; set; }
 
-        private ChannelItem _selectedItem;
-        public ChannelItem SelectedItem
+        private MentionItem _selectedItem;
+        public MentionItem SelectedItem
         {
             get { return _selectedItem; }
             set
@@ -206,12 +189,10 @@ namespace derpirc.ViewModels
 
         #endregion
 
-        private Data.DataUnitOfWork _unitOfWork;
-
         /// <summary>
-        /// Initializes a new instance of the ChannelDetailViewModel class.
+        /// Initializes a new instance of the MentionDetailViewModel class.
         /// </summary>
-        public ChannelDetailViewModel()
+        public MentionDetailViewModel()
         {
             if (IsInDesignMode)
             {
@@ -221,19 +202,14 @@ namespace derpirc.ViewModels
             else
             {
                 // Code runs "for real": Connect to service, etc...
+                _messagesList = new ObservableCollection<MentionItem>();
             }
-            _messagesList = new ObservableCollection<ChannelItem>();
             Messages = new CollectionViewSource() { Source = _messagesList };
-            //_unitOfWork = new DataUnitOfWork();
-            _unitOfWork = DataUnitOfWork.Default;
-            //_unitOfWork.FileMode = FileMode.ReadOnly;
-            //_unitOfWork.InitializeDatabase(false);
         }
 
         public void Send()
         {
-            ViewModelLocator.MainStatic.Send(Model, SendMessage);
-            SendMessage = string.Empty;
+
         }
 
         public void Switch()
@@ -244,26 +220,25 @@ namespace derpirc.ViewModels
 
         private void DesignTime()
         {
-            Model = new ChannelSummary();
-            Model.Name = "#Test";
-            Model.Topic = "This is a test topic";
-            Model.Count = 20;
-            _messagesList = new ObservableCollection<ChannelItem>();
-            _messagesList.Add(new ChannelItem()
+            Model = new MentionSummary();
+            Model.Name = "w0rd-driven";
+            Model.Count = 4;
+            _messagesList = new ObservableCollection<MentionItem>();
+            _messagesList.Add(new MentionItem()
             {
                 Summary = Model,
                 SummaryId = Model.Id,
                 Source = "w0rd-driven",
-                Text = "urmom!",
+                Text = "derpirc: urmom!",
                 TimeStamp = DateTime.Now,
                 Type = MessageType.Theirs,
             });
-            _messagesList.Add(new ChannelItem()
+            _messagesList.Add(new MentionItem()
             {
                 Summary = Model,
                 SummaryId = Model.Id,
                 Source = "derpirc",
-                Text = "no, urmom!",
+                Text = "w0rd-driven: no, urmom!",
                 TimeStamp = DateTime.Now,
                 Type = MessageType.Mine,
             });
@@ -276,22 +251,14 @@ namespace derpirc.ViewModels
             queryString.TryGetValue("id", out id);
             var integerId = -1;
             int.TryParse(id, out integerId);
-            try
-            {
-                var model = DataUnitOfWork.Default.Channels.FindBy(x => x.Id == integerId).FirstOrDefault();
-                if (model != null)
-                    UpdateViewModel(model);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            var model = DataUnitOfWork.Default.Mentions.FindBy(x => x.Id == integerId).FirstOrDefault();
+            if (model != null)
+                UpdateViewModel(model);
         }
 
-        private void UpdateViewModel(ChannelSummary model)
+        private void UpdateViewModel(MentionSummary model)
         {
-            ChannelName = model.Name;
-            ChannelTopic = model.Topic;
+            NickName = model.Name;
             ServerName = model.Server.HostName;
             SendWatermark = string.Format("chat on {0}", ServerName);
             DispatcherHelper.CheckBeginInvokeOnUI(() =>

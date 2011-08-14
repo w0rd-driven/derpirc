@@ -393,7 +393,7 @@ namespace derpirc.ViewModels
             {
                 id = "1";
             }
-            uriString = string.Format("/Views/ChannelDetailView.xaml?id={0}", Uri.EscapeUriString(id));
+            uriString = string.Format("/derpirc.Pages;component/Views/ChannelDetailView.xaml?id={0}", Uri.EscapeUriString(id));
             var uri = new Uri(uriString, UriKind.Relative);
             NavigationService.Navigate(uri);
         }
@@ -410,7 +410,7 @@ namespace derpirc.ViewModels
             {
                 id = "1";
             }
-            uriString = string.Format("/Views/MentionDetailView.xaml?sessionid={0}", Uri.EscapeUriString(id));
+            uriString = string.Format("/derpirc.Pages;component/Views/MentionDetailView.xaml?id={0}", Uri.EscapeUriString(id));
             var uri = new Uri(uriString, UriKind.Relative);
             NavigationService.Navigate(uri);
         }
@@ -427,7 +427,7 @@ namespace derpirc.ViewModels
             {
                 id = "1";
             }
-            uriString = string.Format("/Views/MessageDetailView.xaml?sessionid={0}", Uri.EscapeUriString(id));
+            uriString = string.Format("/derpirc.Pages;component/Views/MessageDetailView.xaml?id={0}", Uri.EscapeUriString(id));
             var uri = new Uri(uriString, UriKind.Relative);
             NavigationService.Navigate(uri);
         }
