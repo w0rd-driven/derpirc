@@ -1,12 +1,12 @@
-﻿using System.Data.Linq;
-using System.Data.Linq.Mapping;
+﻿using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Collections.Generic;
+using System.Data.Linq;
+using System.Data.Linq.Mapping;
 
 namespace derpirc.Data.Settings
 {
     [Table(Name = "SessionNetworks")]
-    public partial class SessionNetwork : BaseNotify, IBaseModel, ISessionNetwork, INetwork
+    public partial class SessionNetwork : BaseNotify, IBaseModel
     {
         [Column(IsVersion = true)]
         private Binary version;

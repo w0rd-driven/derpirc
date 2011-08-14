@@ -10,8 +10,6 @@ namespace derpirc.Data.Settings
             result.ConnectOnStartup = false;
             result.ReconnectOnDisconnect = true;
             result.DefaultPort = 6667;
-            result.WindowBuffer = 1000;
-            result.AutoScrollOnOutput = true;
             return result;
         }
 
@@ -70,21 +68,18 @@ namespace derpirc.Data.Settings
                 Name = "EFNet",
                 IsJoinEnabled = true,
                 JoinChannels = "#wp7, #xna",
-                JoinDelay = 2,
             });
             result.Add(new Network()
             {
                 Name = "Freenode",
                 IsJoinEnabled = true,
                 JoinChannels = "#xda-devs",
-                JoinDelay = 2,
             });
             result.Add(new Network()
             {
                 Name = "PowerPrecision",
                 IsJoinEnabled = true,
                 JoinChannels = "#wp7, #xna",
-                JoinDelay = 2,
             });
             return result;
         }
@@ -153,7 +148,6 @@ namespace derpirc.Data.Settings
                 Name = "EFNet",
                 IsJoinEnabled = true,
                 JoinChannels = "#wp7test",
-                JoinDelay = 2,
             });
             result.Add(new SessionNetwork()
             {
@@ -163,7 +157,6 @@ namespace derpirc.Data.Settings
                 Name = "PowerPrecision",
                 IsJoinEnabled = true,
                 JoinChannels = "#wp7, #xna",
-                JoinDelay = 2,
             });
 
             return result;

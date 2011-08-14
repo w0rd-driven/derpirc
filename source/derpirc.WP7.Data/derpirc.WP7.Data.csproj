@@ -56,7 +56,6 @@
     <Compile Include="..\VersionAssemblyInfo.cs">
       <Link>Properties\VersionAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="BaseModel.cs" />
     <Compile Include="BaseNotify.cs" />
     <Compile Include="ChannelItem.cs" />
     <Compile Include="ChannelSummary.cs" />
@@ -65,7 +64,6 @@
     <Compile Include="DataModel.cs" />
     <Compile Include="DataModelContainer.cs" />
     <Compile Include="DataUnitOfWork.cs" />
-    <Compile Include="IDataModelContainer.cs" />
     <Compile Include="IRepository.cs" />
     <Compile Include="IUnitOfWork.cs" />
     <Compile Include="MentionItem.cs" />
@@ -82,13 +80,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings\Client.cs" />
     <Compile Include="Settings\Factory.cs" />
-    <Compile Include="Settings\IClient.cs" />
-    <Compile Include="Settings\INetwork.cs" />
-    <Compile Include="Settings\IServer.cs" />
-    <Compile Include="Settings\ISession.cs" />
-    <Compile Include="Settings\ISessionNetwork.cs" />
-    <Compile Include="Settings\ISessionServer.cs" />
-    <Compile Include="Settings\IUser.cs" />
     <Compile Include="Settings\Network.cs" />
     <Compile Include="Settings\Server.cs" />
     <Compile Include="Settings\SessionNetwork.cs" />
@@ -97,9 +88,7 @@
     <Compile Include="Settings\Session.cs" />
     <Compile Include="SqlRepository.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Services\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="DataDiagram.cd">
       <SubType>Designer</SubType>

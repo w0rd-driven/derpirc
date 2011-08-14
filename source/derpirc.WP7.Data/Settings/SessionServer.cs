@@ -6,7 +6,7 @@ using System.Data.Linq.Mapping;
 namespace derpirc.Data.Settings
 {
     [Table(Name = "SessionServers")]
-    public partial class SessionServer : BaseNotify, IBaseModel, ISessionServer, IServer
+    public partial class SessionServer : BaseNotify, IBaseModel
     {
         [Column(IsVersion = true)]
         private Binary version;

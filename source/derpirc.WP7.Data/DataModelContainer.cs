@@ -1,8 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
-using System.Linq;
 using System.IO.IsolatedStorage;
+using System.Linq;
 using derpirc.Data.Settings;
 
 namespace derpirc.Data
@@ -14,7 +15,7 @@ namespace derpirc.Data
     /// the entity set properties and exposes <code>ITable</code>
     /// instances for entity set properties.
     /// </summary>
-    public partial class DataModelContainer : DataContext, IDataModelContainer 
+    public partial class DataModelContainer : DataContext
     {
         public const string DatabaseFileName = "IRC.sdf";
         public const string ConnectionString = "isostore:/" + DatabaseFileName;
@@ -118,29 +119,63 @@ namespace derpirc.Data
         {
             var client = Factory.CreateClient();
             this.Client.InsertOnSubmit(client);
-            //TODO: Remove after testing
             this.SubmitChanges();
 
             var user = Factory.CreateUser();
             this.User.InsertOnSubmit(user);
-            //TODO: Remove after testing
             this.SubmitChanges();
 
             var servers = Factory.CreateServers();
             this.Servers.InsertAllOnSubmit(servers);
-            //TODO: Remove after testing
             this.SubmitChanges();
 
             var networks = Factory.CreateNetworks();
             this.Networks.InsertAllOnSubmit(networks);
-            //TODO: Remove after testing
             this.SubmitChanges();
 
             var session = Factory.CreateSession();
             this.Session.InsertOnSubmit(session);
             this.SubmitChanges();
+
+            // HACK: Fix up special Factory.Create case where networks and servers aren't linked to their parents
+            var sessionNetworks = session.Networks.ToList();
+            sessionNetworks.ForEach(item =>
+            {
+                if (item.Network == null)
+                {
+                    var basedOnNetwork = GetBasedOnNetwork(networks, item.BasedOnId);
+                    if (basedOnNetwork != null)
+                    {
+                        item.Network = basedOnNetwork;
+                    }
+                }
+            });
+            this.SubmitChanges();
+
+            var sessionServers = session.Servers.ToList();
+            sessionServers.ForEach(item =>
+            {
+                if (item.Server == null)
+                {
+                    var basedOnServer = GetBasedOnServer(servers, item.BasedOnId);
+                    if (basedOnServer != null)
+                    {
+                        item.Server = basedOnServer;
+                    }
+                }
+           });
+           this.SubmitChanges();
         }
 
+        private Server GetBasedOnServer(List<Server> servers, int id)
+        {
+            return servers.Where(x => x.Id == id).FirstOrDefault();
+        }
+
+        private Network GetBasedOnNetwork(List<Network> networks, int id)
+        {
+            return networks.Where(x => x.Id == id).FirstOrDefault();
+        }
         #endregion
     
         #region Table Properties

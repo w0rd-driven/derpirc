@@ -8,7 +8,7 @@ using derpirc.Data.Settings;
 namespace derpirc.Data
 {
     [Table]
-    public class MentionSummary : BaseNotify, IMessageSummary, IBaseModel
+    public class MentionSummary : BaseNotify, IBaseModel, IMessageSummary
     {
         [Column(IsVersion = true)]
         private Binary version;
@@ -86,7 +86,6 @@ namespace derpirc.Data
                         previousValue.CollectionChanged -= FixupMessages;
                     }
                     _messages.SetSource(value);
-                    //_messages = value;
                     var newValue = value as FixupCollection<MentionItem>;
                     if (newValue != null)
                     {

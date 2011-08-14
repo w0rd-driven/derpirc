@@ -58,18 +58,6 @@ namespace derpirc.Core
             var servers = _session.Servers.ToList();
             servers.ForEach(item =>
             {
-                var serverName = string.Empty;
-                serverName = item.HostName;
-                // HACK: Fix up special Factory.Create case
-                if (item.Server == null)
-                {
-                    var basedOnServer = GetBasedOnServer(serverName);
-                    if (basedOnServer != null)
-                    {
-                        item.Server = basedOnServer;
-                        item.BasedOnId = basedOnServer.Id;
-                    }
-                }
                 var client = InitializeClient();
                 client.ClientId = item.Id.ToString();
                 _clients.Add(client);
@@ -248,12 +236,6 @@ namespace derpirc.Core
                     JoinSession(matchedServer, client);
                 }
             }
-        }
-
-        private Server GetBasedOnServer(string hostName)
-        {
-            //return _unitOfWork.Servers.FindBy(x => x.HostName == hostName).FirstOrDefault();
-            return DataUnitOfWork.Default.Servers.FindBy(x => x.HostName == hostName).FirstOrDefault();
         }
 
         private SessionServer GetServer(string clientId)

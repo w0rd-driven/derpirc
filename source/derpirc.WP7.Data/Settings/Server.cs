@@ -4,7 +4,7 @@ using System.Data.Linq.Mapping;
 namespace derpirc.Data.Settings
 {
     [Table(Name = "Servers")]
-    public partial class Server : BaseNotify, IBaseModel, IServer
+    public partial class Server : BaseNotify, IBaseModel
     {
         [Column(IsVersion = true)]
         private Binary version;

@@ -90,7 +90,6 @@ namespace derpirc.Data
                         previousValue.CollectionChanged -= FixupMessages;
                     }
                     _messages.SetSource(value);
-                    //_messages = value;
                     var newValue = value as FixupCollection<ChannelItem>;
                     if (newValue != null)
                     {
