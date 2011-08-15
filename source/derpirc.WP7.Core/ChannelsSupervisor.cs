@@ -206,7 +206,6 @@ namespace derpirc.Core
             result.TimeStamp = DateTime.Now;
             result.IsRead = false;
             result.Summary = summary;
-            result.SummaryId = summary.Id;
             result.Source = eventArgs.Source.Name;
             result.Text = eventArgs.Text;
             result.Type = messageType;
@@ -220,8 +219,8 @@ namespace derpirc.Core
             result.TimeStamp = DateTime.Now;
             result.IsRead = false;
             result.Summary = summary;
-            result.SummaryId = summary.Id;
-            result.Source = eventArgs.Source.Name;
+            if (eventArgs.Targets.Count >= 1)
+                result.Source = eventArgs.Targets[0].Name;
             result.Text = eventArgs.Text;
             result.Type = messageType;
             return result;

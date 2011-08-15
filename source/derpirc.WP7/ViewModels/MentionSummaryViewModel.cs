@@ -214,7 +214,7 @@ namespace derpirc.ViewModels
             {
                 LastMessage = model.LastItem as MentionItem;
                 MessageIsRead = LastMessage.IsRead;
-                MessageSource = NetworkName;
+                MessageSource = LastMessage.Source + " on " + NetworkName;
                 MessageText = LastMessage.Text;
                 MessageTimeStamp = LastMessage.TimeStamp;
             }
