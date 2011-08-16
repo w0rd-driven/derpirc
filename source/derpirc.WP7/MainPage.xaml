@@ -52,10 +52,12 @@
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Text="{Binding ChannelName}" VerticalAlignment="Center" Style="{StaticResource PhoneTextLargeStyle}" TextWrapping="Wrap" />
-                                <edc:Callout x:Name="calloutUnreadCount" Content="{Binding UnreadCount}" CalloutStyle="Rectangle" AnchorPoint="0.15,1.2" Grid.Column="1"
-                                             Fill="{StaticResource PhoneDisabledBrush}" Height="40" Width="50" VerticalAlignment="Center" HorizontalAlignment="Right"
-                                             FontSize="{StaticResource PhoneFontSizeMediumLarge}" />
-                                <Button Content="X" Grid.Column="2" Name="buttonRemove" />
+                                <TextBlock x:Name="textBlockMessageTimeStamp"
+                                               Text="{Binding MessageTimeStamp, Converter={StaticResource ConversationDateTimeConverter}}"
+                                               Style="{StaticResource SummaryTimeStampStyle}"
+                                               VerticalAlignment="Bottom"
+                                               Grid.Column="2" />                     
+                                <Button Content="X" Grid.Column="2" x:Name="buttonRemove" Visibility="Collapsed" />
                                 <Grid Grid.ColumnSpan="3" Grid.Row="2">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto" />
@@ -66,17 +68,18 @@
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="Auto" />
                                         <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="12" />
                                     </Grid.ColumnDefinitions>
                                     <TextBlock x:Name="textBlockMessageText"
                                                Text="{Binding MessageText}"
                                                Style="{StaticResource SummaryMessageStyle}" />
-                                    <TextBlock x:Name="textBlockMessageTimeStamp"
-                                               Text="{Binding MessageTimeStamp, Converter={StaticResource ConversationDateTimeConverter}}"
-                                               Style="{StaticResource SummaryTimeStampStyle}"
-                                               Grid.Row="1" />
+                                    <edc:Callout x:Name="calloutUnreadCount" Content="{Binding UnreadCount}" CalloutStyle="Rectangle" AnchorPoint="0.15,1.2" Grid.Column="1"
+                                                 Fill="{StaticResource PhoneDisabledBrush}" Height="26" Width="32" VerticalAlignment="Center" HorizontalAlignment="Right"
+                                                 FontSize="{StaticResource PhoneFontSizeMedium}" />
                                     <TextBlock x:Name="textBlockMessageSource"
                                                Text="{Binding MessageSource}"
                                                Style="{StaticResource SummarySourceStyle}"
+                                               Grid.ColumnSpan="2"
                                                Grid.Row="2" />
                                 </Grid>
                             </Grid>
@@ -105,10 +108,12 @@
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Text="{Binding NickName}" VerticalAlignment="Center" Style="{StaticResource PhoneTextLargeStyle}" TextWrapping="Wrap" />
-                                <edc:Callout x:Name="calloutUnreadCount" Content="{Binding UnreadCount}" CalloutStyle="Rectangle" AnchorPoint="0.15,1.2" Grid.Column="1"
-                                             Fill="{StaticResource PhoneDisabledBrush}" Height="40" Width="50" VerticalAlignment="Center" HorizontalAlignment="Right"
-                                             FontSize="{StaticResource PhoneFontSizeMediumLarge}" />
-                                <Button Content="X" Grid.Column="2" Name="buttonRemove" />
+                                <TextBlock x:Name="textBlockMessageTimeStamp"
+                                               Text="{Binding MessageTimeStamp, Converter={StaticResource ConversationDateTimeConverter}}"
+                                               Style="{StaticResource SummaryTimeStampStyle}"
+                                               VerticalAlignment="Bottom"
+                                               Grid.Column="2" />                     
+                                <Button Content="X" Grid.Column="2" x:Name="buttonRemove" Visibility="Collapsed" />
                                 <Grid Grid.ColumnSpan="3" Grid.Row="2">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto" />
@@ -119,17 +124,18 @@
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="Auto" />
                                         <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="12" />
                                     </Grid.ColumnDefinitions>
                                     <TextBlock x:Name="textBlockMessageText"
                                                Text="{Binding MessageText}"
                                                Style="{StaticResource SummaryMessageStyle}" />
-                                    <TextBlock x:Name="textBlockMessageTimeStamp"
-                                               Text="{Binding MessageTimeStamp, Converter={StaticResource ConversationDateTimeConverter}}"
-                                               Style="{StaticResource SummaryTimeStampStyle}"
-                                               Grid.Row="1" />
+                                    <edc:Callout x:Name="calloutUnreadCount" Content="{Binding UnreadCount}" CalloutStyle="Rectangle" AnchorPoint="0.15,1.2" Grid.Column="1"
+                                                 Fill="{StaticResource PhoneDisabledBrush}" Height="26" Width="32" VerticalAlignment="Center" HorizontalAlignment="Right"
+                                                 FontSize="{StaticResource PhoneFontSizeMedium}" />
                                     <TextBlock x:Name="textBlockMessageSource"
                                                Text="{Binding MessageSource}"
                                                Style="{StaticResource SummarySourceStyle}"
+                                               Grid.ColumnSpan="2"
                                                Grid.Row="2" />
                                 </Grid>
                             </Grid>
@@ -138,7 +144,7 @@
                 </ListBox>
             </controls:PivotItem>
             
-            <controls:PivotItem Header="messages" Style="{StaticResource SmallPivotItemStyle}" >
+            <controls:PivotItem Header="messages" Style="{StaticResource SmallPivotItemStyle}">
                 <ListBox x:Name="MessageSummaryListBox" Margin="0,0,-12,0" ItemsSource="{Binding Messages.View}" SelectedItem="{Binding SelectedMessage, Mode=TwoWay}" ItemContainerStyle="{StaticResource SmallPivotListBoxStyle}">
                     <blend:Interaction.Triggers>
                         <blend:EventTrigger EventName="DoubleTap">
@@ -158,10 +164,12 @@
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Text="{Binding NickName}" VerticalAlignment="Center" Style="{StaticResource PhoneTextLargeStyle}" TextWrapping="Wrap" />
-                                <edc:Callout x:Name="calloutUnreadCount" Content="{Binding UnreadCount}" CalloutStyle="Rectangle" AnchorPoint="0.15,1.2" Grid.Column="1"
-                                             Fill="{StaticResource PhoneDisabledBrush}" Height="40" Width="50" VerticalAlignment="Center" HorizontalAlignment="Right"
-                                             FontSize="{StaticResource PhoneFontSizeMediumLarge}" />
-                                <Button Content="X" Grid.Column="2" Name="buttonRemove" />
+                                <TextBlock x:Name="textBlockMessageTimeStamp"
+                                               Text="{Binding MessageTimeStamp, Converter={StaticResource ConversationDateTimeConverter}}"
+                                               Style="{StaticResource SummaryTimeStampStyle}"
+                                               VerticalAlignment="Bottom"
+                                               Grid.Column="2" />                     
+                                <Button Content="X" Grid.Column="2" x:Name="buttonRemove" Visibility="Collapsed" />
                                 <Grid Grid.ColumnSpan="3" Grid.Row="2">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto" />
@@ -172,17 +180,18 @@
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="Auto" />
                                         <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="12" />
                                     </Grid.ColumnDefinitions>
                                     <TextBlock x:Name="textBlockMessageText"
                                                Text="{Binding MessageText}"
                                                Style="{StaticResource SummaryMessageStyle}" />
-                                    <TextBlock x:Name="textBlockMessageTimeStamp"
-                                               Text="{Binding MessageTimeStamp, Converter={StaticResource ConversationDateTimeConverter}}"
-                                               Style="{StaticResource SummaryTimeStampStyle}"
-                                               Grid.Row="1" />
+                                    <edc:Callout x:Name="calloutUnreadCount" Content="{Binding UnreadCount}" CalloutStyle="Rectangle" AnchorPoint="0.15,1.2" Grid.Column="1"
+                                                 Fill="{StaticResource PhoneDisabledBrush}" Height="26" Width="32" VerticalAlignment="Center" HorizontalAlignment="Right"
+                                                 FontSize="{StaticResource PhoneFontSizeMedium}" />
                                     <TextBlock x:Name="textBlockMessageSource"
                                                Text="{Binding MessageSource}"
                                                Style="{StaticResource SummarySourceStyle}"
+                                               Grid.ColumnSpan="2"
                                                Grid.Row="2" />
                                 </Grid>
                             </Grid>
