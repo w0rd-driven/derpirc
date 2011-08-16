@@ -84,6 +84,7 @@
     <Compile Include="Controls\ArgumentValidator.cs" />
     <Compile Include="Controls\ProgressIndicatorProxy.cs" />
     <Compile Include="Controls\VisualTree.cs" />
+    <Compile Include="Converters\ConversationDateTimeConverter.cs" />
     <Compile Include="Converters\RelativeDateTimeConverter.cs" />
     <Compile Include="Helpers\ApplicationFrameNavigationService.cs" />
     <Compile Include="Helpers\DataTemplateSelector.cs" />

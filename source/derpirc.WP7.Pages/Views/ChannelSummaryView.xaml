@@ -44,7 +44,7 @@
                        Text="{Binding MessageText}"
                        Style="{StaticResource SummaryMessageStyle}" />
             <TextBlock x:Name="textBlockMessageTimeStamp"
-                       Text="{Binding MessageTimeStamp, Converter={StaticResource RelativeDateTimeConverter}}"
+                       Text="{Binding MessageTimeStamp, Converter={StaticResource ConversationDateTimeConverter}}"
                        Style="{StaticResource SummaryTimeStampStyle}"
                        Grid.Row="1" />
             <TextBlock x:Name="textBlockMessageSource"

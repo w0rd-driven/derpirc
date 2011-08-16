@@ -12,6 +12,7 @@
                     xmlns:edc="clr-namespace:Microsoft.Expression.Controls;assembly=Microsoft.Expression.Drawing"
                     mc:Ignorable="d">
     <!-- Converters -->
+    <converters:ConversationDateTimeConverter x:Key="ConversationDateTimeConverter" />
     <converters:RelativeDateTimeConverter x:Key="RelativeDateTimeConverter" />
     <!-- Fonts -->
     <FontFamily x:Key="FontFamilyNormal">/derpirc;component/Fonts/Fonts.zip#monofur</FontFamily>
@@ -256,64 +257,6 @@
         </Setter>
     </Style>
     <!-- DataTemplates -->
-    <DataTemplate x:Key="TemplateDetailMyMessage">
-        <Grid Style="{StaticResource GridDetailMyMessage}">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-            <Border x:Name="MessageContainer" Background="{StaticResource PhoneAccentBrush}">
-                <StackPanel>
-                    <TextBlock x:Name="MessageText"
-                               Text="{Binding Text}"
-                               Style="{StaticResource DetailMessageStyle}" />
-                    <TextBlock x:Name="MessageTimeStamp"
-                               Text="{Binding TimeStamp, Converter={StaticResource RelativeDateTimeConverter}}"
-                               Style="{StaticResource DetailTimeStampStyle}" />
-                </StackPanel>
-       	    </Border>
-            <Path x:Name="PathTick"
-                  Data="m 0,0 l 16,0 l 0,16 l -16,-16"
-           	      Fill="{Binding Background, ElementName=MessageContainer}"
-                  Height="12"
-                  Width="20"
-                  Stretch="Fill"
-                  HorizontalAlignment="Right"
-                  Margin="0,0,10,0"
-                  Grid.Row="1" />
-        </Grid>
-    </DataTemplate>
-    <DataTemplate x:Key="TemplateDetailTheirMessage">
-        <Grid Style="{StaticResource GridDetailTheirMessage}">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-            <TextBlock x:Name="MessageSource"
-                       Text="{Binding Source}"
-                       Style="{StaticResource DetailSourceStyle}" />
-        	<Path x:Name="PathTick"
-                  Data="m 0,0 l 0,16 l 16,0 l -16,-16"
-                  Fill="{Binding Background, ElementName=MessageContainer}"
-                  Height="12"
-                  Width="20"
-                  Stretch="Fill"
-                  HorizontalAlignment="Left"
-                  Margin="10,0,0,0"
-                  Grid.Row="1" />
-            <Border x:Name="MessageContainer" Grid.Row="2" Background="{StaticResource PhoneAccentBrush}">
-                <StackPanel>
-                    <TextBlock x:Name="MessageText"
-                               Text="{Binding Text}"
-                               Style="{StaticResource DetailMessageStyle}" />
-                    <TextBlock x:Name="MessageTimeStamp"
-                               Text="{Binding TimeStamp, Converter={StaticResource RelativeDateTimeConverter}}"
-                               Style="{StaticResource DetailTimeStampStyle}" />
-                </StackPanel>
-       	    </Border>
-        </Grid>
-    </DataTemplate>
     <DataTemplate x:Key="TemplateDetailMessageSelector">
         <helpers:MessageTemplateSelector Content="{Binding}">
             <helpers:MessageTemplateSelector.TemplateMyMessage>
@@ -329,7 +272,7 @@
                                            Text="{Binding Text}"
                                            Style="{StaticResource DetailMessageStyle}" />
                                 <TextBlock x:Name="MessageTimeStamp"
-                                           Text="{Binding TimeStamp, Converter={StaticResource RelativeDateTimeConverter}}"
+                                           Text="{Binding TimeStamp, Converter={StaticResource ConversationDateTimeConverter}}"
                                            Style="{StaticResource DetailTimeStampStyle}" />
                             </StackPanel>
                    	    </Border>
@@ -371,7 +314,7 @@
                                            Text="{Binding Text}"
                                            Style="{StaticResource DetailMessageStyle}" />
                                 <TextBlock x:Name="MessageTimeStamp"
-                                           Text="{Binding TimeStamp, Converter={StaticResource RelativeDateTimeConverter}}"
+                                           Text="{Binding TimeStamp, Converter={StaticResource ConversationDateTimeConverter}}"
                                            Style="{StaticResource DetailTimeStampStyle}" />
                             </StackPanel>
                    	    </Border>
