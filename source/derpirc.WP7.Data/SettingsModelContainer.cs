@@ -4,7 +4,7 @@ using System.Data.Linq;
 using System.Data.Linq.Mapping;
 using System.IO.IsolatedStorage;
 using System.Linq;
-using derpirc.Data.Models;
+using derpirc.Data.Models.Settings;
 
 namespace derpirc.Data
 {
@@ -15,9 +15,9 @@ namespace derpirc.Data
     /// the entity set properties and exposes <code>ITable</code>
     /// instances for entity set properties.
     /// </summary>
-    public partial class DataModelContainer : DataContext
+    public partial class SettingsModelContainer : DataContext
     {
-        public const string DatabaseFileName = "IRC.sdf";
+        public const string DatabaseFileName = "Settings.sdf";
         public const string ConnectionString = "isostore:/" + DatabaseFileName;
         private static MappingSource mappingSource = new AttributeMappingSource();
 
@@ -27,19 +27,17 @@ namespace derpirc.Data
 
         #region Constructors
 
-        public DataModelContainer() :
-            base(ConnectionString, mappingSource)
+        public SettingsModelContainer() : base(ConnectionString, mappingSource)
         {
             OnCreated();
         }
 
-        public DataModelContainer(string connection) :
-            base(connection, mappingSource)
+        public SettingsModelContainer(string connection) : base(connection, mappingSource)
         {
             OnCreated();
         }
 
-        public DataModelContainer(string connection, MappingSource mappingSource) :
+        public SettingsModelContainer(string connection, MappingSource mappingSource) :
             base(connection, mappingSource)
         {
             OnCreated();
@@ -117,56 +115,87 @@ namespace derpirc.Data
 
         private void GenerateSystemData()
         {
+            var client = Factory.CreateClient();
+            this.Client.InsertOnSubmit(client);
+            this.SubmitChanges();
+
+            var user = Factory.CreateUser();
+            this.User.InsertOnSubmit(user);
+            this.SubmitChanges();
+
+            var servers = Factory.CreateServers();
+            this.Servers.InsertAllOnSubmit(servers);
+            this.SubmitChanges();
+
+            var networks = Factory.CreateNetworks();
+            this.Networks.InsertAllOnSubmit(networks);
+            this.SubmitChanges();
+
             var session = Factory.CreateSession();
             this.Session.InsertOnSubmit(session);
             this.SubmitChanges();
+
+            // HACK: Fix up special Factory.Create case where networks and servers aren't linked to their parents
+            var sessionNetworks = session.Networks.ToList();
+            sessionNetworks.ForEach(item =>
+            {
+                if (item.Network == null)
+                {
+                    var basedOnNetwork = GetBasedOnNetwork(networks, item.BasedOnId);
+                    if (basedOnNetwork != null)
+                    {
+                        item.Network = basedOnNetwork;
+                    }
+                }
+            });
+            this.SubmitChanges();
+
+            var sessionServers = session.Servers.ToList();
+            sessionServers.ForEach(item =>
+            {
+                if (item.Server == null)
+                {
+                    var basedOnServer = GetBasedOnServer(servers, item.BasedOnId);
+                    if (basedOnServer != null)
+                    {
+                        item.Server = basedOnServer;
+                    }
+                }
+            });
+            this.SubmitChanges();
         }
 
+        private Server GetBasedOnServer(List<Server> servers, int id)
+        {
+            return servers.Where(x => x.Id == id).FirstOrDefault();
+        }
+
+        private Network GetBasedOnNetwork(List<Network> networks, int id)
+        {
+            return networks.Where(x => x.Id == id).FirstOrDefault();
+        }
         #endregion
     
         #region Table Properties
 
-        public Table<ChannelSummary> Channels
+        // Settings
+        public Table<Client> Client
         {
-            get { return _channels ?? (_channels = GetTable<ChannelSummary>()); }
+            get { return _client ?? (_client = GetTable<Client>()); }
         }
-        private Table<ChannelSummary> _channels;
+        private Table<Client> _client;
 
-        public Table<ChannelItem> ChannelItems
+        public Table<User> User
         {
-            get { return _channelItems ?? (_channelItems = GetTable<ChannelItem>()); }
+            get { return _user ?? (_user = GetTable<User>()); }
         }
-        private Table<ChannelItem> _channelItems;
+        private Table<User> _user;
 
-        public Table<MentionSummary> Mentions
+        public Table<Network> Networks
         {
-            get { return _mentions ?? (_mentions = GetTable<MentionSummary>()); }
+            get { return _networks ?? (_networks = GetTable<Network>()); }
         }
-        private Table<MentionSummary> _mentions;
-
-        public Table<MentionItem> MentionItems
-        {
-            get { return _mentionItems ?? (_mentionItems = GetTable<MentionItem>()); }
-        }
-        private Table<MentionItem> _mentionItems;
-
-        public Table<MessageSummary> Messages
-        {
-            get { return _messages ?? (_messages = GetTable<MessageSummary>()); }
-        }
-        private Table<MessageSummary> _messages;
-
-        public Table<MessageItem> MessageItems
-        {
-            get { return _messageItems ?? (_messageItems = GetTable<MessageItem>()); }
-        }
-        private Table<MessageItem> _messageItems;
-
-        public Table<Session> Session
-        {
-            get { return _session ?? (_session = GetTable<Session>()); }
-        }
-        private Table<Session> _session;
+        private Table<Network> _networks;
 
         public Table<Server> Servers
         {
@@ -174,11 +203,23 @@ namespace derpirc.Data
         }
         private Table<Server> _servers;
 
-        public Table<Network> Networks
+        public Table<Session> Session
         {
-            get { return _networks ?? (_networks = GetTable<Network>()); }
+            get { return _session ?? (_session = GetTable<Session>()); }
         }
-        private Table<Network> _networks;
+        private Table<Session> _session;
+
+        public Table<SessionServer> SessionServers
+        {
+            get { return _sessionServers ?? (_sessionServers = GetTable<SessionServer>()); }
+        }
+        private Table<SessionServer> _sessionServers;
+
+        public Table<SessionNetwork> SessionNetworks
+        {
+            get { return _sessionNetworks ?? (_sessionNetworks = GetTable<SessionNetwork>()); }
+        }
+        private Table<SessionNetwork> _sessionNetworks;
 
         #endregion
     }

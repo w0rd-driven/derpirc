@@ -3,17 +3,17 @@ using System.Collections.Specialized;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
 using System.Linq;
-using derpirc.Data.Settings;
+using derpirc.Data.Models.Settings;
 
-namespace derpirc.Data
+namespace derpirc.Data.Models
 {
     [Table]
-    public class MentionSummary : BaseNotify, IBaseModel, IMessageSummary
+    public class ChannelSummary : BaseNotify, IBaseModel, IMessageSummary
     {
         [Column(IsVersion = true)]
         private Binary version;
-        private EntityRef<SessionNetwork> _network;
-        private EntitySet<MentionItem> _messages;
+        private EntityRef<Network> _network;
+        private EntitySet<ChannelItem> _messages;
 
         #region Primitive Properties
 
@@ -21,6 +21,8 @@ namespace derpirc.Data
         public int Id { get; set; }
         [Column(CanBeNull = false)]
         public string Name { get; set; }
+        [Column(CanBeNull = true)]
+        public string Topic { get; set; }
 
         [Column(CanBeNull = true)]
         public int LastItemId { get; set; }
@@ -38,7 +40,7 @@ namespace derpirc.Data
         [Column(CanBeNull = false)]
         public int NetworkId { get; set; }
         [Association(Name = "Network_Item", ThisKey = "NetworkId", OtherKey = "Id", IsForeignKey = true)]
-        public SessionNetwork Network
+        public Network Network
         {
             get
             {
@@ -46,7 +48,7 @@ namespace derpirc.Data
             }
             set
             {
-                SessionNetwork previousValue = this._network.Entity;
+                Network previousValue = this._network.Entity;
                 if ((previousValue != value) || (this._network.HasLoadedOrAssignedValue == false))
                 {
                     this.RaisePropertyChanged();
@@ -72,7 +74,7 @@ namespace derpirc.Data
         }
 
         [Association(Name = "Message_Items", ThisKey = "Id", OtherKey = "SummaryId", DeleteRule = "NO ACTION")]
-        public ICollection<MentionItem> Messages
+        public ICollection<ChannelItem> Messages
         {
             get
             {
@@ -88,7 +90,7 @@ namespace derpirc.Data
                         previousValue.CollectionChanged -= FixupMessages;
                     }
                     _messages.SetSource(value);
-                    var newValue = value as FixupCollection<MentionItem>;
+                    var newValue = value as FixupCollection<ChannelItem>;
                     if (newValue != null)
                     {
                         newValue.CollectionChanged += FixupMessages;
@@ -100,19 +102,19 @@ namespace derpirc.Data
         #endregion
 
         #region Association Fixup
-
+    
         private void FixupMessages(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.NewItems != null)
             {
-                foreach (MentionItem item in e.NewItems)
+                foreach (ChannelItem item in e.NewItems)
                     item.Summary = this;
                 // HACK: Not locking can cause weird behaviors during commits. 
                 UpdateMessageCounts();
             }
             if (e.OldItems != null)
             {
-                foreach (MentionItem item in e.OldItems)
+                foreach (ChannelItem item in e.OldItems)
                 {
                     if (ReferenceEquals(item.Summary, this))
                         item.Summary = null;
@@ -122,17 +124,17 @@ namespace derpirc.Data
 
         #endregion
 
-        public MentionSummary()
+        public ChannelSummary()
         {
-            _network = default(EntityRef<SessionNetwork>);
-            _messages = new EntitySet<MentionItem>();
+            _network = default(EntityRef<Network>);
+            _messages = new EntitySet<ChannelItem>();
             _messages.CollectionChanged += FixupMessages;
         }
 
         private void UpdateMessageCounts()
         {
             var lastIndex = _messages.Count - 1;
-            var lastItem = _messages[lastIndex] as MentionItem;
+            var lastItem = _messages[lastIndex] as ChannelItem;
             LastItem = lastItem;
             LastItemId = lastItem.Id;
             Count = _messages.Count;

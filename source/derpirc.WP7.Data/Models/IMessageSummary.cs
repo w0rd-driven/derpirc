@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using derpirc.Data.Settings;
+using derpirc.Data.Models.Settings;
 
-namespace derpirc.Data
+namespace derpirc.Data.Models
 {
     public interface IMessageSummary
     {
         int NetworkId { get; set; }
-        SessionNetwork Network { get; set; }
+        Network Network { get; set; }
         string Name { get; set; }
         int LastItemId { get; set; }
         IMessageItem LastItem { get; set; }

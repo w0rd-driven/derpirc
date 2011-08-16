@@ -2,7 +2,7 @@
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
 
-namespace derpirc.Data
+namespace derpirc.Data.Models
 {
     [Table]
     public class ChannelItem : BaseNotify, IBaseModel, IMessageItem

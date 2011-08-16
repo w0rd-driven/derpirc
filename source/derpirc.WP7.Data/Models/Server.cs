@@ -3,16 +3,15 @@ using System.Collections.Specialized;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
 
-namespace derpirc.Data.Settings
+namespace derpirc.Data.Models
 {
-    [Table(Name = "SessionServers")]
-    public partial class SessionServer : BaseNotify, IBaseModel
+    [Table]
+    public partial class Server : BaseNotify, IBaseModel
     {
         [Column(IsVersion = true)]
         private Binary version;
         private EntityRef<Session> _session;
-        private EntityRef<Server> _server;
-        private EntityRef<SessionNetwork> _network;
+        private EntityRef<Network> _network;
 
         #region Primitive Properties
 
@@ -23,6 +22,8 @@ namespace derpirc.Data.Settings
         public string DisplayName { get; set; }
         [Column(CanBeNull = false)]
         public string HostName { get; set; }
+        [Column(CanBeNull = true)]
+        public string ConnectedHostName { get; set; }
         [Column(CanBeNull = true)]
         public int Port { get; set; }
         [Column(CanBeNull = true)]
@@ -45,7 +46,7 @@ namespace derpirc.Data.Settings
             set
             {
                 Session previousValue = _session.Entity;
-                if ((previousValue != value || this._server.HasLoadedOrAssignedValue == false))
+                if ((previousValue != value || this._session.HasLoadedOrAssignedValue == false))
                 {
                     this.RaisePropertyChanged();
                     if ((previousValue != null))
@@ -68,49 +69,15 @@ namespace derpirc.Data.Settings
         }
 
         [Column(CanBeNull = true)]
-        public int BasedOnId { get; set; }
-        [Association(Name = "Server_Item", ThisKey = "BasedOnId", OtherKey = "Id", IsForeignKey = true)]
-        public Server Server
-        {
-            get
-            {
-                return this._server.Entity;
-            }
-            set
-            {
-                Server previousValue = this._server.Entity;
-                if ((previousValue != value || this._server.HasLoadedOrAssignedValue == false))
-                {
-                    this.RaisePropertyChanged();
-                    if ((previousValue != null))
-                    {
-                        this._server.Entity = null;
-                    }
-                    this._server.Entity = value;
-                    if ((value != null))
-                    {
-                        this.BasedOnId = value.Id;
-                    }
-                    else
-                    {
-                        this.BasedOnId = default(int);
-                    }
-                    this.RaisePropertyChanged(() => BasedOnId);
-                    this.RaisePropertyChanged(() => Server);
-                }
-            }
-        }
-
-        [Column(CanBeNull = true)]
         public int NetworkId { get; set; }
         [Association(Name = "Network_Item", ThisKey = "NetworkId", OtherKey = "Id", IsForeignKey = false)]
-        public SessionNetwork Network
+        public Network Network
         {
             get { return _network.Entity; }
             set
             {
-                SessionNetwork previousValue = _network.Entity;
-                if ((previousValue != value || this._server.HasLoadedOrAssignedValue == false))
+                Network previousValue = _network.Entity;
+                if ((previousValue != value || this._network.HasLoadedOrAssignedValue == false))
                 {
                     this.RaisePropertyChanged();
                     if ((previousValue != null))
@@ -134,11 +101,10 @@ namespace derpirc.Data.Settings
 
         #endregion
 
-        public SessionServer()
+        public Server()
         {
             _session = default(EntityRef<Session>);
-            _server = default(EntityRef<Server>);
-            _network = default(EntityRef<SessionNetwork>);
+            _network = default(EntityRef<Network>);
         }
     }
 }

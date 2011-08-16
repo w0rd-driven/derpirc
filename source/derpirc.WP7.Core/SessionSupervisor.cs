@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text.RegularExpressions;
 using derpirc.Data;
-using derpirc.Data.Settings;
+using derpirc.Data.Models;
 using IrcDotNet;
 
 namespace derpirc.Core
@@ -149,7 +149,7 @@ namespace derpirc.Core
         private IrcUserRegistrationInfo GetRegistrationInfo()
         {
             // TODO: Database
-            var sessionUser = Factory.CreateUser();
+            Data.Models.Settings.User sessionUser = Data.Models.Settings.Factory.CreateUser();
             _quitMessage = sessionUser.QuitMessage;
             var result = new IrcUserRegistrationInfo();
             result.NickName = sessionUser.NickName;
@@ -237,7 +237,7 @@ namespace derpirc.Core
             }
         }
 
-        private SessionServer GetServer(string clientId)
+        private Server GetServer(string clientId)
         {
             var integerId = -1;
             int.TryParse(clientId, out integerId);
@@ -246,7 +246,7 @@ namespace derpirc.Core
             return _session.Servers.FirstOrDefault(x => x.Id == integerId);
         }
 
-        private SessionServer GetServer(int clientId, string serverName)
+        private Server GetServer(int clientId, string serverName)
         {
             // TODO: Error handling make sure _session != null
             var result = _session.Servers.FirstOrDefault(x => x.Id == clientId);
@@ -257,7 +257,7 @@ namespace derpirc.Core
             return result;
         }
 
-        private SessionNetwork GetNetwork(string message)
+        private Network GetNetwork(string message)
         {
             var found = welcomeRegex.Match(message);
             var networkName = found.Groups[1].Value.TrimEnd();
@@ -273,19 +273,7 @@ namespace derpirc.Core
             return result;
         }
 
-        private User GetUser()
-        {
-            var sessionUser = Factory.CreateUser();
-            //var sessionUser = _unitOfWork.User.FindBy(x => x.Name == channel.Name.ToLower()).FirstOrDefault();
-            //if (sessionUser == null)
-            //{
-            //    sessionUser = Factory.CreateUser();
-            //    _unitOfWork.Commit();
-            //}
-            return sessionUser;
-        }
-
-        private void LinkSession(SessionServer server, SessionNetwork network)
+        private void LinkSession(Server server, Network network)
         {
             if (network != null)
             {
@@ -297,7 +285,7 @@ namespace derpirc.Core
             }
         }
 
-        private void JoinSession(SessionNetwork network, IrcClient client)
+        private void JoinSession(Network network, IrcClient client)
         {
             if (network != null)
             {

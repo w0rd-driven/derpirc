@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Data;
 using derpirc.Data;
+using derpirc.Data.Models;
 using derpirc.Helpers;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;

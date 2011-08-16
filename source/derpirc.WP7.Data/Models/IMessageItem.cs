@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace derpirc.Data
+namespace derpirc.Data.Models
 {
     public interface IMessageItem
     {

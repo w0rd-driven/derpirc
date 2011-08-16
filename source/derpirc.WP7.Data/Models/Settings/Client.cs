@@ -1,7 +1,7 @@
 ﻿using System.Data.Linq;
 using System.Data.Linq.Mapping;
 
-namespace derpirc.Data.Settings
+namespace derpirc.Data.Models.Settings
 {
     [Table]
     public partial class Client : BaseNotify, IBaseModel

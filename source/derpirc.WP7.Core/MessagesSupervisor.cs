@@ -3,7 +3,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using derpirc.Data;
-using derpirc.Data.Settings;
+using derpirc.Data.Models;
 using IrcDotNet;
 
 namespace derpirc.Core
@@ -107,7 +107,7 @@ namespace derpirc.Core
             return result;
         }
 
-        private SessionNetwork GetNetworkByClientId(string clientId)
+        private Network GetNetworkByClientId(string clientId)
         {
             var integerId = -1;
             int.TryParse(clientId, out integerId);

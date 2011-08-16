@@ -3,15 +3,15 @@ using System.Collections.Specialized;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
 
-namespace derpirc.Data.Settings
+namespace derpirc.Data.Models
 {
-    [Table(Name = "Session")]
+    [Table]
     public partial class Session : BaseNotify, IBaseModel
     {
         [Column(IsVersion = true)]
         private Binary version;
-        private EntitySet<SessionServer> _servers;
-        private EntitySet<SessionNetwork> _networks;
+        private EntitySet<Server> _servers;
+        private EntitySet<Network> _networks;
 
         #region Primitive Properties
 
@@ -25,7 +25,7 @@ namespace derpirc.Data.Settings
         #region Navigation Properties
 
         [Association(Name = "Server_Items", ThisKey = "Id", OtherKey = "SessionId", DeleteRule = "NO ACTION")]
-        public ICollection<SessionServer> Servers
+        public ICollection<Server> Servers
         {
             get
             {
@@ -41,7 +41,7 @@ namespace derpirc.Data.Settings
                         previousValue.CollectionChanged -= FixupServers;
                     }
                     _servers.SetSource(value);
-                    var newValue = value as FixupCollection<SessionServer>;
+                    var newValue = value as FixupCollection<Server>;
                     if (newValue != null)
                     {
                         newValue.CollectionChanged += FixupServers;
@@ -51,7 +51,7 @@ namespace derpirc.Data.Settings
         }
 
         [Association(Name = "Network_Items", ThisKey = "Id", OtherKey = "SessionId", DeleteRule = "NO ACTION")]
-        public ICollection<SessionNetwork> Networks
+        public ICollection<Network> Networks
         {
             get
             {
@@ -67,7 +67,7 @@ namespace derpirc.Data.Settings
                         previousValue.CollectionChanged -= FixupNetworks;
                     }
                     _networks.SetSource(value);
-                    var newValue = value as FixupCollection<SessionNetwork>;
+                    var newValue = value as FixupCollection<Network>;
                     if (newValue != null)
                     {
                         newValue.CollectionChanged += FixupNetworks;
@@ -84,12 +84,12 @@ namespace derpirc.Data.Settings
         {
             if (e.NewItems != null)
             {
-                foreach (SessionServer item in e.NewItems)
+                foreach (Server item in e.NewItems)
                     item.Session = this;
             }
             if (e.OldItems != null)
             {
-                foreach (SessionServer item in e.OldItems)
+                foreach (Server item in e.OldItems)
                 {
                     if (ReferenceEquals(item.Session, this))
                         item.Session = null;
@@ -101,12 +101,12 @@ namespace derpirc.Data.Settings
         {
             if (e.NewItems != null)
             {
-                foreach (SessionNetwork item in e.NewItems)
+                foreach (Network item in e.NewItems)
                     item.Session = this;
             }
             if (e.OldItems != null)
             {
-                foreach (SessionNetwork item in e.OldItems)
+                foreach (Network item in e.OldItems)
                 {
                     if (ReferenceEquals(item.Session, this))
                         item.Session = null;
@@ -119,9 +119,9 @@ namespace derpirc.Data.Settings
         public Session()
         {
             Name = "Default";
-            _servers = new EntitySet<SessionServer>();
+            _servers = new EntitySet<Server>();
             _servers.CollectionChanged += FixupServers;
-            _networks = new EntitySet<SessionNetwork>();
+            _networks = new EntitySet<Network>();
             _networks.CollectionChanged += FixupNetworks;
         }
     }

@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using derpirc.Data.Models;
 
 namespace derpirc.Helpers
 {
@@ -18,14 +19,14 @@ namespace derpirc.Helpers
 
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
         {
-            var entity = item as Data.IMessageItem;
+            var entity = item as IMessageItem;
             if (entity != null)
             {
                 switch (entity.Type)
                 {
-                    case derpirc.Data.MessageType.Mine:
+                    case MessageType.Mine:
                         return TemplateMyMessage;
-                    case derpirc.Data.MessageType.Theirs:
+                    case MessageType.Theirs:
                         return TemplateTheirMessage;
                     default:
                         break;

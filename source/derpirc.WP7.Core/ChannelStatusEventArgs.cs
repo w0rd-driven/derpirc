@@ -1,5 +1,5 @@
 ﻿using System;
-using derpirc.Data;
+using derpirc.Data.Models;
 
 namespace derpirc.Core
 {

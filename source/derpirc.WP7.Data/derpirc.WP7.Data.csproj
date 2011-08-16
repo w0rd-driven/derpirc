@@ -57,42 +57,45 @@
       <Link>Properties\VersionAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="BaseNotify.cs" />
-    <Compile Include="ChannelItem.cs" />
-    <Compile Include="ChannelSummary.cs" />
+    <Compile Include="Models\Settings\Network.cs" />
+    <Compile Include="Models\Settings\Server.cs" />
+    <Compile Include="SettingsUnitOfWork.cs" />
+    <Compile Include="Models\Session.cs" />
+    <Compile Include="Models\Network.cs" />
+    <Compile Include="Models\Server.cs" />
+    <Compile Include="Models\Factory.cs" />
+    <Compile Include="SettingsModelContainer.cs" />
+    <Compile Include="Models\ChannelItem.cs" />
+    <Compile Include="Models\ChannelSummary.cs" />
     <Compile Include="FileModeEnum.cs" />
-    <Compile Include="MessageItem.cs" />
+    <Compile Include="Models\MessageItem.cs" />
     <Compile Include="DataModel.cs" />
     <Compile Include="DataModelContainer.cs" />
     <Compile Include="DataUnitOfWork.cs" />
     <Compile Include="IRepository.cs" />
     <Compile Include="IUnitOfWork.cs" />
-    <Compile Include="MentionItem.cs" />
-    <Compile Include="MentionSummary.cs" />
-    <Compile Include="MessageSummary.cs" />
+    <Compile Include="Models\MentionItem.cs" />
+    <Compile Include="Models\MentionSummary.cs" />
+    <Compile Include="Models\MessageSummary.cs" />
     <Compile Include="IBaseModel.cs" />
-    <Compile Include="IMessageItem.cs">
+    <Compile Include="Models\IMessageItem.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="IMessageSummary.cs">
+    <Compile Include="Models\IMessageSummary.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MessageTypeEnum.cs" />
+    <Compile Include="Models\MessageTypeEnum.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Settings\Client.cs" />
-    <Compile Include="Settings\Factory.cs" />
-    <Compile Include="Settings\Network.cs" />
-    <Compile Include="Settings\Server.cs" />
-    <Compile Include="Settings\SessionNetwork.cs" />
-    <Compile Include="Settings\SessionServer.cs" />
-    <Compile Include="Settings\User.cs" />
-    <Compile Include="Settings\Session.cs" />
+    <Compile Include="Models\Settings\Client.cs" />
+    <Compile Include="Models\Settings\Factory.cs" />
+    <Compile Include="Models\Settings\SessionNetwork.cs" />
+    <Compile Include="Models\Settings\SessionServer.cs" />
+    <Compile Include="Models\Settings\User.cs" />
+    <Compile Include="Models\Settings\Session.cs" />
     <Compile Include="SqlRepository.cs" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
-    <None Include="DataDiagram.cd">
-      <SubType>Designer</SubType>
-    </None>
+    <None Include="Models\DataDiagram.cd" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.$(TargetFrameworkProfile).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.CSharp.targets" />

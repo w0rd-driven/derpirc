@@ -1,55 +1,25 @@
 ﻿using System.Data.Linq;
-using derpirc.Data.Models;
+using derpirc.Data.Models.Settings;
 
 namespace derpirc.Data
 {
-    public class DataUnitOfWork : IUnitOfWork
+    public class SettingsUnitOfWork : IUnitOfWork
     {
         #region Properties
 
         #region Tables
 
-        public IRepository<ChannelSummary> Channels
+        public IRepository<Client> Client
         {
-            get { return _channels ?? (_channels = new SqlRepository<ChannelSummary>(_context)); }
+            get { return _client ?? (_client = new SqlRepository<Client>(_context)); }
         }
-        private SqlRepository<ChannelSummary> _channels = null;
+        private SqlRepository<Client> _client = null;
 
-        public IRepository<ChannelItem> ChannelItems
+        public IRepository<User> User
         {
-            get { return _channelItems ?? (_channelItems = new SqlRepository<ChannelItem>(_context)); }
+            get { return _user ?? (_user = new SqlRepository<User>(_context)); }
         }
-        private SqlRepository<ChannelItem> _channelItems = null;
-
-        public IRepository<MentionSummary> Mentions
-        {
-            get { return _mentions ?? (_mentions = new SqlRepository<MentionSummary>(_context)); }
-        }
-        private SqlRepository<MentionSummary> _mentions = null;
-
-        public IRepository<MentionItem> MentionItems
-        {
-            get { return _mentionItems ?? (_mentionItems = new SqlRepository<MentionItem>(_context)); }
-        }
-        private SqlRepository<MentionItem> _mentionItems = null;
-
-        public IRepository<MessageSummary> Messages
-        {
-            get { return _messages ?? (_messages = new SqlRepository<MessageSummary>(_context)); }
-        }
-        private SqlRepository<MessageSummary> _messages = null;
-
-        public IRepository<MessageItem> MessageItems
-        {
-            get { return _messageItems ?? (_messageItems = new SqlRepository<MessageItem>(_context)); }
-        }
-        private SqlRepository<MessageItem> _messageItems = null;
-
-        public IRepository<Session> Sessions
-        {
-            get { return _sessions ?? (_sessions = new SqlRepository<Session>(_context)); }
-        }
-        private SqlRepository<Session> _sessions = null;
+        private SqlRepository<User> _user = null;
 
         public IRepository<Network> Networks
         {
@@ -62,6 +32,24 @@ namespace derpirc.Data
             get { return _servers ?? (_servers = new SqlRepository<Server>(_context)); }
         }
         private SqlRepository<Server> _servers = null;
+
+        public IRepository<Session> Sessions
+        {
+            get { return _sessions ?? (_sessions = new SqlRepository<Session>(_context)); }
+        }
+        private SqlRepository<Session> _sessions = null;
+
+        public IRepository<SessionNetwork> SessionNetworks
+        {
+            get { return _sessionNetworks ?? (_sessionNetworks = new SqlRepository<SessionNetwork>(_context)); }
+        }
+        private SqlRepository<SessionNetwork> _sessionNetworks = null;
+
+        public IRepository<SessionServer> SessionServers
+        {
+            get { return _sessionServers ?? (_sessionServers = new SqlRepository<SessionServer>(_context)); }
+        }
+        private SqlRepository<SessionServer> _sessionServers = null;
 
         #endregion
 
@@ -77,7 +65,6 @@ namespace derpirc.Data
 
                 var oldValue = _connectionString;
                 _connectionString = value;
-                //RaisePropertyChanged(() => Password);
             }
         }
 
@@ -171,9 +158,9 @@ namespace derpirc.Data
         private DataContext _context;
 
         // Modified for http://www.yoda.arachsys.com/csharp/singleton.html #4. (Jon Skeet is a code machine)
-        private static readonly DataUnitOfWork defaultInstance = new DataUnitOfWork();
+        private static readonly SettingsUnitOfWork defaultInstance = new SettingsUnitOfWork();
 
-        public static DataUnitOfWork Default
+        public static SettingsUnitOfWork Default
         {
             get
             {
@@ -181,11 +168,11 @@ namespace derpirc.Data
             }
         }
 
-        static DataUnitOfWork()
+        static SettingsUnitOfWork()
         {
         }
 
-        public DataUnitOfWork()
+        public SettingsUnitOfWork()
         {
             _baseConnectionString = "isostore:/IRC.sdf";
         }

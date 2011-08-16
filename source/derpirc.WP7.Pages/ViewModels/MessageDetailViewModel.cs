@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Data;
 using derpirc.Data;
+using derpirc.Data.Models;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Threading;
@@ -205,11 +206,11 @@ namespace derpirc.ViewModels
             {
                 // Code runs in Blend --> create design time data.
                 model.Name = "w0rd-driven";
-                var network = new Data.Settings.SessionNetwork()
+                var network = new Network()
                 {
                     Name = "efnet",
                 };
-                var server = new Data.Settings.SessionServer()
+                var server = new Server()
                 {
                     HostName = "irc.efnet.org",
                     Network = network,

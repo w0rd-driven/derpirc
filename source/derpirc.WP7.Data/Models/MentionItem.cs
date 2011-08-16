@@ -2,14 +2,14 @@
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
 
-namespace derpirc.Data
+namespace derpirc.Data.Models
 {
     [Table]
-    public class MessageItem : BaseNotify, IBaseModel, IMessageItem
+    public class MentionItem : BaseNotify, IBaseModel, IMessageItem
     {
         [Column(IsVersion = true)]
         private Binary version;
-        private EntityRef<MessageSummary> _summary;
+        private EntityRef<MentionSummary> _summary;
 
         #region Primitive Properties
 
@@ -33,12 +33,12 @@ namespace derpirc.Data
         [Column(CanBeNull = false)]
         public int SummaryId { get; set; }
         [Association(Name = "Summary_Item", ThisKey = "SummaryId", OtherKey = "Id", IsForeignKey = true)]
-        public MessageSummary Summary
+        public MentionSummary Summary
         {
             get { return _summary.Entity; }
             set
             {
-                MessageSummary previousValue = _summary.Entity;
+                MentionSummary previousValue = _summary.Entity;
                 if ((previousValue != value || _summary.HasLoadedOrAssignedValue == false))
                 {
                     this.RaisePropertyChanged();
@@ -63,9 +63,9 @@ namespace derpirc.Data
 
         #endregion
 
-        public MessageItem()
+        public MentionItem()
         {
-            _summary = default(EntityRef<MessageSummary>);
+            _summary = default(EntityRef<MentionSummary>);
         }
     }
 }

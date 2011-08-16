@@ -1,9 +1,9 @@
 ﻿using System.Data.Linq;
 using System.Data.Linq.Mapping;
 
-namespace derpirc.Data.Settings
+namespace derpirc.Data.Models.Settings
 {
-    [Table(Name = "Networks")]
+    [Table]
     public partial class Network : BaseNotify, IBaseModel
     {
         [Column(IsVersion = true)]

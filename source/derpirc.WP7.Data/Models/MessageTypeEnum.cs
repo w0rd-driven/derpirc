@@ -1,5 +1,5 @@
 ﻿
-namespace derpirc.Data
+namespace derpirc.Data.Models
 {
     public enum MessageType
     {

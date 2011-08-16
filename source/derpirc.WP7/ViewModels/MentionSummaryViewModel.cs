@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using derpirc.Data;
+using derpirc.Data.Models;
 using GalaSoft.MvvmLight;
 
 namespace derpirc.ViewModels
@@ -169,11 +170,11 @@ namespace derpirc.ViewModels
             {
                 // code runs in blend --> create design time data.
                 model.Name = "w0rd-driven";
-                var network = new Data.Settings.SessionNetwork()
+                var network = new Network()
                 {
                     Name = "efnet",
                 };
-                var server = new Data.Settings.SessionServer()
+                var server = new Server()
                 {
                     HostName = "irc.efnet.org",
                     Network = network,

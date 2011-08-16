@@ -1,10 +1,10 @@
 ﻿using System.Data.Linq;
 using System.Data.Linq.Mapping;
 
-namespace derpirc.Data.Settings
+namespace derpirc.Data.Models.Settings
 {
-    [Table(Name = "Servers")]
-    public partial class Server : BaseNotify, IBaseModel
+    [Table]
+    public partial class User : BaseNotify, IBaseModel
     {
         [Column(IsVersion = true)]
         private Binary version;
@@ -13,25 +13,22 @@ namespace derpirc.Data.Settings
 
         [Column(IsPrimaryKey = true, IsDbGenerated = true)]
         public int Id { get; set; }
-        [Column(CanBeNull = true)]
-        public string DisplayName { get; set; }
         [Column(CanBeNull = false)]
-        public string HostName { get; set; }
+        public string NickName { get; set; }
         [Column(CanBeNull = true)]
-        public int Port { get; set; }
-        // TODO: Ports parsing
+        public string NickNameAlternates { get; set; }
         [Column(CanBeNull = true)]
-        public string Ports { get; set; }
+        public string Name { get; set; }
         [Column(CanBeNull = true)]
-        public string Group { get; set; }
+        public string Email { get; set; }
         [Column(CanBeNull = true)]
-        public string Password { get; set; }
+        public string QuitMessage { get; set; }
 
         #endregion
 
-        public Server()
+        public User()
         {
-
+            
         }
     }
 }

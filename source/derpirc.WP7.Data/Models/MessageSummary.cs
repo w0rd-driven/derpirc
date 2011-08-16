@@ -3,16 +3,16 @@ using System.Collections.Specialized;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
 using System.Linq;
-using derpirc.Data.Settings;
+using derpirc.Data.Models.Settings;
 
-namespace derpirc.Data
+namespace derpirc.Data.Models
 {
     [Table]
     public class MessageSummary : BaseNotify, IBaseModel, IMessageSummary
     {
         [Column(IsVersion = true)]
         private Binary version;
-        private EntityRef<SessionNetwork> _network;
+        private EntityRef<Network> _network;
         private EntitySet<MessageItem> _messages;
 
         #region Primitive Properties
@@ -38,7 +38,7 @@ namespace derpirc.Data
         [Column(CanBeNull = false)]
         public int NetworkId { get; set; }
         [Association(Name = "Network_Item", ThisKey = "NetworkId", OtherKey = "Id", IsForeignKey = true)]
-        public SessionNetwork Network
+        public Network Network
         {
             get
             {
@@ -46,7 +46,7 @@ namespace derpirc.Data
             }
             set
             {
-                SessionNetwork previousValue = this._network.Entity;
+                Network previousValue = this._network.Entity;
                 if ((previousValue != value) || (this._network.HasLoadedOrAssignedValue == false))
                 {
                     this.RaisePropertyChanged();
@@ -124,7 +124,7 @@ namespace derpirc.Data
 
         public MessageSummary()
         {
-            _network = default(EntityRef<SessionNetwork>);
+            _network = default(EntityRef<Network>);
             _messages = new EntitySet<MessageItem>();
             _messages.CollectionChanged += FixupMessages;
         }

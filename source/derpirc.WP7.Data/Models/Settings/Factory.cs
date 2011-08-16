@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace derpirc.Data.Settings
+namespace derpirc.Data.Models.Settings
 {
     public class Factory
     {
