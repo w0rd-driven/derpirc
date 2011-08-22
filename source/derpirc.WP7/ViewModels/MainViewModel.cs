@@ -9,6 +9,7 @@ using derpirc.Data.Models;
 using derpirc.Helpers;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Messaging;
 using GalaSoft.MvvmLight.Threading;
 using Microsoft.Phone.Controls;
 
@@ -207,28 +208,31 @@ namespace derpirc.ViewModels
 
         public MainViewModel()
         {
-            // TODO: For demo purposes, place initialization of everything here and in design mode. Otherwise, use state to determine what to construct.
-            // HACK: Execution order: 1
-            navigationService = new ApplicationFrameNavigationService(((App)Application.Current).RootFrame);
-
             _channelsList = new ObservableCollection<ChannelSummaryViewModel>();
-            Channels = new CollectionViewSource() { Source = _channelsList };
             _mentionsList = new ObservableCollection<MentionSummaryViewModel>();
-            Mentions = new CollectionViewSource() { Source = _mentionsList };
             _messagesList = new ObservableCollection<MessageSummaryViewModel>();
+
+            if (IsInDesignMode)
+            {
+                // Code runs in Blend --> create design time data.
+            }
+            else
+            {
+                // Code runs "for real": Connect to service, etc...
+
+                // TODO: For demo purposes, place initialization of everything here and in design mode. Otherwise, use state to determine what to construct.
+                // HACK: Execution order: 1
+                navigationService = new ApplicationFrameNavigationService(((App)Application.Current).RootFrame);
+
+                _worker = new BackgroundWorker();
+                _worker.DoWork += new DoWorkEventHandler(DeferStartupWork);
+
+                DeferStartup(null);
+            }
+
+            Channels = new CollectionViewSource() { Source = _channelsList };
+            Mentions = new CollectionViewSource() { Source = _mentionsList };
             Messages = new CollectionViewSource() { Source = _messagesList };
-
-            _worker = new BackgroundWorker();
-            _worker.DoWork += new DoWorkEventHandler(DeferStartupWork);
-
-            //_unitOfWork = new DataUnitOfWork();
-            _unitOfWork = DataUnitOfWork.Default;
-            _sessionSupervisor = new Core.SessionSupervisor(_unitOfWork);
-            _sessionSupervisor.ChannelJoined += new EventHandler<Core.ChannelStatusEventArgs>(_sessionSupervisor_ChannelJoined);
-            _sessionSupervisor.ChannelLeft += new EventHandler<Core.ChannelStatusEventArgs>(_sessionSupervisor_ChannelLeft);
-            _sessionSupervisor.ChannelItemReceived += new EventHandler<Core.MessageItemEventArgs>(_sessionSupervisor_ChannelItemReceived);
-            _sessionSupervisor.MentionItemReceived += new EventHandler<Core.MessageItemEventArgs>(_sessionSupervisor_MentionItemReceived);
-            _sessionSupervisor.MessageItemReceived += new EventHandler<Core.MessageItemEventArgs>(_sessionSupervisor_MessageItemReceived);
         }
 
         void _sessionSupervisor_ChannelJoined(object sender, Core.ChannelStatusEventArgs e)
@@ -277,6 +281,8 @@ namespace derpirc.ViewModels
                 {
                     foundItem.LoadById(e.SummaryId);
                     Channels.View.Refresh();
+                    var newMessage = foundItem.Model.Messages.FirstOrDefault(x => x.Id == e.MessageId);
+                    this.MessengerInstance.Send(new GenericMessage<ChannelItem>(this, "in", newMessage));
                 });
             }
         }
@@ -300,6 +306,8 @@ namespace derpirc.ViewModels
                 {
                     foundItem.LoadById(e.SummaryId);
                     Mentions.View.Refresh();
+                    var newMessage = foundItem.Model.Messages.FirstOrDefault(x => x.Id == e.MessageId);
+                    this.MessengerInstance.Send(new GenericMessage<MentionItem>(this, "in", newMessage));
                 });
             }
         }
@@ -323,6 +331,8 @@ namespace derpirc.ViewModels
                 {
                     foundItem.LoadById(e.SummaryId);
                     Messages.View.Refresh();
+                    var newMessage = foundItem.Model.Messages.FirstOrDefault(x => x.Id == e.MessageId);
+                    this.MessengerInstance.Send(new GenericMessage<MessageItem>(this, "in", newMessage));
                 });
             }
         }
@@ -343,6 +353,34 @@ namespace derpirc.ViewModels
             //    ApplicationState.Favorites =
             //        FavoriteCollection.LoadFromFile() ?? new FavoriteCollection();
             //}
+
+            //_unitOfWork = new DataUnitOfWork();
+            _unitOfWork = DataUnitOfWork.Default;
+            _sessionSupervisor = new Core.SessionSupervisor(_unitOfWork);
+            _sessionSupervisor.ChannelJoined += new EventHandler<Core.ChannelStatusEventArgs>(_sessionSupervisor_ChannelJoined);
+            _sessionSupervisor.ChannelLeft += new EventHandler<Core.ChannelStatusEventArgs>(_sessionSupervisor_ChannelLeft);
+            _sessionSupervisor.ChannelItemReceived += new EventHandler<Core.MessageItemEventArgs>(_sessionSupervisor_ChannelItemReceived);
+            _sessionSupervisor.MentionItemReceived += new EventHandler<Core.MessageItemEventArgs>(_sessionSupervisor_MentionItemReceived);
+            _sessionSupervisor.MessageItemReceived += new EventHandler<Core.MessageItemEventArgs>(_sessionSupervisor_MessageItemReceived);
+
+            this.MessengerInstance.Register<GenericMessage<ChannelItem>>(this, message =>
+            {
+                var target = message.Target as string;
+                if (target == "out")
+                    Send(message.Content);
+            });
+            this.MessengerInstance.Register<GenericMessage<MentionItem>>(this, message =>
+            {
+                var target = message.Target as string;
+                if (target == "out")
+                    Send(message.Content);
+            });
+            this.MessengerInstance.Register<GenericMessage<MessageItem>>(this, message =>
+            {
+                var target = message.Target as string;
+                if (target == "out")
+                    Send(message.Content);
+            });
 
             if (completed != null)
             {
@@ -494,9 +532,19 @@ namespace derpirc.ViewModels
             this.IsDataLoaded = true;
         }
 
-        public void Send(ChannelSummary channel, string message)
+        public void Send(ChannelItem message)
         {
-            _sessionSupervisor.SendMessage(channel, message);
+            _sessionSupervisor.SendMessage(message);
+        }
+
+        public void Send(MentionItem message)
+        {
+            _sessionSupervisor.SendMessage(message);
+        }
+
+        public void Send(MessageItem message)
+        {
+            _sessionSupervisor.SendMessage(message);
         }
     }
 }

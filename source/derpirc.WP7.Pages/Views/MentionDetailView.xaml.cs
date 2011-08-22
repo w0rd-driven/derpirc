@@ -1,4 +1,5 @@
-﻿using derpirc.ViewModels;
+﻿using System.Windows.Controls;
+using derpirc.ViewModels;
 using Microsoft.Phone.Controls;
 
 namespace derpirc.Views
@@ -33,6 +34,13 @@ namespace derpirc.Views
         {
             base.OnNavigatedTo(e);
             viewModel.NavigatedToCommand.Execute(NavigationContext.QueryString);
+        }
+
+        private void Send_KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            var control = sender as TextBox;
+            if (e.Key == System.Windows.Input.Key.Enter && !string.IsNullOrEmpty(control.Text))
+                viewModel.Send();
         }
     }
 }

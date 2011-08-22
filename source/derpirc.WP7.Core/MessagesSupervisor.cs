@@ -30,6 +30,31 @@ namespace derpirc.Core
             _localUsers.CollectionChanged += new NotifyCollectionChangedEventHandler(LocalUsers_CollectionChanged);
         }
 
+        public void SendMessage(MessageItem message)
+        {
+            if (message != null)
+            {
+                var summary = message.Summary;
+                var localUser = GetLocalUserBySummary(summary);
+                localUser.SendMessage(summary.Name, message.Text);
+
+                // Add the source and MessageType at the last minute
+                message.Source = localUser.NickName;
+                message.Type = MessageType.Mine;
+
+                summary.Messages.Add(message);
+                DataUnitOfWork.Default.Commit();
+                //_unitOfWork.Commit();
+                var eventArgs = new MessageItemEventArgs()
+                {
+                    NetworkId = summary.NetworkId,
+                    SummaryId = summary.Id,
+                    MessageId = message.Id,
+                };
+                OnMessageItemReceived(eventArgs);
+            }
+        }
+
         private void LocalUsers_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == NotifyCollectionChangedAction.Add)
@@ -107,6 +132,16 @@ namespace derpirc.Core
             return result;
         }
 
+        // TODO: static method
+        private IrcLocalUser GetLocalUserBySummary(IMessageSummary channel)
+        {
+            var result = (from localUser in _localUsers
+                          where localUser.Client.ClientId == channel.NetworkId.ToString()
+                          select localUser).FirstOrDefault();
+            return result;
+        }
+
+        // TODO: static method
         private Network GetNetworkByClientId(string clientId)
         {
             var integerId = -1;

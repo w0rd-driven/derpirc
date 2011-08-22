@@ -141,9 +141,19 @@ namespace derpirc.Core
             }
         }
 
-        public void SendMessage(ChannelSummary channel, string message)
+        public void SendMessage(ChannelItem message)
         {
-            //_channelSupervisor.SendMessage(channel, message);
+            _channelSupervisor.SendMessage(message);
+        }
+
+        public void SendMessage(MentionItem message)
+        {
+            _channelSupervisor.SendMessage(message);
+        }
+
+        public void SendMessage(MessageItem message)
+        {
+            _messageSupervisor.SendMessage(message);
         }
 
         private IrcUserRegistrationInfo GetRegistrationInfo()

@@ -47,7 +47,7 @@
                      ItemTemplate="{StaticResource TemplateDetailMessageSelector}" />
 
             <Grid Grid.Row="2" Style="{StaticResource GridDetailMyMessage}">
-                <TextBox Name="Send" Text="{Binding SendMessage, Mode=TwoWay}" Style="{StaticResource TextBoxTickStyle}">
+                <TextBox Name="Send" Text="{Binding SendMessage, Mode=TwoWay}" Style="{StaticResource TextBoxTickStyle}" KeyUp="Send_KeyUp">
                     <blend:Interaction.Behaviors>
                         <helpers:WatermarkBehavior Watermark="{Binding SendWatermark}"
                                                    Foreground="{StaticResource PhoneTextBoxReadOnlyBrush}" />

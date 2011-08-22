@@ -8,6 +8,7 @@ using derpirc.Data;
 using derpirc.Data.Models;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Messaging;
 using GalaSoft.MvvmLight.Threading;
 
 namespace derpirc.ViewModels
@@ -264,13 +265,34 @@ namespace derpirc.ViewModels
                 // Code runs "for real": Connect to service, etc...
                 _messagesList = new ObservableCollection<ChannelItem>();
                 Messages = new CollectionViewSource() { Source = _messagesList };
+                // This listens to both the sending of this VM and Receiving from the MainVM
+                this.MessengerInstance.Register<GenericMessage<ChannelItem>>(this, message =>
+                {
+                    var target = message.Target as string;
+                    if (target == "in")
+                        AddIncoming(message.Content);
+                });
             }
         }
 
         public void Send()
         {
-            //ViewModelLocator.MainStatic.Send(Model, SendMessage);
-            SendMessage = string.Empty;
+            if (!string.IsNullOrEmpty(SendMessage))
+            {
+                var newMessage = new ChannelItem();
+                newMessage.Summary = Model;
+                newMessage.Type = MessageType.Mine;
+                newMessage.TimeStamp = DateTime.Now;
+                //newMessage.IsRead = true;
+                newMessage.Text = SendMessage;
+                this.MessengerInstance.Send(new GenericMessage<ChannelItem>(this, "out", newMessage));
+                // Steps: Place item in List. Detect send callback. Use a resend hyperlink if necessary
+
+                _messagesList.Add(newMessage);
+                Messages.View.MoveCurrentToLast();
+
+                SendMessage = string.Empty;
+            }
         }
 
         public void Switch()
@@ -288,7 +310,7 @@ namespace derpirc.ViewModels
             int.TryParse(id, out integerId);
             var model = DataUnitOfWork.Default.Channels.FindBy(x => x.Id == integerId).FirstOrDefault();
             if (model != null)
-                UpdateViewModel(model);
+                Model = model;
         }
 
         private void UpdateViewModel(ChannelSummary model)
@@ -306,7 +328,22 @@ namespace derpirc.ViewModels
                     _messagesList.Add(item);
                 });
             });
-            Messages.View.Refresh();
+        }
+
+        private void AddIncoming(ChannelItem record)
+        {
+            DispatcherHelper.CheckBeginInvokeOnUI(() =>
+            {
+                // HACK: If MessageType.Mine, make sure it wasn't added by the UI. This could also serve as a MessageSent event
+                if (record.Type == MessageType.Mine)
+                {
+                    var foundItem = _messagesList.Where(x => x.TimeStamp == record.TimeStamp);
+                    if (foundItem != null)
+                        return;
+                }
+                _messagesList.Add(record);
+            });
+            Messages.View.MoveCurrentToLast();
         }
 
         public override void Cleanup()

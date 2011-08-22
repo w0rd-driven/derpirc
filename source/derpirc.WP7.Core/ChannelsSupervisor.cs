@@ -45,6 +45,56 @@ namespace derpirc.Core
             //_channelSummaries = new ObservableCollection<ChannelSummary>();
         }
 
+        public void SendMessage(ChannelItem message)
+        {
+            if (message != null)
+            {
+                var summary = message.Summary;
+                var localUser = GetLocalUserBySummary(summary);
+                localUser.SendMessage(summary.Name, message.Text);
+
+                // Add the source and MessageType at the last minute
+                message.Source = localUser.NickName;
+                message.Type = MessageType.Mine;
+
+                summary.Messages.Add(message);
+                DataUnitOfWork.Default.Commit();
+                //_unitOfWork.Commit();
+                var eventArgs = new MessageItemEventArgs()
+                {
+                    NetworkId = summary.NetworkId,
+                    SummaryId = summary.Id,
+                    MessageId = message.Id,
+                };
+                OnChannelItemReceived(eventArgs);
+            }
+        }
+
+        public void SendMessage(MentionItem message)
+        {
+            if (message != null)
+            {
+                var summary = message.Summary;
+                var localUser = GetLocalUserBySummary(summary);
+                //localUser.SendMessage(summary.ChannelName, message.Text);
+
+                // Add the source and MessageType at the last minute
+                message.Source = localUser.NickName;
+                message.Type = MessageType.Mine;
+
+                summary.Messages.Add(message);
+                DataUnitOfWork.Default.Commit();
+                //_unitOfWork.Commit();
+                var eventArgs = new MessageItemEventArgs()
+                {
+                    NetworkId = summary.NetworkId,
+                    SummaryId = summary.Id,
+                    MessageId = message.Id,
+                };
+                OnMentionItemReceived(eventArgs);
+            }
+        }
+
         private void LocalUsers_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == NotifyCollectionChangedAction.Add)
@@ -187,6 +237,15 @@ namespace derpirc.Core
                 //_unitOfWork.Commit();
                 DataUnitOfWork.Default.Commit();
             }
+            return result;
+        }
+
+        // TODO: static method
+        private IrcLocalUser GetLocalUserBySummary(IMessageSummary channel)
+        {
+            var result = (from localUser in _localUsers
+                          where localUser.Client.ClientId == channel.NetworkId.ToString()
+                          select localUser).FirstOrDefault();
             return result;
         }
 
