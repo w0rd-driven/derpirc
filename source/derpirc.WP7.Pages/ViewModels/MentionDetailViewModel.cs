@@ -225,6 +225,42 @@ namespace derpirc.ViewModels
                     Summary = model,
                     SummaryId = model.Id,
                     Source = "w0rd-driven",
+                    Text = "derpirc: hay",
+                    TimeStamp = DateTime.Now,
+                    Type = MessageType.Theirs,
+                });
+                _messagesList.Add(new MentionItem()
+                {
+                    Summary = model,
+                    SummaryId = model.Id,
+                    Source = "w0rd-driven",
+                    Text = "derpirc: sup?",
+                    TimeStamp = DateTime.Now,
+                    Type = MessageType.Theirs,
+                });
+                _messagesList.Add(new MentionItem()
+                {
+                    Summary = model,
+                    SummaryId = model.Id,
+                    Source = "derpirc",
+                    Text = "w0rd-driven: nm",
+                    TimeStamp = DateTime.Now,
+                    Type = MessageType.Mine,
+                });
+                _messagesList.Add(new MentionItem()
+                {
+                    Summary = model,
+                    SummaryId = model.Id,
+                    Source = "w0rd-driven",
+                    Text = "derpirc: lame",
+                    TimeStamp = DateTime.Now,
+                    Type = MessageType.Theirs,
+                });
+                _messagesList.Add(new MentionItem()
+                {
+                    Summary = model,
+                    SummaryId = model.Id,
+                    Source = "w0rd-driven",
                     Text = "derpirc: urmom!",
                     TimeStamp = DateTime.Now,
                     Type = MessageType.Theirs,

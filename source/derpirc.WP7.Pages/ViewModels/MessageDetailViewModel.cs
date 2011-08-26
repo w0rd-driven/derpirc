@@ -223,8 +223,26 @@ namespace derpirc.ViewModels
                 {
                     Summary = model,
                     SummaryId = model.Id,
+                    Source = "derpirc",
+                    Text = "hay",
+                    TimeStamp = DateTime.Now,
+                    Type = MessageType.Mine,
+                });
+                _messagesList.Add(new MessageItem()
+                {
+                    Summary = model,
+                    SummaryId = model.Id,
+                    Source = "derpirc",
+                    Text = "sup?",
+                    TimeStamp = DateTime.Now,
+                    Type = MessageType.Mine,
+                });
+                _messagesList.Add(new MessageItem()
+                {
+                    Summary = model,
+                    SummaryId = model.Id,
                     Source = "w0rd-driven",
-                    Text = "urmom!",
+                    Text = "nm",
                     TimeStamp = DateTime.Now,
                     Type = MessageType.Theirs,
                 });
@@ -233,7 +251,7 @@ namespace derpirc.ViewModels
                     Summary = model,
                     SummaryId = model.Id,
                     Source = "derpirc",
-                    Text = "no, urmom!",
+                    Text = "lame",
                     TimeStamp = DateTime.Now,
                     Type = MessageType.Mine,
                 });
