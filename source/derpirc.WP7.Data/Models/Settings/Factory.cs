@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Data.Linq;
 
 namespace derpirc.Data.Models.Settings
 {
@@ -110,9 +111,9 @@ namespace derpirc.Data.Models.Settings
             return result;
         }
 
-        public static List<SessionServer> CreateSessionServers(Session session)
+        public static EntitySet<SessionServer> CreateSessionServers(Session session)
         {
-            var result = new List<SessionServer>();
+            var result = new EntitySet<SessionServer>();
             result.Add(new SessionServer()
             {
                 Session = session,
@@ -139,9 +140,9 @@ namespace derpirc.Data.Models.Settings
             return result;
         }
 
-        public static List<SessionNetwork> CreateSessionNetworks(Session session, List<SessionServer> servers)
+        public static EntitySet<SessionNetwork> CreateSessionNetworks(Session session, EntitySet<SessionServer> servers)
         {
-            var result = new List<SessionNetwork>();
+            var result = new EntitySet<SessionNetwork>();
             result.Add(new SessionNetwork()
             {
                 Session = session,

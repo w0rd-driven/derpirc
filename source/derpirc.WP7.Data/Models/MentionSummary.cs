@@ -1,9 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Collections.Specialized;
+﻿using System;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
 using System.Linq;
-using derpirc.Data.Models.Settings;
 
 namespace derpirc.Data.Models
 {
@@ -72,52 +70,10 @@ namespace derpirc.Data.Models
         }
 
         [Association(Name = "Message_Items", ThisKey = "Id", OtherKey = "SummaryId", DeleteRule = "NO ACTION")]
-        public ICollection<MentionItem> Messages
+        public EntitySet<MentionItem> Messages
         {
-            get
-            {
-                return _messages;
-            }
-            set
-            {
-                if (!ReferenceEquals(_messages, value))
-                {
-                    var previousValue = _messages;
-                    if (previousValue != null)
-                    {
-                        previousValue.CollectionChanged -= FixupMessages;
-                    }
-                    _messages.SetSource(value);
-                    var newValue = value as FixupCollection<MentionItem>;
-                    if (newValue != null)
-                    {
-                        newValue.CollectionChanged += FixupMessages;
-                    }
-                }
-            }
-        }
-
-        #endregion
-
-        #region Association Fixup
-
-        private void FixupMessages(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (e.NewItems != null)
-            {
-                foreach (MentionItem item in e.NewItems)
-                    item.Summary = this;
-                // HACK: Not locking can cause weird behaviors during commits. 
-                UpdateMessageCounts();
-            }
-            if (e.OldItems != null)
-            {
-                foreach (MentionItem item in e.OldItems)
-                {
-                    if (ReferenceEquals(item.Summary, this))
-                        item.Summary = null;
-                }
-            }
+            get { return _messages; }
+            set { _messages.Assign(value); }
         }
 
         #endregion
@@ -125,16 +81,27 @@ namespace derpirc.Data.Models
         public MentionSummary()
         {
             _network = default(EntityRef<Network>);
-            _messages = new EntitySet<MentionItem>();
-            _messages.CollectionChanged += FixupMessages;
+            _messages = new EntitySet<MentionItem>(new Action<MentionItem>(attach_Messages), new Action<MentionItem>(detach_Messages));
         }
 
-        private void UpdateMessageCounts()
+        void attach_Messages(MentionItem entity)
         {
-            var lastIndex = _messages.Count - 1;
-            var lastItem = _messages[lastIndex] as MentionItem;
-            LastItem = lastItem;
-            LastItemId = lastItem.Id;
+            //this.RaisePropertyChanged();
+            UpdateMessageCounts(entity);
+            entity.Summary = this;
+        }
+
+        void detach_Messages(MentionItem entity)
+        {
+            //this.RaisePropertyChanged();
+            UpdateMessageCounts(entity);
+            entity.Summary = null;
+        }
+
+        private void UpdateMessageCounts(MentionItem entity)
+        {
+            LastItem = entity;
+            LastItemId = entity.Id;
             Count = _messages.Count;
             UnreadCount = _messages.Count(x => x.IsRead == false);
         }

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Collections.Specialized;
+﻿using System;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
 
@@ -95,136 +94,24 @@ namespace derpirc.Data.Models
         }
 
         [Association(Name = "Channel_Items", ThisKey = "Id", OtherKey = "NetworkId", DeleteRule = "NO ACTION")]
-        public ICollection<ChannelSummary> Channels
+        public EntitySet<ChannelSummary> Channels
         {
-            get
-            {
-                return _channels;
-            }
-            set
-            {
-                if (!ReferenceEquals(_channels, value))
-                {
-                    var previousValue = _channels;
-                    if (previousValue != null)
-                    {
-                        previousValue.CollectionChanged -= FixupChannels;
-                    }
-                    _channels.SetSource(value);
-                    var newValue = value as FixupCollection<ChannelSummary>;
-                    if (newValue != null)
-                    {
-                        newValue.CollectionChanged += FixupChannels;
-                    }
-                }
-            }
+            get { return _channels; }
+            set { _channels.Assign(value); }
         }
 
         [Association(Name = "Mention_Items", ThisKey = "Id", OtherKey = "NetworkId", DeleteRule = "NO ACTION")]
-        public ICollection<MentionSummary> Mentions
+        public EntitySet<MentionSummary> Mentions
         {
-            get
-            {
-                return _mentions;
-            }
-            set
-            {
-                if (!ReferenceEquals(_mentions, value))
-                {
-                    var previousValue = _mentions;
-                    if (previousValue != null)
-                    {
-                        previousValue.CollectionChanged -= FixupMentions;
-                    }
-                    _mentions.SetSource(value);
-                    var newValue = value as FixupCollection<MentionSummary>;
-                    if (newValue != null)
-                    {
-                        newValue.CollectionChanged += FixupMentions;
-                    }
-                }
-            }
+            get { return _mentions; }
+            set { _mentions.Assign(value); }
         }
 
         [Association(Name = "Message_Items", ThisKey = "Id", OtherKey = "NetworkId", DeleteRule = "NO ACTION")]
-        public ICollection<MessageSummary> Messages
+        public EntitySet<MessageSummary> Messages
         {
-            get
-            {
-                return _messages;
-            }
-            set
-            {
-                if (!ReferenceEquals(_messages, value))
-                {
-                    var previousValue = _messages;
-                    if (previousValue != null)
-                    {
-                        previousValue.CollectionChanged -= FixupMessages;
-                    }
-                    _messages.SetSource(value);
-                    var newValue = value as FixupCollection<MessageSummary>;
-                    if (newValue != null)
-                    {
-                        newValue.CollectionChanged += FixupMessages;
-                    }
-                }
-            }
-        }
-
-        #endregion
-
-        #region Association Fixup
-
-        private void FixupChannels(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (e.NewItems != null)
-            {
-                foreach (ChannelSummary item in e.NewItems)
-                    item.Network = this;
-            }
-            if (e.OldItems != null)
-            {
-                foreach (ChannelSummary item in e.OldItems)
-                {
-                    if (ReferenceEquals(item.Network, this))
-                        item.Network = null;
-                }
-            }
-        }
-
-        private void FixupMentions(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (e.NewItems != null)
-            {
-                foreach (MentionSummary item in e.NewItems)
-                    item.Network = this;
-            }
-            if (e.OldItems != null)
-            {
-                foreach (MentionSummary item in e.OldItems)
-                {
-                    if (ReferenceEquals(item.Network, this))
-                        item.Network = null;
-                }
-            }
-        }
-
-        private void FixupMessages(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (e.NewItems != null)
-            {
-                foreach (MessageSummary item in e.NewItems)
-                    item.Network = this;
-            }
-            if (e.OldItems != null)
-            {
-                foreach (MessageSummary item in e.OldItems)
-                {
-                    if (ReferenceEquals(item.Network, this))
-                        item.Network = null;
-                }
-            }
+            get { return _messages; }
+            set { _messages.Assign(value); }
         }
 
         #endregion
@@ -233,12 +120,45 @@ namespace derpirc.Data.Models
         {
             _session = default(EntityRef<Session>);
             _server = default(EntityRef<Server>);
-            _channels = new EntitySet<ChannelSummary>();
-            _channels.CollectionChanged += FixupChannels;
-            _mentions = new EntitySet<MentionSummary>();
-            _mentions.CollectionChanged += FixupMentions;
-            _messages = new EntitySet<MessageSummary>();
-            _messages.CollectionChanged += FixupMessages;
+            _channels = new EntitySet<ChannelSummary>(new Action<ChannelSummary>(attach_Channels), new Action<ChannelSummary>(detach_Channels));
+            _mentions = new EntitySet<MentionSummary>(new Action<MentionSummary>(attach_Mentions), new Action<MentionSummary>(detach_Mentions));
+            _messages = new EntitySet<MessageSummary>(new Action<MessageSummary>(attach_Messages), new Action<MessageSummary>(detach_Messages));
+        }
+
+        void attach_Channels(ChannelSummary entity)
+        {
+            //this.RaisePropertyChanged();
+            entity.Network = this;
+        }
+
+        void detach_Channels(ChannelSummary entity)
+        {
+            //this.RaisePropertyChanged();
+            entity.Network = null;
+        }
+
+        void attach_Mentions(MentionSummary entity)
+        {
+            //this.RaisePropertyChanged();
+            entity.Network = this;
+        }
+
+        void detach_Mentions(MentionSummary entity)
+        {
+            //this.RaisePropertyChanged();
+            entity.Network = null;
+        }
+
+        void attach_Messages(MessageSummary entity)
+        {
+            //this.RaisePropertyChanged();
+            entity.Network = this;
+        }
+
+        void detach_Messages(MessageSummary entity)
+        {
+            //this.RaisePropertyChanged();
+            entity.Network = null;
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Collections.Specialized;
+﻿using System;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
 
@@ -25,93 +24,17 @@ namespace derpirc.Data.Models
         #region Navigation Properties
 
         [Association(Name = "Server_Items", ThisKey = "Id", OtherKey = "SessionId", DeleteRule = "NO ACTION")]
-        public ICollection<Server> Servers
+        public EntitySet<Server> Servers
         {
-            get
-            {
-                return _servers;
-            }
-            set
-            {
-                if (!ReferenceEquals(_servers, value))
-                {
-                    var previousValue = _servers;
-                    if (previousValue != null)
-                    {
-                        previousValue.CollectionChanged -= FixupServers;
-                    }
-                    _servers.SetSource(value);
-                    var newValue = value as FixupCollection<Server>;
-                    if (newValue != null)
-                    {
-                        newValue.CollectionChanged += FixupServers;
-                    }
-                }
-            }
+            get { return _servers; }
+            set { _servers.Assign(value); }
         }
 
         [Association(Name = "Network_Items", ThisKey = "Id", OtherKey = "SessionId", DeleteRule = "NO ACTION")]
-        public ICollection<Network> Networks
+        public EntitySet<Network> Networks
         {
-            get
-            {
-                return _networks;
-            }
-            set
-            {
-                if (!ReferenceEquals(_networks, value))
-                {
-                    var previousValue = _servers;
-                    if (previousValue != null)
-                    {
-                        previousValue.CollectionChanged -= FixupNetworks;
-                    }
-                    _networks.SetSource(value);
-                    var newValue = value as FixupCollection<Network>;
-                    if (newValue != null)
-                    {
-                        newValue.CollectionChanged += FixupNetworks;
-                    }
-                }
-            }
-        }
-
-        #endregion
-
-        #region Association Fixup
-
-        private void FixupServers(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (e.NewItems != null)
-            {
-                foreach (Server item in e.NewItems)
-                    item.Session = this;
-            }
-            if (e.OldItems != null)
-            {
-                foreach (Server item in e.OldItems)
-                {
-                    if (ReferenceEquals(item.Session, this))
-                        item.Session = null;
-                }
-            }
-        }
-
-        private void FixupNetworks(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (e.NewItems != null)
-            {
-                foreach (Network item in e.NewItems)
-                    item.Session = this;
-            }
-            if (e.OldItems != null)
-            {
-                foreach (Network item in e.OldItems)
-                {
-                    if (ReferenceEquals(item.Session, this))
-                        item.Session = null;
-                }
-            }
+            get { return _networks; }
+            set { _networks.Assign(value); }
         }
 
         #endregion
@@ -119,10 +42,32 @@ namespace derpirc.Data.Models
         public Session()
         {
             Name = "Default";
-            _servers = new EntitySet<Server>();
-            _servers.CollectionChanged += FixupServers;
-            _networks = new EntitySet<Network>();
-            _networks.CollectionChanged += FixupNetworks;
+            _servers = new EntitySet<Server>(new Action<Server>(attach_Servers), new Action<Server>(detach_Servers));
+            _networks = new EntitySet<Network>(new Action<Network>(attach_Networks), new Action<Network>(detach_Networks));
+        }
+
+        void attach_Servers(Server entity)
+        {
+            //this.RaisePropertyChanged();
+            entity.Session = this;
+        }
+
+        void detach_Servers(Server entity)
+        {
+            //this.RaisePropertyChanged();
+            entity.Session = null;
+        }
+
+        void attach_Networks(Network entity)
+        {
+            //this.RaisePropertyChanged();
+            entity.Session = this;
+        }
+
+        void detach_Networks(Network entity)
+        {
+            //this.RaisePropertyChanged();
+            entity.Session = null;
         }
     }
 }

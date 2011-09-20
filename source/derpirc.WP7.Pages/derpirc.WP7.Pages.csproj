@@ -55,6 +55,7 @@
     <Reference Include="Microsoft.Practices.ServiceLocation">
       <HintPath>..\..\library\MVVMLight\WP71\Microsoft.Practices.ServiceLocation.dll</HintPath>
     </Reference>
+    <Reference Include="System.Data.Linq" />
     <Reference Include="System.Windows" />
     <Reference Include="system" />
     <Reference Include="System.Core" />

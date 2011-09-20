@@ -44,6 +44,7 @@
     <Reference Include="IrcDotNet">
       <HintPath>..\..\library\IrcDotNet\WP71\IrcDotNet.dll</HintPath>
     </Reference>
+    <Reference Include="System.Data.Linq" />
     <Reference Include="System.Windows" />
     <Reference Include="system" />
     <Reference Include="System.Core" />

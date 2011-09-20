@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Data.Linq;
+﻿using System.Data.Linq;
 using System.Data.Linq.Mapping;
 
 namespace derpirc.Data.Models

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using derpirc.Data.Models.Settings;
+﻿using System.Data.Linq;
 
 namespace derpirc.Data.Models
 {
@@ -14,6 +12,6 @@ namespace derpirc.Data.Models
         int Count { get; set; }
         int UnreadCount { get; set; }
         // Not used because we segregate into Channel/Mention/Message tables
-        //ICollection<IMessageItem> Messages { get; set; }
+        //EntitySet<IMessageItem> Messages { get; set; }
     }
 }

@@ -342,10 +342,10 @@ namespace derpirc.ViewModels
             DispatcherHelper.CheckBeginInvokeOnUI(() =>
             {
                 _messagesList.Clear();
-                model.Messages.ToList().ForEach(item =>
+                foreach (var item in model.Messages)
                 {
                     _messagesList.Add(item);
-                });
+                }
             });
         }
 
