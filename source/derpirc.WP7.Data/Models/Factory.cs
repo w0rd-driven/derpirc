@@ -8,51 +8,40 @@ namespace derpirc.Data.Models
         {
             var result = new Session();
             result.Name = "Default";
-            var servers = CreateServers(result);
-            var networks = CreateNetworks(result, servers);
-            result.Servers = servers;
+            var networks = CreateNetworks(result);
             result.Networks = networks;
             return result;
         }
 
-        public static EntitySet<Server> CreateServers(Session session)
+        public static EntitySet<Network> CreateNetworks(Session session)
         {
-            var result = new EntitySet<Server>();
-            result.Add(new Server()
+            var result = new EntitySet<Network>();
+            var server1 = new Server()
             {
-                Session = session,
                 DisplayName = "Random server",
                 HostName = "irc.efnet.org",
                 Port = 6667,
                 Ports = "6667",
-            });
-            result.Add(new Server()
-            {
-                Session = session,
-                DisplayName = "Random server",
-                HostName = "irc.node-3.net",
-                Port = 6667,
-                Ports = "6667",
-            });
-
-            return result;
-        }
-
-        public static EntitySet<Network> CreateNetworks(Session session, EntitySet<Server> servers)
-        {
-            var result = new EntitySet<Network>();
+            };
             result.Add(new Network()
             {
                 Session = session,
-                Server = servers[0],
+                Server = server1,
                 Name = "EFNet",
                 IsJoinEnabled = true,
                 JoinChannels = "#wp7test",
             });
+            var server2 = new Server()
+            {
+                DisplayName = "Random server",
+                HostName = "irc.node-3.net",
+                Port = 6667,
+                Ports = "6667",
+            };
             result.Add(new Network()
             {
                 Session = session,
-                Server = servers[1],
+                Server = server2,
                 Name = "PowerPrecision",
                 IsJoinEnabled = true,
                 JoinChannels = "#wp7, #xna",

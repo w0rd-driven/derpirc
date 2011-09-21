@@ -55,8 +55,8 @@ namespace derpirc.Core
             //var session = _unitOfWork.Sessions.FindBy(x => x.Name == "Default").FirstOrDefault();
             var session = DataUnitOfWork.Default.Sessions.FindBy(x => x.Name == "Default").FirstOrDefault();
             _session = session;
-            var servers = _session.Servers.ToList();
-            servers.ForEach(item =>
+            var networks = _session.Networks.ToList();
+            networks.ForEach(item =>
             {
                 var client = InitializeClient();
                 client.ClientId = item.Id.ToString();
@@ -167,7 +167,10 @@ namespace derpirc.Core
             var userName = sessionUser.Username;
             result.UserName = userName;
             if (sessionUser.IsInvisible)
+            {
+                result.UserModes = new Collection<char>();
                 result.UserModes.Add('i');
+            }
             return result;
         }
 
@@ -243,7 +246,9 @@ namespace derpirc.Core
                 int.TryParse(client.ClientId, out clientId);
                 var matchedServer = GetServer(clientId, client.ServerName);
                 var matchedNetwork = GetNetwork(client.WelcomeMessage);
-                LinkSession(matchedServer, matchedNetwork);
+                // Commit the hostname and network casing change if necessary
+                //_unitOfWork.Commit();
+                DataUnitOfWork.Default.Commit();
                 // TODO: Wire up settings UI call for IsAutoJoinSession
                 JoinSession(matchedNetwork, client);
             }
@@ -253,15 +258,20 @@ namespace derpirc.Core
         {
             var integerId = -1;
             int.TryParse(clientId, out integerId);
-            // TODO: Error handling make sure _session != null
-            // Also make sure session is created first either through Committing defaults or whatever need be.
-            return _session.Servers.FirstOrDefault(x => x.Id == integerId);
+            // TODO: make sure session is created first either through Committing defaults or whatever need be.
+            var result = new Server();
+            if (_session != null)
+            {
+                var network = _session.Networks.FirstOrDefault(x => x.Id == integerId);
+                result = network.Server;
+            }
+            return result;
         }
 
         private Server GetServer(int clientId, string serverName)
         {
             // TODO: Error handling make sure _session != null
-            var result = _session.Servers.FirstOrDefault(x => x.Id == clientId);
+            var result = GetServer(clientId.ToString());
             if (result != null)
             {
                 result.HostName = serverName.ToLower();
@@ -283,18 +293,6 @@ namespace derpirc.Core
                 result.Name = networkName.ToLower();
             }
             return result;
-        }
-
-        private void LinkSession(Server server, Network network)
-        {
-            if (network != null)
-            {
-                network.Server = server;
-                //server.NetworkId = network.Id;
-                //server.Network = network;
-                //_unitOfWork.Commit();
-                DataUnitOfWork.Default.Commit();
-            }
         }
 
         private void JoinSession(Network network, IrcClient client)

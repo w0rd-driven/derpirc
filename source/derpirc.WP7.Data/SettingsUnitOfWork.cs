@@ -21,6 +21,12 @@ namespace derpirc.Data
         }
         private SqlRepository<Formatting> _formatting = null;
 
+        public IRepository<Session> Sessions
+        {
+            get { return _sessions ?? (_sessions = new SqlRepository<Session>(_context)); }
+        }
+        private SqlRepository<Session> _sessions = null;
+
         public IRepository<Network> Networks
         {
             get { return _networks ?? (_networks = new SqlRepository<Network>(_context)); }
@@ -32,24 +38,6 @@ namespace derpirc.Data
             get { return _servers ?? (_servers = new SqlRepository<Server>(_context)); }
         }
         private SqlRepository<Server> _servers = null;
-
-        public IRepository<Session> Sessions
-        {
-            get { return _sessions ?? (_sessions = new SqlRepository<Session>(_context)); }
-        }
-        private SqlRepository<Session> _sessions = null;
-
-        public IRepository<SessionNetwork> SessionNetworks
-        {
-            get { return _sessionNetworks ?? (_sessionNetworks = new SqlRepository<SessionNetwork>(_context)); }
-        }
-        private SqlRepository<SessionNetwork> _sessionNetworks = null;
-
-        public IRepository<SessionServer> SessionServers
-        {
-            get { return _sessionServers ?? (_sessionServers = new SqlRepository<SessionServer>(_context)); }
-        }
-        private SqlRepository<SessionServer> _sessionServers = null;
 
         #endregion
 

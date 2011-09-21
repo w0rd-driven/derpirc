@@ -8,7 +8,6 @@ namespace derpirc.Data.Models
     {
         [Column(IsVersion = true)]
         private Binary version;
-        private EntityRef<Session> _session;
         private EntityRef<Network> _network;
 
         #region Primitive Properties
@@ -32,37 +31,6 @@ namespace derpirc.Data.Models
         #endregion
 
         #region Navigation Properties
-
-        [Column(CanBeNull = false)]
-        public int SessionId { get; set; }
-        [Association(Name = "Session_Item", ThisKey = "SessionId", OtherKey = "Id", IsForeignKey = true)]
-        public Session Session
-        {
-            get { return _session.Entity; }
-            set
-            {
-                Session previousValue = _session.Entity;
-                if ((previousValue != value || this._session.HasLoadedOrAssignedValue == false))
-                {
-                    this.RaisePropertyChanged();
-                    if ((previousValue != null))
-                    {
-                        _session.Entity = null;
-                    }
-                    _session.Entity = value;
-                    if ((value != null))
-                    {
-                        SessionId = value.Id;
-                    }
-                    else
-                    {
-                        SessionId = default(int);
-                    }
-                    this.RaisePropertyChanged(() => SessionId);
-                    this.RaisePropertyChanged(() => Session);
-                }
-            }
-        }
 
         [Column(CanBeNull = true)]
         public int NetworkId { get; set; }
@@ -99,7 +67,6 @@ namespace derpirc.Data.Models
 
         public Server()
         {
-            _session = default(EntityRef<Session>);
             _network = default(EntityRef<Network>);
         }
     }

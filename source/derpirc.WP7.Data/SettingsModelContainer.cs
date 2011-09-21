@@ -1,9 +1,7 @@
 using System;
-using System.Collections.Generic;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
 using System.IO.IsolatedStorage;
-using System.Linq;
 using derpirc.Data.Models.Settings;
 
 namespace derpirc.Data
@@ -123,57 +121,13 @@ namespace derpirc.Data
             this.Formatting.InsertOnSubmit(formatting);
             this.SubmitChanges();
 
-            var servers = Factory.CreateServers();
-            this.Servers.InsertAllOnSubmit(servers);
-            this.SubmitChanges();
-
-            var networks = Factory.CreateNetworks();
-            this.Networks.InsertAllOnSubmit(networks);
-            this.SubmitChanges();
-
             var session = Factory.CreateSession();
             this.Session.InsertOnSubmit(session);
             this.SubmitChanges();
 
-            // HACK: Fix up special Factory.Create case where networks and servers aren't linked to their parents
-            var sessionNetworks = session.Networks.ToList();
-            sessionNetworks.ForEach(item =>
-            {
-                if (item.Network == null)
-                {
-                    var basedOnNetwork = GetBasedOnNetwork(networks, item.BasedOnId);
-                    if (basedOnNetwork != null)
-                    {
-                        item.Network = basedOnNetwork;
-                    }
-                }
-            });
-            this.SubmitChanges();
-
-            var sessionServers = session.Servers.ToList();
-            sessionServers.ForEach(item =>
-            {
-                if (item.Server == null)
-                {
-                    var basedOnServer = GetBasedOnServer(servers, item.BasedOnId);
-                    if (basedOnServer != null)
-                    {
-                        item.Server = basedOnServer;
-                    }
-                }
-            });
             this.SubmitChanges();
         }
 
-        private Server GetBasedOnServer(List<Server> servers, int id)
-        {
-            return servers.Where(x => x.Id == id).FirstOrDefault();
-        }
-
-        private Network GetBasedOnNetwork(List<Network> networks, int id)
-        {
-            return networks.Where(x => x.Id == id).FirstOrDefault();
-        }
         #endregion
     
         #region Table Properties
@@ -190,11 +144,11 @@ namespace derpirc.Data
         }
         private Table<Formatting> _formatting;
 
-        public Table<Network> Networks
+        public Table<Session> Session
         {
-            get { return _networks ?? (_networks = GetTable<Network>()); }
+            get { return _session ?? (_session = GetTable<Session>()); }
         }
-        private Table<Network> _networks;
+        private Table<Session> _session;
 
         public Table<Server> Servers
         {
@@ -202,23 +156,11 @@ namespace derpirc.Data
         }
         private Table<Server> _servers;
 
-        public Table<Session> Session
+        public Table<Network> Networks
         {
-            get { return _session ?? (_session = GetTable<Session>()); }
+            get { return _networks ?? (_networks = GetTable<Network>()); }
         }
-        private Table<Session> _session;
-
-        public Table<SessionServer> SessionServers
-        {
-            get { return _sessionServers ?? (_sessionServers = GetTable<SessionServer>()); }
-        }
-        private Table<SessionServer> _sessionServers;
-
-        public Table<SessionNetwork> SessionNetworks
-        {
-            get { return _sessionNetworks ?? (_sessionNetworks = GetTable<SessionNetwork>()); }
-        }
-        private Table<SessionNetwork> _sessionNetworks;
+        private Table<Network> _networks;
 
         #endregion
     }

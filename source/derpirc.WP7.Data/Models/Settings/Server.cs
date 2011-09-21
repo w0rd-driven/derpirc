@@ -8,18 +8,19 @@ namespace derpirc.Data.Models.Settings
     {
         [Column(IsVersion = true)]
         private Binary version;
+        private EntityRef<Network> _network;
 
         #region Primitive Properties
 
         [Column(IsPrimaryKey = true, IsDbGenerated = true)]
         public int Id { get; set; }
+
         [Column(CanBeNull = true)]
         public string DisplayName { get; set; }
         [Column(CanBeNull = false)]
         public string HostName { get; set; }
         [Column(CanBeNull = true)]
         public int Port { get; set; }
-        // TODO: Ports parsing
         [Column(CanBeNull = true)]
         public string Ports { get; set; }
         [Column(CanBeNull = true)]
@@ -27,9 +28,44 @@ namespace derpirc.Data.Models.Settings
 
         #endregion
 
+        #region Navigation Properties
+
+        [Column(CanBeNull = true)]
+        public int NetworkId { get; set; }
+        [Association(Name = "Network_Item", ThisKey = "NetworkId", OtherKey = "Id", IsForeignKey = false)]
+        public Network Network
+        {
+            get { return _network.Entity; }
+            set
+            {
+                Network previousValue = _network.Entity;
+                if ((previousValue != value || this._network.HasLoadedOrAssignedValue == false))
+                {
+                    this.RaisePropertyChanged();
+                    if ((previousValue != null))
+                    {
+                        _network.Entity = null;
+                    }
+                    _network.Entity = value;
+                    if ((value != null))
+                    {
+                        NetworkId = value.Id;
+                    }
+                    else
+                    {
+                        NetworkId = default(int);
+                    }
+                    this.RaisePropertyChanged(() => NetworkId);
+                    this.RaisePropertyChanged(() => Network);
+                }
+            }
+        }
+
+        #endregion
+
         public Server()
         {
-
+            _network = default(EntityRef<Network>);
         }
     }
 }

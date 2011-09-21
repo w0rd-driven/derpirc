@@ -58,8 +58,6 @@
     </Compile>
     <Compile Include="BaseNotify.cs" />
     <Compile Include="Models\Settings\Formatting.cs" />
-    <Compile Include="Models\Settings\Network.cs" />
-    <Compile Include="Models\Settings\Server.cs" />
     <Compile Include="SettingsUnitOfWork.cs" />
     <Compile Include="Models\Session.cs" />
     <Compile Include="Models\Network.cs" />
@@ -88,8 +86,8 @@
     <Compile Include="Models\MessageTypeEnum.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Models\Settings\Factory.cs" />
-    <Compile Include="Models\Settings\SessionNetwork.cs" />
-    <Compile Include="Models\Settings\SessionServer.cs" />
+    <Compile Include="Models\Settings\Network.cs" />
+    <Compile Include="Models\Settings\Server.cs" />
     <Compile Include="Models\Settings\User.cs" />
     <Compile Include="Models\Settings\Session.cs" />
     <Compile Include="SqlRepository.cs" />
