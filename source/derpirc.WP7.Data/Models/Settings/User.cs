@@ -16,11 +16,13 @@ namespace derpirc.Data.Models.Settings
         [Column(CanBeNull = false)]
         public string NickName { get; set; }
         [Column(CanBeNull = true)]
-        public string NickNameAlternates { get; set; }
+        public string NickNameAlternate { get; set; }
         [Column(CanBeNull = true)]
-        public string Name { get; set; }
+        public string FullName { get; set; }
         [Column(CanBeNull = true)]
-        public string Email { get; set; }
+        public string Username { get; set; }
+        [Column(CanBeNull = true)]
+        public bool IsInvisible { get; set; }
         [Column(CanBeNull = true)]
         public string QuitMessage { get; set; }
 

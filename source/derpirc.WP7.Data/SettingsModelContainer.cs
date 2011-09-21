@@ -115,12 +115,12 @@ namespace derpirc.Data
 
         private void GenerateSystemData()
         {
-            var client = Factory.CreateClient();
-            this.Client.InsertOnSubmit(client);
-            this.SubmitChanges();
-
             var user = Factory.CreateUser();
             this.User.InsertOnSubmit(user);
+            this.SubmitChanges();
+
+            var formatting = Factory.CreateFormatting();
+            this.Formatting.InsertOnSubmit(formatting);
             this.SubmitChanges();
 
             var servers = Factory.CreateServers();
@@ -178,18 +178,17 @@ namespace derpirc.Data
     
         #region Table Properties
 
-        // Settings
-        public Table<Client> Client
-        {
-            get { return _client ?? (_client = GetTable<Client>()); }
-        }
-        private Table<Client> _client;
-
         public Table<User> User
         {
             get { return _user ?? (_user = GetTable<User>()); }
         }
         private Table<User> _user;
+
+        public Table<Formatting> Formatting
+        {
+            get { return _formatting ?? (_formatting = GetTable<Formatting>()); }
+        }
+        private Table<Formatting> _formatting;
 
         public Table<Network> Networks
         {

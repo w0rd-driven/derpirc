@@ -4,7 +4,7 @@ using System.Data.Linq.Mapping;
 namespace derpirc.Data.Models.Settings
 {
     [Table]
-    public partial class Client : BaseNotify, IBaseModel
+    public partial class Formatting : BaseNotify, IBaseModel
     {
         [Column(IsVersion = true)]
         private Binary version;
@@ -13,19 +13,18 @@ namespace derpirc.Data.Models.Settings
 
         [Column(IsPrimaryKey = true, IsDbGenerated = true)]
         public int Id { get; set; }
+        [Column(CanBeNull = false)]
+        public string FontFamily { get; set; }
         [Column(CanBeNull = true)]
-        public bool ConnectOnStartup { get; set; }
+        public string FontSize { get; set; }
         [Column(CanBeNull = true)]
-        public bool ReconnectOnDisconnect { get; set; }
-        [Column(CanBeNull = true)]
-        public int DefaultPort { get; set; }
-        [Column(CanBeNull = true)]
-        public bool IsTimeStamped { get; set; }
+        public string FontWeight { get; set; }
 
         #endregion
 
-        public Client()
+        public Formatting()
         {
+            
         }
     }
 }

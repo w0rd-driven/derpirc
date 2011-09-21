@@ -163,9 +163,11 @@ namespace derpirc.Core
             _quitMessage = sessionUser.QuitMessage;
             var result = new IrcUserRegistrationInfo();
             result.NickName = sessionUser.NickName;
-            result.RealName = sessionUser.Name;
-            var userName = sessionUser.Email.Remove(sessionUser.Email.IndexOf("@"));
+            result.RealName = sessionUser.FullName;
+            var userName = sessionUser.Username;
             result.UserName = userName;
+            if (sessionUser.IsInvisible)
+                result.UserModes.Add('i');
             return result;
         }
 

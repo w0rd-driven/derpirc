@@ -26,8 +26,6 @@ namespace derpirc.Data.Models.Settings
         [Column(CanBeNull = true)]
         public string Ports { get; set; }
         [Column(CanBeNull = true)]
-        public string Group { get; set; }
-        [Column(CanBeNull = true)]
         public string Password { get; set; }
 
         #endregion

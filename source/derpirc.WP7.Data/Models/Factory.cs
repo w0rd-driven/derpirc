@@ -25,7 +25,6 @@ namespace derpirc.Data.Models
                 HostName = "irc.efnet.org",
                 Port = 6667,
                 Ports = "6667",
-                Group = "EFNet",
             });
             result.Add(new Server()
             {
@@ -34,7 +33,6 @@ namespace derpirc.Data.Models
                 HostName = "irc.node-3.net",
                 Port = 6667,
                 Ports = "6667",
-                Group = "PowerPrecision",
             });
 
             return result;

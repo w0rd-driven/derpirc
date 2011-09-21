@@ -9,17 +9,17 @@ namespace derpirc.Data
 
         #region Tables
 
-        public IRepository<Client> Client
-        {
-            get { return _client ?? (_client = new SqlRepository<Client>(_context)); }
-        }
-        private SqlRepository<Client> _client = null;
-
         public IRepository<User> User
         {
             get { return _user ?? (_user = new SqlRepository<User>(_context)); }
         }
         private SqlRepository<User> _user = null;
+
+        public IRepository<Formatting> Formatting
+        {
+            get { return _formatting ?? (_formatting = new SqlRepository<Formatting>(_context)); }
+        }
+        private SqlRepository<Formatting> _formatting = null;
 
         public IRepository<Network> Networks
         {

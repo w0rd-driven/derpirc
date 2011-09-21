@@ -5,12 +5,28 @@ namespace derpirc.Data.Models.Settings
 {
     public class Factory
     {
-        public static Client CreateClient()
+        public static User CreateUser()
         {
-            var result = new Client();
-            result.ConnectOnStartup = false;
-            result.ReconnectOnDisconnect = true;
-            result.DefaultPort = 6667;
+            var result = new User()
+            {
+                NickName = "derpirc",
+                NickNameAlternate = "durpirc",
+                FullName = "derpirc WP7 IRC Client",
+                Username = "derpirc",
+                IsInvisible = true,
+                QuitMessage = "derpirc derka muhammad jihad",
+            };
+            return result;
+        }
+
+        public static Formatting CreateFormatting()
+        {
+            var result = new Formatting()
+            {
+                FontFamily = "Monofur",
+                FontSize = "Small",
+                FontWeight = "Normal",
+            };
             return result;
         }
 
@@ -23,7 +39,6 @@ namespace derpirc.Data.Models.Settings
                 HostName = "irc.efnet.org",
                 Port = 6667,
                 Ports = "6667",
-                Group = "EFNet",
             });
             result.Add(new Server()
             {
@@ -31,7 +46,6 @@ namespace derpirc.Data.Models.Settings
                 HostName = "irc.freenode.net",
                 Port = 6667,
                 Ports = "6667",
-                Group = "Freenode",
             });
             result.Add(new Server()
             {
@@ -39,7 +53,6 @@ namespace derpirc.Data.Models.Settings
                 HostName = "irc.dal.net",
                 Port = 6667,
                 Ports = "6667",
-                Group = "DALnet",
             });
             result.Add(new Server()
             {
@@ -47,7 +60,6 @@ namespace derpirc.Data.Models.Settings
                 HostName = "irc.powerprecision.com",
                 Port = 6667,
                 Ports = "6667",
-                Group = "PowerPrecision",
             });
             result.Add(new Server()
             {
@@ -55,7 +67,6 @@ namespace derpirc.Data.Models.Settings
                 HostName = "irc",
                 Port = 6667,
                 Ports = "6667",
-                Group = "Fake",
             });
 
             return result;
@@ -85,21 +96,6 @@ namespace derpirc.Data.Models.Settings
             return result;
         }
 
-        public static User CreateUser()
-        {
-            var nickNameAlt = new List<string>();
-            var result = new User()
-            {
-                Name = "WP7 IRC Client",
-                Email = "derpirc@urmom.com",
-                NickName = "derpirc",
-                // TODO: Sync CSV and ObservableCollection
-                NickNameAlternates = "dERca, dERka",
-                QuitMessage = "derpirc derka muhammad jihad",
-            };
-            return result;
-        }
-
         public static Session CreateSession()
         {
             var result = new Session();
@@ -123,7 +119,6 @@ namespace derpirc.Data.Models.Settings
                 HostName = "irc.efnet.org",
                 Port = 6667,
                 Ports = "6667",
-                Group = "EFNet",
             });
             result.Add(new SessionServer()
             {
@@ -134,7 +129,6 @@ namespace derpirc.Data.Models.Settings
                 HostName = "irc.node-3.net",
                 Port = 6667,
                 Ports = "6667",
-                Group = "PowerPrecision",
             });
 
             return result;
