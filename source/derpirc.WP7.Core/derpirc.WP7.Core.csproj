@@ -62,9 +62,12 @@
     <Compile Include="ChannelsSupervisor.cs" />
     <Compile Include="ChannelStatusEventArgs.cs" />
     <Compile Include="ChannelStatusTypeEnum.cs" />
+    <Compile Include="ClientItem.cs" />
+    <Compile Include="ClientStateEnum.cs" />
     <Compile Include="MessageItemEventArgs.cs" />
     <Compile Include="MessagesSupervisor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SupervisorFacade.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="SessionSupervisor.cs" />

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.Linq;
 using derpirc.Data;
 using derpirc.Data.Models;
@@ -10,24 +8,10 @@ namespace derpirc.Core
 {
     public class MessagesSupervisor
     {
-        private DataUnitOfWork _unitOfWork;
-        private Session _session;
-
-        private ObservableCollection<IrcLocalUser> _localUsers;
-        public ObservableCollection<IrcLocalUser> LocalUsers
-        {
-            get { return _localUsers; }
-            private set { }
-        }
-
         public event EventHandler<MessageItemEventArgs> MessageItemReceived;
 
-        public MessagesSupervisor(DataUnitOfWork unitOfWork, Session session)
+        public MessagesSupervisor()
         {
-            _unitOfWork = unitOfWork;
-            _session = session;
-            _localUsers = new FixupCollection<IrcLocalUser>();
-            _localUsers.CollectionChanged += new NotifyCollectionChangedEventHandler(LocalUsers_CollectionChanged);
         }
 
         public void SendMessage(MessageItem message)
@@ -35,7 +19,7 @@ namespace derpirc.Core
             if (message != null)
             {
                 var summary = message.Summary;
-                var localUser = GetLocalUserBySummary(summary);
+                var localUser = SupervisorFacade.Default.GetLocalUserBySummary(summary);
                 localUser.SendMessage(summary.Name, message.Text);
 
                 // Add the source and MessageType at the last minute
@@ -55,19 +39,20 @@ namespace derpirc.Core
             }
         }
 
-        private void LocalUsers_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        public void AttachLocalUser(IrcLocalUser localUser)
         {
-            if (e.Action == NotifyCollectionChangedAction.Add)
-            {
-                foreach (var item in e.NewItems)
-                {
-                    var newItem = item as IrcLocalUser;
-                    newItem.NickNameChanged += LocalUser_NickNameChanged;
-                    newItem.MessageReceived += LocalUser_MessageReceived;
-                    //newItem.MessageSent += LocalUser_MessageSent;
-                    //newItem.NoticeReceived += LocalUser_NoticeReceived;
-                }
-            }
+            localUser.NickNameChanged += LocalUser_NickNameChanged;
+            localUser.MessageReceived += LocalUser_MessageReceived;
+            //localUser.MessageSent += LocalUser_MessageSent;
+            //localUser.NoticeReceived += LocalUser_NoticeReceived;
+        }
+
+        public void DetachLocalUser(IrcLocalUser localUser)
+        {
+            localUser.NickNameChanged -= LocalUser_NickNameChanged;
+            localUser.MessageReceived -= LocalUser_MessageReceived;
+            //localUser.MessageSent -= LocalUser_MessageSent;
+            //localUser.NoticeReceived -= LocalUser_NoticeReceived;
         }
 
         private void LocalUser_MessageReceived(object sender, IrcMessageEventArgs e)
@@ -107,7 +92,7 @@ namespace derpirc.Core
 
         private MessageSummary GetMessageSummary(IrcUser user)
         {
-            var network = GetNetworkByClientId(user.Client.ClientId);
+            var network = SupervisorFacade.Default.GetNetworkByClient(user.Client);
             var result = network.Messages.FirstOrDefault(x => x.Name == user.NickName.ToLower());
             if (result == null)
             {
@@ -132,23 +117,7 @@ namespace derpirc.Core
             return result;
         }
 
-        // TODO: static method
-        private IrcLocalUser GetLocalUserBySummary(IMessageSummary channel)
-        {
-            var result = (from localUser in _localUsers
-                          where localUser.Client.ClientId == channel.NetworkId.ToString()
-                          select localUser).FirstOrDefault();
-            return result;
-        }
-
-        // TODO: static method
-        private Network GetNetworkByClientId(string clientId)
-        {
-            var integerId = -1;
-            int.TryParse(clientId, out integerId);
-            // TODO: Error handling make sure _session != null
-            return _session.Networks.FirstOrDefault(x => x.Id == integerId);
-        }
+        #region Events
 
         private void OnMessageItemReceived(MessageItemEventArgs e)
         {
@@ -158,5 +127,7 @@ namespace derpirc.Core
                 handler.Invoke(this, e);
             }
         }
+
+        #endregion
     }
 }

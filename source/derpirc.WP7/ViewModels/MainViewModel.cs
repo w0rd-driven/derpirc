@@ -200,7 +200,7 @@ namespace derpirc.ViewModels
 
         private BackgroundWorker _worker;
         private DataUnitOfWork _unitOfWork;
-        private Core.SessionSupervisor _sessionSupervisor;
+        private Core.SupervisorFacade _supervisor;
 
         private DateTime _lastRefreshChannels;
         private DateTime _lastRefreshMentions;
@@ -356,12 +356,14 @@ namespace derpirc.ViewModels
 
             //_unitOfWork = new DataUnitOfWork();
             _unitOfWork = DataUnitOfWork.Default;
-            _sessionSupervisor = new Core.SessionSupervisor(_unitOfWork);
-            _sessionSupervisor.ChannelJoined += new EventHandler<Core.ChannelStatusEventArgs>(_sessionSupervisor_ChannelJoined);
-            _sessionSupervisor.ChannelLeft += new EventHandler<Core.ChannelStatusEventArgs>(_sessionSupervisor_ChannelLeft);
-            _sessionSupervisor.ChannelItemReceived += new EventHandler<Core.MessageItemEventArgs>(_sessionSupervisor_ChannelItemReceived);
-            _sessionSupervisor.MentionItemReceived += new EventHandler<Core.MessageItemEventArgs>(_sessionSupervisor_MentionItemReceived);
-            _sessionSupervisor.MessageItemReceived += new EventHandler<Core.MessageItemEventArgs>(_sessionSupervisor_MessageItemReceived);
+            _supervisor = Core.SupervisorFacade.Default;
+            _supervisor.ChannelJoined += new EventHandler<Core.ChannelStatusEventArgs>(_sessionSupervisor_ChannelJoined);
+            _supervisor.ChannelLeft += new EventHandler<Core.ChannelStatusEventArgs>(_sessionSupervisor_ChannelLeft);
+            _supervisor.ChannelItemReceived += new EventHandler<Core.MessageItemEventArgs>(_sessionSupervisor_ChannelItemReceived);
+            _supervisor.MentionItemReceived += new EventHandler<Core.MessageItemEventArgs>(_sessionSupervisor_MentionItemReceived);
+            _supervisor.MessageItemReceived += new EventHandler<Core.MessageItemEventArgs>(_sessionSupervisor_MessageItemReceived);
+
+            _supervisor.Initialize();
 
             this.MessengerInstance.Register<GenericMessage<ChannelItem>>(this, message =>
             {
@@ -534,17 +536,17 @@ namespace derpirc.ViewModels
 
         public void Send(ChannelItem message)
         {
-            _sessionSupervisor.SendMessage(message);
+            _supervisor.SendMessage(message);
         }
 
         public void Send(MentionItem message)
         {
-            _sessionSupervisor.SendMessage(message);
+            _supervisor.SendMessage(message);
         }
 
         public void Send(MessageItem message)
         {
-            _sessionSupervisor.SendMessage(message);
+            _supervisor.SendMessage(message);
         }
     }
 }

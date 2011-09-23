@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.Linq;
 using System.Text.RegularExpressions;
 using derpirc.Data;
@@ -11,38 +9,28 @@ namespace derpirc.Core
 {
     public class ChannelsSupervisor
     {
-        private bool _isDisposed;
-        private const int _quitTimeout = 1000;
-        private string _quitMessage;
-        private DataUnitOfWork _unitOfWork;
-        private Session _session;
-
         // Regex for splitting space-separated list of command parts until first parameter that begins with '/'.
         private static readonly Regex commandPartsSplitRegex = new Regex("(?<! /.*) ", RegexOptions.Compiled);
-
-        private ObservableCollection<IrcChannel> _channels;
-        private ObservableCollection<ChannelSummary> _channelSummaries;
-
-        private ObservableCollection<IrcLocalUser> _localUsers;
-        public ObservableCollection<IrcLocalUser> LocalUsers
-        {
-            get { return _localUsers; }
-            private set { }
-        }
 
         public event EventHandler<ChannelStatusEventArgs> ChannelJoined;
         public event EventHandler<ChannelStatusEventArgs> ChannelLeft;
         public event EventHandler<MessageItemEventArgs> ChannelItemReceived;
         public event EventHandler<MessageItemEventArgs> MentionItemReceived;
 
-        public ChannelsSupervisor(DataUnitOfWork unitOfWork, Session session)
+        public ChannelsSupervisor()
         {
-            _unitOfWork = unitOfWork;
-            _session = session;
-            _localUsers = new FixupCollection<IrcLocalUser>();
-            _localUsers.CollectionChanged += new NotifyCollectionChangedEventHandler(LocalUsers_CollectionChanged);
-            //_channels = new ObservableCollection<IrcChannel>();
-            //_channelSummaries = new ObservableCollection<ChannelSummary>();
+        }
+
+        public void AttachLocalUser(IrcLocalUser localUser)
+        {
+            localUser.JoinedChannel += LocalUser_JoinedChannel;
+            localUser.LeftChannel += LocalUser_LeftChannel;
+        }
+
+        public void DetachLocalUser(IrcLocalUser localUser)
+        {
+            localUser.JoinedChannel -= LocalUser_JoinedChannel;
+            localUser.LeftChannel -= LocalUser_LeftChannel;
         }
 
         public void SendMessage(ChannelItem message)
@@ -50,7 +38,7 @@ namespace derpirc.Core
             if (message != null)
             {
                 var summary = message.Summary;
-                var localUser = GetLocalUserBySummary(summary);
+                var localUser = SupervisorFacade.Default.GetLocalUserBySummary(summary);
                 localUser.SendMessage(summary.Name, message.Text);
 
                 // Add the source and MessageType at the last minute
@@ -75,7 +63,7 @@ namespace derpirc.Core
             if (message != null)
             {
                 var summary = message.Summary;
-                var localUser = GetLocalUserBySummary(summary);
+                var localUser = SupervisorFacade.Default.GetLocalUserBySummary(summary);
                 //localUser.SendMessage(summary.ChannelName, message.Text);
 
                 // Add the source and MessageType at the last minute
@@ -92,19 +80,6 @@ namespace derpirc.Core
                     MessageId = message.Id,
                 };
                 OnMentionItemReceived(eventArgs);
-            }
-        }
-
-        private void LocalUsers_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (e.Action == NotifyCollectionChangedAction.Add)
-            {
-                foreach (var item in e.NewItems)
-                {
-                    var newItem = item as IrcLocalUser;
-                    newItem.JoinedChannel += LocalUser_JoinedChannel;
-                    newItem.LeftChannel += LocalUser_LeftChannel;
-                }
             }
         }
 
@@ -214,7 +189,7 @@ namespace derpirc.Core
 
         private ChannelSummary GetChannelSummary(IrcChannel channel)
         {
-            var network = GetNetworkByClientId(channel.Client.ClientId);
+            var network = SupervisorFacade.Default.GetNetworkByClient(channel.Client);
             var result = network.Channels.FirstOrDefault(x => x.Name == channel.Name.ToLower());
             if (result == null)
             {
@@ -228,7 +203,7 @@ namespace derpirc.Core
 
         private MentionSummary GetMentionSummary(IrcUser user)
         {
-            var network = GetNetworkByClientId(user.Client.ClientId);
+            var network = SupervisorFacade.Default.GetNetworkByClient(user.Client);
             var result = network.Mentions.FirstOrDefault(x => x.Name == user.NickName.ToLower());
             if (result == null)
             {
@@ -238,24 +213,6 @@ namespace derpirc.Core
                 DataUnitOfWork.Default.Commit();
             }
             return result;
-        }
-
-        // TODO: static method
-        private IrcLocalUser GetLocalUserBySummary(IMessageSummary channel)
-        {
-            var result = (from localUser in _localUsers
-                          where localUser.Client.ClientId == channel.NetworkId.ToString()
-                          select localUser).FirstOrDefault();
-            return result;
-        }
-
-        // TODO: static method
-        private Network GetNetworkByClientId(string clientId)
-        {
-            var integerId = -1;
-            int.TryParse(clientId, out integerId);
-            // TODO: Error handling make sure _session != null
-            return _session.Networks.FirstOrDefault(x => x.Id == integerId);
         }
 
         private ChannelItem GetIrcMessage(ChannelSummary summary, IrcMessageEventArgs eventArgs, MessageType messageType)
@@ -284,6 +241,8 @@ namespace derpirc.Core
             result.Type = messageType;
             return result;
         }
+
+        #region Events
 
         private void OnChannelJoined(ChannelStatusEventArgs e)
         {
@@ -320,5 +279,7 @@ namespace derpirc.Core
                 handler.Invoke(this, e);
             }
         }
+
+        #endregion
     }
 }
