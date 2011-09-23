@@ -63,8 +63,7 @@ namespace derpirc.Core
 
         private IrcUserRegistrationInfo GetRegistrationInfo()
         {
-            // TODO: Database lookup
-            _settings = Data.Models.Settings.Factory.CreateUser();
+            _settings = SettingsUnitOfWork.Default.User.FindBy(x => x.Name == "Default").FirstOrDefault();
             var result = new IrcUserRegistrationInfo();
             result.NickName = _settings.NickName;
             result.RealName = _settings.FullName;

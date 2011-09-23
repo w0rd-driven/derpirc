@@ -86,8 +86,6 @@ namespace derpirc.Core
         private void LocalUser_JoinedChannel(object sender, IrcChannelEventArgs e)
         {
             var localUser = sender as IrcLocalUser;
-            e.Channel.UserJoined += Channel_UserJoined;
-            e.Channel.UserLeft += Channel_UserLeft;
             e.Channel.MessageReceived += Channel_MessageReceived;
             e.Channel.NoticeReceived += Channel_NoticeReceived;
             JoinChannel(e.Channel);
@@ -96,25 +94,9 @@ namespace derpirc.Core
         private void LocalUser_LeftChannel(object sender, IrcChannelEventArgs e)
         {
             var localUser = sender as IrcLocalUser;
-            e.Channel.UserJoined -= Channel_UserJoined;
-            e.Channel.UserLeft -= Channel_UserLeft;
             e.Channel.MessageReceived -= Channel_MessageReceived;
             e.Channel.NoticeReceived -= Channel_NoticeReceived;
             LeaveChannel(e.Channel);
-        }
-
-        private void Channel_UserJoined(object sender, IrcChannelUserEventArgs e)
-        {
-            var channel = sender as IrcChannel;
-            // TODO: Update UserList
-            //OnChannelUserLeft(channel, e);
-        }
-
-        private void Channel_UserLeft(object sender, IrcChannelUserEventArgs e)
-        {
-            var channel = sender as IrcChannel;
-            // TODO: Update UserList
-            //OnChannelUserJoined(channel, e);
         }
 
         private void Channel_MessageReceived(object sender, IrcMessageEventArgs e)

@@ -168,8 +168,8 @@ namespace derpirc.Data
         public bool InitializeDatabase(bool wipe)
         {
             var connectionString = GetConnectionString();
-            _context = new DataModelContainer();
-            var context = (_context as DataModelContainer);
+            _context = new SettingsModelContainer();
+            var context = (_context as SettingsModelContainer);
             context.InitializeDatabase(wipe);
             return context.DatabaseExists();
         }

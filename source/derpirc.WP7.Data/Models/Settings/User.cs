@@ -14,6 +14,8 @@ namespace derpirc.Data.Models.Settings
         [Column(IsPrimaryKey = true, IsDbGenerated = true)]
         public int Id { get; set; }
         [Column(CanBeNull = false)]
+        public string Name { get; set; }
+        [Column(CanBeNull = false)]
         public string NickName { get; set; }
         [Column(CanBeNull = true)]
         public string NickNameAlternate { get; set; }

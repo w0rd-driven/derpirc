@@ -57,6 +57,7 @@ namespace derpirc.Core
             // HACK: Test First Init
             //_unitOfWork.InitializeDatabase(true);
             DataUnitOfWork.Default.InitializeDatabase(true);
+            SettingsUnitOfWork.Default.InitializeDatabase(true);
 
             _sessionSupervisor = new SessionSupervisor();
         }

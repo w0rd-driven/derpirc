@@ -8,6 +8,7 @@ namespace derpirc.Data.Models.Settings
         {
             var result = new User()
             {
+                Name = "Default",
                 NickName = "derpirc",
                 NickNameAlternate = "durpirc",
                 FullName = "derpirc WP7 IRC Client",
