@@ -113,20 +113,7 @@ namespace derpirc.ViewModels
         }
 
         private ObservableCollection<ChannelSummaryViewModel> _channelsList;
-        private CollectionViewSource _channels;
-        public CollectionViewSource Channels
-        {
-            get { return _channels; }
-            set
-            {
-                if (_channels == value)
-                    return;
-
-                var oldValue = _channels;
-                _channels = value;
-                RaisePropertyChanged(() => Channels);
-            }
-        }
+        public CollectionViewSource Channels  { get; set; }
 
         private MentionSummaryViewModel _selectedMention;
         public MentionSummaryViewModel SelectedMention
@@ -144,20 +131,7 @@ namespace derpirc.ViewModels
         }
 
         private ObservableCollection<MentionSummaryViewModel> _mentionsList;
-        private CollectionViewSource _mentions;
-        public CollectionViewSource Mentions
-        {
-            get { return _mentions; }
-            set
-            {
-                if (_mentions == value)
-                    return;
-
-                var oldValue = _mentions;
-                _mentions = value;
-                RaisePropertyChanged(() => Mentions);
-            }
-        }
+        public CollectionViewSource Mentions { get; set; }
 
         private MessageSummaryViewModel _selectedMessage;
         public MessageSummaryViewModel SelectedMessage
@@ -175,20 +149,7 @@ namespace derpirc.ViewModels
         }
 
         private ObservableCollection<MessageSummaryViewModel> _messagesList;
-        private CollectionViewSource _messages;
-        public CollectionViewSource Messages
-        {
-            get { return _messages; }
-            set
-            {
-                if (_messages == value)
-                    return;
-
-                var oldValue = _messages;
-                _messages = value;
-                RaisePropertyChanged(() => Messages);
-            }
-        }
+        public CollectionViewSource Messages { get; set; }
 
         public bool IsDataLoaded
         {
@@ -245,7 +206,6 @@ namespace derpirc.ViewModels
                     var channelSummary = new ChannelSummaryViewModel();
                     channelSummary.LoadById(e.SummaryId);
                     _channelsList.Add(channelSummary);
-                    Channels.View.Refresh();
                 });
             }
             else
@@ -253,7 +213,6 @@ namespace derpirc.ViewModels
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
                     foundItem.LoadById(e.SummaryId);
-                    Channels.View.Refresh();
                 });
             }
         }
@@ -272,7 +231,6 @@ namespace derpirc.ViewModels
                     var channelSummary = new ChannelSummaryViewModel();
                     channelSummary.LoadById(e.SummaryId);
                     _channelsList.Add(channelSummary);
-                    Channels.View.Refresh();
                 });
             }
             else
@@ -280,7 +238,6 @@ namespace derpirc.ViewModels
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
                     foundItem.LoadById(e.SummaryId);
-                    Channels.View.Refresh();
                     var newMessage = foundItem.Model.Messages.FirstOrDefault(x => x.Id == e.MessageId);
                     this.MessengerInstance.Send(new GenericMessage<ChannelItem>(this, "in", newMessage));
                 });
@@ -297,7 +254,6 @@ namespace derpirc.ViewModels
                     var mentionSummary = new MentionSummaryViewModel();
                     mentionSummary.LoadById(e.SummaryId);
                     _mentionsList.Add(mentionSummary);
-                    Mentions.View.Refresh();
                 });
             }
             else
@@ -305,7 +261,6 @@ namespace derpirc.ViewModels
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
                     foundItem.LoadById(e.SummaryId);
-                    Mentions.View.Refresh();
                     var newMessage = foundItem.Model.Messages.FirstOrDefault(x => x.Id == e.MessageId);
                     this.MessengerInstance.Send(new GenericMessage<MentionItem>(this, "in", newMessage));
                 });
@@ -322,7 +277,6 @@ namespace derpirc.ViewModels
                     var messageSummary = new MessageSummaryViewModel();
                     messageSummary.LoadById(e.SummaryId);
                     _messagesList.Add(messageSummary);
-                    Messages.View.Refresh();
                 });
             }
             else
@@ -330,7 +284,6 @@ namespace derpirc.ViewModels
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
                     foundItem.LoadById(e.SummaryId);
-                    Messages.View.Refresh();
                     var newMessage = foundItem.Model.Messages.FirstOrDefault(x => x.Id == e.MessageId);
                     this.MessengerInstance.Send(new GenericMessage<MessageItem>(this, "in", newMessage));
                 });
