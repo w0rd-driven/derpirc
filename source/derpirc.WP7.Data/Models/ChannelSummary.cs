@@ -103,9 +103,10 @@ namespace derpirc.Data.Models
         private void UpdateMessageCounts(ChannelItem entity)
         {
             LastItem = entity;
+            // Id is 0 here so inflate counts blindly
             LastItemId = entity.Id;
-            Count = _messages.Count;
-            UnreadCount = _messages.Count(x => x.IsRead == false);
+            Count = _messages.Count + 1;
+            UnreadCount = _messages.Count(x => x.IsRead == false) + 1;
         }
     }
 }
