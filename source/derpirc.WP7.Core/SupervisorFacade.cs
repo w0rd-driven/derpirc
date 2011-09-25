@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using derpirc.Data;
 using derpirc.Data.Models;
 using IrcDotNet;
+using Microsoft.Phone.Reactive;
 
 namespace derpirc.Core
 {
@@ -19,10 +19,27 @@ namespace derpirc.Core
             set { _clients = value; }
         }
 
+        private NetworkType _networkType;
+        public NetworkType NetworkType
+        {
+            get { return _networkType; }
+            set { _networkType = value; }
+        }
+
+        private bool _isNetworkAvailable;
+        public bool IsNetworkAvailable
+        {
+            get { return _isNetworkAvailable; }
+            set { _isNetworkAvailable = value; }
+        }
+
         #endregion
 
         private DataUnitOfWork _unitOfWork;
         private SettingsUnitOfWork _unitOfWorkSettings;
+
+        private NetworkMonitor _networkMonitor;
+        private IDisposable statusObserver;
 
         private SessionSupervisor _sessionSupervisor;
         private ChannelsSupervisor _channelSupervisor;
@@ -53,13 +70,39 @@ namespace derpirc.Core
         public SupervisorFacade()
         {
             _clients = new ObservableCollection<ClientItem>();
+            Startup();
+        }
 
+        private void Startup()
+        {
+            _networkMonitor = new NetworkMonitor(10000);
+            statusObserver = _networkMonitor.Status()
+                .ObserveOnDispatcher()
+                .Subscribe(type =>
+                {
+                    NetworkType = type;
+                    if (type != NetworkType.None)
+                        IsNetworkAvailable = true;
+                    else
+                        IsNetworkAvailable = false;
+                });
             // HACK: Test First Init
             //_unitOfWork.InitializeDatabase(true);
             DataUnitOfWork.Default.InitializeDatabase(true);
             SettingsUnitOfWork.Default.InitializeDatabase(true);
+        }
 
-            _sessionSupervisor = new SessionSupervisor();
+        private void Shutdown()
+        {
+            //if (this.statusObserver == null)
+            //    return;
+
+            //this.statusObserver.Dispose();
+            //this.statusObserver = null;
+            //_networkMonitor = null;
+            _sessionSupervisor = null;
+            _channelSupervisor = null;
+            _messageSupervisor = null;
         }
 
         private void InitializeSupervisors()
@@ -150,6 +193,8 @@ namespace derpirc.Core
 
         public void Initialize()
         {
+            if (_sessionSupervisor == null)
+                _sessionSupervisor = new SessionSupervisor();
             _sessionSupervisor.Initialize();
         }
 

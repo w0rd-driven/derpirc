@@ -44,7 +44,10 @@
     <Reference Include="IrcDotNet">
       <HintPath>..\..\library\IrcDotNet\WP71\IrcDotNet.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Phone" />
+    <Reference Include="Microsoft.Phone.Reactive" />
     <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Observable" />
     <Reference Include="System.Windows" />
     <Reference Include="system" />
     <Reference Include="System.Core" />
@@ -66,6 +69,8 @@
     <Compile Include="ClientStateEnum.cs" />
     <Compile Include="MessageItemEventArgs.cs" />
     <Compile Include="MessagesSupervisor.cs" />
+    <Compile Include="NetworkMonitor.cs" />
+    <Compile Include="NetworkType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SupervisorFacade.cs" />
   </ItemGroup>
