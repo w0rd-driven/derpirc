@@ -6,8 +6,9 @@ using IrcDotNet;
 
 namespace derpirc.Core
 {
-    public class MessagesSupervisor
+    public class MessagesSupervisor : IDisposable
     {
+        private bool _isDisposed;
         public event EventHandler<MessageItemEventArgs> MessageItemReceived;
 
         public MessagesSupervisor()
@@ -129,5 +130,22 @@ namespace derpirc.Core
         }
 
         #endregion
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected void Dispose(bool disposing)
+        {
+            if (!this._isDisposed)
+            {
+                if (disposing)
+                {
+                }
+            }
+            this._isDisposed = true;
+        }
     }
 }

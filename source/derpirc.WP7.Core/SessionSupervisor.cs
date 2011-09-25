@@ -106,7 +106,7 @@ namespace derpirc.Core
         private void Client_Disconnected(object sender, EventArgs e)
         {
             var client = sender as IrcClient;
-            // TODO: Pass through a standard OnDisconnected event
+            // TODO: Make OnDisconnected Event so the facade can call DetachLocalUser there
         }
 
         private void Client_Error(object sender, IrcErrorEventArgs e)
@@ -130,7 +130,7 @@ namespace derpirc.Core
             var foundClient = SupervisorFacade.Default.Clients.FirstOrDefault(x => x.Client == client);
             foundClient.State = ClientState.Registered;
             SupervisorFacade.Default.AttachLocalUser(client.LocalUser);
-            //ProcessSession(client);
+            // TODO: Make OnClientRegistered Event so the facade can call AttachLocalUser there
             //OnClientRegistered(client);
         }
 
@@ -148,9 +148,6 @@ namespace derpirc.Core
                 foundClient.State = ClientState.Processed;
                 var networkName = ParseNetworkName(client.WelcomeMessage);
                 var matchedNetwork = GetNetworkByName(networkName);
-                // Commit the hostname and network casing change if necessary
-                //_unitOfWork.Commit();
-                // TODO: Wire up settings UI call for IsAutoJoinSession
                 JoinSession(matchedNetwork, client);
 
                 // Change local servername to match for easy reconnects

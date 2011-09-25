@@ -7,8 +7,9 @@ using IrcDotNet;
 
 namespace derpirc.Core
 {
-    public class ChannelsSupervisor
+    public class ChannelsSupervisor : IDisposable
     {
+        private bool _isDisposed;
         // Regex for splitting space-separated list of command parts until first parameter that begins with '/'.
         private static readonly Regex commandPartsSplitRegex = new Regex("(?<! /.*) ", RegexOptions.Compiled);
 
@@ -263,5 +264,22 @@ namespace derpirc.Core
         }
 
         #endregion
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected void Dispose(bool disposing)
+        {
+            if (!this._isDisposed)
+            {
+                if (disposing)
+                {
+                }
+            }
+            this._isDisposed = true;
+        }
     }
 }
