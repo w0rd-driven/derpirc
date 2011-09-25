@@ -17,6 +17,64 @@ namespace derpirc.Data
     /// </summary>
     public partial class DataModelContainer : DataContext
     {
+        #region Table Properties
+
+        public Table<ChannelSummary> Channels
+        {
+            get { return _channels ?? (_channels = GetTable<ChannelSummary>()); }
+        }
+        private Table<ChannelSummary> _channels;
+
+        public Table<ChannelItem> ChannelItems
+        {
+            get { return _channelItems ?? (_channelItems = GetTable<ChannelItem>()); }
+        }
+        private Table<ChannelItem> _channelItems;
+
+        public Table<MentionSummary> Mentions
+        {
+            get { return _mentions ?? (_mentions = GetTable<MentionSummary>()); }
+        }
+        private Table<MentionSummary> _mentions;
+
+        public Table<MentionItem> MentionItems
+        {
+            get { return _mentionItems ?? (_mentionItems = GetTable<MentionItem>()); }
+        }
+        private Table<MentionItem> _mentionItems;
+
+        public Table<MessageSummary> Messages
+        {
+            get { return _messages ?? (_messages = GetTable<MessageSummary>()); }
+        }
+        private Table<MessageSummary> _messages;
+
+        public Table<MessageItem> MessageItems
+        {
+            get { return _messageItems ?? (_messageItems = GetTable<MessageItem>()); }
+        }
+        private Table<MessageItem> _messageItems;
+
+        public Table<Session> Session
+        {
+            get { return _session ?? (_session = GetTable<Session>()); }
+        }
+        private Table<Session> _session;
+
+        public Table<Server> Servers
+        {
+            get { return _servers ?? (_servers = GetTable<Server>()); }
+        }
+        private Table<Server> _servers;
+
+        public Table<Network> Networks
+        {
+            get { return _networks ?? (_networks = GetTable<Network>()); }
+        }
+        private Table<Network> _networks;
+
+        #endregion
+
         public const string DatabaseFileName = "IRC.sdf";
         public const string ConnectionString = "isostore:/" + DatabaseFileName;
         private static MappingSource mappingSource = new AttributeMappingSource();
@@ -121,64 +179,6 @@ namespace derpirc.Data
             this.Session.InsertOnSubmit(session);
             this.SubmitChanges();
         }
-
-        #endregion
-    
-        #region Table Properties
-
-        public Table<ChannelSummary> Channels
-        {
-            get { return _channels ?? (_channels = GetTable<ChannelSummary>()); }
-        }
-        private Table<ChannelSummary> _channels;
-
-        public Table<ChannelItem> ChannelItems
-        {
-            get { return _channelItems ?? (_channelItems = GetTable<ChannelItem>()); }
-        }
-        private Table<ChannelItem> _channelItems;
-
-        public Table<MentionSummary> Mentions
-        {
-            get { return _mentions ?? (_mentions = GetTable<MentionSummary>()); }
-        }
-        private Table<MentionSummary> _mentions;
-
-        public Table<MentionItem> MentionItems
-        {
-            get { return _mentionItems ?? (_mentionItems = GetTable<MentionItem>()); }
-        }
-        private Table<MentionItem> _mentionItems;
-
-        public Table<MessageSummary> Messages
-        {
-            get { return _messages ?? (_messages = GetTable<MessageSummary>()); }
-        }
-        private Table<MessageSummary> _messages;
-
-        public Table<MessageItem> MessageItems
-        {
-            get { return _messageItems ?? (_messageItems = GetTable<MessageItem>()); }
-        }
-        private Table<MessageItem> _messageItems;
-
-        public Table<Session> Session
-        {
-            get { return _session ?? (_session = GetTable<Session>()); }
-        }
-        private Table<Session> _session;
-
-        public Table<Server> Servers
-        {
-            get { return _servers ?? (_servers = GetTable<Server>()); }
-        }
-        private Table<Server> _servers;
-
-        public Table<Network> Networks
-        {
-            get { return _networks ?? (_networks = GetTable<Network>()); }
-        }
-        private Table<Network> _networks;
 
         #endregion
     }

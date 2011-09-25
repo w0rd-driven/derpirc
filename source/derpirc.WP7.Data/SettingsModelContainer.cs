@@ -15,6 +15,40 @@ namespace derpirc.Data
     /// </summary>
     public partial class SettingsModelContainer : DataContext
     {
+        #region Table Properties
+
+        public Table<User> User
+        {
+            get { return _user ?? (_user = GetTable<User>()); }
+        }
+        private Table<User> _user;
+
+        public Table<Formatting> Formatting
+        {
+            get { return _formatting ?? (_formatting = GetTable<Formatting>()); }
+        }
+        private Table<Formatting> _formatting;
+
+        public Table<Session> Session
+        {
+            get { return _session ?? (_session = GetTable<Session>()); }
+        }
+        private Table<Session> _session;
+
+        public Table<Server> Servers
+        {
+            get { return _servers ?? (_servers = GetTable<Server>()); }
+        }
+        private Table<Server> _servers;
+
+        public Table<Network> Networks
+        {
+            get { return _networks ?? (_networks = GetTable<Network>()); }
+        }
+        private Table<Network> _networks;
+
+        #endregion
+
         public const string DatabaseFileName = "Settings.sdf";
         public const string ConnectionString = "isostore:/" + DatabaseFileName;
         private static MappingSource mappingSource = new AttributeMappingSource();
@@ -127,40 +161,6 @@ namespace derpirc.Data
 
             this.SubmitChanges();
         }
-
-        #endregion
-    
-        #region Table Properties
-
-        public Table<User> User
-        {
-            get { return _user ?? (_user = GetTable<User>()); }
-        }
-        private Table<User> _user;
-
-        public Table<Formatting> Formatting
-        {
-            get { return _formatting ?? (_formatting = GetTable<Formatting>()); }
-        }
-        private Table<Formatting> _formatting;
-
-        public Table<Session> Session
-        {
-            get { return _session ?? (_session = GetTable<Session>()); }
-        }
-        private Table<Session> _session;
-
-        public Table<Server> Servers
-        {
-            get { return _servers ?? (_servers = GetTable<Server>()); }
-        }
-        private Table<Server> _servers;
-
-        public Table<Network> Networks
-        {
-            get { return _networks ?? (_networks = GetTable<Network>()); }
-        }
-        private Table<Network> _networks;
 
         #endregion
     }
