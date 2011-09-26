@@ -95,8 +95,8 @@ namespace derpirc.ViewModels
 
         public FrameworkElement LayoutRoot { get; set; }
 
-        private MentionSummary _model;
-        public MentionSummary Model
+        private Mention _model;
+        public Mention Model
         {
             get { return _model; }
             set
@@ -196,12 +196,12 @@ namespace derpirc.ViewModels
         /// <summary>
         /// Initializes a new instance of the ChannelDetailViewModel class.
         /// </summary>
-        public MentionDetailViewModel() : this(new MentionSummary()) { }
+        public MentionDetailViewModel() : this(new Mention()) { }
 
         /// <summary>
         /// Initializes a new instance of the MentionDetailViewModel class.
         /// </summary>
-        public MentionDetailViewModel(MentionSummary model)
+        public MentionDetailViewModel(Mention model)
         {
             if (IsInDesignMode)
             {
@@ -333,7 +333,7 @@ namespace derpirc.ViewModels
                 Model = model;
         }
 
-        private void UpdateViewModel(MentionSummary model)
+        private void UpdateViewModel(Mention model)
         {
             NickName = model.Name;
             if (model.Network != null)

@@ -11,9 +11,9 @@ namespace derpirc.Data.Models
         private Binary version;
         private EntityRef<Session> _session;
         private EntityRef<Server> _server;
-        private EntitySet<ChannelSummary> _channels;
-        private EntitySet<MentionSummary> _mentions;
-        private EntitySet<MessageSummary> _messages;
+        private EntitySet<Channel> _channels;
+        private EntitySet<Mention> _mentions;
+        private EntitySet<Message> _messages;
 
         #region Primitive Properties
 
@@ -94,21 +94,21 @@ namespace derpirc.Data.Models
         }
 
         [Association(Name = "Channel_Items", ThisKey = "Id", OtherKey = "NetworkId", DeleteRule = "NO ACTION")]
-        public EntitySet<ChannelSummary> Channels
+        public EntitySet<Channel> Channels
         {
             get { return _channels; }
             set { _channels.Assign(value); }
         }
 
         [Association(Name = "Mention_Items", ThisKey = "Id", OtherKey = "NetworkId", DeleteRule = "NO ACTION")]
-        public EntitySet<MentionSummary> Mentions
+        public EntitySet<Mention> Mentions
         {
             get { return _mentions; }
             set { _mentions.Assign(value); }
         }
 
         [Association(Name = "Message_Items", ThisKey = "Id", OtherKey = "NetworkId", DeleteRule = "NO ACTION")]
-        public EntitySet<MessageSummary> Messages
+        public EntitySet<Message> Messages
         {
             get { return _messages; }
             set { _messages.Assign(value); }
@@ -120,42 +120,42 @@ namespace derpirc.Data.Models
         {
             _session = default(EntityRef<Session>);
             _server = default(EntityRef<Server>);
-            _channels = new EntitySet<ChannelSummary>(new Action<ChannelSummary>(attach_Channels), new Action<ChannelSummary>(detach_Channels));
-            _mentions = new EntitySet<MentionSummary>(new Action<MentionSummary>(attach_Mentions), new Action<MentionSummary>(detach_Mentions));
-            _messages = new EntitySet<MessageSummary>(new Action<MessageSummary>(attach_Messages), new Action<MessageSummary>(detach_Messages));
+            _channels = new EntitySet<Channel>(new Action<Channel>(attach_Channels), new Action<Channel>(detach_Channels));
+            _mentions = new EntitySet<Mention>(new Action<Mention>(attach_Mentions), new Action<Mention>(detach_Mentions));
+            _messages = new EntitySet<Message>(new Action<Message>(attach_Messages), new Action<Message>(detach_Messages));
         }
 
-        void attach_Channels(ChannelSummary entity)
+        void attach_Channels(Channel entity)
         {
             //this.RaisePropertyChanged();
             entity.Network = this;
         }
 
-        void detach_Channels(ChannelSummary entity)
+        void detach_Channels(Channel entity)
         {
             //this.RaisePropertyChanged();
             entity.Network = null;
         }
 
-        void attach_Mentions(MentionSummary entity)
+        void attach_Mentions(Mention entity)
         {
             //this.RaisePropertyChanged();
             entity.Network = this;
         }
 
-        void detach_Mentions(MentionSummary entity)
+        void detach_Mentions(Mention entity)
         {
             //this.RaisePropertyChanged();
             entity.Network = null;
         }
 
-        void attach_Messages(MessageSummary entity)
+        void attach_Messages(Message entity)
         {
             //this.RaisePropertyChanged();
             entity.Network = this;
         }
 
-        void detach_Messages(MessageSummary entity)
+        void detach_Messages(Message entity)
         {
             //this.RaisePropertyChanged();
             entity.Network = null;

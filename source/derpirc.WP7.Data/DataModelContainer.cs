@@ -19,11 +19,11 @@ namespace derpirc.Data
     {
         #region Table Properties
 
-        public Table<ChannelSummary> Channels
+        public Table<Channel> Channels
         {
-            get { return _channels ?? (_channels = GetTable<ChannelSummary>()); }
+            get { return _channels ?? (_channels = GetTable<Channel>()); }
         }
-        private Table<ChannelSummary> _channels;
+        private Table<Channel> _channels;
 
         public Table<ChannelItem> ChannelItems
         {
@@ -31,11 +31,11 @@ namespace derpirc.Data
         }
         private Table<ChannelItem> _channelItems;
 
-        public Table<MentionSummary> Mentions
+        public Table<Mention> Mentions
         {
-            get { return _mentions ?? (_mentions = GetTable<MentionSummary>()); }
+            get { return _mentions ?? (_mentions = GetTable<Mention>()); }
         }
-        private Table<MentionSummary> _mentions;
+        private Table<Mention> _mentions;
 
         public Table<MentionItem> MentionItems
         {
@@ -43,11 +43,11 @@ namespace derpirc.Data
         }
         private Table<MentionItem> _mentionItems;
 
-        public Table<MessageSummary> Messages
+        public Table<Message> Messages
         {
-            get { return _messages ?? (_messages = GetTable<MessageSummary>()); }
+            get { return _messages ?? (_messages = GetTable<Message>()); }
         }
-        private Table<MessageSummary> _messages;
+        private Table<Message> _messages;
 
         public Table<MessageItem> MessageItems
         {

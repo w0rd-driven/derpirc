@@ -174,7 +174,7 @@ namespace derpirc.Core
 
         #region Lookup Methods
 
-        public IrcLocalUser GetLocalUserBySummary(IMessageSummary channel)
+        public IrcLocalUser GetLocalUserBySummary(IMessage channel)
         {
             var result = (from client in _clients
                           where client.Id == channel.NetworkId

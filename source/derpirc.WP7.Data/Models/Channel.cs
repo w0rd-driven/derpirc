@@ -6,7 +6,7 @@ using System.Linq;
 namespace derpirc.Data.Models
 {
     [Table]
-    public class ChannelSummary : BaseNotify, IBaseModel, IMessageSummary
+    public class Channel : BaseNotify, IBaseModel, IMessage
     {
         [Column(IsVersion = true)]
         private Binary version;
@@ -80,7 +80,7 @@ namespace derpirc.Data.Models
 
         #endregion
 
-        public ChannelSummary()
+        public Channel()
         {
             _network = default(EntityRef<Network>);
             _messages = new EntitySet<ChannelItem>(new Action<ChannelItem>(attach_Messages), new Action<ChannelItem>(detach_Messages));

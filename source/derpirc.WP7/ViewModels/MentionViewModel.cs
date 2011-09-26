@@ -9,7 +9,7 @@ namespace derpirc.ViewModels
     /// <summary>
     /// List-based ItemViewModel
     /// </summary>
-    public class ChannelSummaryViewModel : ViewModelBase
+    public class MentionViewModel : ViewModelBase
     {
         #region Commands
 
@@ -17,8 +17,8 @@ namespace derpirc.ViewModels
 
         #region Properties
 
-        private ChannelSummary _model;
-        public ChannelSummary Model
+        private Mention _model;
+        public Mention Model
         {
             get { return _model; }
             set
@@ -34,18 +34,18 @@ namespace derpirc.ViewModels
             }
         }
 
-        private string _channelName;
-        public string ChannelName
+        private string _nickName;
+        public string NickName
         {
-            get { return _channelName; }
+            get { return _nickName; }
             set
             {
-                if (_channelName == value)
+                if (_nickName == value)
                     return;
 
-                var oldValue = _channelName;
-                _channelName = value;
-                RaisePropertyChanged(() => ChannelName);
+                var oldValue = _nickName;
+                _nickName = value;
+                RaisePropertyChanged(() => NickName);
             }
         }
 
@@ -64,23 +64,8 @@ namespace derpirc.ViewModels
             }
         }
 
-        private string _channelTopic;
-        public string ChannelTopic
-        {
-            get { return _channelTopic; }
-            set
-            {
-                if (_channelTopic == value)
-                    return;
-
-                var oldValue = _channelTopic;
-                _channelTopic = value;
-                RaisePropertyChanged(() => ChannelTopic);
-            }
-        }
-
-        private ChannelItem _lastMessage;
-        public ChannelItem LastMessage
+        private MentionItem _lastMessage;
+        public MentionItem LastMessage
         {
             get { return _lastMessage; }
             set
@@ -172,20 +157,19 @@ namespace derpirc.ViewModels
         #endregion
 
         /// <summary>
-        /// Initializes a new instance of the ChannelSummaryViewModel class.
+        /// Initializes a new instance of the MentionSummaryViewModel class.
         /// </summary>
-        public ChannelSummaryViewModel() : this(new ChannelSummary()) { }
+        public MentionViewModel() : this(new Mention()) { }
 
         /// <summary>
-        /// Initializes a new instance of the ChannelSummaryViewModel class.
+        /// Initializes a new instance of the MentionSummaryViewModel class.
         /// </summary>
-        public ChannelSummaryViewModel(ChannelSummary model)
+        public MentionViewModel(Mention model)
         {
             if (IsInDesignMode)
             {
                 // code runs in blend --> create design time data.
-                model.Name = "#test";
-                model.Topic = "This is a test topic";
+                model.Name = "w0rd-driven";
                 var network = new Network()
                 {
                     Name = "efnet",
@@ -196,15 +180,15 @@ namespace derpirc.ViewModels
                     Network = network,
                 };
                 model.Network = network;
-                model.LastItem = new ChannelItem()
+                model.LastItem = new MentionItem()
                 {
                     Summary = model,
                     IsRead = false,
-                    Source = "w0rd-driven",
-                    Text = "urmom!",
+                    Source = "#test",
+                    Text = "derpirc: urmom!",
                     TimeStamp = DateTime.Now,
                 };
-                model.UnreadCount = 20;
+                model.UnreadCount = 4;
             }
             else
             {
@@ -216,31 +200,24 @@ namespace derpirc.ViewModels
 
         public void LoadById(int summaryId)
         {
-            // InvalidOperationException: "The operation cannot be performed because an operation on another thread has not been completed."
-            var model = DataUnitOfWork.Default.Channels.FindBy(x => x.Id == summaryId).FirstOrDefault();
+            var model = DataUnitOfWork.Default.Mentions.FindBy(x => x.Id == summaryId).FirstOrDefault();
             if (model != null)
                 Model = model;
         }
 
-        private void UpdateViewModel(ChannelSummary model)
+        private void UpdateViewModel(Mention model)
         {
-            ChannelName = model.Name;
+            NickName = model.Name;
             if (model.Network != null)
                 NetworkName = model.Network.Name;
-            ChannelTopic = model.Topic;
             UnreadCount = model.UnreadCount;
             if (model.LastItem != null)
             {
-                LastMessage = model.LastItem as ChannelItem;
+                LastMessage = model.LastItem as MentionItem;
                 MessageIsRead = LastMessage.IsRead;
                 MessageSource = LastMessage.Source + " on " + NetworkName;
                 MessageText = LastMessage.Text;
                 MessageTimeStamp = LastMessage.TimeStamp;
-            }
-            else
-            {
-                MessageSource = NetworkName;
-                MessageTimeStamp = DateTime.Now;
             }
         }
 

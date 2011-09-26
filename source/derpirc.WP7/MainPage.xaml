@@ -33,7 +33,7 @@
                 </blend:EventTrigger>
             </blend:Interaction.Triggers>
             <controls:PivotItem Header="channels" Style="{StaticResource SmallPivotItemStyle}">
-                <ListBox x:Name="ChannelSummaryListBox" Margin="0,0,-12,0" ItemsSource="{Binding Channels.View}" SelectedItem="{Binding SelectedChannel, Mode=TwoWay}" ItemContainerStyle="{StaticResource SmallPivotListBoxStyle}">
+                <ListBox x:Name="ChannelListBox" Margin="0,0,-12,0" ItemsSource="{Binding Channels.View}" SelectedItem="{Binding SelectedChannel, Mode=TwoWay}" ItemContainerStyle="{StaticResource SmallPivotListBoxStyle}">
                     <blend:Interaction.Triggers>
                         <blend:EventTrigger EventName="DoubleTap">
                             <command:EventToCommand Command="{Binding SelectChannelCommand}" />
@@ -89,7 +89,7 @@
             </controls:PivotItem>
  
             <controls:PivotItem Header="mentions" Style="{StaticResource SmallPivotItemStyle}">
-                <ListBox x:Name="MentionSummaryListBox" Margin="0,0,-12,0" ItemsSource="{Binding Mentions.View}" SelectedItem="{Binding SelectedMention, Mode=TwoWay}" ItemContainerStyle="{StaticResource SmallPivotListBoxStyle}">
+                <ListBox x:Name="MentionListBox" Margin="0,0,-12,0" ItemsSource="{Binding Mentions.View}" SelectedItem="{Binding SelectedMention, Mode=TwoWay}" ItemContainerStyle="{StaticResource SmallPivotListBoxStyle}">
                     <blend:Interaction.Triggers>
                         <blend:EventTrigger EventName="DoubleTap">
                             <command:EventToCommand Command="{Binding SelectMentionCommand}" />
@@ -145,7 +145,7 @@
             </controls:PivotItem>
             
             <controls:PivotItem Header="messages" Style="{StaticResource SmallPivotItemStyle}">
-                <ListBox x:Name="MessageSummaryListBox" Margin="0,0,-12,0" ItemsSource="{Binding Messages.View}" SelectedItem="{Binding SelectedMessage, Mode=TwoWay}" ItemContainerStyle="{StaticResource SmallPivotListBoxStyle}">
+                <ListBox x:Name="MessageListBox" Margin="0,0,-12,0" ItemsSource="{Binding Messages.View}" SelectedItem="{Binding SelectedMessage, Mode=TwoWay}" ItemContainerStyle="{StaticResource SmallPivotListBoxStyle}">
                     <blend:Interaction.Triggers>
                         <blend:EventTrigger EventName="DoubleTap">
                             <command:EventToCommand Command="{Binding SelectMessageCommand}" />

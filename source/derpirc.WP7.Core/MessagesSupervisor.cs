@@ -91,13 +91,13 @@ namespace derpirc.Core
             //OnLocalUserNoticeReceived(localUser, e);
         }
 
-        private MessageSummary GetMessageSummary(IrcUser user)
+        private Message GetMessageSummary(IrcUser user)
         {
             var network = SupervisorFacade.Default.GetNetworkByClient(user.Client);
             var result = network.Messages.FirstOrDefault(x => x.Name == user.NickName.ToLower());
             if (result == null)
             {
-                result = new MessageSummary() { Name = user.NickName.ToLower() };
+                result = new Message() { Name = user.NickName.ToLower() };
                 network.Messages.Add(result);
                 //_unitOfWork.Commit();
                 DataUnitOfWork.Default.Commit();
@@ -105,7 +105,7 @@ namespace derpirc.Core
             return result;
         }
 
-        private MessageItem GetIrcMessage(MessageSummary summary, IrcMessageEventArgs eventArgs, MessageType messageType)
+        private MessageItem GetIrcMessage(Message summary, IrcMessageEventArgs eventArgs, MessageType messageType)
         {
             var result = new MessageItem();
             // Set values

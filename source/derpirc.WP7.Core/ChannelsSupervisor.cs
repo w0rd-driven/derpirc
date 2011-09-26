@@ -170,13 +170,13 @@ namespace derpirc.Core
             OnChannelLeft(eventArgs);
         }
 
-        private ChannelSummary GetChannelSummary(IrcChannel channel)
+        private Channel GetChannelSummary(IrcChannel channel)
         {
             var network = SupervisorFacade.Default.GetNetworkByClient(channel.Client);
             var result = network.Channels.FirstOrDefault(x => x.Name == channel.Name.ToLower());
             if (result == null)
             {
-                result = new ChannelSummary() { Name = channel.Name.ToLower() };
+                result = new Channel() { Name = channel.Name.ToLower() };
                 network.Channels.Add(result);
                 //_unitOfWork.Commit();
                 DataUnitOfWork.Default.Commit();
@@ -184,13 +184,13 @@ namespace derpirc.Core
             return result;
         }
 
-        private MentionSummary GetMentionSummary(IrcUser user)
+        private Mention GetMentionSummary(IrcUser user)
         {
             var network = SupervisorFacade.Default.GetNetworkByClient(user.Client);
             var result = network.Mentions.FirstOrDefault(x => x.Name == user.NickName.ToLower());
             if (result == null)
             {
-                result = new MentionSummary() { Name = user.NickName.ToLower() };
+                result = new Mention() { Name = user.NickName.ToLower() };
                 network.Mentions.Add(result);
                 //_unitOfWork.Commit();
                 DataUnitOfWork.Default.Commit();
@@ -198,7 +198,7 @@ namespace derpirc.Core
             return result;
         }
 
-        private ChannelItem GetIrcMessage(ChannelSummary summary, IrcMessageEventArgs eventArgs, MessageType messageType)
+        private ChannelItem GetIrcMessage(Channel summary, IrcMessageEventArgs eventArgs, MessageType messageType)
         {
             var result = new ChannelItem();
             // Set values
@@ -211,7 +211,7 @@ namespace derpirc.Core
             return result;
         }
 
-        private MentionItem GetIrcMessage(MentionSummary summary, IrcMessageEventArgs eventArgs, MessageType messageType)
+        private MentionItem GetIrcMessage(Mention summary, IrcMessageEventArgs eventArgs, MessageType messageType)
         {
             var result = new MentionItem();
             // Set values

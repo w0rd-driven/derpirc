@@ -11,7 +11,7 @@
              FontFamily="{StaticResource PhoneFontFamilyNormal}"
              FontSize="{StaticResource PhoneFontSizeNormal}"
              Foreground="{StaticResource PhoneForegroundBrush}"
-             DataContext="{Binding MessageSummaryViewModel, Source={StaticResource Locator}}">
+             DataContext="{Binding MessageViewModel, Source={StaticResource Locator}}">
 
     <Grid x:Name="LayoutRoot">
         <Grid.RowDefinitions>

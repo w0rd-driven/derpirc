@@ -9,11 +9,11 @@ namespace derpirc.Data
 
         #region Tables
 
-        public IRepository<ChannelSummary> Channels
+        public IRepository<Channel> Channels
         {
-            get { return _channels ?? (_channels = new SqlRepository<ChannelSummary>(_context)); }
+            get { return _channels ?? (_channels = new SqlRepository<Channel>(_context)); }
         }
-        private SqlRepository<ChannelSummary> _channels = null;
+        private SqlRepository<Channel> _channels = null;
 
         public IRepository<ChannelItem> ChannelItems
         {
@@ -21,11 +21,11 @@ namespace derpirc.Data
         }
         private SqlRepository<ChannelItem> _channelItems = null;
 
-        public IRepository<MentionSummary> Mentions
+        public IRepository<Mention> Mentions
         {
-            get { return _mentions ?? (_mentions = new SqlRepository<MentionSummary>(_context)); }
+            get { return _mentions ?? (_mentions = new SqlRepository<Mention>(_context)); }
         }
-        private SqlRepository<MentionSummary> _mentions = null;
+        private SqlRepository<Mention> _mentions = null;
 
         public IRepository<MentionItem> MentionItems
         {
@@ -33,11 +33,11 @@ namespace derpirc.Data
         }
         private SqlRepository<MentionItem> _mentionItems = null;
 
-        public IRepository<MessageSummary> Messages
+        public IRepository<Message> Messages
         {
-            get { return _messages ?? (_messages = new SqlRepository<MessageSummary>(_context)); }
+            get { return _messages ?? (_messages = new SqlRepository<Message>(_context)); }
         }
-        private SqlRepository<MessageSummary> _messages = null;
+        private SqlRepository<Message> _messages = null;
 
         public IRepository<MessageItem> MessageItems
         {

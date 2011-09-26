@@ -97,8 +97,8 @@ namespace derpirc.ViewModels
             }
         }
 
-        private ChannelSummaryViewModel _selectedChannel;
-        public ChannelSummaryViewModel SelectedChannel
+        private ChannelViewModel _selectedChannel;
+        public ChannelViewModel SelectedChannel
         {
             get { return _selectedChannel; }
             set
@@ -112,11 +112,11 @@ namespace derpirc.ViewModels
             }
         }
 
-        private ObservableCollection<ChannelSummaryViewModel> _channelsList;
+        private ObservableCollection<ChannelViewModel> _channelsList;
         public CollectionViewSource Channels  { get; set; }
 
-        private MentionSummaryViewModel _selectedMention;
-        public MentionSummaryViewModel SelectedMention
+        private MentionViewModel _selectedMention;
+        public MentionViewModel SelectedMention
         {
             get { return _selectedMention; }
             set
@@ -130,11 +130,11 @@ namespace derpirc.ViewModels
             }
         }
 
-        private ObservableCollection<MentionSummaryViewModel> _mentionsList;
+        private ObservableCollection<MentionViewModel> _mentionsList;
         public CollectionViewSource Mentions { get; set; }
 
-        private MessageSummaryViewModel _selectedMessage;
-        public MessageSummaryViewModel SelectedMessage
+        private MessageViewModel _selectedMessage;
+        public MessageViewModel SelectedMessage
         {
             get { return _selectedMessage; }
             set
@@ -148,7 +148,7 @@ namespace derpirc.ViewModels
             }
         }
 
-        private ObservableCollection<MessageSummaryViewModel> _messagesList;
+        private ObservableCollection<MessageViewModel> _messagesList;
         public CollectionViewSource Messages { get; set; }
 
         public bool IsDataLoaded
@@ -169,9 +169,9 @@ namespace derpirc.ViewModels
 
         public MainViewModel()
         {
-            _channelsList = new ObservableCollection<ChannelSummaryViewModel>();
-            _mentionsList = new ObservableCollection<MentionSummaryViewModel>();
-            _messagesList = new ObservableCollection<MessageSummaryViewModel>();
+            _channelsList = new ObservableCollection<ChannelViewModel>();
+            _mentionsList = new ObservableCollection<MentionViewModel>();
+            _messagesList = new ObservableCollection<MessageViewModel>();
 
             if (IsInDesignMode)
             {
@@ -203,7 +203,7 @@ namespace derpirc.ViewModels
             {
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
-                    var channelSummary = new ChannelSummaryViewModel();
+                    var channelSummary = new ChannelViewModel();
                     channelSummary.LoadById(e.SummaryId);
                     _channelsList.Add(channelSummary);
                 });
@@ -228,7 +228,7 @@ namespace derpirc.ViewModels
             {
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
-                    var channelSummary = new ChannelSummaryViewModel();
+                    var channelSummary = new ChannelViewModel();
                     channelSummary.LoadById(e.SummaryId);
                     _channelsList.Add(channelSummary);
                 });
@@ -251,7 +251,7 @@ namespace derpirc.ViewModels
             {
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
-                    var mentionSummary = new MentionSummaryViewModel();
+                    var mentionSummary = new MentionViewModel();
                     mentionSummary.LoadById(e.SummaryId);
                     _mentionsList.Add(mentionSummary);
                 });
@@ -274,7 +274,7 @@ namespace derpirc.ViewModels
             {
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
-                    var messageSummary = new MessageSummaryViewModel();
+                    var messageSummary = new MessageViewModel();
                     messageSummary.LoadById(e.SummaryId);
                     _messagesList.Add(messageSummary);
                 });

@@ -1,5 +1,5 @@
-﻿<UserControl
-             x:Class="derpirc.Views.ChannelSummaryView"
+﻿<UserControl 
+             x:Class="derpirc.Views.MentionSummaryView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
@@ -7,12 +7,11 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:edc="clr-namespace:Microsoft.Expression.Controls;assembly=Microsoft.Expression.Drawing"
-             xmlns:System="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="696"
              FontFamily="{StaticResource PhoneFontFamilyNormal}"
              FontSize="{StaticResource PhoneFontSizeNormal}"
              Foreground="{StaticResource PhoneForegroundBrush}"
-             DataContext="{Binding ChannelSummaryViewModel, Source={StaticResource Locator}}">
+             DataContext="{Binding MentionViewModel, Source={StaticResource Locator}}">
 
     <Grid x:Name="LayoutRoot">
         <Grid.RowDefinitions>
@@ -24,7 +23,7 @@
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
-        <TextBlock Text="{Binding ChannelName}" VerticalAlignment="Center" Style="{StaticResource PhoneTextLargeStyle}" TextWrapping="Wrap" />
+        <TextBlock Text="{Binding NickName}" VerticalAlignment="Center" Style="{StaticResource PhoneTextLargeStyle}" TextWrapping="Wrap" />
         <TextBlock x:Name="textBlockMessageTimeStamp"
                        Text="{Binding MessageTimeStamp, Converter={StaticResource ConversationDateTimeConverter}}"
                        Style="{StaticResource SummaryTimeStampStyle}"
@@ -52,7 +51,6 @@
             <TextBlock x:Name="textBlockMessageSource"
                        Text="{Binding MessageSource}"
                        Style="{StaticResource SummarySourceStyle}"
-                       Grid.ColumnSpan="2"
                        Grid.Row="2" />
         </Grid>
     </Grid>

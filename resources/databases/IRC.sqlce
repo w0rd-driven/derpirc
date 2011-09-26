@@ -1,11 +1,11 @@
 -- User Table information:
 -- Number of tables: 9
 -- ChannelItem: 0 row(s)
--- ChannelSummary: 0 row(s)
+-- Channel: 0 row(s)
 -- MentionItem: 0 row(s)
--- MentionSummary: 0 row(s)
+-- Mention: 0 row(s)
 -- MessageItem: 0 row(s)
--- MessageSummary: 0 row(s)
+-- Message: 0 row(s)
 -- Network: 0 row(s)
 -- Server: 0 row(s)
 -- Session: 0 row(s)
@@ -13,15 +13,15 @@
 -- Drop tables
 DROP TABLE [ChannelItem];
 GO
-DROP TABLE [ChannelSummary];
+DROP TABLE [Channel];
 GO
 DROP TABLE [MentionItem];
 GO
-DROP TABLE [MentionSummary];
+DROP TABLE [Mention];
 GO
 DROP TABLE [MessageItem];
 GO
-DROP TABLE [MessageSummary];
+DROP TABLE [Message];
 GO
 DROP TABLE [Server];
 GO
@@ -41,7 +41,7 @@ CREATE TABLE [ChannelItem] (
 , [IsRead] bit NULL
 );
 GO
-CREATE TABLE [ChannelSummary] (
+CREATE TABLE [Channel] (
   [Id] int NOT NULL  IDENTITY (1,1)
 , [NetworkId] int NOT NULL
 , [Name] nvarchar(64) NOT NULL
@@ -61,7 +61,7 @@ CREATE TABLE [MentionItem] (
 , [IsRead] bit NULL
 );
 GO
-CREATE TABLE [MentionSummary] (
+CREATE TABLE [Mention] (
   [Id] int NOT NULL  IDENTITY (1,1)
 , [NetworkId] int NOT NULL
 , [Name] nvarchar(64) NOT NULL
@@ -81,7 +81,7 @@ CREATE TABLE [MessageItem] (
 , [IsRead] bit NULL
 );
 GO
-CREATE TABLE [MessageSummary] (
+CREATE TABLE [Message] (
   [Id] int NOT NULL  IDENTITY (1,1)
 , [NetworkId] int NOT NULL
 , [Name] nvarchar(64) NOT NULL
@@ -116,15 +116,15 @@ GO
 -- Primary keys
 ALTER TABLE [ChannelItem] ADD CONSTRAINT [PK_ChannelItem] PRIMARY KEY ([Id]);
 GO
-ALTER TABLE [ChannelSummary] ADD CONSTRAINT [PK_ChannelSummary] PRIMARY KEY ([Id]);
+ALTER TABLE [Channel] ADD CONSTRAINT [PK_Channel] PRIMARY KEY ([Id]);
 GO
 ALTER TABLE [MentionItem] ADD CONSTRAINT [PK_MentionItem] PRIMARY KEY ([Id]);
 GO
-ALTER TABLE [MentionSummary] ADD CONSTRAINT [PK_MentionSummary] PRIMARY KEY ([Id]);
+ALTER TABLE [Mention] ADD CONSTRAINT [PK_Mention] PRIMARY KEY ([Id]);
 GO
 ALTER TABLE [MessageItem] ADD CONSTRAINT [PK_MessageItem] PRIMARY KEY ([Id]);
 GO
-ALTER TABLE [MessageSummary] ADD CONSTRAINT [PK_MessageSummary] PRIMARY KEY ([Id]);
+ALTER TABLE [Message] ADD CONSTRAINT [PK_Message] PRIMARY KEY ([Id]);
 GO
 ALTER TABLE [Network] ADD CONSTRAINT [PK_Network] PRIMARY KEY ([Id]);
 GO
@@ -134,20 +134,21 @@ ALTER TABLE [Session] ADD CONSTRAINT [PK_Session] PRIMARY KEY ([Id]);
 GO
 
 -- Foreign Keys
-ALTER TABLE [ChannelItem] ADD CONSTRAINT [FK_ChannelSummary_ChannelItem] FOREIGN KEY ([SummaryId]) REFERENCES [ChannelSummary]([Id]) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE [ChannelItem] ADD CONSTRAINT [FK_Channel_ChannelItem] FOREIGN KEY ([SummaryId]) REFERENCES [Channel]([Id]) ON DELETE NO ACTION ON UPDATE NO ACTION;
 GO
-ALTER TABLE [ChannelSummary] ADD CONSTRAINT [FK_Network_ChannelSummary] FOREIGN KEY ([NetworkId]) REFERENCES [Network]([Id]) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE [Channel] ADD CONSTRAINT [FK_Network_Channel] FOREIGN KEY ([NetworkId]) REFERENCES [Network]([Id]) ON DELETE NO ACTION ON UPDATE NO ACTION;
 GO
-ALTER TABLE [MentionItem] ADD CONSTRAINT [FK_MentionSummary_MentionItem] FOREIGN KEY ([SummaryId]) REFERENCES [MentionSummary]([Id]) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE [MentionItem] ADD CONSTRAINT [FK_Mention_MentionItem] FOREIGN KEY ([SummaryId]) REFERENCES [Mention]([Id]) ON DELETE NO ACTION ON UPDATE NO ACTION;
 GO
-ALTER TABLE [MentionSummary] ADD CONSTRAINT [FK_Network_MentionSummary] FOREIGN KEY ([NetworkId]) REFERENCES [Network]([Id]) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE [Mention] ADD CONSTRAINT [FK_Network_Mention] FOREIGN KEY ([NetworkId]) REFERENCES [Network]([Id]) ON DELETE NO ACTION ON UPDATE NO ACTION;
 GO
-ALTER TABLE [MessageItem] ADD CONSTRAINT [FK_MessageSummary_MessageItem] FOREIGN KEY ([SummaryId]) REFERENCES [MessageSummary]([Id]) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE [MessageItem] ADD CONSTRAINT [FK_Message_MessageItem] FOREIGN KEY ([SummaryId]) REFERENCES [Message]([Id]) ON DELETE NO ACTION ON UPDATE NO ACTION;
 GO
-ALTER TABLE [MessageSummary] ADD CONSTRAINT [FK_Network_MessageSummary] FOREIGN KEY ([NetworkId]) REFERENCES [Network]([Id]) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE [Message] ADD CONSTRAINT [FK_Network_Message] FOREIGN KEY ([NetworkId]) REFERENCES [Network]([Id]) ON DELETE NO ACTION ON UPDATE NO ACTION;
 GO
 ALTER TABLE [Network] ADD CONSTRAINT [FK_Session_Network] FOREIGN KEY ([SessionId]) REFERENCES [Session]([Id]) ON DELETE NO ACTION ON UPDATE NO ACTION;
 GO
 ALTER TABLE [Server] ADD CONSTRAINT [FK_Network_Server] FOREIGN KEY ([NetworkId]) REFERENCES [Network]([Id]) ON DELETE NO ACTION ON UPDATE NO ACTION;
 GO
+
 

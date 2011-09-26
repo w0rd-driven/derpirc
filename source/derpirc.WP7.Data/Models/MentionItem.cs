@@ -9,7 +9,7 @@ namespace derpirc.Data.Models
     {
         [Column(IsVersion = true)]
         private Binary version;
-        private EntityRef<MentionSummary> _summary;
+        private EntityRef<Mention> _summary;
 
         #region Primitive Properties
 
@@ -33,12 +33,12 @@ namespace derpirc.Data.Models
         [Column(CanBeNull = false)]
         public int SummaryId { get; set; }
         [Association(Name = "Summary_Item", ThisKey = "SummaryId", OtherKey = "Id", IsForeignKey = true)]
-        public MentionSummary Summary
+        public Mention Summary
         {
             get { return _summary.Entity; }
             set
             {
-                MentionSummary previousValue = _summary.Entity;
+                Mention previousValue = _summary.Entity;
                 if ((previousValue != value || _summary.HasLoadedOrAssignedValue == false))
                 {
                     this.RaisePropertyChanged();
@@ -65,7 +65,7 @@ namespace derpirc.Data.Models
 
         public MentionItem()
         {
-            _summary = default(EntityRef<MentionSummary>);
+            _summary = default(EntityRef<Mention>);
         }
     }
 }

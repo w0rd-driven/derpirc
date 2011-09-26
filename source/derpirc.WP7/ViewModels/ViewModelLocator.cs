@@ -54,39 +54,39 @@ namespace derpirc.ViewModels
 
         #endregion
 
-        #region ChannelSummaryViewModel
+        #region ChannelViewModel
 
-        private static ChannelSummaryViewModel _channelsViewModel;
+        private static ChannelViewModel _channelsViewModel;
 
         /// <summary>
-        /// Gets the ChannelSummaryViewModel property.
+        /// Gets the ChannelViewModel property.
         /// </summary>
-        public static ChannelSummaryViewModel ChannelsStatic
+        public static ChannelViewModel ChannelsStatic
         {
             get
             {
                 if (_channelsViewModel == null)
-                    CreateChannelSummary();
+                    CreateChannel();
 
                 return _channelsViewModel;
             }
         }
 
         /// <summary>
-        /// Gets the ChannelSummaryViewModel property.
+        /// Gets the ChannelViewModel property.
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance",
             "CA1822:MarkMembersAsStatic",
             Justification = "This non-static member is needed for data binding purposes.")]
-        public ChannelSummaryViewModel ChannelSummaryViewModel
+        public ChannelViewModel ChannelViewModel
         {
             get { return ChannelsStatic; }
         }
 
         /// <summary>
-        /// Provides a deterministic way to delete the ChannelSummaryViewModel property.
+        /// Provides a deterministic way to delete the ChannelViewModel property.
         /// </summary>
-        public static void ClearChannelSummary()
+        public static void ClearChannel()
         {
             if (_channelsViewModel != null)
                 _channelsViewModel.Cleanup();
@@ -94,12 +94,12 @@ namespace derpirc.ViewModels
         }
 
         /// <summary>
-        /// Provides a deterministic way to create the ChannelSummaryViewModel property.
+        /// Provides a deterministic way to create the ChannelViewModel property.
         /// </summary>
-        public static void CreateChannelSummary()
+        public static void CreateChannel()
         {
             if (_channelsViewModel == null)
-                _channelsViewModel = new ChannelSummaryViewModel();
+                _channelsViewModel = new ChannelViewModel();
         }
 
         #endregion
@@ -154,39 +154,39 @@ namespace derpirc.ViewModels
 
         #endregion
 
-        #region MentionSummaryViewModel
+        #region MentionViewModel
 
-        private static MentionSummaryViewModel _mentionsViewModel;
+        private static MentionViewModel _mentionsViewModel;
 
         /// <summary>
-        /// Gets the MentionSummaryViewModel property.
+        /// Gets the MentionViewModel property.
         /// </summary>
-        public static MentionSummaryViewModel MentionsStatic
+        public static MentionViewModel MentionsStatic
         {
             get
             {
                 if (_mentionsViewModel == null)
-                    CreateMentionSummary();
+                    CreateMention();
 
                 return _mentionsViewModel;
             }
         }
 
         /// <summary>
-        /// Gets the MentionSummaryViewModel property.
+        /// Gets the MentionViewModel property.
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance",
             "CA1822:MarkMembersAsStatic",
             Justification = "This non-static member is needed for data binding purposes.")]
-        public MentionSummaryViewModel MentionSummaryViewModel
+        public MentionViewModel MentionViewModel
         {
             get { return MentionsStatic; }
         }
 
         /// <summary>
-        /// Provides a deterministic way to delete the MentionSummaryViewModel property.
+        /// Provides a deterministic way to delete the MentionViewModel property.
         /// </summary>
-        public static void ClearMentionSummary()
+        public static void ClearMention()
         {
             if (_mentionsViewModel != null)
                 _mentionsViewModel.Cleanup();
@@ -194,12 +194,12 @@ namespace derpirc.ViewModels
         }
 
         /// <summary>
-        /// Provides a deterministic way to create the MentionSummaryViewModel property.
+        /// Provides a deterministic way to create the MentionViewModel property.
         /// </summary>
-        public static void CreateMentionSummary()
+        public static void CreateMention()
         {
             if (_mentionsViewModel == null)
-                _mentionsViewModel = new MentionSummaryViewModel();
+                _mentionsViewModel = new MentionViewModel();
         }
 
         #endregion
@@ -254,39 +254,39 @@ namespace derpirc.ViewModels
 
         #endregion
 
-        #region MessageSummaryViewModel
+        #region MessageViewModel
 
-        private static MessageSummaryViewModel _messagesViewModel;
+        private static MessageViewModel _messagesViewModel;
 
         /// <summary>
-        /// Gets the MessageSummaryViewModel property.
+        /// Gets the MessageViewModel property.
         /// </summary>
-        public static MessageSummaryViewModel MessagesStatic
+        public static MessageViewModel MessagesStatic
         {
             get
             {
                 if (_messagesViewModel == null)
-                    CreateMessageSummary();
+                    CreateMessage();
 
                 return _messagesViewModel;
             }
         }
 
         /// <summary>
-        /// Gets the MessageSummaryViewModel property.
+        /// Gets the MessageViewModel property.
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance",
             "CA1822:MarkMembersAsStatic",
             Justification = "This non-static member is needed for data binding purposes.")]
-        public MessageSummaryViewModel MessageSummaryViewModel
+        public MessageViewModel MessageViewModel
         {
             get { return MessagesStatic; }
         }
 
         /// <summary>
-        /// Provides a deterministic way to delete the MessageSummaryViewModel property.
+        /// Provides a deterministic way to delete the MessageViewModel property.
         /// </summary>
-        public static void ClearMessageSummary()
+        public static void ClearMessage()
         {
             if (_messagesViewModel != null)
                 _messagesViewModel.Cleanup();
@@ -294,12 +294,12 @@ namespace derpirc.ViewModels
         }
 
         /// <summary>
-        /// Provides a deterministic way to create the MessageSummaryViewModel property.
+        /// Provides a deterministic way to create the MessageViewModel property.
         /// </summary>
-        public static void CreateMessageSummary()
+        public static void CreateMessage()
         {
             if (_messagesViewModel == null)
-                _messagesViewModel = new MessageSummaryViewModel();
+                _messagesViewModel = new MessageViewModel();
         }
 
         #endregion
@@ -375,11 +375,11 @@ namespace derpirc.ViewModels
         public static void Cleanup()
         {
             ClearMain();
-            ClearChannelSummary();
+            ClearChannel();
             ClearChannelDetail();
-            ClearMentionSummary();
+            ClearMention();
             ClearMentionDetail();
-            ClearMessageSummary();
+            ClearMessage();
             ClearMessageDetail();
         }
     }

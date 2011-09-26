@@ -6,7 +6,7 @@ using System.Linq;
 namespace derpirc.Data.Models
 {
     [Table]
-    public class MentionSummary : BaseNotify, IBaseModel, IMessageSummary
+    public class Mention : BaseNotify, IBaseModel, IMessage
     {
         [Column(IsVersion = true)]
         private Binary version;
@@ -78,7 +78,7 @@ namespace derpirc.Data.Models
 
         #endregion
 
-        public MentionSummary()
+        public Mention()
         {
             _network = default(EntityRef<Network>);
             _messages = new EntitySet<MentionItem>(new Action<MentionItem>(attach_Messages), new Action<MentionItem>(detach_Messages));

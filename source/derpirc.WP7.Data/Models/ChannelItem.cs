@@ -9,7 +9,7 @@ namespace derpirc.Data.Models
     {
         [Column(IsVersion = true)]
         private Binary version;
-        private EntityRef<ChannelSummary> _summary;
+        private EntityRef<Channel> _summary;
 
         #region Primitive Properties
 
@@ -33,12 +33,12 @@ namespace derpirc.Data.Models
         [Column(CanBeNull = false)]
         public int SummaryId { get; set; }
         [Association(Name = "Summary_Item", ThisKey = "SummaryId", OtherKey = "Id", IsForeignKey = true)]
-        public ChannelSummary Summary
+        public Channel Summary
         {
             get { return _summary.Entity; }
             set
             {
-                ChannelSummary previousValue = _summary.Entity;
+                Channel previousValue = _summary.Entity;
                 if ((previousValue != value || _summary.HasLoadedOrAssignedValue == false))
                 {
                     this.RaisePropertyChanged();
@@ -65,7 +65,7 @@ namespace derpirc.Data.Models
 
         public ChannelItem()
         {
-            _summary = default(EntityRef<ChannelSummary>);
+            _summary = default(EntityRef<Channel>);
         }
     }
 }

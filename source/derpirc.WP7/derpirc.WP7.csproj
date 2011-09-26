@@ -124,9 +124,9 @@
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModels\ChannelSummaryViewModel.cs" />
-    <Compile Include="ViewModels\MessageSummaryViewModel.cs" />
-    <Compile Include="ViewModels\MentionSummaryViewModel.cs" />
+    <Compile Include="ViewModels\ChannelViewModel.cs" />
+    <Compile Include="ViewModels\MessageViewModel.cs" />
+    <Compile Include="ViewModels\MentionViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <ApplicationDefinition Include="App.xaml">
       <SubType>Designer</SubType>

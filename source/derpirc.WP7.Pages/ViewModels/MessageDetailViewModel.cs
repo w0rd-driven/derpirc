@@ -95,8 +95,8 @@ namespace derpirc.ViewModels
 
         public FrameworkElement LayoutRoot { get; set; }
 
-        private MessageSummary _model;
-        public MessageSummary Model
+        private Message _model;
+        public Message Model
         {
             get { return _model; }
             set
@@ -196,12 +196,12 @@ namespace derpirc.ViewModels
         /// <summary>
         /// Initializes a new instance of the MessageDetailViewModel class.
         /// </summary>
-        public MessageDetailViewModel() : this(new MessageSummary()) { }
+        public MessageDetailViewModel() : this(new Message()) { }
 
         /// <summary>
         /// Initializes a new instance of the MessageDetailViewModel class.
         /// </summary>
-        public MessageDetailViewModel(MessageSummary model)
+        public MessageDetailViewModel(Message model)
         {
             if (IsInDesignMode)
             {
@@ -314,7 +314,7 @@ namespace derpirc.ViewModels
                 Model = model;
         }
 
-        private void UpdateViewModel(MessageSummary model)
+        private void UpdateViewModel(Message model)
         {
             NickName = model.Name;
             if (model.Network != null)

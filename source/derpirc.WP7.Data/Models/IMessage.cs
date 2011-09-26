@@ -2,7 +2,7 @@
 
 namespace derpirc.Data.Models
 {
-    public interface IMessageSummary
+    public interface IMessage
     {
         int NetworkId { get; set; }
         Network Network { get; set; }
