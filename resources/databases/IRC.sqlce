@@ -93,6 +93,7 @@ GO
 CREATE TABLE [Network] (
   [Id] int NOT NULL  IDENTITY (1,1)
 , [SessionId] int NOT NULL
+, [ServerId] int NOT NULL
 , [Name] nvarchar(128) NOT NULL
 , [IsJoinEnabled] bit NULL
 , [JoinChannels] nvarchar(256) NULL

@@ -29,9 +29,9 @@ namespace derpirc.Core
 
         public void Initialize()
         {
-            var session = DataUnitOfWork.Default.Sessions.FindBy(x => x.Name == "Default").FirstOrDefault();
+            var session = GetDefaultSession();
             _session = session;
-            var networks = _session.Networks.ToList();
+            var networks = _session.Networks;
             foreach (var item in networks)
             {
                 var client = InitializeClient();
@@ -47,8 +47,9 @@ namespace derpirc.Core
             foreach (var item in SupervisorFacade.Default.Clients)
             {
                 var server = GetServer(item.Client);
+                var serverPort = GetServerPort(server);
                 if (item.Client != null)
-                    item.Client.Connect(server.HostName, server.Port, false, _registrationData);
+                    item.Client.Connect(server.HostName, serverPort, false, _registrationData);
             }
         }
 
@@ -171,7 +172,7 @@ namespace derpirc.Core
 
         private void JoinSession(Network network, IrcClient client)
         {
-            if (network != null && network.IsJoinEnabled)
+            if (network != null && network.IsJoinEnabled.HasValue && network.IsJoinEnabled.Value)
             {
                 string[] separator = new string[] { ", " };
                 var channels = network.JoinChannels.Split(separator, StringSplitOptions.RemoveEmptyEntries);
@@ -204,6 +205,14 @@ namespace derpirc.Core
             var result = GetServer(client);
             if (result != null)
                 result.HostName = serverName.ToLower();
+            return result;
+        }
+
+        public int GetServerPort(Server server)
+        {
+            int result = -1;
+            if (server != null)
+                int.TryParse(server.Ports, out result);
             return result;
         }
 

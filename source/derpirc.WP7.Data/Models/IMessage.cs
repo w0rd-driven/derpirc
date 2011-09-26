@@ -1,4 +1,4 @@
-﻿using System.Data.Linq;
+﻿using System;
 
 namespace derpirc.Data.Models
 {
@@ -7,11 +7,11 @@ namespace derpirc.Data.Models
         int NetworkId { get; set; }
         Network Network { get; set; }
         string Name { get; set; }
-        int LastItemId { get; set; }
+        Nullable<int> LastItemId { get; set; }
         IMessageItem LastItem { get; set; }
-        int Count { get; set; }
-        int UnreadCount { get; set; }
-        // Not used because we segregate into Channel/Mention/Message tables
+        Nullable<int> Count { get; set; }
+        Nullable<int> UnreadCount { get; set; }
+        // Not used because we segregate into Summary/Summary/Summary tables
         //EntitySet<IMessageItem> Messages { get; set; }
     }
 }

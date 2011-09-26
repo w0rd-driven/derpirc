@@ -112,7 +112,7 @@ namespace derpirc.Core
             var isMention = e.Text.Contains(channel.Client.LocalUser.NickName);
             if (isMention)
             {
-                var summary = GetMentionSummary(e.Source as IrcUser);
+                var summary = GetMentionSummary(e.Source as IrcUser, channel);
                 var message = GetIrcMessage(summary, e, messageType);
                 summary.Messages.Add(message);
                 //_unitOfWork.Commit();
@@ -184,13 +184,13 @@ namespace derpirc.Core
             return result;
         }
 
-        private Mention GetMentionSummary(IrcUser user)
+        private Mention GetMentionSummary(IrcUser user, IrcChannel channel)
         {
             var network = SupervisorFacade.Default.GetNetworkByClient(user.Client);
             var result = network.Mentions.FirstOrDefault(x => x.Name == user.NickName.ToLower());
             if (result == null)
             {
-                result = new Mention() { Name = user.NickName.ToLower() };
+                result = new Mention() { Name = user.NickName.ToLower(), ChannelName = channel.Name.ToLower() };
                 network.Mentions.Add(result);
                 //_unitOfWork.Commit();
                 DataUnitOfWork.Default.Commit();
@@ -202,7 +202,7 @@ namespace derpirc.Core
         {
             var result = new ChannelItem();
             // Set values
-            result.TimeStamp = DateTime.Now;
+            result.Timestamp = DateTime.Now;
             result.IsRead = false;
             result.Summary = summary;
             result.Source = eventArgs.Source.Name;
@@ -215,7 +215,7 @@ namespace derpirc.Core
         {
             var result = new MentionItem();
             // Set values
-            result.TimeStamp = DateTime.Now;
+            result.Timestamp = DateTime.Now;
             result.IsRead = false;
             result.Summary = summary;
             if (eventArgs.Targets.Count >= 1)

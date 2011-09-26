@@ -226,7 +226,7 @@ namespace derpirc.ViewModels
                     SummaryId = model.Id,
                     Source = "w0rd-driven",
                     Text = "derpirc: hay",
-                    TimeStamp = DateTime.Now,
+                    Timestamp = DateTime.Now,
                     Type = MessageType.Theirs,
                 });
                 _messagesList.Add(new MentionItem()
@@ -235,7 +235,7 @@ namespace derpirc.ViewModels
                     SummaryId = model.Id,
                     Source = "w0rd-driven",
                     Text = "derpirc: sup?",
-                    TimeStamp = DateTime.Now,
+                    Timestamp = DateTime.Now,
                     Type = MessageType.Theirs,
                 });
                 _messagesList.Add(new MentionItem()
@@ -244,7 +244,7 @@ namespace derpirc.ViewModels
                     SummaryId = model.Id,
                     Source = "derpirc",
                     Text = "w0rd-driven: nm",
-                    TimeStamp = DateTime.Now,
+                    Timestamp = DateTime.Now,
                     Type = MessageType.Mine,
                 });
                 _messagesList.Add(new MentionItem()
@@ -253,7 +253,7 @@ namespace derpirc.ViewModels
                     SummaryId = model.Id,
                     Source = "w0rd-driven",
                     Text = "derpirc: lame",
-                    TimeStamp = DateTime.Now,
+                    Timestamp = DateTime.Now,
                     Type = MessageType.Theirs,
                 });
                 _messagesList.Add(new MentionItem()
@@ -262,7 +262,7 @@ namespace derpirc.ViewModels
                     SummaryId = model.Id,
                     Source = "w0rd-driven",
                     Text = "derpirc: urmom!",
-                    TimeStamp = DateTime.Now,
+                    Timestamp = DateTime.Now,
                     Type = MessageType.Theirs,
                 });
                 _messagesList.Add(new MentionItem()
@@ -271,7 +271,7 @@ namespace derpirc.ViewModels
                     SummaryId = model.Id,
                     Source = "derpirc",
                     Text = "w0rd-driven: no, urmom!",
-                    TimeStamp = DateTime.Now,
+                    Timestamp = DateTime.Now,
                     Type = MessageType.Mine,
                 });
                 Messages = new CollectionViewSource() { Source = _messagesList };
@@ -302,7 +302,7 @@ namespace derpirc.ViewModels
                 var newMessage = new MentionItem();
                 newMessage.Summary = Model;
                 newMessage.Type = MessageType.Mine;
-                newMessage.TimeStamp = DateTime.Now;
+                newMessage.Timestamp = DateTime.Now;
                 //newMessage.IsRead = true;
                 newMessage.Text = SendMessage;
                 this.MessengerInstance.Send(new GenericMessage<MentionItem>(this, "out", newMessage));
@@ -356,7 +356,7 @@ namespace derpirc.ViewModels
                 // HACK: If MessageType.Mine, make sure it wasn't added by the UI. This could also serve as a MessageSent event
                 if (record.Type == MessageType.Mine)
                 {
-                    var foundItem = _messagesList.Where(x => x.TimeStamp == record.TimeStamp);
+                    var foundItem = _messagesList.Where(x => x.Timestamp == record.Timestamp);
                     if (foundItem != null)
                         return;
                 }

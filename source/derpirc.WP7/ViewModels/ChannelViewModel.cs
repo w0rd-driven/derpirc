@@ -139,23 +139,23 @@ namespace derpirc.ViewModels
             }
         }
 
-        private DateTime _messageTimeStamp;
-        public DateTime MessageTimeStamp
+        private DateTime _messageTimestamp;
+        public DateTime MessageTimestamp
         {
-            get { return _messageTimeStamp; }
+            get { return _messageTimestamp; }
             set
             {
-                if (_messageTimeStamp == value)
+                if (_messageTimestamp == value)
                     return;
 
-                var oldValue = _messageTimeStamp;
-                _messageTimeStamp = value;
-                RaisePropertyChanged(() => MessageTimeStamp);
+                var oldValue = _messageTimestamp;
+                _messageTimestamp = value;
+                RaisePropertyChanged(() => MessageTimestamp);
             }
         }
 
-        private int _unreadCount;
-        public int UnreadCount
+        private int? _unreadCount;
+        public int? UnreadCount
         {
             get { return _unreadCount; }
             set
@@ -202,7 +202,7 @@ namespace derpirc.ViewModels
                     IsRead = false,
                     Source = "w0rd-driven",
                     Text = "urmom!",
-                    TimeStamp = DateTime.Now,
+                    Timestamp = DateTime.Now,
                 };
                 model.UnreadCount = 20;
             }
@@ -235,12 +235,12 @@ namespace derpirc.ViewModels
                 MessageIsRead = LastMessage.IsRead;
                 MessageSource = LastMessage.Source + " on " + NetworkName;
                 MessageText = LastMessage.Text;
-                MessageTimeStamp = LastMessage.TimeStamp;
+                MessageTimestamp = LastMessage.Timestamp;
             }
             else
             {
                 MessageSource = NetworkName;
-                MessageTimeStamp = DateTime.Now;
+                MessageTimestamp = DateTime.Now;
             }
         }
 

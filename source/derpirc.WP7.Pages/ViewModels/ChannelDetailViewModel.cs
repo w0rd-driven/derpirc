@@ -241,7 +241,7 @@ namespace derpirc.ViewModels
                     SummaryId = model.Id,
                     Source = "derpirc",
                     Text = "hay",
-                    TimeStamp = DateTime.Now,
+                    Timestamp = DateTime.Now,
                     Type = MessageType.Mine,
                 });
                 _messagesList.Add(new ChannelItem()
@@ -250,7 +250,7 @@ namespace derpirc.ViewModels
                     SummaryId = model.Id,
                     Source = "derpirc",
                     Text = "sup?",
-                    TimeStamp = DateTime.Now,
+                    Timestamp = DateTime.Now,
                     Type = MessageType.Mine,
                 });
                 _messagesList.Add(new ChannelItem()
@@ -259,7 +259,7 @@ namespace derpirc.ViewModels
                     SummaryId = model.Id,
                     Source = "w0rd-driven",
                     Text = "nm",
-                    TimeStamp = DateTime.Now,
+                    Timestamp = DateTime.Now,
                     Type = MessageType.Theirs,
                 });
                 _messagesList.Add(new ChannelItem()
@@ -268,7 +268,7 @@ namespace derpirc.ViewModels
                     SummaryId = model.Id,
                     Source = "derpirc",
                     Text = "lame",
-                    TimeStamp = DateTime.Now,
+                    Timestamp = DateTime.Now,
                     Type = MessageType.Mine,
                 });
                 Messages = new CollectionViewSource() { Source = _messagesList };
@@ -300,7 +300,7 @@ namespace derpirc.ViewModels
                 var newMessage = new ChannelItem();
                 newMessage.Summary = Model;
                 newMessage.Type = MessageType.Mine;
-                newMessage.TimeStamp = DateTime.Now;
+                newMessage.Timestamp = DateTime.Now;
                 //newMessage.IsRead = true;
                 newMessage.Text = SendMessage;
                 this.MessengerInstance.Send(new GenericMessage<ChannelItem>(this, "out", newMessage));
@@ -355,7 +355,7 @@ namespace derpirc.ViewModels
                 // HACK: If MessageType.Mine, make sure it wasn't added by the UI. This could also serve as a MessageSent event
                 if (record.Type == MessageType.Mine)
                 {
-                    var foundItem = _messagesList.Where(x => x.TimeStamp == record.TimeStamp);
+                    var foundItem = _messagesList.Where(x => x.Timestamp == record.Timestamp);
                     if (foundItem != null)
                         return;
                 }

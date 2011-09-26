@@ -57,25 +57,25 @@
       <Link>Properties\VersionAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="BaseNotify.cs" />
+    <Compile Include="Models\Channel.cs" />
+    <Compile Include="Models\ChannelItem.cs" />
+    <Compile Include="DataModelContainer.cs" />
+    <Compile Include="Models\Mention.cs" />
+    <Compile Include="Models\MentionItem.cs" />
+    <Compile Include="Models\Message.cs" />
+    <Compile Include="Models\MessageItem.cs" />
     <Compile Include="Models\Settings\Formatting.cs" />
-    <Compile Include="SettingsUnitOfWork.cs" />
-    <Compile Include="Models\Session.cs" />
     <Compile Include="Models\Network.cs" />
     <Compile Include="Models\Server.cs" />
+    <Compile Include="Models\Session.cs" />
+    <Compile Include="SettingsUnitOfWork.cs" />
     <Compile Include="Models\Factory.cs" />
     <Compile Include="SettingsModelContainer.cs" />
-    <Compile Include="Models\ChannelItem.cs" />
-    <Compile Include="Models\Channel.cs" />
     <Compile Include="FileModeEnum.cs" />
-    <Compile Include="Models\MessageItem.cs" />
     <Compile Include="DataModel.cs" />
-    <Compile Include="DataModelContainer.cs" />
     <Compile Include="DataUnitOfWork.cs" />
     <Compile Include="IRepository.cs" />
     <Compile Include="IUnitOfWork.cs" />
-    <Compile Include="Models\MentionItem.cs" />
-    <Compile Include="Models\Mention.cs" />
-    <Compile Include="Models\Message.cs" />
     <Compile Include="IBaseModel.cs" />
     <Compile Include="Models\IMessageItem.cs">
       <SubType>Code</SubType>

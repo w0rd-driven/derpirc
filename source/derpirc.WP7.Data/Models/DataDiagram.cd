@@ -11,7 +11,7 @@
   <Class Name="derpirc.Data.Models.ChannelItem" Collapsed="true">
     <Position X="3.5" Y="3.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AACCACCAAgQAAAAAAAAAEAAAAAAAgAAAAQAACAAAAAA=</HashCode>
+      <HashCode>ABCiGIABCgQQgABA0AECEAApjGCAAAAAAQABCAAUBAA=</HashCode>
       <FileName>Models\ChannelItem.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -22,7 +22,7 @@
   <Class Name="derpirc.Data.Models.Mention" Collapsed="true">
     <Position X="7.25" Y="3.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAACADAAEAEAAAIAIAAAAAwACAAAAAAAEAAAAQQAIAA=</HashCode>
+      <HashCode>AQAiABABAQWAAQAAQMkIIAQBjrAARAIAABKCBQQUKAE=</HashCode>
       <FileName>Models\Mention.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -33,7 +33,7 @@
   <Class Name="derpirc.Data.Models.MentionItem" Collapsed="true">
     <Position X="16" Y="3" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AACCACCAAgQAAAAAAAAAEAAAAAAAgAAAAQAACAAAAAA=</HashCode>
+      <HashCode>ABCiGIABCgQQgABA0AECEAApjGCAAAAAAQABCAAUBAA=</HashCode>
       <FileName>Models\MentionItem.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -44,7 +44,7 @@
   <Class Name="derpirc.Data.Models.Message" Collapsed="true">
     <Position X="13.5" Y="3" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAACADAAEAEAAAIAIAAAAAwACAAAAAAAEAAAAQQAIAA=</HashCode>
+      <HashCode>AQAiIBABAAGAAQAAQIkIIAQBjLAARAIAIAKCBQQUKAE=</HashCode>
       <FileName>Models\Message.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -55,7 +55,7 @@
   <Class Name="derpirc.Data.Models.MessageItem" Collapsed="true">
     <Position X="4.25" Y="6" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AACCACCAAgQAAAAAAAAAEAAAAAAAgAAAAQAACAAAAAA=</HashCode>
+      <HashCode>ABCiGIABCgQQgABA0AECEAApjGCAAAAAAQABCAAUBAA=</HashCode>
       <FileName>Models\MessageItem.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -66,7 +66,7 @@
   <Class Name="derpirc.Data.Models.Channel" Collapsed="true">
     <Position X="7.25" Y="6" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAACADAAEAEAAAIAIAAAAAwACAAAAAAAEAAAASQAIAA=</HashCode>
+      <HashCode>AQAiEhABAAGAAQAAQIkIIEQBjLAGRAIAAAKCBSQUKAE=</HashCode>
       <FileName>Models\Channel.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -77,7 +77,7 @@
   <Class Name="derpirc.Data.Models.Network" Collapsed="true">
     <Position X="10.5" Y="3.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AEAiACAAAAAkAQAAcAAEAAwIAAAAEAAgEAAQAwAAEgA=</HashCode>
+      <HashCode>QAAiAAABBIAkCQIAcUEEIAwZjDCIVAQiAAAYBwAUEgI=</HashCode>
       <FileName>Models\Network.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -88,7 +88,7 @@
   <Class Name="derpirc.Data.Models.Server" Collapsed="true">
     <Position X="12" Y="5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>gAACECAAAAAAAAIABAAAAAAACAAAAAACAAAAAAQgIAA=</HashCode>
+      <HashCode>gAAiEAEBAACAAUAARAkEAAARjCBAAAICABAARAQUKAA=</HashCode>
       <FileName>Models\Server.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -99,7 +99,7 @@
   <Class Name="derpirc.Data.Models.Session" Collapsed="true">
     <Position X="10.5" Y="2" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAACACAAABAAAAIAAAAAAAQAAAAAAAAgAAAEAAAAAAA=</HashCode>
+      <HashCode>AAAiAAABABAAAAAAQAEAIAQBjCAAQAIgAAAEAAAUAAA=</HashCode>
       <FileName>Models\Session.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -107,7 +107,7 @@
   <Interface Name="derpirc.Data.Models.IMessageItem" Collapsed="true">
     <Position X="18" Y="2" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAACAAgQAAAAAAAAAEAAAAAAAAAAAAQAACAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAgQAAAAAAAACEAAAAAAAAAAAAQAACAAAAAA=</HashCode>
       <FileName>Models\IMessageItem.cs</FileName>
     </TypeIdentifier>
   </Interface>

@@ -109,7 +109,7 @@ namespace derpirc.Core
         {
             var result = new MessageItem();
             // Set values
-            result.TimeStamp = DateTime.Now;
+            result.Timestamp = DateTime.Now;
             result.IsRead = false;
             result.Summary = summary;
             //result.Source = eventArgs.Source.Name;

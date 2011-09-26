@@ -20,7 +20,6 @@ namespace derpirc.Data.Models
             {
                 DisplayName = "Random server",
                 HostName = "irc.efnet.org",
-                Port = 6667,
                 Ports = "6667",
             };
             result.Add(new Network()
@@ -35,7 +34,6 @@ namespace derpirc.Data.Models
             {
                 DisplayName = "Random server",
                 HostName = "irc.node-3.net",
-                Port = 6667,
                 Ports = "6667",
             };
             result.Add(new Network()
