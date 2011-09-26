@@ -159,8 +159,9 @@ namespace derpirc.ViewModels
 
         #endregion
 
+        private object _threadLock = new object();
+        //private DataUnitOfWork _unitOfWork;
         private BackgroundWorker _worker;
-        private DataUnitOfWork _unitOfWork;
         private Core.SupervisorFacade _supervisor;
 
         private DateTime _lastRefreshChannels;
@@ -298,44 +299,42 @@ namespace derpirc.ViewModels
         private void DeferStartupWork(object sender, DoWorkEventArgs e)
         {
             Action completed = e.Argument as Action;
-            //lock (threadLock)
-            //{
-            //    ApplicationState.AppLaunchInitialization();
-
-            //    this.SetDefaultCategoryAndUnits();
-            //    ApplicationState.Favorites =
-            //        FavoriteCollection.LoadFromFile() ?? new FavoriteCollection();
-            //}
-
-            //_unitOfWork = new DataUnitOfWork();
-            _unitOfWork = DataUnitOfWork.Default;
-            _supervisor = Core.SupervisorFacade.Default;
-            _supervisor.ChannelJoined += new EventHandler<Core.ChannelStatusEventArgs>(_sessionSupervisor_ChannelJoined);
-            _supervisor.ChannelLeft += new EventHandler<Core.ChannelStatusEventArgs>(_sessionSupervisor_ChannelLeft);
-            _supervisor.ChannelItemReceived += new EventHandler<Core.MessageItemEventArgs>(_sessionSupervisor_ChannelItemReceived);
-            _supervisor.MentionItemReceived += new EventHandler<Core.MessageItemEventArgs>(_sessionSupervisor_MentionItemReceived);
-            _supervisor.MessageItemReceived += new EventHandler<Core.MessageItemEventArgs>(_sessionSupervisor_MessageItemReceived);
-
-            _supervisor.Initialize();
-
-            this.MessengerInstance.Register<GenericMessage<ChannelItem>>(this, message =>
+            lock (_threadLock)
             {
-                var target = message.Target as string;
-                if (target == "out")
-                    Send(message.Content);
-            });
-            this.MessengerInstance.Register<GenericMessage<MentionItem>>(this, message =>
-            {
-                var target = message.Target as string;
-                if (target == "out")
-                    Send(message.Content);
-            });
-            this.MessengerInstance.Register<GenericMessage<MessageItem>>(this, message =>
-            {
-                var target = message.Target as string;
-                if (target == "out")
-                    Send(message.Content);
-            });
+                //    ApplicationState.AppLaunchInitialization();
+
+                //    this.SetDefaultCategoryAndUnits();
+                //    ApplicationState.Favorites =
+                //        FavoriteCollection.LoadFromFile() ?? new FavoriteCollection();
+
+                _supervisor = Core.SupervisorFacade.Default;
+                _supervisor.ChannelJoined += new EventHandler<Core.ChannelStatusEventArgs>(_sessionSupervisor_ChannelJoined);
+                _supervisor.ChannelLeft += new EventHandler<Core.ChannelStatusEventArgs>(_sessionSupervisor_ChannelLeft);
+                _supervisor.ChannelItemReceived += new EventHandler<Core.MessageItemEventArgs>(_sessionSupervisor_ChannelItemReceived);
+                _supervisor.MentionItemReceived += new EventHandler<Core.MessageItemEventArgs>(_sessionSupervisor_MentionItemReceived);
+                _supervisor.MessageItemReceived += new EventHandler<Core.MessageItemEventArgs>(_sessionSupervisor_MessageItemReceived);
+
+                this.MessengerInstance.Register<GenericMessage<ChannelItem>>(this, message =>
+                {
+                    var target = message.Target as string;
+                    if (target == "out")
+                        Send(message.Content);
+                });
+                this.MessengerInstance.Register<GenericMessage<MentionItem>>(this, message =>
+                {
+                    var target = message.Target as string;
+                    if (target == "out")
+                        Send(message.Content);
+                });
+                this.MessengerInstance.Register<GenericMessage<MessageItem>>(this, message =>
+                {
+                    var target = message.Target as string;
+                    if (target == "out")
+                        Send(message.Content);
+                });
+
+                LoadInitialView();
+            }
 
             if (completed != null)
             {
@@ -343,13 +342,49 @@ namespace derpirc.ViewModels
             }
         }
 
-        void RootLoaded(FrameworkElement sender)
+        private void LoadInitialView()
+        {
+            var isExisting = DataUnitOfWork.Default.InitializeDatabase(false);
+            if (isExisting)
+            {
+                DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                {
+                    var channels = DataUnitOfWork.Default.Channels.FindAll();
+                    foreach (var item in channels)
+                    {
+                        var itemSummary = new ChannelViewModel();
+                        itemSummary.LoadById(item.Id);
+                        _channelsList.Add(itemSummary);
+                    }
+
+                    var mentions = DataUnitOfWork.Default.Mentions.FindAll();
+                    foreach (var item in mentions)
+                    {
+                        var itemSummary = new MentionViewModel();
+                        itemSummary.LoadById(item.Id);
+                        _mentionsList.Add(itemSummary);
+                    }
+
+                    var messages = DataUnitOfWork.Default.Messages.FindAll();
+                    foreach (var item in messages)
+                    {
+                        var itemSummary = new MessageViewModel();
+                        itemSummary.LoadById(item.Id);
+                        _messagesList.Add(itemSummary);
+                    }
+
+                    _supervisor.Initialize();
+                });
+            }
+        }
+
+        private void RootLoaded(FrameworkElement sender)
         {
             // HACK: Execution order: 2
             LayoutRoot = sender;
         }
 
-        void PivotItemLoaded(PivotItemEventArgs eventArgs)
+        private void PivotItemLoaded(PivotItemEventArgs eventArgs)
         {
             // HACK: Execution order: 3
             // You can use PivotItemLoaded or SelectedItem/Index binding. This gets called every time the PivotItem shows so you need to track an IsVMLoaded
@@ -476,7 +511,7 @@ namespace derpirc.ViewModels
             //ApplicationState.ApplicationStartup = AppOpenState.None;
         }
 
-        void OnNavigatedFrom()
+        private void OnNavigatedFrom()
         {
             //Save required state in either the Phone Application service or Page Application service depending on the structure of your application.
             //Clear the flag indicating that the page constructor has been called.
