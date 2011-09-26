@@ -52,8 +52,8 @@
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Text="{Binding ChannelName}" VerticalAlignment="Center" Style="{StaticResource PhoneTextLargeStyle}" TextWrapping="Wrap" />
-                                <TextBlock x:Name="textBlockMessageTimeStamp"
-                                               Text="{Binding MessageTimeStamp, Converter={StaticResource ConversationDateTimeConverter}}"
+                                <TextBlock x:Name="textBlockMessageTimestamp"
+                                               Text="{Binding MessageTimestamp, Converter={StaticResource ConversationDateTimeConverter}}"
                                                Style="{StaticResource SummaryTimeStampStyle}"
                                                VerticalAlignment="Bottom"
                                                Grid.Column="2" />                     
@@ -108,8 +108,8 @@
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Text="{Binding NickName}" VerticalAlignment="Center" Style="{StaticResource PhoneTextLargeStyle}" TextWrapping="Wrap" />
-                                <TextBlock x:Name="textBlockMessageTimeStamp"
-                                               Text="{Binding MessageTimeStamp, Converter={StaticResource ConversationDateTimeConverter}}"
+                                <TextBlock x:Name="textBlockMessageTimestamp"
+                                               Text="{Binding MessageTimestamp, Converter={StaticResource ConversationDateTimeConverter}}"
                                                Style="{StaticResource SummaryTimeStampStyle}"
                                                VerticalAlignment="Bottom"
                                                Grid.Column="2" />                     
@@ -164,8 +164,8 @@
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Text="{Binding NickName}" VerticalAlignment="Center" Style="{StaticResource PhoneTextLargeStyle}" TextWrapping="Wrap" />
-                                <TextBlock x:Name="textBlockMessageTimeStamp"
-                                               Text="{Binding MessageTimeStamp, Converter={StaticResource ConversationDateTimeConverter}}"
+                                <TextBlock x:Name="textBlockMessageTimestamp"
+                                               Text="{Binding MessageTimestamp, Converter={StaticResource ConversationDateTimeConverter}}"
                                                Style="{StaticResource SummaryTimeStampStyle}"
                                                VerticalAlignment="Bottom"
                                                Grid.Column="2" />                     

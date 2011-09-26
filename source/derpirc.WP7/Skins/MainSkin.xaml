@@ -279,8 +279,8 @@
                         <TextBlock x:Name="MessageText"
                                    Text="{Binding Text}"
                                    Style="{StaticResource DetailMessageStyle}" />
-                        <TextBlock x:Name="MessageTimeStamp"
-                                   Text="{Binding TimeStamp, Converter={StaticResource ConversationDateTimeConverter}}"
+                        <TextBlock x:Name="MessageTimestamp"
+                                   Text="{Binding Timestamp, Converter={StaticResource ConversationDateTimeConverter}}"
                                    Style="{StaticResource DetailTimeStampStyle}" />
                     </StackPanel>
        	        </Border>
@@ -329,8 +329,8 @@
                         <TextBlock x:Name="MessageText"
                                    Text="{Binding Text}"
                                    Style="{StaticResource DetailMessageStyle}" />
-                        <TextBlock x:Name="MessageTimeStamp"
-                                   Text="{Binding TimeStamp, Converter={StaticResource ConversationDateTimeConverter}}"
+                        <TextBlock x:Name="MessageTimestamp"
+                                   Text="{Binding Timestamp, Converter={StaticResource ConversationDateTimeConverter}}"
                                    Style="{StaticResource DetailTimeStampStyle}" />
                     </StackPanel>
                 </Border>
