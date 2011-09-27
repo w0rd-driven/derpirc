@@ -35,15 +35,18 @@ namespace derpirc.Core
         public void Initialize()
         {
             var session = GetDefaultSession();
-            _session = session;
-            var networks = _session.Networks;
-            foreach (var item in networks)
+            if (session != null)
             {
-                var client = InitializeClient();
-                client.Id = item.Id;
-                SupervisorFacade.Default.Clients.Add(client);
+                _session = session;
+                var networks = _session.Networks;
+                foreach (var item in networks)
+                {
+                    var client = InitializeClient();
+                    client.Id = item.Id;
+                    SupervisorFacade.Default.Clients.Add(client);
+                }
+                Connect();
             }
-            Connect();
         }
 
         public void Connect()
@@ -69,8 +72,8 @@ namespace derpirc.Core
 
         private IrcUserRegistrationInfo GetRegistrationInfo()
         {
-            _settings = SettingsUnitOfWork.Default.User.FindBy(x => x.Name == "Default").FirstOrDefault();
-            //_settings = _unitOfWorkSettings.User.FindBy(x => x.Name == "Default").FirstOrDefault();
+            //_settings = SettingsUnitOfWork.Default.User.FindBy(x => x.Name == "Default").FirstOrDefault();
+            _settings = _unitOfWorkSettings.User.FindBy(x => x.Name == "Default").FirstOrDefault();
             var result = new IrcUserRegistrationInfo();
             result.NickName = _settings.NickName;
             result.RealName = _settings.FullName;
@@ -158,8 +161,7 @@ namespace derpirc.Core
                 JoinSession(matchedNetwork, client);
 
                 // Change local servername to match for easy reconnects
-                var matchedServer = GetServer(client, client.ServerName);
-                DataUnitOfWork.Default.Commit();
+                //var matchedServer = GetServer(client, client.ServerName);
                 //_unitOfWork.Commit();
             }
         }
@@ -189,8 +191,7 @@ namespace derpirc.Core
 
         public Session GetDefaultSession()
         {
-            var result = DataUnitOfWork.Default.Sessions.FindBy(x => x.Name == "Default").FirstOrDefault();
-            //var result = _unitOfWork.Sessions.FindBy(x => x.Name == "Default").FirstOrDefault();
+            var result = _unitOfWork.Sessions.FindBy(x => x.Name == "Default").FirstOrDefault();
             return result;
         }
 
@@ -211,7 +212,7 @@ namespace derpirc.Core
         public Server GetServer(IrcClient client, string serverName)
         {
             var result = GetServer(client);
-            if (result != null)
+            if (result != null && result.HostName != serverName.ToLower())
                 result.HostName = serverName.ToLower();
             return result;
         }
@@ -242,7 +243,10 @@ namespace derpirc.Core
             {
                 result = _session.Networks.FirstOrDefault(x => x.Name.ToLower() == networkName.ToLower());
                 if (result != null)
+                {
                     result.Name = networkName.ToLower();
+                    _unitOfWork.Commit();
+                }
             }
             else
                 result = null;

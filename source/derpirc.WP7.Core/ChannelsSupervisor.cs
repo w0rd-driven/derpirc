@@ -49,8 +49,7 @@ namespace derpirc.Core
                 message.Type = MessageType.Mine;
 
                 summary.Messages.Add(message);
-                DataUnitOfWork.Default.Commit();
-                //_unitOfWork.Commit();
+                _unitOfWork.Commit();
                 var eventArgs = new MessageItemEventArgs()
                 {
                     NetworkId = summary.NetworkId,
@@ -74,8 +73,7 @@ namespace derpirc.Core
                 message.Type = MessageType.Mine;
 
                 summary.Messages.Add(message);
-                DataUnitOfWork.Default.Commit();
-                //_unitOfWork.Commit();
+                _unitOfWork.Commit();
                 var eventArgs = new MessageItemEventArgs()
                 {
                     NetworkId = summary.NetworkId,
@@ -117,8 +115,7 @@ namespace derpirc.Core
                 var summary = GetMentionSummary(e.Source as IrcUser, channel);
                 var message = GetIrcMessage(summary, e, messageType);
                 summary.Messages.Add(message);
-                DataUnitOfWork.Default.Commit();
-                //_unitOfWork.Commit();
+                _unitOfWork.Commit();
                 var eventArgs = new MessageItemEventArgs()
                 {
                     NetworkId = summary.NetworkId,
@@ -132,8 +129,7 @@ namespace derpirc.Core
                 var summary = GetChannelSummary(channel);
                 var message = GetIrcMessage(summary, e, messageType);
                 summary.Messages.Add(message);
-                DataUnitOfWork.Default.Commit();
-                //_unitOfWork.Commit();
+                _unitOfWork.Commit();
                 var eventArgs = new MessageItemEventArgs()
                 {
                     NetworkId = summary.NetworkId,
@@ -180,8 +176,7 @@ namespace derpirc.Core
             {
                 result = new Channel() { Name = channel.Name.ToLower() };
                 network.Channels.Add(result);
-                DataUnitOfWork.Default.Commit();
-                //_unitOfWork.Commit();
+                _unitOfWork.Commit();
             }
             return result;
         }
@@ -194,8 +189,7 @@ namespace derpirc.Core
             {
                 result = new Mention() { Name = user.NickName.ToLower(), ChannelName = channel.Name.ToLower() };
                 network.Mentions.Add(result);
-                DataUnitOfWork.Default.Commit();
-                //_unitOfWork.Commit();
+                _unitOfWork.Commit();
             }
             return result;
         }

@@ -39,6 +39,8 @@ namespace derpirc.Data.Models
 
         private string _HostName;
 
+        private string _ConnectedHostName;
+
         private string _Ports;
 
         private string _Password;
@@ -57,6 +59,8 @@ namespace derpirc.Data.Models
         partial void OnDisplayNameChanged();
         partial void OnHostNameChanging(string value);
         partial void OnHostNameChanged();
+        partial void OnConnectedHostNameChanging(string value);
+        partial void OnConnectedHostNameChanged();
         partial void OnPortsChanging(string value);
         partial void OnPortsChanged();
         partial void OnPasswordChanging(string value);
@@ -125,6 +129,26 @@ namespace derpirc.Data.Models
                     this._HostName = value;
                     this.SendPropertyChanged("HostName");
                     this.OnHostNameChanged();
+                }
+            }
+        }
+
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_HostName", DbType = "NVarChar(128) NOT NULL", CanBeNull = false)]
+        public string ConnectedHostName
+        {
+            get
+            {
+                return this._ConnectedHostName;
+            }
+            set
+            {
+                if ((this._ConnectedHostName != value))
+                {
+                    this.OnConnectedHostNameChanging(value);
+                    this.SendPropertyChanging();
+                    this._ConnectedHostName = value;
+                    this.SendPropertyChanged("ConnectedHostName");
+                    this.OnConnectedHostNameChanged();
                 }
             }
         }

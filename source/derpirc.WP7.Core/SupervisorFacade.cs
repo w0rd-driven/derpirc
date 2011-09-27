@@ -87,12 +87,8 @@ namespace derpirc.Core
                         IsNetworkAvailable = false;
                 });
             // HACK: Test First Init
-            //_unitOfWork = new DataUnitOfWork();
-            //_unitOfWork.InitializeDatabase(false);
-            //_unitOfWorkSettings = new SettingsUnitOfWork();
-            //_unitOfWorkSettings.InitializeDatabase(false);
-            DataUnitOfWork.Default.InitializeDatabase(false);
-            SettingsUnitOfWork.Default.InitializeDatabase(false);
+            _unitOfWork = new DataUnitOfWork();
+            _unitOfWorkSettings = new SettingsUnitOfWork();
         }
 
         private void Shutdown()

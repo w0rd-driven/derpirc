@@ -57,6 +57,7 @@
       <Link>Properties\VersionAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="BaseNotify.cs" />
+    <Compile Include="ConnectionString.cs" />
     <Compile Include="Models\Channel.cs" />
     <Compile Include="Models\ChannelItem.cs" />
     <Compile Include="DataModelContainer.cs" />

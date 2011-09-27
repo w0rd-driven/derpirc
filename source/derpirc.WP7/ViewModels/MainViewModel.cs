@@ -157,6 +157,36 @@ namespace derpirc.ViewModels
             private set;
         }
 
+        private bool _progressIndeterminate;
+        public bool ProgressIndeterminate
+        {
+            get { return _progressIndeterminate; }
+            set
+            {
+                if (_progressIndeterminate == value)
+                    return;
+
+                var oldValue = _progressIndeterminate;
+                _progressIndeterminate = value;
+                RaisePropertyChanged(() => ProgressIndeterminate);
+            }
+        }
+
+        private string _progressText;
+        public string ProgressText
+        {
+            get { return _progressText; }
+            set
+            {
+                if (_progressText == value)
+                    return;
+
+                var oldValue = _progressText;
+                _progressText = value;
+                RaisePropertyChanged(() => ProgressText);
+            }
+        }
+
         #endregion
 
         private object _threadLock = new object();
@@ -205,7 +235,7 @@ namespace derpirc.ViewModels
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
                     var channelSummary = new ChannelViewModel();
-                    channelSummary.LoadById(DataUnitOfWork.Default, e.SummaryId);
+                    channelSummary.LoadById(_unitOfWork, e.SummaryId);
                     _channelsList.Add(channelSummary);
                 });
             }
@@ -213,7 +243,7 @@ namespace derpirc.ViewModels
             {
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
-                    foundItem.LoadById(DataUnitOfWork.Default, e.SummaryId);
+                    foundItem.LoadById(_unitOfWork, e.SummaryId);
                 });
             }
         }
@@ -230,7 +260,7 @@ namespace derpirc.ViewModels
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
                     var channelSummary = new ChannelViewModel();
-                    channelSummary.LoadById(DataUnitOfWork.Default, e.SummaryId);
+                    channelSummary.LoadById(_unitOfWork, e.SummaryId);
                     _channelsList.Add(channelSummary);
                 });
             }
@@ -238,7 +268,7 @@ namespace derpirc.ViewModels
             {
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
-                    foundItem.LoadById(DataUnitOfWork.Default, e.SummaryId);
+                    foundItem.LoadById(_unitOfWork, e.SummaryId);
                     var newMessage = foundItem.Model.Messages.FirstOrDefault(x => x.Id == e.MessageId);
                     this.MessengerInstance.Send(new GenericMessage<ChannelItem>(this, "in", newMessage));
                 });
@@ -253,7 +283,7 @@ namespace derpirc.ViewModels
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
                     var mentionSummary = new MentionViewModel();
-                    mentionSummary.LoadById(DataUnitOfWork.Default, e.SummaryId);
+                    mentionSummary.LoadById(_unitOfWork, e.SummaryId);
                     _mentionsList.Add(mentionSummary);
                 });
             }
@@ -261,7 +291,7 @@ namespace derpirc.ViewModels
             {
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
-                    foundItem.LoadById(DataUnitOfWork.Default, e.SummaryId);
+                    foundItem.LoadById(_unitOfWork, e.SummaryId);
                     var newMessage = foundItem.Model.Messages.FirstOrDefault(x => x.Id == e.MessageId);
                     this.MessengerInstance.Send(new GenericMessage<MentionItem>(this, "in", newMessage));
                 });
@@ -276,7 +306,7 @@ namespace derpirc.ViewModels
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
                     var messageSummary = new MessageViewModel();
-                    messageSummary.LoadById(DataUnitOfWork.Default, e.SummaryId);
+                    messageSummary.LoadById(_unitOfWork, e.SummaryId);
                     _messagesList.Add(messageSummary);
                 });
             }
@@ -284,7 +314,7 @@ namespace derpirc.ViewModels
             {
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
-                    foundItem.LoadById(DataUnitOfWork.Default, e.SummaryId);
+                    foundItem.LoadById(_unitOfWork, e.SummaryId);
                     var newMessage = foundItem.Model.Messages.FirstOrDefault(x => x.Id == e.MessageId);
                     this.MessengerInstance.Send(new GenericMessage<MessageItem>(this, "in", newMessage));
                 });
@@ -345,34 +375,47 @@ namespace derpirc.ViewModels
         private void LoadInitialView()
         {
             //_unitOfWork = new DataUnitOfWork();
-            var isExisting = DataUnitOfWork.Default.InitializeDatabase(false);
+            _unitOfWork = DataUnitOfWork.Default;
+            _unitOfWork.WipeDatabase();
+            _unitOfWork.InitializeDatabase(false);
+            var isExisting = _unitOfWork.DatabaseExists;
             if (isExisting)
             {
-                var channels = DataUnitOfWork.Default.Channels.FindAll();//.ToList();
-                var mentions = DataUnitOfWork.Default.Mentions.FindAll();//.ToList();
-                var messages = DataUnitOfWork.Default.Messages.FindAll();//.ToList();
+                var channels = _unitOfWork.Channels.FindAll().ToList();
+                var mentions = _unitOfWork.Mentions.FindAll().ToList();
+                var messages = _unitOfWork.Messages.FindAll().ToList();
 
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
+                    ProgressIndeterminate = true;
+                    ProgressText = "Loading from database";
+
                     foreach (var item in channels)
                     {
                         var itemSummary = new ChannelViewModel(item);
                         _channelsList.Add(itemSummary);
                     }
+                    _lastRefreshChannels = DateTime.Now;
 
                     foreach (var item in mentions)
                     {
                         var itemSummary = new MentionViewModel(item);
                         _mentionsList.Add(itemSummary);
                     }
+                    _lastRefreshMentions = DateTime.Now;
 
                     foreach (var item in messages)
                     {
                         var itemSummary = new MessageViewModel(item);
                         _messagesList.Add(itemSummary);
                     }
+                    _lastRefreshMessages = DateTime.Now;
+
+                    ProgressIndeterminate = false;
+                    ProgressText = string.Empty;
                 });
             }
+
             _supervisor.Initialize();
         }
 
