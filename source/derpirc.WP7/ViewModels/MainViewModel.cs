@@ -227,6 +227,61 @@ namespace derpirc.ViewModels
             Messages = new CollectionViewSource() { Source = _messagesList };
         }
 
+        internal void DeferStartup(Action completed)
+        {
+            _worker.RunWorkerAsync(completed);
+        }
+
+        private void DeferStartupWork(object sender, DoWorkEventArgs e)
+        {
+            Action completed = e.Argument as Action;
+            lock (_threadLock)
+            {
+                //    ApplicationState.AppLaunchInitialization();
+
+                //    this.SetDefaultCategoryAndUnits();
+                //    ApplicationState.Favorites =
+                //        FavoriteCollection.LoadFromFile() ?? new FavoriteCollection();
+
+                _supervisor = Core.SupervisorFacade.Default;
+                _supervisor.ChannelJoined += new EventHandler<Core.ChannelStatusEventArgs>(_sessionSupervisor_ChannelJoined);
+                _supervisor.ChannelLeft += new EventHandler<Core.ChannelStatusEventArgs>(_sessionSupervisor_ChannelLeft);
+                _supervisor.ChannelItemReceived += new EventHandler<Core.MessageItemEventArgs>(_sessionSupervisor_ChannelItemReceived);
+                _supervisor.MentionItemReceived += new EventHandler<Core.MessageItemEventArgs>(_sessionSupervisor_MentionItemReceived);
+                _supervisor.MessageItemReceived += new EventHandler<Core.MessageItemEventArgs>(_sessionSupervisor_MessageItemReceived);
+
+                this.MessengerInstance.Register<GenericMessage<ChannelItem>>(this, message =>
+                {
+                    var target = message.Target as string;
+                    if (target == "out")
+                        Send(message.Content);
+                });
+                this.MessengerInstance.Register<GenericMessage<MentionItem>>(this, message =>
+                {
+                    var target = message.Target as string;
+                    if (target == "out")
+                        Send(message.Content);
+                });
+                this.MessengerInstance.Register<GenericMessage<MessageItem>>(this, message =>
+                {
+                    var target = message.Target as string;
+                    if (target == "out")
+                        Send(message.Content);
+                });
+
+                LoadInitialView();
+
+                _supervisor.Initialize();
+            }
+
+            if (completed != null)
+            {
+                completed();
+            }
+        }
+
+        #region Events
+
         void _sessionSupervisor_ChannelJoined(object sender, Core.ChannelStatusEventArgs e)
         {
             var foundItem = _channelsList.Where(x => x.Model.Id == e.SummaryId).FirstOrDefault();
@@ -321,56 +376,8 @@ namespace derpirc.ViewModels
             }
         }
 
-        internal void DeferStartup(Action completed)
-        {
-            _worker.RunWorkerAsync(completed);
-        }
 
-        private void DeferStartupWork(object sender, DoWorkEventArgs e)
-        {
-            Action completed = e.Argument as Action;
-            lock (_threadLock)
-            {
-                //    ApplicationState.AppLaunchInitialization();
-
-                //    this.SetDefaultCategoryAndUnits();
-                //    ApplicationState.Favorites =
-                //        FavoriteCollection.LoadFromFile() ?? new FavoriteCollection();
-
-                _supervisor = Core.SupervisorFacade.Default;
-                _supervisor.ChannelJoined += new EventHandler<Core.ChannelStatusEventArgs>(_sessionSupervisor_ChannelJoined);
-                _supervisor.ChannelLeft += new EventHandler<Core.ChannelStatusEventArgs>(_sessionSupervisor_ChannelLeft);
-                _supervisor.ChannelItemReceived += new EventHandler<Core.MessageItemEventArgs>(_sessionSupervisor_ChannelItemReceived);
-                _supervisor.MentionItemReceived += new EventHandler<Core.MessageItemEventArgs>(_sessionSupervisor_MentionItemReceived);
-                _supervisor.MessageItemReceived += new EventHandler<Core.MessageItemEventArgs>(_sessionSupervisor_MessageItemReceived);
-
-                this.MessengerInstance.Register<GenericMessage<ChannelItem>>(this, message =>
-                {
-                    var target = message.Target as string;
-                    if (target == "out")
-                        Send(message.Content);
-                });
-                this.MessengerInstance.Register<GenericMessage<MentionItem>>(this, message =>
-                {
-                    var target = message.Target as string;
-                    if (target == "out")
-                        Send(message.Content);
-                });
-                this.MessengerInstance.Register<GenericMessage<MessageItem>>(this, message =>
-                {
-                    var target = message.Target as string;
-                    if (target == "out")
-                        Send(message.Content);
-                });
-
-                LoadInitialView();
-            }
-
-            if (completed != null)
-            {
-                completed();
-            }
-        }
+        #endregion
 
         private void LoadInitialView()
         {
@@ -415,8 +422,6 @@ namespace derpirc.ViewModels
                     ProgressText = string.Empty;
                 });
             }
-
-            _supervisor.Initialize();
         }
 
         private void RootLoaded(FrameworkElement sender)

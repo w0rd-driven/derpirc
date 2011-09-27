@@ -219,6 +219,11 @@ namespace derpirc.ViewModels
                 MessageText = LastMessage.Text;
                 MessageTimestamp = LastMessage.Timestamp;
             }
+            else
+            {
+                MessageSource = NetworkName;
+                MessageTimestamp = DateTime.Now;
+            }
         }
 
         public override void Cleanup()
