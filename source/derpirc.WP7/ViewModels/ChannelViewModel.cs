@@ -214,10 +214,9 @@ namespace derpirc.ViewModels
             Model = model;
         }
 
-        public void LoadById(int summaryId)
+        public void LoadById(DataUnitOfWork unitOfWork, int summaryId)
         {
-            // InvalidOperationException: "The operation cannot be performed because an operation on another thread has not been completed."
-            var model = DataUnitOfWork.Default.Channels.FindBy(x => x.Id == summaryId).FirstOrDefault();
+            var model = unitOfWork.Channels.FindBy(x => x.Id == summaryId).FirstOrDefault();
             if (model != null)
                 Model = model;
         }

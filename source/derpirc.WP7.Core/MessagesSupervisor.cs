@@ -9,10 +9,12 @@ namespace derpirc.Core
     public class MessagesSupervisor : IDisposable
     {
         private bool _isDisposed;
+        private DataUnitOfWork _unitOfWork;
         public event EventHandler<MessageItemEventArgs> MessageItemReceived;
 
-        public MessagesSupervisor()
+        public MessagesSupervisor(DataUnitOfWork unitOfWork)
         {
+            _unitOfWork = unitOfWork;
         }
 
         public void SendMessage(MessageItem message)
@@ -99,8 +101,8 @@ namespace derpirc.Core
             {
                 result = new Message() { Name = user.NickName.ToLower() };
                 network.Messages.Add(result);
-                //_unitOfWork.Commit();
                 DataUnitOfWork.Default.Commit();
+                //_unitOfWork.Commit();
             }
             return result;
         }

@@ -198,9 +198,9 @@ namespace derpirc.ViewModels
             Model = model;
         }
 
-        public void LoadById(int summaryId)
+        public void LoadById(DataUnitOfWork unitOfWork, int summaryId)
         {
-            var model = DataUnitOfWork.Default.Mentions.FindBy(x => x.Id == summaryId).FirstOrDefault();
+            var model = unitOfWork.Mentions.FindBy(x => x.Id == summaryId).FirstOrDefault();
             if (model != null)
                 Model = model;
         }

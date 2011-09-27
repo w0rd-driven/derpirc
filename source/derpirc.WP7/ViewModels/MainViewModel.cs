@@ -160,7 +160,7 @@ namespace derpirc.ViewModels
         #endregion
 
         private object _threadLock = new object();
-        //private DataUnitOfWork _unitOfWork;
+        private DataUnitOfWork _unitOfWork;
         private BackgroundWorker _worker;
         private Core.SupervisorFacade _supervisor;
 
@@ -205,7 +205,7 @@ namespace derpirc.ViewModels
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
                     var channelSummary = new ChannelViewModel();
-                    channelSummary.LoadById(e.SummaryId);
+                    channelSummary.LoadById(DataUnitOfWork.Default, e.SummaryId);
                     _channelsList.Add(channelSummary);
                 });
             }
@@ -213,7 +213,7 @@ namespace derpirc.ViewModels
             {
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
-                    foundItem.LoadById(e.SummaryId);
+                    foundItem.LoadById(DataUnitOfWork.Default, e.SummaryId);
                 });
             }
         }
@@ -230,7 +230,7 @@ namespace derpirc.ViewModels
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
                     var channelSummary = new ChannelViewModel();
-                    channelSummary.LoadById(e.SummaryId);
+                    channelSummary.LoadById(DataUnitOfWork.Default, e.SummaryId);
                     _channelsList.Add(channelSummary);
                 });
             }
@@ -238,7 +238,7 @@ namespace derpirc.ViewModels
             {
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
-                    foundItem.LoadById(e.SummaryId);
+                    foundItem.LoadById(DataUnitOfWork.Default, e.SummaryId);
                     var newMessage = foundItem.Model.Messages.FirstOrDefault(x => x.Id == e.MessageId);
                     this.MessengerInstance.Send(new GenericMessage<ChannelItem>(this, "in", newMessage));
                 });
@@ -253,7 +253,7 @@ namespace derpirc.ViewModels
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
                     var mentionSummary = new MentionViewModel();
-                    mentionSummary.LoadById(e.SummaryId);
+                    mentionSummary.LoadById(DataUnitOfWork.Default, e.SummaryId);
                     _mentionsList.Add(mentionSummary);
                 });
             }
@@ -261,7 +261,7 @@ namespace derpirc.ViewModels
             {
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
-                    foundItem.LoadById(e.SummaryId);
+                    foundItem.LoadById(DataUnitOfWork.Default, e.SummaryId);
                     var newMessage = foundItem.Model.Messages.FirstOrDefault(x => x.Id == e.MessageId);
                     this.MessengerInstance.Send(new GenericMessage<MentionItem>(this, "in", newMessage));
                 });
@@ -276,7 +276,7 @@ namespace derpirc.ViewModels
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
                     var messageSummary = new MessageViewModel();
-                    messageSummary.LoadById(e.SummaryId);
+                    messageSummary.LoadById(DataUnitOfWork.Default, e.SummaryId);
                     _messagesList.Add(messageSummary);
                 });
             }
@@ -284,7 +284,7 @@ namespace derpirc.ViewModels
             {
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
-                    foundItem.LoadById(e.SummaryId);
+                    foundItem.LoadById(DataUnitOfWork.Default, e.SummaryId);
                     var newMessage = foundItem.Model.Messages.FirstOrDefault(x => x.Id == e.MessageId);
                     this.MessengerInstance.Send(new GenericMessage<MessageItem>(this, "in", newMessage));
                 });
@@ -344,38 +344,36 @@ namespace derpirc.ViewModels
 
         private void LoadInitialView()
         {
+            //_unitOfWork = new DataUnitOfWork();
             var isExisting = DataUnitOfWork.Default.InitializeDatabase(false);
             if (isExisting)
             {
+                var channels = DataUnitOfWork.Default.Channels.FindAll();//.ToList();
+                var mentions = DataUnitOfWork.Default.Mentions.FindAll();//.ToList();
+                var messages = DataUnitOfWork.Default.Messages.FindAll();//.ToList();
+
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
-                    var channels = DataUnitOfWork.Default.Channels.FindAll();
                     foreach (var item in channels)
                     {
-                        var itemSummary = new ChannelViewModel();
-                        itemSummary.LoadById(item.Id);
+                        var itemSummary = new ChannelViewModel(item);
                         _channelsList.Add(itemSummary);
                     }
 
-                    var mentions = DataUnitOfWork.Default.Mentions.FindAll();
                     foreach (var item in mentions)
                     {
-                        var itemSummary = new MentionViewModel();
-                        itemSummary.LoadById(item.Id);
+                        var itemSummary = new MentionViewModel(item);
                         _mentionsList.Add(itemSummary);
                     }
 
-                    var messages = DataUnitOfWork.Default.Messages.FindAll();
                     foreach (var item in messages)
                     {
-                        var itemSummary = new MessageViewModel();
-                        itemSummary.LoadById(item.Id);
+                        var itemSummary = new MessageViewModel(item);
                         _messagesList.Add(itemSummary);
                     }
-
-                    _supervisor.Initialize();
                 });
             }
+            _supervisor.Initialize();
         }
 
         private void RootLoaded(FrameworkElement sender)

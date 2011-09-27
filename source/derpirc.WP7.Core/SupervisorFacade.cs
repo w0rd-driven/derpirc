@@ -87,7 +87,10 @@ namespace derpirc.Core
                         IsNetworkAvailable = false;
                 });
             // HACK: Test First Init
-            //_unitOfWork.InitializeDatabase(true);
+            //_unitOfWork = new DataUnitOfWork();
+            //_unitOfWork.InitializeDatabase(false);
+            //_unitOfWorkSettings = new SettingsUnitOfWork();
+            //_unitOfWorkSettings.InitializeDatabase(false);
             DataUnitOfWork.Default.InitializeDatabase(false);
             SettingsUnitOfWork.Default.InitializeDatabase(false);
         }
@@ -109,7 +112,7 @@ namespace derpirc.Core
         {
             if (_channelSupervisor == null)
             {
-                _channelSupervisor = new ChannelsSupervisor();
+                _channelSupervisor = new ChannelsSupervisor(_unitOfWork);
                 _channelSupervisor.ChannelJoined += new EventHandler<ChannelStatusEventArgs>(_channelSupervisor_ChannelJoined);
                 _channelSupervisor.ChannelLeft += new EventHandler<ChannelStatusEventArgs>(_channelSupervisor_ChannelLeft);
                 _channelSupervisor.ChannelItemReceived += new EventHandler<MessageItemEventArgs>(_channelSupervisor_MessageReceived);
@@ -118,7 +121,7 @@ namespace derpirc.Core
 
             if (_messageSupervisor == null)
             {
-                _messageSupervisor = new MessagesSupervisor();
+                _messageSupervisor = new MessagesSupervisor(_unitOfWork);
                 _messageSupervisor.MessageItemReceived += new EventHandler<MessageItemEventArgs>(_messageSupervisor_MessageReceived);
             }
         }
@@ -194,7 +197,7 @@ namespace derpirc.Core
         public void Initialize()
         {
             if (_sessionSupervisor == null)
-                _sessionSupervisor = new SessionSupervisor();
+                _sessionSupervisor = new SessionSupervisor(_unitOfWork, _unitOfWorkSettings);
             _sessionSupervisor.Initialize();
         }
 

@@ -14,6 +14,9 @@ namespace derpirc.Core
         private bool _isDisposed;
         private const int _quitTimeout = 1000;
 
+        private DataUnitOfWork _unitOfWork;
+        private SettingsUnitOfWork _unitOfWorkSettings;
+
         private Session _session;
         private Data.Models.Settings.User _settings;
 
@@ -23,8 +26,10 @@ namespace derpirc.Core
         // PowerPrecision: Welcome to the $server IRC Network $nick!$email@$host
         private static readonly Regex welcomeRegex = new Regex("^.*?Welcome to the (.*?) (IRC|Internet Relay Chat) Network (.*)", RegexOptions.Compiled);
 
-        public SessionSupervisor()
+        public SessionSupervisor(DataUnitOfWork unitOfWork, SettingsUnitOfWork unitOfWorkSettings)
         {
+            _unitOfWork = unitOfWork;
+            _unitOfWorkSettings = unitOfWorkSettings;
         }
 
         public void Initialize()
@@ -65,6 +70,7 @@ namespace derpirc.Core
         private IrcUserRegistrationInfo GetRegistrationInfo()
         {
             _settings = SettingsUnitOfWork.Default.User.FindBy(x => x.Name == "Default").FirstOrDefault();
+            //_settings = _unitOfWorkSettings.User.FindBy(x => x.Name == "Default").FirstOrDefault();
             var result = new IrcUserRegistrationInfo();
             result.NickName = _settings.NickName;
             result.RealName = _settings.FullName;
@@ -154,6 +160,7 @@ namespace derpirc.Core
                 // Change local servername to match for easy reconnects
                 var matchedServer = GetServer(client, client.ServerName);
                 DataUnitOfWork.Default.Commit();
+                //_unitOfWork.Commit();
             }
         }
 
@@ -183,6 +190,7 @@ namespace derpirc.Core
         public Session GetDefaultSession()
         {
             var result = DataUnitOfWork.Default.Sessions.FindBy(x => x.Name == "Default").FirstOrDefault();
+            //var result = _unitOfWork.Sessions.FindBy(x => x.Name == "Default").FirstOrDefault();
             return result;
         }
 

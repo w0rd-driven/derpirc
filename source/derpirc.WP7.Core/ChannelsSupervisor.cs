@@ -10,6 +10,7 @@ namespace derpirc.Core
     public class ChannelsSupervisor : IDisposable
     {
         private bool _isDisposed;
+        private DataUnitOfWork _unitOfWork;
         // Regex for splitting space-separated list of command parts until first parameter that begins with '/'.
         private static readonly Regex commandPartsSplitRegex = new Regex("(?<! /.*) ", RegexOptions.Compiled);
 
@@ -18,8 +19,9 @@ namespace derpirc.Core
         public event EventHandler<MessageItemEventArgs> ChannelItemReceived;
         public event EventHandler<MessageItemEventArgs> MentionItemReceived;
 
-        public ChannelsSupervisor()
+        public ChannelsSupervisor(DataUnitOfWork unitOfWork)
         {
+            _unitOfWork = unitOfWork;
         }
 
         public void AttachLocalUser(IrcLocalUser localUser)
@@ -115,8 +117,8 @@ namespace derpirc.Core
                 var summary = GetMentionSummary(e.Source as IrcUser, channel);
                 var message = GetIrcMessage(summary, e, messageType);
                 summary.Messages.Add(message);
-                //_unitOfWork.Commit();
                 DataUnitOfWork.Default.Commit();
+                //_unitOfWork.Commit();
                 var eventArgs = new MessageItemEventArgs()
                 {
                     NetworkId = summary.NetworkId,
@@ -130,8 +132,8 @@ namespace derpirc.Core
                 var summary = GetChannelSummary(channel);
                 var message = GetIrcMessage(summary, e, messageType);
                 summary.Messages.Add(message);
-                //_unitOfWork.Commit();
                 DataUnitOfWork.Default.Commit();
+                //_unitOfWork.Commit();
                 var eventArgs = new MessageItemEventArgs()
                 {
                     NetworkId = summary.NetworkId,
@@ -178,8 +180,8 @@ namespace derpirc.Core
             {
                 result = new Channel() { Name = channel.Name.ToLower() };
                 network.Channels.Add(result);
-                //_unitOfWork.Commit();
                 DataUnitOfWork.Default.Commit();
+                //_unitOfWork.Commit();
             }
             return result;
         }
@@ -192,8 +194,8 @@ namespace derpirc.Core
             {
                 result = new Mention() { Name = user.NickName.ToLower(), ChannelName = channel.Name.ToLower() };
                 network.Mentions.Add(result);
-                //_unitOfWork.Commit();
                 DataUnitOfWork.Default.Commit();
+                //_unitOfWork.Commit();
             }
             return result;
         }
