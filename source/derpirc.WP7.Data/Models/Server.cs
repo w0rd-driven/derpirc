@@ -122,11 +122,11 @@ namespace derpirc.Data.Models
             }
             set
             {
-                if ((this._HostName != value))
+                if ((this._HostName != value.ToLower()))
                 {
-                    this.OnHostNameChanging(value);
+                    this.OnHostNameChanging(value.ToLower());
                     this.SendPropertyChanging();
-                    this._HostName = value;
+                    this._HostName = value.ToLower();
                     this.SendPropertyChanged("HostName");
                     this.OnHostNameChanged();
                 }
@@ -142,11 +142,11 @@ namespace derpirc.Data.Models
             }
             set
             {
-                if ((this._ConnectedHostName != value))
+                if ((this._ConnectedHostName != value.ToLower()))
                 {
-                    this.OnConnectedHostNameChanging(value);
+                    this.OnConnectedHostNameChanging(value.ToLower());
                     this.SendPropertyChanging();
-                    this._ConnectedHostName = value;
+                    this._ConnectedHostName = value.ToLower();
                     this.SendPropertyChanged("ConnectedHostName");
                     this.OnConnectedHostNameChanged();
                 }

@@ -158,11 +158,11 @@ namespace derpirc.Data.Models
             }
             set
             {
-                if ((this._Name != value))
+                if ((this._Name != value.ToLower()))
                 {
-                    this.OnNameChanging(value);
+                    this.OnNameChanging(value.ToLower());
                     this.SendPropertyChanging();
-                    this._Name = value;
+                    this._Name = value.ToLower();
                     this.SendPropertyChanged("Name");
                     this.OnNameChanged();
                 }

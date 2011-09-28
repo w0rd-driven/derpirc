@@ -174,7 +174,7 @@ namespace derpirc.Core
             var result = network.Channels.FirstOrDefault(x => x.Name == channel.Name.ToLower());
             if (result == null)
             {
-                result = new Channel() { Name = channel.Name.ToLower() };
+                result = new Channel() { Name = channel.Name };
                 network.Channels.Add(result);
                 _unitOfWork.Commit();
             }
@@ -187,7 +187,7 @@ namespace derpirc.Core
             var result = network.Mentions.FirstOrDefault(x => x.Name == user.NickName.ToLower());
             if (result == null)
             {
-                result = new Mention() { Name = user.NickName.ToLower(), ChannelName = channel.Name.ToLower() };
+                result = new Mention() { Name = user.NickName, ChannelName = channel.Name };
                 network.Mentions.Add(result);
                 _unitOfWork.Commit();
             }

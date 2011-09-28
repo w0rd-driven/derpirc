@@ -162,7 +162,6 @@ namespace derpirc.Core
 
                 // Change local servername to match for easy reconnects
                 //var matchedServer = GetServer(client, client.ServerName);
-                //_unitOfWork.Commit();
             }
         }
 
@@ -213,7 +212,10 @@ namespace derpirc.Core
         {
             var result = GetServer(client);
             if (result != null && result.HostName != serverName.ToLower())
+            {
                 result.HostName = serverName.ToLower();
+                _unitOfWork.Commit();
+            }
             return result;
         }
 
@@ -240,14 +242,7 @@ namespace derpirc.Core
         {
             Network result;
             if (_session != null && _session.Networks != null)
-            {
-                result = _session.Networks.FirstOrDefault(x => x.Name.ToLower() == networkName.ToLower());
-                if (result != null)
-                {
-                    result.Name = networkName.ToLower();
-                    _unitOfWork.Commit();
-                }
-            }
+                result = _session.Networks.FirstOrDefault(x => x.Name == networkName.ToLower());
             else
                 result = null;
             return result;

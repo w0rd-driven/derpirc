@@ -129,11 +129,11 @@ namespace derpirc.Data.Models
             }
             set
             {
-                if ((this._Name != value))
+                if ((this._Name != value.ToLower()))
                 {
-                    this.OnNameChanging(value);
+                    this.OnNameChanging(value.ToLower());
                     this.SendPropertyChanging();
-                    this._Name = value;
+                    this._Name = value.ToLower();
                     this.SendPropertyChanged("Name");
                     this.OnNameChanged();
                 }
@@ -149,11 +149,11 @@ namespace derpirc.Data.Models
             }
             set
             {
-                if ((this._ChannelName != value))
+                if ((this._ChannelName != value.ToLower()))
                 {
-                    this.OnChannelNameChanging(value);
+                    this.OnChannelNameChanging(value.ToLower());
                     this.SendPropertyChanging();
-                    this._ChannelName = value;
+                    this._ChannelName = value.ToLower();
                     this.SendPropertyChanged("ChannelName");
                     this.OnChannelNameChanged();
                 }
@@ -307,7 +307,7 @@ namespace derpirc.Data.Models
         {
             LastItem = entity;
             // Id is 0 here so inflate counts blindly
-            LastItemId = entity.Id;
+            LastItemId = _Messages.Count + 1;
             Count = _Messages.Count + 1;
             UnreadCount = _Messages.Count(x => x.IsRead == false) + 1;
         }
@@ -316,7 +316,7 @@ namespace derpirc.Data.Models
         {
             LastItem = entity;
             // Id is 0 here so inflate counts blindly
-            LastItemId = entity.Id;
+            LastItemId = _Messages.Count - 1;
             Count = _Messages.Count - 1;
             UnreadCount = _Messages.Count(x => x.IsRead == false) - 1;
         }

@@ -97,7 +97,7 @@ namespace derpirc.Core
             var result = network.Messages.FirstOrDefault(x => x.Name == user.NickName.ToLower());
             if (result == null)
             {
-                result = new Message() { Name = user.NickName.ToLower() };
+                result = new Message() { Name = user.NickName };
                 network.Messages.Add(result);
                 _unitOfWork.Commit();
             }
