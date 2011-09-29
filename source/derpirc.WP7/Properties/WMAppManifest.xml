@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Deployment xmlns="http://schemas.microsoft.com/windowsphone/2009/deployment" AppPlatformVersion="7.1">
-  <App xmlns="" ProductID="{49f5b56d-5ba4-4533-b219-8123871c4286}" Title="derpirc" RuntimeType="Silverlight" Version="1.0.0.0" Genre="apps.normal" Author="derpirc.WP7 author" Description="Sample description" Publisher="derpirc.WP7">
+  <App xmlns="" ProductID="{49f5b56d-5ba4-4533-b219-8123871c4286}" Title="derpirc" RuntimeType="Silverlight" Version="1.0.242.22" Genre="apps.normal" Author="derpirc.WP7 author" Description="Sample description" Publisher="derpirc.WP7">
     <IconPath IsRelative="true" IsResource="false">ApplicationIcon.png</IconPath>
     <Capabilities>
       <Capability Name="ID_CAP_GAMERSERVICES" />
