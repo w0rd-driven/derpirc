@@ -229,8 +229,20 @@ namespace derpirc.Data
 
         private void GenerateSystemData()
         {
+            var user = Factory.CreateUser();
+            this.Users.InsertOnSubmit(user);
+            this.SubmitChanges();
+
+            var formatting = Factory.CreateFormatting();
+            this.Formattings.InsertOnSubmit(formatting);
+            this.SubmitChanges();
+
             var session = Factory.CreateSession();
             this.Sessions.InsertOnSubmit(session);
+            this.SubmitChanges();
+
+            var storage = Factory.CreateStorage();
+            this.Storages.InsertOnSubmit(storage);
             this.SubmitChanges();
         }
 

@@ -52,13 +52,14 @@ namespace derpirc.Core
         public void Connect()
         {
             _registrationData = GetRegistrationInfo();
-            foreach (var item in SupervisorFacade.Default.Clients)
-            {
-                var server = GetServer(item.Client);
-                var serverPort = GetServerPort(server);
-                if (item.Client != null)
-                    item.Client.Connect(server.HostName, serverPort, false, _registrationData);
-            }
+            if (_registrationData != null)
+                foreach (var item in SupervisorFacade.Default.Clients)
+                {
+                    var server = GetServer(item.Client);
+                    var serverPort = GetServerPort(server);
+                    if (item.Client != null)
+                        item.Client.Connect(server.HostName, serverPort, false, _registrationData);
+                }
         }
 
         public void Disconnect()
@@ -72,18 +73,24 @@ namespace derpirc.Core
 
         private IrcUserRegistrationInfo GetRegistrationInfo()
         {
-            _settings = _unitOfWorkSettings.User.FindBy(x => x.Name == "default").FirstOrDefault();
             var result = new IrcUserRegistrationInfo();
-            result.NickName = _settings.NickName;
-            result.RealName = _settings.FullName;
-            var userName = _settings.Username;
-            result.UserName = userName;
-            if (_settings.IsInvisible.HasValue && _settings.IsInvisible.Value)
+
+            _settings = _unitOfWorkSettings.User.FindBy(x => x.Name == "default").FirstOrDefault();
+            if (_settings != null)
             {
-                result.UserModes = new Collection<char>();
-                result.UserModes.Add('i');
+                result.NickName = _settings.NickName;
+                result.RealName = _settings.FullName;
+                var userName = _settings.Username;
+                result.UserName = userName;
+                if (_settings.IsInvisible.HasValue && _settings.IsInvisible.Value)
+                {
+                    result.UserModes = new Collection<char>();
+                    result.UserModes.Add('i');
+                }
+                return result;
             }
-            return result;
+            else
+                return null;
         }
 
         private ClientItem InitializeClient()

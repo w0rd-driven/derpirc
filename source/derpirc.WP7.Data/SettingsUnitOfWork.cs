@@ -82,7 +82,8 @@ namespace derpirc.Data
         public void InitializeDatabase(bool wipe)
         {
             var connectionString = ConnectionString.ToString();
-            _context = new SettingsModelContainer(connectionString);
+            if (_context == null)
+                _context = new SettingsModelContainer(connectionString);
             var context = (_context as SettingsModelContainer);
             context.InitializeDatabase(wipe);
             DatabaseExists = context.DatabaseExists();

@@ -100,8 +100,7 @@
                     </blend:Interaction.Triggers>
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <Grid>
-                            </Grid>
+                            <TextBlock Text="{Binding Name}" />
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>

@@ -74,5 +74,14 @@ namespace derpirc.Data.Models.Settings
 
             return result;
         }
+
+        public static Storage CreateStorage()
+        {
+            var result = new Storage()
+            {
+                Name = "default",
+            };
+            return result;
+        }
     }
 }
