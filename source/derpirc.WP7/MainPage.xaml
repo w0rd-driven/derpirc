@@ -12,6 +12,7 @@
                             xmlns:command="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Extras.WP71"
                             xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
                             xmlns:local="clr-namespace:derpirc.Controls"
+                            xmlns:appbarutils="clr-namespace:AppBarUtils;assembly=AppBarUtils" 
                             mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="696" 
                             FontFamily="{StaticResource PhoneFontFamilyNormal}"
                             FontSize="{StaticResource PhoneFontSizeNormal}"
@@ -207,6 +208,16 @@
  
     <phone:PhoneApplicationPage.ApplicationBar>
         <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True">
+            <shell:ApplicationBar.Buttons>
+                
+            </shell:ApplicationBar.Buttons>
+            <shell:ApplicationBar.MenuItems>
+                <shell:ApplicationBarMenuItem Text="connections" />
+                <shell:ApplicationBarMenuItem Text="settings" />
+            </shell:ApplicationBar.MenuItems>
         </shell:ApplicationBar>
     </phone:PhoneApplicationPage.ApplicationBar>
+    <blend:Interaction.Behaviors>
+        <appbarutils:AppBarItemCommand Type="MenuItem" Id="settings" Command="{Binding ViewSettingsCommand}"/>
+    </blend:Interaction.Behaviors>
 </phone:PhoneApplicationPage>

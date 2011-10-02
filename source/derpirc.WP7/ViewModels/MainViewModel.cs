@@ -69,6 +69,32 @@ namespace derpirc.ViewModels
             }
         }
 
+        private bool _canViewSettings;
+        public bool CanViewSettings
+        {
+            get { return _canViewSettings; }
+            set
+            {
+                if (_canViewSettings == value)
+                    return;
+
+                var oldValue = _canViewSettings;
+                _canViewSettings = value;
+                RaisePropertyChanged(() => CanViewSettings);
+                ViewSettingsCommand.RaiseCanExecuteChanged();
+            }
+        }
+
+        RelayCommand _viewSettingsCommand;
+        public RelayCommand ViewSettingsCommand
+        {
+            get
+            {
+                return _selectMessageCommand ?? (_selectMessageCommand =
+                    new RelayCommand(() => this.ViewSettings()));
+            }
+        }
+
         #endregion
 
         #region Properties
@@ -203,6 +229,8 @@ namespace derpirc.ViewModels
             _channelsList = new ObservableCollection<ChannelViewModel>();
             _mentionsList = new ObservableCollection<MentionViewModel>();
             _messagesList = new ObservableCollection<MessageViewModel>();
+
+            CanViewSettings = true;
 
             if (IsInDesignMode)
             {
@@ -460,57 +488,6 @@ namespace derpirc.ViewModels
             }
          }
 
-        private void SelectChannel()
-        {
-            var id = string.Empty;
-            var uriString = string.Empty;
-            if (SelectedChannel != null)
-            {
-                id = SelectedChannel.Model.Id.ToString();
-            }
-            else
-            {
-                id = "1";
-            }
-            uriString = string.Format("/derpirc.Pages;component/Views/ChannelDetailView.xaml?id={0}", Uri.EscapeUriString(id));
-            var uri = new Uri(uriString, UriKind.Relative);
-            NavigationService.Navigate(uri);
-        }
-
-        private void SelectMention()
-        {
-            var id = string.Empty;
-            var uriString = string.Empty;
-            if (SelectedMention != null)
-            {
-                id = SelectedMention.Model.Id.ToString();
-            }
-            else
-            {
-                id = "1";
-            }
-            uriString = string.Format("/derpirc.Pages;component/Views/MentionDetailView.xaml?id={0}", Uri.EscapeUriString(id));
-            var uri = new Uri(uriString, UriKind.Relative);
-            NavigationService.Navigate(uri);
-        }
-
-        private void SelectMessage()
-        {
-            var id = string.Empty;
-            var uriString = string.Empty;
-            if (SelectedMessage != null)
-            {
-                id = SelectedMessage.Model.Id.ToString();
-            }
-            else
-            {
-                id = "1";
-            }
-            uriString = string.Format("/derpirc.Pages;component/Views/MessageDetailView.xaml?id={0}", Uri.EscapeUriString(id));
-            var uri = new Uri(uriString, UriKind.Relative);
-            NavigationService.Navigate(uri);
-        }
-
         private void OnNavigatedTo()
         {
             //Application launch
@@ -566,6 +543,64 @@ namespace derpirc.ViewModels
         public void LoadData()
         {
             this.IsDataLoaded = true;
+        }
+
+        private void ViewSettings()
+        {
+            var uriString = "/derpirc.Pages;component/Views/SettingsView.xaml";
+            var uri = new Uri(uriString, UriKind.Relative);
+            NavigationService.Navigate(uri);
+        }
+
+        private void SelectChannel()
+        {
+            var id = string.Empty;
+            var uriString = string.Empty;
+            if (SelectedChannel != null)
+            {
+                id = SelectedChannel.Model.Id.ToString();
+            }
+            else
+            {
+                id = "1";
+            }
+            uriString = string.Format("/derpirc.Pages;component/Views/ChannelDetailView.xaml?id={0}", Uri.EscapeUriString(id));
+            var uri = new Uri(uriString, UriKind.Relative);
+            NavigationService.Navigate(uri);
+        }
+
+        private void SelectMention()
+        {
+            var id = string.Empty;
+            var uriString = string.Empty;
+            if (SelectedMention != null)
+            {
+                id = SelectedMention.Model.Id.ToString();
+            }
+            else
+            {
+                id = "1";
+            }
+            uriString = string.Format("/derpirc.Pages;component/Views/MentionDetailView.xaml?id={0}", Uri.EscapeUriString(id));
+            var uri = new Uri(uriString, UriKind.Relative);
+            NavigationService.Navigate(uri);
+        }
+
+        private void SelectMessage()
+        {
+            var id = string.Empty;
+            var uriString = string.Empty;
+            if (SelectedMessage != null)
+            {
+                id = SelectedMessage.Model.Id.ToString();
+            }
+            else
+            {
+                id = "1";
+            }
+            uriString = string.Format("/derpirc.Pages;component/Views/MessageDetailView.xaml?id={0}", Uri.EscapeUriString(id));
+            var uri = new Uri(uriString, UriKind.Relative);
+            NavigationService.Navigate(uri);
         }
 
         public void Send(ChannelItem message)
