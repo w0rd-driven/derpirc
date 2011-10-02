@@ -33,7 +33,7 @@ namespace derpirc.Data.Models.Settings
 
         public Session()
         {
-            Name = "Default";
+            Name = "default";
             _networks = new EntitySet<Network>(new Action<Network>(attach_Networks), new Action<Network>(detach_Networks));
         }
 

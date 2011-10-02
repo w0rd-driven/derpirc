@@ -72,8 +72,7 @@ namespace derpirc.Core
 
         private IrcUserRegistrationInfo GetRegistrationInfo()
         {
-            //_settings = SettingsUnitOfWork.Default.User.FindBy(x => x.Name == "Default").FirstOrDefault();
-            _settings = _unitOfWorkSettings.User.FindBy(x => x.Name == "Default").FirstOrDefault();
+            _settings = _unitOfWorkSettings.User.FindBy(x => x.Name == "default").FirstOrDefault();
             var result = new IrcUserRegistrationInfo();
             result.NickName = _settings.NickName;
             result.RealName = _settings.FullName;
@@ -190,7 +189,7 @@ namespace derpirc.Core
 
         public Session GetDefaultSession()
         {
-            var result = _unitOfWork.Sessions.FindBy(x => x.Name == "Default").FirstOrDefault();
+            var result = _unitOfWork.Sessions.FindBy(x => x.Name == "default").FirstOrDefault();
             return result;
         }
 

@@ -73,7 +73,6 @@
     <Compile Include="Models\Factory.cs" />
     <Compile Include="SettingsModelContainer.cs" />
     <Compile Include="FileModeEnum.cs" />
-    <Compile Include="DataModel.cs" />
     <Compile Include="DataUnitOfWork.cs" />
     <Compile Include="IRepository.cs" />
     <Compile Include="IUnitOfWork.cs" />

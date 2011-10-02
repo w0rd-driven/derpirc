@@ -8,13 +8,13 @@ namespace derpirc.Data.Models.Settings
         {
             var result = new User()
             {
-                Name = "Default",
+                Name = "default",
                 NickName = "derpirc",
                 NickNameAlternate = "durpirc",
                 FullName = "derpirc WP7 IRC Client",
                 Username = "derpirc",
                 IsInvisible = true,
-                QuitMessage = "derpirc derka muhammad jihad",
+                QuitMessage = "I am a pretty pretty butterfly.",
             };
             return result;
         }
@@ -23,6 +23,7 @@ namespace derpirc.Data.Models.Settings
         {
             var result = new Formatting()
             {
+                Name = "default",
                 FontFamily = "Monofur",
                 FontSize = "Small",
                 FontWeight = "Normal",
@@ -33,7 +34,7 @@ namespace derpirc.Data.Models.Settings
         public static Session CreateSession()
         {
             var result = new Session();
-            result.Name = "Default";
+            result.Name = "default";
             var networks = CreateNetworks(result);
             result.Networks = networks;
             return result;

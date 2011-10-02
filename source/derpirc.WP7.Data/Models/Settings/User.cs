@@ -32,7 +32,7 @@ namespace derpirc.Data.Models.Settings
 
         public User()
         {
-            
+            Name = "default";
         }
     }
 }
