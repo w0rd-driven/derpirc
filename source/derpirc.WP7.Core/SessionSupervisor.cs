@@ -78,7 +78,7 @@ namespace derpirc.Core
             result.RealName = _settings.FullName;
             var userName = _settings.Username;
             result.UserName = userName;
-            if (_settings.IsInvisible)
+            if (_settings.IsInvisible.HasValue && _settings.IsInvisible.Value)
             {
                 result.UserModes = new Collection<char>();
                 result.UserModes.Add('i');

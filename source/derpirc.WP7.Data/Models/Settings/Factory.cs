@@ -47,13 +47,11 @@ namespace derpirc.Data.Models.Settings
             {
                 DisplayName = "Random server",
                 HostName = "irc.efnet.org",
-                Port = 6667,
                 Ports = "6667",
             };
             result.Add(new Network()
             {
                 Session = session,
-                SessionId = session.Id,
                 Server = server1,
                 Name = "EFNet",
                 IsJoinEnabled = true,
@@ -63,13 +61,11 @@ namespace derpirc.Data.Models.Settings
             {
                 DisplayName = "Random server",
                 HostName = "irc.node-3.net",
-                Port = 6667,
                 Ports = "6667",
             };
             result.Add(new Network()
             {
                 Session = session,
-                SessionId = session.Id,
                 Server = server2,
                 Name = "PowerPrecision",
                 IsJoinEnabled = true,

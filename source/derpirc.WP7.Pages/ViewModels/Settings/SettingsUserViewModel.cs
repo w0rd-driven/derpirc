@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using derpirc.Data;
 using derpirc.Data.Models.Settings;
 using GalaSoft.MvvmLight;
@@ -85,8 +86,8 @@ namespace derpirc.ViewModels.Settings
             }
         }
 
-        private bool _isInvisible;
-        public bool IsInvisible
+        private Nullable<bool> _isInvisible;
+        public Nullable<bool> IsInvisible
         {
             get { return _isInvisible; }
             set

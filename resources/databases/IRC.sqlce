@@ -6,8 +6,8 @@
 -- Mention: 0 row(s)
 -- MessageItem: 0 row(s)
 -- Message: 0 row(s)
--- Network: 0 row(s)
 -- Server: 0 row(s)
+-- Network: 0 row(s)
 -- Session: 0 row(s)
 
 -- Drop tables
@@ -102,6 +102,7 @@ GO
 CREATE TABLE [Server] (
   [Id] int NOT NULL  IDENTITY (1,1)
 , [NetworkId] int NOT NULL
+, [ConnectedHostName] nvarchar(128) NULL
 , [DisplayName] nvarchar(128) NULL
 , [HostName] nvarchar(128) NOT NULL
 , [Ports] nvarchar(256) NULL
@@ -151,5 +152,6 @@ ALTER TABLE [Network] ADD CONSTRAINT [FK_Session_Network] FOREIGN KEY ([SessionI
 GO
 ALTER TABLE [Server] ADD CONSTRAINT [FK_Network_Server] FOREIGN KEY ([NetworkId]) REFERENCES [Network]([Id]) ON DELETE NO ACTION ON UPDATE NO ACTION;
 GO
+
 
 

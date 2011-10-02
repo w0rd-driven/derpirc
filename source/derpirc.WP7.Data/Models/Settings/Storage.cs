@@ -15,19 +15,13 @@ using System.Data.Linq.Mapping;
 namespace derpirc.Data.Models.Settings
 {
     [global::System.Data.Linq.Mapping.TableAttribute()]
-    public partial class Formatting : IBaseModel, INotifyPropertyChanging, INotifyPropertyChanged
+    public partial class Storage : IBaseModel, INotifyPropertyChanging, INotifyPropertyChanged
     {
         private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
 
         private int _Id;
 
         private string _Name;
-
-        private string _FontFamily;
-
-        private string _FontSize;
-
-        private string _FontWeight;
 
         #region Extensibility Method Definitions
         partial void OnLoaded();
@@ -37,15 +31,9 @@ namespace derpirc.Data.Models.Settings
         partial void OnIdChanged();
         partial void OnNameChanging(string value);
         partial void OnNameChanged();
-        partial void OnFontFamilyChanging(string value);
-        partial void OnFontFamilyChanged();
-        partial void OnFontSizeChanging(string value);
-        partial void OnFontSizeChanged();
-        partial void OnFontWeightChanging(string value);
-        partial void OnFontWeightChanged();
         #endregion
 
-        public Formatting()
+        public Storage()
         {
             OnCreated();
         }
@@ -70,7 +58,7 @@ namespace derpirc.Data.Models.Settings
             }
         }
 
-        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_Name", DbType = "NVarChar(128) NOT NULL", CanBeNull = false)]
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_Name", DbType = "NVarChar(128)")]
         public string Name
         {
             get
@@ -86,66 +74,6 @@ namespace derpirc.Data.Models.Settings
                     this._Name = value;
                     this.SendPropertyChanged("Name");
                     this.OnNameChanged();
-                }
-            }
-        }
-
-        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_FontFamily", DbType = "NVarChar(128)")]
-        public string FontFamily
-        {
-            get
-            {
-                return this._FontFamily;
-            }
-            set
-            {
-                if ((this._FontFamily != value))
-                {
-                    this.OnFontFamilyChanging(value);
-                    this.SendPropertyChanging();
-                    this._FontFamily = value;
-                    this.SendPropertyChanged("FontFamily");
-                    this.OnFontFamilyChanged();
-                }
-            }
-        }
-
-        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_FontSize", DbType = "NVarChar(128)")]
-        public string FontSize
-        {
-            get
-            {
-                return this._FontSize;
-            }
-            set
-            {
-                if ((this._FontSize != value))
-                {
-                    this.OnFontSizeChanging(value);
-                    this.SendPropertyChanging();
-                    this._FontSize = value;
-                    this.SendPropertyChanged("FontSize");
-                    this.OnFontSizeChanged();
-                }
-            }
-        }
-
-        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_FontWeight", DbType = "NVarChar(128)")]
-        public string FontWeight
-        {
-            get
-            {
-                return this._FontWeight;
-            }
-            set
-            {
-                if ((this._FontWeight != value))
-                {
-                    this.OnFontWeightChanging(value);
-                    this.SendPropertyChanging();
-                    this._FontWeight = value;
-                    this.SendPropertyChanged("FontWeight");
-                    this.OnFontWeightChanged();
                 }
             }
         }

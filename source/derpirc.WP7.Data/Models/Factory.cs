@@ -7,7 +7,7 @@ namespace derpirc.Data.Models
         public static Session CreateSession()
         {
             var result = new Session();
-            result.Name = "Default";
+            result.Name = "default";
             var networks = CreateNetworks(result);
             result.Networks = networks;
             return result;

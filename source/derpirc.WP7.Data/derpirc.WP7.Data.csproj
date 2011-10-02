@@ -56,8 +56,8 @@
     <Compile Include="..\VersionAssemblyInfo.cs">
       <Link>Properties\VersionAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="BaseNotify.cs" />
     <Compile Include="ConnectionString.cs" />
+    <Compile Include="Models\Settings\Formatting.cs" />
     <Compile Include="Models\Channel.cs" />
     <Compile Include="Models\ChannelItem.cs" />
     <Compile Include="DataModelContainer.cs" />
@@ -65,10 +65,12 @@
     <Compile Include="Models\MentionItem.cs" />
     <Compile Include="Models\Message.cs" />
     <Compile Include="Models\MessageItem.cs" />
-    <Compile Include="Models\Settings\Formatting.cs" />
     <Compile Include="Models\Network.cs" />
     <Compile Include="Models\Server.cs" />
     <Compile Include="Models\Session.cs" />
+    <Compile Include="Models\Settings\Network.cs" />
+    <Compile Include="Models\Settings\Server.cs" />
+    <Compile Include="Models\Settings\Session.cs" />
     <Compile Include="SettingsUnitOfWork.cs" />
     <Compile Include="Models\Factory.cs" />
     <Compile Include="SettingsModelContainer.cs" />
@@ -86,11 +88,9 @@
     <Compile Include="Models\MessageTypeEnum.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Models\Settings\Factory.cs" />
-    <Compile Include="Models\Settings\Network.cs" />
-    <Compile Include="Models\Settings\Server.cs" />
-    <Compile Include="Models\Settings\User.cs" />
-    <Compile Include="Models\Settings\Session.cs" />
     <Compile Include="SqlRepository.cs" />
+    <Compile Include="Models\Settings\Storage.cs" />
+    <Compile Include="Models\Settings\User.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Models\DataDiagram.cd" />

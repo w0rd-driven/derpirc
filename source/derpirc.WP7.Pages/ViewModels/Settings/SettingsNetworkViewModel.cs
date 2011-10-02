@@ -131,7 +131,7 @@ namespace derpirc.ViewModels.Settings
             else
             {
                 // Code runs "for real": Connect to service, etc...
-                //Load();
+                Load();
             }
 
             Networks = new CollectionViewSource() { Source = _networksList };

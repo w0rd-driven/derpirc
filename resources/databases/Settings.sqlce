@@ -1,19 +1,22 @@
 -- User Table information:
--- Number of tables: 5
+-- Number of tables: 6
 -- Formatting: 0 row(s)
+-- Server: 0 row(s)
 -- Network: 0 row(s)
 -- Session: 0 row(s)
--- Server: 0 row(s)
+-- Storage: 0 row(s)
 -- User: 0 row(s)
 
 -- Drop existing tables
 DROP TABLE [Formatting];
 GO
+DROP TABLE [Server];
+GO
 DROP TABLE [Network];
 GO
 DROP TABLE [Session];
 GO
-DROP TABLE [Server];
+DROP TABLE [Storage];
 GO
 DROP TABLE [User];
 GO
@@ -30,14 +33,10 @@ GO
 CREATE TABLE [Network] (
   [Id] int NOT NULL  IDENTITY (1,1)
 , [SessionId] int NOT NULL
+, [ServerId] int NOT NULL
 , [Name] nvarchar(128) NOT NULL
 , [IsJoinEnabled] bit NULL
-, [JoinChannels] nvarchar(128) NULL
-);
-GO
-CREATE TABLE [Session] (
-  [Id] int NOT NULL  IDENTITY (1,1)
-, [Name] nvarchar(128) NULL
+, [JoinChannels] nvarchar(256) NULL
 );
 GO
 CREATE TABLE [Server] (
@@ -49,6 +48,16 @@ CREATE TABLE [Server] (
 , [Password] nvarchar(128) NULL
 );
 GO
+CREATE TABLE [Session] (
+  [Id] int NOT NULL  IDENTITY (1,1)
+, [Name] nvarchar(128) NULL
+);
+GO
+CREATE TABLE [Storage] (
+  [Id] int NOT NULL  IDENTITY (1,1)
+, [Name] nvarchar(128) NULL
+);
+GO
 CREATE TABLE [User] (
   [Id] int NOT NULL  IDENTITY (1,1)
 , [Name] nvarchar(128) NOT NULL
@@ -57,7 +66,7 @@ CREATE TABLE [User] (
 , [FullName] nvarchar(128) NULL
 , [Username] nvarchar(64) NULL
 , [IsInvisible] bit NULL
-, [Quit] nvarchar(256) NULL
+, [QuitMessage] nvarchar(256) NULL
 );
 GO
 
@@ -70,12 +79,16 @@ ALTER TABLE [Session] ADD CONSTRAINT [PK_Session] PRIMARY KEY ([Id]);
 GO
 ALTER TABLE [Server] ADD CONSTRAINT [PK_Server] PRIMARY KEY ([Id]);
 GO
+ALTER TABLE [Storage] ADD CONSTRAINT [PK_Storage] PRIMARY KEY ([Id]);
+GO
 ALTER TABLE [User] ADD CONSTRAINT [PK_User] PRIMARY KEY ([Id]);
 GO
 
 -- Foreign keys
 ALTER TABLE [Network] ADD CONSTRAINT [FK_Session_Network] FOREIGN KEY ([SessionId]) REFERENCES [Session]([Id]) ON DELETE NO ACTION ON UPDATE NO ACTION;
 GO
-ALTER TABLE [Server] ADD CONSTRAINT [FK_Network_Server] FOREIGN KEY ([NetworkId]) REFERENCES [Server]([Id]) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE [Server] ADD CONSTRAINT [FK_Network_Server] FOREIGN KEY ([NetworkId]) REFERENCES [Network]([Id]) ON DELETE NO ACTION ON UPDATE NO ACTION;
 GO
+
+
 

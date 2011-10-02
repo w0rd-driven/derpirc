@@ -1,13 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
-  <Class Name="derpirc.Data.BaseNotify" Collapsed="true">
-    <Position X="10.5" Y="0.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAACACAAAAAACAAAAQAAgAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>BaseNotify.cs</FileName>
-    </TypeIdentifier>
-    <Lollipop Position="0.2" />
-  </Class>
   <Class Name="derpirc.Data.Models.ChannelItem" Collapsed="true">
     <Position X="3.5" Y="3.5" Width="1.5" />
     <TypeIdentifier>
@@ -88,7 +80,7 @@
   <Class Name="derpirc.Data.Models.Server" Collapsed="true">
     <Position X="12" Y="5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>gAAiEAEBAACAAUAARAkEAAARjCBAAAICABAARAQUKAA=</HashCode>
+      <HashCode>gAAiEQEBAECAAUAARAkEAAARjCBAAAJCABAARAQ0KAA=</HashCode>
       <FileName>Models\Server.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
