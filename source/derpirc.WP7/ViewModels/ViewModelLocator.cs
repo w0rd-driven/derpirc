@@ -354,6 +354,206 @@ namespace derpirc.ViewModels
 
         #endregion
 
+        #region SettingsViewModel
+
+        private static Settings.SettingsViewModel _settingsViewModel;
+
+        /// <summary>
+        /// Gets the SettingsViewModel property.
+        /// </summary>
+        public static Settings.SettingsViewModel SettingsStatic
+        {
+            get
+            {
+                if (_settingsViewModel == null)
+                    CreateSettings();
+
+                return _settingsViewModel;
+            }
+        }
+
+        /// <summary>
+        /// Gets the SettingsViewModel property.
+        /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance",
+            "CA1822:MarkMembersAsStatic",
+            Justification = "This non-static member is needed for data binding purposes.")]
+        public Settings.SettingsViewModel SettingsViewModel
+        {
+            get { return SettingsStatic; }
+        }
+
+        /// <summary>
+        /// Provides a deterministic way to delete the SettingsViewModel property.
+        /// </summary>
+        public static void ClearSettings()
+        {
+            if (_settingsViewModel != null)
+                _settingsViewModel.Cleanup();
+            _settingsViewModel = null;
+        }
+
+        /// <summary>
+        /// Provides a deterministic way to create the SettingsViewModel property.
+        /// </summary>
+        public static void CreateSettings()
+        {
+            if (_settingsViewModel == null)
+                _settingsViewModel = new Settings.SettingsViewModel();
+        }
+
+        #endregion
+
+        #region SettingsUserViewModel
+
+        private static Settings.SettingsUserViewModel _settingsUserViewModel;
+
+        /// <summary>
+        /// Gets the SettingsUserViewModel property.
+        /// </summary>
+        public static Settings.SettingsUserViewModel SettingsUserStatic
+        {
+            get
+            {
+                if (_settingsUserViewModel == null)
+                    CreateSettingsUser();
+
+                return _settingsUserViewModel;
+            }
+        }
+
+        /// <summary>
+        /// Gets the SettingsUserViewModel property.
+        /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance",
+            "CA1822:MarkMembersAsStatic",
+            Justification = "This non-static member is needed for data binding purposes.")]
+        public Settings.SettingsUserViewModel SettingsUserViewModel
+        {
+            get { return SettingsUserStatic; }
+        }
+
+        /// <summary>
+        /// Provides a deterministic way to delete the SettingsUserViewModel property.
+        /// </summary>
+        public static void ClearSettingsUser()
+        {
+            if (_settingsUserViewModel != null)
+                _settingsUserViewModel.Cleanup();
+            _settingsUserViewModel = null;
+        }
+
+        /// <summary>
+        /// Provides a deterministic way to create the SettingsUserViewModel property.
+        /// </summary>
+        public static void CreateSettingsUser()
+        {
+            if (_settingsUserViewModel == null)
+                _settingsUserViewModel = new Settings.SettingsUserViewModel();
+        }
+
+        #endregion
+
+        #region SettingsFormatViewModel
+
+        private static Settings.SettingsFormatViewModel _settingsFormatViewModel;
+
+        /// <summary>
+        /// Gets the SettingsFormatViewModel property.
+        /// </summary>
+        public static Settings.SettingsFormatViewModel SettingsFormatStatic
+        {
+            get
+            {
+                if (_settingsFormatViewModel == null)
+                    CreateSettingsFormat();
+
+                return _settingsFormatViewModel;
+            }
+        }
+
+        /// <summary>
+        /// Gets the SettingsFormatViewModel property.
+        /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance",
+            "CA1822:MarkMembersAsStatic",
+            Justification = "This non-static member is needed for data binding purposes.")]
+        public Settings.SettingsFormatViewModel SettingsFormatViewModel
+        {
+            get { return SettingsFormatStatic; }
+        }
+
+        /// <summary>
+        /// Provides a deterministic way to delete the SettingsFormatViewModel property.
+        /// </summary>
+        public static void ClearSettingsFormat()
+        {
+            if (_settingsFormatViewModel != null)
+                _settingsFormatViewModel.Cleanup();
+            _settingsFormatViewModel = null;
+        }
+
+        /// <summary>
+        /// Provides a deterministic way to create the SettingsFormatViewModel property.
+        /// </summary>
+        public static void CreateSettingsFormat()
+        {
+            if (_settingsFormatViewModel == null)
+                _settingsFormatViewModel = new Settings.SettingsFormatViewModel();
+        }
+
+        #endregion
+
+        #region SettingsNetworkViewModel
+
+        private static Settings.SettingsNetworkViewModel _settingsNetworkViewModel;
+
+        /// <summary>
+        /// Gets the SettingsNetworkViewModel property.
+        /// </summary>
+        public static Settings.SettingsNetworkViewModel SettingsNetworkStatic
+        {
+            get
+            {
+                if (_settingsNetworkViewModel == null)
+                    CreateSettingsNetwork();
+
+                return _settingsNetworkViewModel;
+            }
+        }
+
+        /// <summary>
+        /// Gets the SettingsNetworkViewModel property.
+        /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance",
+            "CA1822:MarkMembersAsStatic",
+            Justification = "This non-static member is needed for data binding purposes.")]
+        public Settings.SettingsNetworkViewModel SettingsNetworkViewModel
+        {
+            get { return SettingsNetworkStatic; }
+        }
+
+        /// <summary>
+        /// Provides a deterministic way to delete the SettingsNetworkViewModel property.
+        /// </summary>
+        public static void ClearSettingsNetwork()
+        {
+            if (_settingsNetworkViewModel != null)
+                _settingsNetworkViewModel.Cleanup();
+            _settingsNetworkViewModel = null;
+        }
+
+        /// <summary>
+        /// Provides a deterministic way to create the SettingsNetworkViewModel property.
+        /// </summary>
+        public static void CreateSettingsNetwork()
+        {
+            if (_settingsNetworkViewModel == null)
+                _settingsNetworkViewModel = new Settings.SettingsNetworkViewModel();
+        }
+
+        #endregion
+
         /// <summary>
         /// Initializes a new instance of the ViewModelLocator class.
         /// </summary>
@@ -381,6 +581,10 @@ namespace derpirc.ViewModels
             ClearMentionDetail();
             ClearMessage();
             ClearMessageDetail();
+            ClearSettings();
+            ClearSettingsUser();
+            ClearSettingsFormat();
+            ClearSettingsNetwork();
         }
     }
 }

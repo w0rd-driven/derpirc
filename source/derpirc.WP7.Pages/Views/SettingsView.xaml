@@ -1,48 +1,123 @@
 ﻿<phone:PhoneApplicationPage x:Class="derpirc.Views.SettingsView"
                             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                            xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
-                            xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
                             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                            xmlns:edc="clr-namespace:Microsoft.Expression.Controls;assembly=Microsoft.Expression.Drawing"
+                            xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+                            xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+                            xmlns:controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls"
+                            xmlns:blend="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+                            xmlns:command="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Extras.WP71"
+                            xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
                             FontFamily="{StaticResource PhoneFontFamilyNormal}"
                             FontSize="{StaticResource PhoneFontSizeNormal}"
                             Foreground="{StaticResource PhoneForegroundBrush}"
                             SupportedOrientations="PortraitOrLandscape" Orientation="Portrait"
-                            mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="768"
+                            mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="696"
                             shell:SystemTray.IsVisible="True"
                             DataContext="{Binding SettingsViewModel, Source={StaticResource Locator}}">
 
     <Grid x:Name="LayoutRoot" Background="Transparent">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
+        <blend:Interaction.Triggers>
+            <blend:EventTrigger EventName="Loaded">
+                <command:EventToCommand Command="{Binding LayoutRootCommand}" CommandParameter="{Binding ElementName=LayoutRoot}" PassEventArgsToCommand="True"/>
+            </blend:EventTrigger>
+        </blend:Interaction.Triggers>
 
-        <StackPanel x:Name="TitlePanel" Margin="24,24,0,12">
-            <TextBlock x:Name="ApplicationTitle"
-                       Text="{Binding ApplicationTitle}"
-                       Style="{StaticResource PhoneTextNormalStyle}" />
-            <TextBlock x:Name="PageTitle"
-                       Text="{Binding PageName}"
-                       Margin="-3,-8,0,0"
-                       Style="{StaticResource PhoneTextTitle1Style}" />
-        </StackPanel>
+        <controls:Pivot Title="derpirc" Style="{StaticResource SmallPivotStyle}" Margin="-2,0,2,0">
+            <blend:Interaction.Triggers>
+                <blend:EventTrigger EventName="LoadedPivotItem">
+                    <command:EventToCommand Command="{Binding PivotItemLoadedCommand}" PassEventArgsToCommand="True"/>
+                </blend:EventTrigger>
+            </blend:Interaction.Triggers>
 
-        <Grid x:Name="ContentGrid" Grid.Row="1">
-        </Grid>
+            <controls:PivotItem Header="user" Style="{StaticResource SmallPivotItemStyle}" DataContext="{Binding SettingsUserViewModel, Source={StaticResource Locator}}">
+                <ScrollViewer>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <TextBlock Name="NickNameLabel" Text="NickName" VerticalAlignment="Center" FontSize="{StaticResource PhoneFontSizeMedium}" />
+                        <TextBox Name="NickNameTextBox"  VerticalAlignment="Center" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding NickName, Mode=TwoWay}" />
+                        <TextBlock Name="NickNameAltLabel" Text="Alternate" VerticalAlignment="Center" FontSize="{StaticResource PhoneFontSizeMedium}" Grid.Row="1" />
+                        <TextBox Name="NickNameAltTextBox" VerticalAlignment="Center" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding NickNameAlt, Mode=TwoWay}" />
+                        <TextBlock Name="FullNameLabel" Text="Full Name" VerticalAlignment="Center" FontSize="{StaticResource PhoneFontSizeMedium}" Grid.Row="2" />
+                        <TextBox Name="FullNameTextBox" VerticalAlignment="Center" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding FullName, Mode=TwoWay}" />
+                        <TextBlock Name="UserNameLabel" Text="Username" VerticalAlignment="Center" FontSize="{StaticResource PhoneFontSizeMedium}" Grid.Row="3" />
+                        <TextBox Name="UserNameTextBox" VerticalAlignment="Center" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding UserName, Mode=TwoWay}" />
+                        <toolkit:ToggleSwitch Name="InvisibleToggleSwitch" Header="Invisible" Grid.Row="4" Grid.ColumnSpan="2" IsChecked="{Binding IsInvisible, Mode=TwoWay}" />
+                        <TextBlock Name="QuitMessageLabel" Text="Quit Msg" VerticalAlignment="Center" FontSize="{StaticResource PhoneFontSizeMedium}" Grid.Row="5" />
+                        <TextBox Name="QuitMessageTextBox" VerticalAlignment="Center" Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding QuitMessage, Mode=TwoWay}" />
+                    </Grid>
+                </ScrollViewer>
+            </controls:PivotItem>
+
+            <controls:PivotItem Header="formatting" Style="{StaticResource SmallPivotItemStyle}" DataContext="{Binding SettingsFormatViewModel, Source={StaticResource Locator}}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <TextBlock Name="FontFamilyLabel" Text="Font" VerticalAlignment="Center" FontSize="{StaticResource PhoneFontSizeMedium}" Margin="0,0,18,0" />
+                    <toolkit:ListPicker Name="FontFamilyListPicker" 
+                                        ItemsSource="{Binding FontFamilies.View}" SelectedItem="{Binding FontFamily, Mode=TwoWay}" ExpansionMode="FullScreenOnly" 
+                                        VerticalAlignment="Center" Margin="12,4,12,12" Grid.Column="1" Grid.ColumnSpan="3" />
+                    <TextBlock Name="FontSizeLabel" Text="Size" VerticalAlignment="Center" FontSize="{StaticResource PhoneFontSizeMedium}" Margin="0,0,18,0" Grid.Row="1" />
+                    <toolkit:ListPicker Name="FontSizeListPicker" 
+                                        ItemsSource="{Binding FontSizes.View}" SelectedItem="{Binding FontSize, Mode=TwoWay}" ExpansionMode="FullScreenOnly" 
+                                        VerticalAlignment="Center" Margin="12,4,12,12" Grid.Row="1" Grid.Column="1" />
+                    <TextBlock Name="FontWeightLabel" Text="Weight" VerticalAlignment="Center" FontSize="{StaticResource PhoneFontSizeMedium}" Margin="0,0,18,0" Grid.Row="1" Grid.Column="2" />
+                    <toolkit:ListPicker Name="FontWeightListPicker" 
+                                        ItemsSource="{Binding FontWeights.View}" SelectedItem="{Binding FontWeight, Mode=TwoWay}" ExpansionMode="FullScreenOnly"
+                                        VerticalAlignment="Center" Margin="12,4,12,12" Grid.Row="1" Grid.Column="3" />
+                </Grid>
+            </controls:PivotItem>
+
+            <controls:PivotItem Header="networks" Style="{StaticResource SmallPivotItemStyle}" DataContext="{Binding SettingsNetworkViewModel, Source={StaticResource Locator}}">
+                <ListBox x:Name="NetworksListBox" Margin="0,0,-12,0" ItemsSource="{Binding Networks.View}" 
+                         SelectedItem="{Binding SelectedItem, Mode=TwoWay}" ItemContainerStyle="{StaticResource SmallPivotListBoxStyle}">
+                    <blend:Interaction.Triggers>
+                        <blend:EventTrigger EventName="DoubleTap">
+                            <command:EventToCommand Command="{Binding EditCommand}" />
+                        </blend:EventTrigger>
+                    </blend:Interaction.Triggers>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </controls:PivotItem>
+            
+            <controls:PivotItem Header="storage" Style="{StaticResource SmallPivotItemStyle}">
+            </controls:PivotItem>
+        </controls:Pivot>
     </Grid>
     
-    <!-- Sample code showing usage of ApplicationBar
     <phone:PhoneApplicationPage.ApplicationBar>
         <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True">
-            <shell:ApplicationBarIconButton x:Name="appbar_button1" IconUri="/Images/appbar_button1.png" Text="Button 1"></shell:ApplicationBarIconButton>
-            <shell:ApplicationBarIconButton x:Name="appbar_button2" IconUri="/Images/appbar_button2.png" Text="Button 2"></shell:ApplicationBarIconButton>
+            <shell:ApplicationBar.Buttons>
+            </shell:ApplicationBar.Buttons>
             <shell:ApplicationBar.MenuItems>
-                <shell:ApplicationBarMenuItem x:Name="menuItem1" Text="MenuItem 1"></shell:ApplicationBarMenuItem>
-                <shell:ApplicationBarMenuItem x:Name="menuItem2" Text="MenuItem 2"></shell:ApplicationBarMenuItem>
             </shell:ApplicationBar.MenuItems>
         </shell:ApplicationBar>
     </phone:PhoneApplicationPage.ApplicationBar>
-    -->
 </phone:PhoneApplicationPage>

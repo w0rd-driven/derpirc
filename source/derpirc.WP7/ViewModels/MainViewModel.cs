@@ -90,7 +90,7 @@ namespace derpirc.ViewModels
         {
             get
             {
-                return _selectMessageCommand ?? (_selectMessageCommand =
+                return _viewSettingsCommand ?? (_viewSettingsCommand =
                     new RelayCommand(() => this.ViewSettings()));
             }
         }
