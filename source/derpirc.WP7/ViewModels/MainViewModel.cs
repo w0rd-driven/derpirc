@@ -95,6 +95,32 @@ namespace derpirc.ViewModels
             }
         }
 
+        private bool _canViewConnections;
+        public bool CanViewConnections
+        {
+            get { return _canViewConnections; }
+            set
+            {
+                if (_canViewConnections == value)
+                    return;
+
+                var oldValue = _canViewConnections;
+                _canViewConnections = value;
+                RaisePropertyChanged(() => CanViewConnections);
+                ViewConnectionsCommand.RaiseCanExecuteChanged();
+            }
+        }
+
+        RelayCommand _viewConnectionsCommand;
+        public RelayCommand ViewConnectionsCommand
+        {
+            get
+            {
+                return _viewConnectionsCommand ?? (_viewConnectionsCommand =
+                    new RelayCommand(() => this.ViewConnections()));
+            }
+        }
+
         #endregion
 
         #region Properties
@@ -548,6 +574,13 @@ namespace derpirc.ViewModels
         private void ViewSettings()
         {
             var uriString = "/derpirc.Pages;component/Views/SettingsView.xaml";
+            var uri = new Uri(uriString, UriKind.Relative);
+            NavigationService.Navigate(uri);
+        }
+
+        private void ViewConnections()
+        {
+            var uriString = "/derpirc.Pages;component/Views/ConnectionView.xaml";
             var uri = new Uri(uriString, UriKind.Relative);
             NavigationService.Navigate(uri);
         }

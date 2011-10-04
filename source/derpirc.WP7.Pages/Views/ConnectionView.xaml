@@ -1,0 +1,82 @@
+﻿<phone:PhoneApplicationPage x:Class="derpirc.Views.ConnectionView"
+                            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                            xmlns:edc="clr-namespace:Microsoft.Expression.Controls;assembly=Microsoft.Expression.Drawing"
+                            xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+                            xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+                            xmlns:controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls"
+                            xmlns:blend="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+                            xmlns:command="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Extras.WP71"
+                            xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
+                            xmlns:appbarutils="clr-namespace:AppBarUtils;assembly=AppBarUtils" 
+                            FontFamily="{StaticResource PhoneFontFamilyNormal}"
+                            FontSize="{StaticResource PhoneFontSizeNormal}"
+                            Foreground="{StaticResource PhoneForegroundBrush}"
+                            SupportedOrientations="PortraitOrLandscape" Orientation="Portrait"
+                            mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="696"
+                            shell:SystemTray.IsVisible="True"
+                            DataContext="{Binding ConnectionViewModel, Source={StaticResource Locator}}">
+
+    <Grid x:Name="LayoutRoot" Background="Transparent">
+        <blend:Interaction.Triggers>
+            <blend:EventTrigger EventName="Loaded">
+                <command:EventToCommand Command="{Binding LayoutRootCommand}" CommandParameter="{Binding ElementName=LayoutRoot}" PassEventArgsToCommand="True"/>
+            </blend:EventTrigger>
+        </blend:Interaction.Triggers>
+        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel x:Name="TitlePanel" Margin="24,24,0,12">
+            <TextBlock x:Name="PageTitle"
+                       Text="Connections"
+                       Margin="-3,-8,0,0"
+                       Style="{StaticResource PhoneTextTitle1Style}" />
+            <TextBlock x:Name="Subtitle"
+                       Text="{Binding Subtitle}"
+                       Margin="-3,-8,0,0"
+                       Style="{StaticResource TextBlockBase}" />
+        </StackPanel>
+
+        <Grid x:Name="ContentGrid" Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="20" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="20" />
+            </Grid.RowDefinitions>
+
+            <toolkit:MultiselectList x:Name="ConnectionsListBox" Margin="0,0,-12,0"
+                     ItemsSource="{Binding Connections.View}">
+                <blend:Interaction.Triggers>
+                    <blend:EventTrigger EventName="DoubleTap">
+                        <command:EventToCommand Command="{Binding EditCommand}" />
+                    </blend:EventTrigger>
+                </blend:Interaction.Triggers>
+                <toolkit:MultiselectList.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel>
+                            <TextBlock Text="{Binding NetworkName}" />
+                            <TextBlock Text="{Binding State}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </toolkit:MultiselectList.ItemTemplate>
+            </toolkit:MultiselectList>
+        </Grid>
+    </Grid>
+
+    <phone:PhoneApplicationPage.ApplicationBar>
+        <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True">
+            <shell:ApplicationBar.Buttons>
+                <shell:ApplicationBarIconButton IconUri="/Icons/appbar.send.text.rest.png" Text="Reconnect" />
+                <shell:ApplicationBarIconButton IconUri="/Icons/appbar.switcher.rest.png" Text="Disconnect" />
+            </shell:ApplicationBar.Buttons>
+            <shell:ApplicationBar.MenuItems>
+            </shell:ApplicationBar.MenuItems>
+        </shell:ApplicationBar>
+    </phone:PhoneApplicationPage.ApplicationBar>
+</phone:PhoneApplicationPage>

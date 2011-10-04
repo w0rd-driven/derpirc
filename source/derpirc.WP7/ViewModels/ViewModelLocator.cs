@@ -554,6 +554,56 @@ namespace derpirc.ViewModels
 
         #endregion
 
+        #region ConnectionViewModel
+
+        private static ConnectionViewModel _connectionViewModel;
+
+        /// <summary>
+        /// Gets the ConnectionViewModel property.
+        /// </summary>
+        public static ConnectionViewModel ConnectionStatic
+        {
+            get
+            {
+                if (_connectionViewModel == null)
+                    CreateConnection();
+
+                return _connectionViewModel;
+            }
+        }
+
+        /// <summary>
+        /// Gets the ConnectionViewModel property.
+        /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance",
+            "CA1822:MarkMembersAsStatic",
+            Justification = "This non-static member is needed for data binding purposes.")]
+        public ConnectionViewModel ConnectionViewModel
+        {
+            get { return ConnectionStatic; }
+        }
+
+        /// <summary>
+        /// Provides a deterministic way to delete the ConnectionViewModel property.
+        /// </summary>
+        public static void ClearConnection()
+        {
+            if (_connectionViewModel != null)
+                _connectionViewModel.Cleanup();
+            _connectionViewModel = null;
+        }
+
+        /// <summary>
+        /// Provides a deterministic way to create the ConnectionViewModel property.
+        /// </summary>
+        public static void CreateConnection()
+        {
+            if (_connectionViewModel == null)
+                _connectionViewModel = new ConnectionViewModel();
+        }
+
+        #endregion
+
         /// <summary>
         /// Initializes a new instance of the ViewModelLocator class.
         /// </summary>
@@ -585,6 +635,7 @@ namespace derpirc.ViewModels
             ClearSettingsUser();
             ClearSettingsFormat();
             ClearSettingsNetwork();
+            ClearConnection();
         }
     }
 }

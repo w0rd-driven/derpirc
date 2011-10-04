@@ -218,6 +218,7 @@
         </shell:ApplicationBar>
     </phone:PhoneApplicationPage.ApplicationBar>
     <blend:Interaction.Behaviors>
-        <appbarutils:AppBarItemCommand Type="MenuItem" Id="settings" Command="{Binding ViewSettingsCommand}"/>
+        <appbarutils:AppBarItemCommand Type="MenuItem" Id="connections" Command="{Binding ViewConnectionsCommand}" />
+        <appbarutils:AppBarItemCommand Type="MenuItem" Id="settings" Command="{Binding ViewSettingsCommand}" />
     </blend:Interaction.Behaviors>
 </phone:PhoneApplicationPage>

@@ -43,6 +43,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AppBarUtils">
+      <HintPath>..\..\library\AppBarUtils\AppBarUtils.dll</HintPath>
+    </Reference>
     <Reference Include="GalaSoft.MvvmLight.Extras.WP71">
       <HintPath>..\..\library\MVVMLight\WP71\GalaSoft.MvvmLight.Extras.WP71.dll</HintPath>
     </Reference>
@@ -78,6 +81,7 @@
       <Link>Properties\VersionAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Helpers\WatermarkBehavior.cs" />
+    <Compile Include="ViewModels\ConnectionViewModel.cs" />
     <Compile Include="ViewModels\Settings\SettingsNetworkViewModel.cs" />
     <Compile Include="ViewModels\Settings\SettingsFormatViewModel.cs" />
     <Compile Include="ViewModels\Settings\SettingsViewModel.cs" />
@@ -87,6 +91,9 @@
     </Compile>
     <Compile Include="Views\ChannelView.xaml.cs">
       <DependentUpon>ChannelView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ConnectionView.xaml.cs">
+      <DependentUpon>ConnectionView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MentionDetailView.xaml.cs">
       <DependentUpon>MentionDetailView.xaml</DependentUpon>
@@ -117,6 +124,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="Views\ConnectionView.xaml">
+      <SubType>Form</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\MentionView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -146,6 +157,10 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <ProjectReference Include="..\derpirc.WP7.Core\derpirc.WP7.Core.csproj">
+      <Project>{37B15A4B-9768-40AF-BA53-6CB6CD50A4C1}</Project>
+      <Name>derpirc.WP7.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\derpirc.WP7.Data\derpirc.WP7.Data.csproj">
       <Project>{26539181-F41F-45BB-82BD-92274DDEC3F7}</Project>
       <Name>derpirc.WP7.Data</Name>
