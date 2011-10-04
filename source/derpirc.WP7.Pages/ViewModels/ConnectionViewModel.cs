@@ -31,6 +31,26 @@ namespace derpirc.ViewModels
             }
         }
 
+        RelayCommand _reconnectCommand;
+        public RelayCommand ReconnectCommand
+        {
+            get
+            {
+                return _reconnectCommand ?? (_reconnectCommand =
+                    new RelayCommand(() => this.Reconnect()));
+            }
+        }
+
+        RelayCommand _disconnectCommand;
+        public RelayCommand DisconnectCommand
+        {
+            get
+            {
+                return _disconnectCommand ?? (_disconnectCommand =
+                    new RelayCommand(() => this.Disconnect()));
+            }
+        }
+
         #endregion
 
         #region Properties
@@ -117,6 +137,16 @@ namespace derpirc.ViewModels
             {
                 _connectionsList.Add(item);
             }
+        }
+
+        private void Reconnect()
+        {
+
+        }
+
+        private void Disconnect()
+        {
+
         }
     }
 }

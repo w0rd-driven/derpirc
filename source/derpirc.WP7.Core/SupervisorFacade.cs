@@ -3,12 +3,13 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using derpirc.Data;
 using derpirc.Data.Models;
+using GalaSoft.MvvmLight;
 using IrcDotNet;
 using Microsoft.Phone.Reactive;
 
 namespace derpirc.Core
 {
-    public class SupervisorFacade
+    public class SupervisorFacade : ObservableObject
     {
         #region Properties
 
@@ -16,7 +17,14 @@ namespace derpirc.Core
         public ObservableCollection<ClientItem> Clients
         {
             get { return _clients; }
-            set { _clients = value; }
+            set
+            {
+                if (_clients == value)
+                    return;
+
+                _clients = value;
+                RaisePropertyChanged(() => Clients);
+            }
         }
 
         private NetworkType _networkType;
