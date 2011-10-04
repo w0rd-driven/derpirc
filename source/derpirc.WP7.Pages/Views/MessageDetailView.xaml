@@ -8,6 +8,7 @@
                             xmlns:blend="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
                             xmlns:command="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Extras.WP71"
                             xmlns:helpers="clr-namespace:derpirc.Helpers"
+                            xmlns:appbarutils="clr-namespace:AppBarUtils;assembly=AppBarUtils" 
                             mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="696"
                             FontFamily="{StaticResource PhoneFontFamilyNormal}"
                             FontSize="{StaticResource PhoneFontSizeNormal}"
@@ -67,4 +68,9 @@
             </shell:ApplicationBar.MenuItems>
         </shell:ApplicationBar>
     </phone:PhoneApplicationPage.ApplicationBar>
+    <blend:Interaction.Behaviors>
+        <appbarutils:AppBarItemCommand Type="Button" Id="send" Command="{Binding SendCommand}" />
+        <appbarutils:AppBarItemCommand Type="Button" Id="switch" Command="{Binding SwitchCommand}" />
+        <appbarutils:AppBarItemCommand Type="MenuItem" Id="settings" Command="{Binding ViewSettingsCommand}" />
+    </blend:Interaction.Behaviors>
 </phone:PhoneApplicationPage>

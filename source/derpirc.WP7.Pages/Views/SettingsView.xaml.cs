@@ -1,4 +1,5 @@
-﻿using Microsoft.Phone.Controls;
+﻿using derpirc.ViewModels.Settings;
+using Microsoft.Phone.Controls;
 
 namespace derpirc.Views
 {
@@ -13,6 +14,25 @@ namespace derpirc.Views
         public SettingsView()
         {
             InitializeComponent();
+        }
+
+        SettingsViewModel viewModel
+        {
+            get
+            {
+                return this.DataContext as SettingsViewModel;
+            }
+        }
+
+        protected override void OnNavigatedFrom(System.Windows.Navigation.NavigationEventArgs e)
+        {
+            base.OnNavigatedFrom(e);
+        }
+
+        protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+            viewModel.NavigatedToCommand.Execute(NavigationContext.QueryString);
         }
     }
 }

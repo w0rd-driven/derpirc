@@ -10,6 +10,7 @@
                             xmlns:blend="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
                             xmlns:command="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Extras.WP71"
                             xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
+                            xmlns:appbarutils="clr-namespace:AppBarUtils;assembly=AppBarUtils" 
                             FontFamily="{StaticResource PhoneFontFamilyNormal}"
                             FontSize="{StaticResource PhoneFontSizeNormal}"
                             Foreground="{StaticResource PhoneForegroundBrush}"
@@ -25,7 +26,7 @@
             </blend:EventTrigger>
         </blend:Interaction.Triggers>
 
-        <controls:Pivot Title="derpirc" Style="{StaticResource SmallPivotStyle}" Margin="-2,0,2,0">
+        <controls:Pivot Title="Settings" Style="{StaticResource SmallPivotStyle}" Margin="-2,0,2,0">
             <blend:Interaction.Triggers>
                 <blend:EventTrigger EventName="LoadedPivotItem">
                     <command:EventToCommand Command="{Binding PivotItemLoadedCommand}" PassEventArgsToCommand="True"/>
@@ -119,4 +120,6 @@
             </shell:ApplicationBar.MenuItems>
         </shell:ApplicationBar>
     </phone:PhoneApplicationPage.ApplicationBar>
+    <blend:Interaction.Behaviors>
+    </blend:Interaction.Behaviors>
 </phone:PhoneApplicationPage>

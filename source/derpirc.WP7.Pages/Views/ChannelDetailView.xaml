@@ -8,6 +8,7 @@
                             xmlns:blend="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
                             xmlns:command="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Extras.WP71"
                             xmlns:helpers="clr-namespace:derpirc.Helpers"
+                            xmlns:appbarutils="clr-namespace:AppBarUtils;assembly=AppBarUtils" 
                             mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="696"
                             FontFamily="{StaticResource PhoneFontFamilyNormal}"
                             FontSize="{StaticResource PhoneFontSizeNormal}"
@@ -60,11 +61,16 @@
     <phone:PhoneApplicationPage.ApplicationBar>
         <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True">
             <shell:ApplicationBar.Buttons>
-                <shell:ApplicationBarIconButton IconUri="/Icons/appbar.send.text.rest.png" IsEnabled="True" Text="Send" />
-                <shell:ApplicationBarIconButton IconUri="/Icons/appbar.switcher.rest.png" IsEnabled="True" Text="Switch" />
+                <shell:ApplicationBarIconButton IconUri="/Icons/appbar.send.text.rest.png" Text="Send" />
+                <shell:ApplicationBarIconButton IconUri="/Icons/appbar.switcher.rest.png" Text="Switch" />
             </shell:ApplicationBar.Buttons>
             <shell:ApplicationBar.MenuItems>
             </shell:ApplicationBar.MenuItems>
         </shell:ApplicationBar>
     </phone:PhoneApplicationPage.ApplicationBar>
+    <blend:Interaction.Behaviors>
+        <appbarutils:AppBarItemCommand Type="Button" Id="send" Command="{Binding SendCommand}" />
+        <appbarutils:AppBarItemCommand Type="Button" Id="switch" Command="{Binding SwitchCommand}" />
+        <appbarutils:AppBarItemCommand Type="MenuItem" Id="settings" Command="{Binding ViewSettingsCommand}" />
+    </blend:Interaction.Behaviors>
 </phone:PhoneApplicationPage>

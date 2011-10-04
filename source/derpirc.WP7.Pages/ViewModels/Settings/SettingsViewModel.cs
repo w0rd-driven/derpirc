@@ -1,9 +1,6 @@
-﻿using System.Collections.ObjectModel;
-using System.Windows.Data;
-using derpirc.Data.Models.Settings;
+﻿using System.Windows;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using System.Windows;
 using Microsoft.Phone.Controls;
 
 namespace derpirc.ViewModels.Settings
@@ -11,6 +8,16 @@ namespace derpirc.ViewModels.Settings
     public class SettingsViewModel : ViewModelBase
     {
         #region Commands
+
+        RelayCommand _navigatedToCommand;
+        public RelayCommand NavigatedToCommand
+        {
+            get
+            {
+                return _navigatedToCommand ?? (_navigatedToCommand =
+                    new RelayCommand(() => this.OnNavigatedTo()));
+            }
+        }
 
         RelayCommand<FrameworkElement> _layoutRootCommand;
         public RelayCommand<FrameworkElement> LayoutRootCommand
@@ -107,7 +114,6 @@ namespace derpirc.ViewModels.Settings
                 if (_layoutRoot == value)
                     return;
 
-                var oldValue = _layoutRoot;
                 _layoutRoot = value;
                 RaisePropertyChanged(() => LayoutRoot);
             }
@@ -129,6 +135,16 @@ namespace derpirc.ViewModels.Settings
             {
                 // Code runs "for real": Connect to service, etc...
             }
+        }
+
+        private void OnNavigatedTo()
+        {
+
+        }
+
+        private void OnNavigatedFrom()
+        {
+
         }
 
         private void PivotItemLoaded(PivotItemEventArgs eventArgs)
