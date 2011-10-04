@@ -41,6 +41,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="GalaSoft.MvvmLight.Extras.WP71, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\library\MVVMLight\WP71\GalaSoft.MvvmLight.Extras.WP71.dll</HintPath>
+    </Reference>
+    <Reference Include="GalaSoft.MvvmLight.WP71, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\library\MVVMLight\WP71\GalaSoft.MvvmLight.WP71.dll</HintPath>
+    </Reference>
     <Reference Include="IrcDotNet">
       <HintPath>..\..\library\IrcDotNet\WP71\IrcDotNet.dll</HintPath>
     </Reference>

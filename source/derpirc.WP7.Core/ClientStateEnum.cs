@@ -3,8 +3,12 @@ namespace derpirc.Core
 {
     public enum ClientState
     {
-        Unregistered = 0,
-        Registered = 1,
-        Processed = 2,
+        Inconceivable = 0,
+        Connected = 1,
+        Registered = 2,
+        Processed = 3,
+        Disconnected = 4,
+        Error = 5,
+        Intervention = 6,
     }
 }

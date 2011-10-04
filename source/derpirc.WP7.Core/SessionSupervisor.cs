@@ -43,6 +43,7 @@ namespace derpirc.Core
                 {
                     var client = InitializeClient();
                     client.Id = item.Id;
+                    client.NetworkName = item.Name;
                     SupervisorFacade.Default.Clients.Add(client);
                 }
                 Connect();
@@ -51,15 +52,26 @@ namespace derpirc.Core
 
         public void Connect()
         {
-            _registrationData = GetRegistrationInfo();
+            if (_registrationData == null)
+                _registrationData = GetRegistrationInfo();
             if (_registrationData != null)
                 foreach (var item in SupervisorFacade.Default.Clients)
                 {
-                    var server = GetServer(item.Client);
-                    var serverPort = GetServerPort(server);
-                    if (item.Client != null)
-                        item.Client.Connect(server.HostName, serverPort, false, _registrationData);
+                    Connect(item.Client);
                 }
+        }
+
+        public void Connect(IrcClient client)
+        {
+            if (_registrationData == null)
+                _registrationData = GetRegistrationInfo();
+            if (_registrationData != null)
+            {
+                var server = GetServer(client);
+                var serverPort = GetServerPort(server);
+                if (client != null)
+                    client.Connect(server.HostName, serverPort, false, _registrationData);
+            }
         }
 
         public void Disconnect()
@@ -67,8 +79,14 @@ namespace derpirc.Core
             var connectedClients = SupervisorFacade.Default.Clients.Where(x => x.Client.IsConnected);
             foreach (var item in connectedClients)
             {
-                item.Client.Quit(_quitTimeout, _settings.QuitMessage);
+                Disconnect(item.Client);
             }
+        }
+
+        public void Disconnect(IrcClient client)
+        {
+            if (client.IsConnected)
+                client.Quit(_quitTimeout, _settings.QuitMessage);
         }
 
         private IrcUserRegistrationInfo GetRegistrationInfo()
@@ -96,6 +114,7 @@ namespace derpirc.Core
         private ClientItem InitializeClient()
         {
             var result = new ClientItem();
+            result.State = ClientState.Inconceivable;
             result.Client.FloodPreventer = new IrcStandardFloodPreventer(4, 2000);
             result.Client.Connected += new EventHandler<EventArgs>(Client_Connected);
             result.Client.ConnectFailed += new EventHandler<IrcErrorEventArgs>(Client_ConnectFailed);
@@ -107,29 +126,44 @@ namespace derpirc.Core
             return result;
         }
 
+        #region Connection events
+
         private void Client_Connected(object sender, EventArgs e)
         {
             var client = sender as IrcClient;
+            var foundClient = SupervisorFacade.Default.Clients.FirstOrDefault(x => x.Client == client);
+            foundClient.State = ClientState.Connected;
             // TODO: Pass through a standard OnConnected event
-        }
-
-        private void Client_ConnectFailed(object sender, IrcErrorEventArgs e)
-        {
-            var client = sender as IrcClient;
-            // TODO: Pass through a standard OnConnectFailed event
         }
 
         private void Client_Disconnected(object sender, EventArgs e)
         {
             var client = sender as IrcClient;
+            var foundClient = SupervisorFacade.Default.Clients.FirstOrDefault(x => x.Client == client);
+            foundClient.State = ClientState.Connected;
             // TODO: Make OnDisconnected Event so the facade can call DetachLocalUser there
+        }
+
+        #endregion
+
+        #region Failure events
+
+        private void Client_ConnectFailed(object sender, IrcErrorEventArgs e)
+        {
+            var client = sender as IrcClient;
+            var foundClient = SupervisorFacade.Default.Clients.FirstOrDefault(x => x.Client == client);
+            foundClient.State = ClientState.Error;
+            // TODO: Pass through a standard OnConnectFailed event
         }
 
         private void Client_Error(object sender, IrcErrorEventArgs e)
         {
             var client = sender as IrcClient;
+            var foundClient = SupervisorFacade.Default.Clients.FirstOrDefault(x => x.Client == client);
+            foundClient.State = ClientState.Error;
             if (e.Error.Message == "No such host is known")
             {
+                foundClient.State = ClientState.Intervention;
                 // TODO: Could not resolve hostname
             }
         }
@@ -139,6 +173,8 @@ namespace derpirc.Core
             var client = sender as IrcClient;
             // TODO: Intercept "Closing Link... " timeouts
         }
+
+        #endregion
 
         private void Client_Registered(object sender, EventArgs e)
         {

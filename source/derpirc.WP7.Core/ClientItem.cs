@@ -1,17 +1,70 @@
-﻿using IrcDotNet;
+﻿using GalaSoft.MvvmLight;
+using IrcDotNet;
 
 namespace derpirc.Core
 {
-    public class ClientItem
+    public class ClientItem : ObservableObject
     {
-        public int Id { get; set; }
-        public IrcClient Client { get; set; }
-        public ClientState State { get; set; }
+        private int _id;
+        public int Id
+        {
+            get { return _id; }
+            set
+            {
+                if (_id == value)
+                    return;
+
+                _id = value;
+                RaisePropertyChanged(() => Id);
+            }
+        }
+
+        private string _networkName;
+        public string NetworkName
+        {
+            get { return _networkName; }
+            set
+            {
+                if (_networkName == value)
+                    return;
+
+                _networkName = value;
+                RaisePropertyChanged(() => NetworkName);
+            }
+        }
+
+        private IrcClient _client;
+        public IrcClient Client
+        {
+            get { return _client; }
+            set
+            {
+                if (_client == value)
+                    return;
+
+                _client = value;
+                RaisePropertyChanged(() => Client);
+            }
+        }
+
+        private ClientState _state;
+        public ClientState State
+        {
+            get { return _state; }
+            set
+            {
+                if (_state == value)
+                    return;
+
+                _state = value;
+                RaisePropertyChanged(() => State);
+            }
+        }
 
         public ClientItem()
         {
             Client = new IrcClient();
-            State = ClientState.Unregistered;
+            State = ClientState.Inconceivable;
         }
     }
 }
