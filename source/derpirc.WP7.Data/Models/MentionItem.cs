@@ -18,7 +18,6 @@ namespace derpirc.Data.Models
     [global::System.Data.Linq.Mapping.TableAttribute()]
     public partial class MentionItem : IBaseModel, IMessageItem, INotifyPropertyChanging, INotifyPropertyChanged
     {
-
         private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
 
         private int _Id;

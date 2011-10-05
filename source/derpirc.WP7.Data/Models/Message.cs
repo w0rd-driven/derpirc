@@ -19,7 +19,6 @@ namespace derpirc.Data.Models
     [global::System.Data.Linq.Mapping.TableAttribute()]
     public partial class Message : IBaseModel, IMessage, INotifyPropertyChanging, INotifyPropertyChanged
     {
-
         private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
 
         private int _Id;
