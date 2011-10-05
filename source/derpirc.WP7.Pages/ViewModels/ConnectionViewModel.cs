@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Data;
 using derpirc.Core;
@@ -137,6 +138,15 @@ namespace derpirc.ViewModels
             {
                 _connectionsList.Add(item);
             }
+
+            SupervisorFacade.Default.ClientStatusChanged += (s, e) => 
+            {
+                var foundClient = _connectionsList.FirstOrDefault(x => x.Id == e.Client.Id);
+                if (foundClient == null)
+                    _connectionsList.Add(e.Client);
+                else
+                    foundClient = e.Client;
+            };
         }
 
         private void Reconnect()

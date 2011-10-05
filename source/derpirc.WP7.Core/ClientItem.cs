@@ -1,4 +1,5 @@
-﻿using GalaSoft.MvvmLight;
+﻿using System;
+using GalaSoft.MvvmLight;
 using IrcDotNet;
 
 namespace derpirc.Core
@@ -58,6 +59,20 @@ namespace derpirc.Core
 
                 _state = value;
                 RaisePropertyChanged(() => State);
+            }
+        }
+
+        private Exception _error;
+        public Exception Error
+        {
+            get { return _error; }
+            set
+            {
+                if (_error == value)
+                    return;
+
+                _error = value;
+                RaisePropertyChanged(() => Error);
             }
         }
 

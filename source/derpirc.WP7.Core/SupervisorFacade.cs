@@ -3,13 +3,12 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using derpirc.Data;
 using derpirc.Data.Models;
-using GalaSoft.MvvmLight;
 using IrcDotNet;
 using Microsoft.Phone.Reactive;
 
 namespace derpirc.Core
 {
-    public class SupervisorFacade : ObservableObject
+    public class SupervisorFacade
     {
         #region Properties
 
@@ -17,14 +16,7 @@ namespace derpirc.Core
         public ObservableCollection<ClientItem> Clients
         {
             get { return _clients; }
-            set
-            {
-                if (_clients == value)
-                    return;
-
-                _clients = value;
-                RaisePropertyChanged(() => Clients);
-            }
+            set { _clients = value; }
         }
 
         private NetworkType _networkType;
@@ -38,7 +30,13 @@ namespace derpirc.Core
         public bool IsNetworkAvailable
         {
             get { return _isNetworkAvailable; }
-            set { _isNetworkAvailable = value; }
+            set
+            {
+                if (_isNetworkAvailable == value)
+                    return;
+
+                _isNetworkAvailable = value;
+            }
         }
 
         #endregion
@@ -59,6 +57,9 @@ namespace derpirc.Core
         public event EventHandler<MessageItemEventArgs> ChannelItemReceived;
         public event EventHandler<MessageItemEventArgs> MentionItemReceived;
         public event EventHandler<MessageItemEventArgs> MessageItemReceived;
+
+        public event EventHandler<NetworkStatusEventArgs> NetworkStatusChanged;
+        public event EventHandler<ClientStatusEventArgs> ClientStatusChanged;
 
         // Modified for http://www.yoda.arachsys.com/csharp/singleton.html #4. (Jon Skeet is a code machine)
         private static readonly SupervisorFacade defaultInstance = new SupervisorFacade();
@@ -93,6 +94,12 @@ namespace derpirc.Core
                         IsNetworkAvailable = true;
                     else
                         IsNetworkAvailable = false;
+                    var eventArgs = new NetworkStatusEventArgs()
+                    {
+                        IsAvailable = IsNetworkAvailable,
+                        Type = type,
+                    };
+                    OnNetworkStatusChanged(this, eventArgs);
                 });
             // HACK: Test First Init
             _unitOfWork = new DataUnitOfWork();
@@ -177,6 +184,24 @@ namespace derpirc.Core
             }
         }
 
+        void OnNetworkStatusChanged(object sender, NetworkStatusEventArgs eventArgs)
+        {
+            var handler = NetworkStatusChanged;
+            if (handler != null)
+            {
+                handler.Invoke(sender, eventArgs);
+            }
+        }
+
+        void OnClientStatusChanged(object sender, ClientStatusEventArgs eventArgs)
+        {
+            var handler = ClientStatusChanged;
+            if (handler != null)
+            {
+                handler.Invoke(sender, eventArgs);
+            }
+        }
+
         #endregion
 
         #region Lookup Methods
@@ -192,6 +217,62 @@ namespace derpirc.Core
         public Network GetNetworkByClient(IrcClient client)
         {
             return _sessionSupervisor.GetNetworkByClient(client);
+        }
+
+        public ClientItem GetClientByIrcClient(IrcClient client)
+        {
+            var result = (from clientItem in _clients
+                          where clientItem.Client == client
+                          select clientItem).FirstOrDefault();
+            return result;
+        }
+
+        public void UpdateStatus(IrcClient client, ClientState state, Exception error)
+        {
+            var foundClient = GetClientByIrcClient(client);
+            foundClient.State = state;
+            foundClient.Error = error;
+
+            switch (foundClient.State)
+            {
+                case ClientState.Inconceivable:
+                    break;
+                case ClientState.Connected:
+                    break;
+                case ClientState.Registered:
+                    AttachLocalUser(client.LocalUser);
+                    break;
+                case ClientState.Processed:
+                    break;
+                case ClientState.Disconnected:
+                    DetachLocalUser(client.LocalUser);
+                    break;
+                case ClientState.Error:
+                    break;
+                case ClientState.Intervention:
+                    break;
+                default:
+                    break;
+            }
+
+            var eventArgs = new ClientStatusEventArgs()
+            {
+                Client = foundClient,
+            };
+            OnClientStatusChanged(this, eventArgs);
+        }
+
+        private void AttachLocalUser(IrcLocalUser localUser)
+        {
+            InitializeSupervisors();
+            _channelSupervisor.AttachLocalUser(localUser);
+            _messageSupervisor.AttachLocalUser(localUser);
+        }
+
+        private void DetachLocalUser(IrcLocalUser localUser)
+        {
+            _channelSupervisor.DetachLocalUser(localUser);
+            _messageSupervisor.DetachLocalUser(localUser);
         }
 
         #endregion
@@ -220,19 +301,7 @@ namespace derpirc.Core
             _messageSupervisor.SendMessage(message);
         }
 
-        public void AttachLocalUser(IrcLocalUser localUser)
-        {
-            InitializeSupervisors();
-            _channelSupervisor.AttachLocalUser(localUser);
-            _messageSupervisor.AttachLocalUser(localUser);
-        }
-
-        public void DetachLocalUser(IrcLocalUser localUser)
-        {
-            _channelSupervisor.DetachLocalUser(localUser);
-            _messageSupervisor.DetachLocalUser(localUser);
-        }
-
         #endregion
+
     }
 }
