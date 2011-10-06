@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using derpirc.Data;
 using derpirc.Data.Models;
@@ -41,6 +42,9 @@ namespace derpirc.Core
 
         #endregion
 
+        private object _threadLock = new object();
+        private BackgroundWorker _worker;
+
         private DataUnitOfWork _unitOfWork;
         private SettingsUnitOfWork _unitOfWorkSettings;
 
@@ -51,15 +55,18 @@ namespace derpirc.Core
         private ChannelsSupervisor _channelSupervisor;
         private MessagesSupervisor _messageSupervisor;
 
+        // HACK: UI and internal facing
+        public event EventHandler<NetworkStatusEventArgs> NetworkStatusChanged;
+
         // HACK: UI facing
+        public event EventHandler<ClientStatusEventArgs> ClientStatusChanged;
         public event EventHandler<ChannelStatusEventArgs> ChannelJoined;
         public event EventHandler<ChannelStatusEventArgs> ChannelLeft;
         public event EventHandler<MessageItemEventArgs> ChannelItemReceived;
         public event EventHandler<MessageItemEventArgs> MentionItemReceived;
         public event EventHandler<MessageItemEventArgs> MessageItemReceived;
 
-        public event EventHandler<NetworkStatusEventArgs> NetworkStatusChanged;
-        public event EventHandler<ClientStatusEventArgs> ClientStatusChanged;
+        #region Singleton Impl
 
         // Modified for http://www.yoda.arachsys.com/csharp/singleton.html #4. (Jon Skeet is a code machine)
         private static readonly SupervisorFacade defaultInstance = new SupervisorFacade();
@@ -76,10 +83,35 @@ namespace derpirc.Core
         {
         }
 
+        #endregion
+
         public SupervisorFacade()
         {
             _clients = new ObservableCollection<ClientItem>();
-            Startup();
+
+            _worker = new BackgroundWorker();
+            _worker.DoWork += new DoWorkEventHandler(DeferStartupWork);
+
+            DeferStartup(null);
+        }
+
+        internal void DeferStartup(Action completed)
+        {
+            _worker.RunWorkerAsync(completed);
+        }
+
+        private void DeferStartupWork(object sender, DoWorkEventArgs e)
+        {
+            Action completed = e.Argument as Action;
+            lock (_threadLock)
+            {
+                Startup();
+            }
+
+            if (completed != null)
+            {
+                completed();
+            }
         }
 
         private void Startup()
@@ -104,6 +136,8 @@ namespace derpirc.Core
             // HACK: Test First Init
             _unitOfWork = new DataUnitOfWork();
             _unitOfWorkSettings = new SettingsUnitOfWork();
+
+            _sessionSupervisor = new SessionSupervisor(_unitOfWork, _unitOfWorkSettings);
         }
 
         private void Shutdown()
@@ -119,68 +153,14 @@ namespace derpirc.Core
             _messageSupervisor = null;
         }
 
-        private void InitializeSupervisors()
-        {
-            if (_channelSupervisor == null)
-            {
-                _channelSupervisor = new ChannelsSupervisor(_unitOfWork);
-                _channelSupervisor.ChannelJoined += new EventHandler<ChannelStatusEventArgs>(_channelSupervisor_ChannelJoined);
-                _channelSupervisor.ChannelLeft += new EventHandler<ChannelStatusEventArgs>(_channelSupervisor_ChannelLeft);
-                _channelSupervisor.ChannelItemReceived += new EventHandler<MessageItemEventArgs>(_channelSupervisor_MessageReceived);
-                _channelSupervisor.MentionItemReceived += new EventHandler<MessageItemEventArgs>(_channelSupervisor_MentionReceived);
-            }
-
-            if (_messageSupervisor == null)
-            {
-                _messageSupervisor = new MessagesSupervisor(_unitOfWork);
-                _messageSupervisor.MessageItemReceived += new EventHandler<MessageItemEventArgs>(_messageSupervisor_MessageReceived);
-            }
-        }
-
         #region Events
 
-        void _channelSupervisor_ChannelJoined(object sender, ChannelStatusEventArgs e)
+        void OnClientStatusChanged(object sender, ClientStatusEventArgs eventArgs)
         {
-            var handler = ChannelJoined;
+            var handler = ClientStatusChanged;
             if (handler != null)
             {
-                handler.Invoke(sender, e);
-            }
-        }
-
-        void _channelSupervisor_ChannelLeft(object sender, ChannelStatusEventArgs e)
-        {
-            var handler = ChannelLeft;
-            if (handler != null)
-            {
-                handler.Invoke(sender, e);
-            }
-        }
-
-        void _channelSupervisor_MessageReceived(object sender, MessageItemEventArgs e)
-        {
-            var handler = ChannelItemReceived;
-            if (handler != null)
-            {
-                handler.Invoke(sender, e);
-            }
-        }
-
-        void _channelSupervisor_MentionReceived(object sender, MessageItemEventArgs e)
-        {
-            var handler = MentionItemReceived;
-            if (handler != null)
-            {
-                handler.Invoke(sender, e);
-            }
-        }
-
-        void _messageSupervisor_MessageReceived(object sender, MessageItemEventArgs e)
-        {
-            var handler = MessageItemReceived;
-            if (handler != null)
-            {
-                handler.Invoke(sender, e);
+                handler.Invoke(sender, eventArgs);
             }
         }
 
@@ -193,12 +173,48 @@ namespace derpirc.Core
             }
         }
 
-        void OnClientStatusChanged(object sender, ClientStatusEventArgs eventArgs)
+        void OnChannelSupervisor_ChannelJoined(object sender, ChannelStatusEventArgs e)
         {
-            var handler = ClientStatusChanged;
+            var handler = ChannelJoined;
             if (handler != null)
             {
-                handler.Invoke(sender, eventArgs);
+                handler.Invoke(sender, e);
+            }
+        }
+
+        void OnChannelSupervisor_ChannelLeft(object sender, ChannelStatusEventArgs e)
+        {
+            var handler = ChannelLeft;
+            if (handler != null)
+            {
+                handler.Invoke(sender, e);
+            }
+        }
+
+        void OnChannelSupervisor_MessageReceived(object sender, MessageItemEventArgs e)
+        {
+            var handler = ChannelItemReceived;
+            if (handler != null)
+            {
+                handler.Invoke(sender, e);
+            }
+        }
+
+        void OnChannelSupervisor_MentionReceived(object sender, MessageItemEventArgs e)
+        {
+            var handler = MentionItemReceived;
+            if (handler != null)
+            {
+                handler.Invoke(sender, e);
+            }
+        }
+
+        void OnMessageSupervisor_MessageReceived(object sender, MessageItemEventArgs e)
+        {
+            var handler = MessageItemReceived;
+            if (handler != null)
+            {
+                handler.Invoke(sender, e);
             }
         }
 
@@ -227,8 +243,48 @@ namespace derpirc.Core
             return result;
         }
 
+        #endregion
+
+        #region Passthrough Methods
+
+        public void SendMessage(ChannelItem message)
+        {
+            _channelSupervisor.SendMessage(message);
+        }
+
+        public void SendMessage(MentionItem message)
+        {
+            _channelSupervisor.SendMessage(message);
+        }
+
+        public void SendMessage(MessageItem message)
+        {
+            _messageSupervisor.SendMessage(message);
+        }
+
+        #endregion
+
+        private void InitializeSupervisors()
+        {
+            if (_channelSupervisor == null)
+            {
+                _channelSupervisor = new ChannelsSupervisor(_unitOfWork);
+                _channelSupervisor.ChannelJoined += new EventHandler<ChannelStatusEventArgs>(OnChannelSupervisor_ChannelJoined);
+                _channelSupervisor.ChannelLeft += new EventHandler<ChannelStatusEventArgs>(OnChannelSupervisor_ChannelLeft);
+                _channelSupervisor.ChannelItemReceived += new EventHandler<MessageItemEventArgs>(OnChannelSupervisor_MessageReceived);
+                _channelSupervisor.MentionItemReceived += new EventHandler<MessageItemEventArgs>(OnChannelSupervisor_MentionReceived);
+            }
+
+            if (_messageSupervisor == null)
+            {
+                _messageSupervisor = new MessagesSupervisor(_unitOfWork);
+                _messageSupervisor.MessageItemReceived += new EventHandler<MessageItemEventArgs>(OnMessageSupervisor_MessageReceived);
+            }
+        }
+
         public void UpdateStatus(IrcClient client, ClientState state, Exception error)
         {
+            // TODO: SmartMonitor
             var foundClient = GetClientByIrcClient(client);
             foundClient.Info.State = state;
             foundClient.Info.Error = error;
@@ -274,34 +330,6 @@ namespace derpirc.Core
             _channelSupervisor.DetachLocalUser(localUser);
             _messageSupervisor.DetachLocalUser(localUser);
         }
-
-        #endregion
-
-        #region Passthrough Methods
-
-        public void Initialize()
-        {
-            if (_sessionSupervisor == null)
-                _sessionSupervisor = new SessionSupervisor(_unitOfWork, _unitOfWorkSettings);
-            _sessionSupervisor.Initialize();
-        }
-
-        public void SendMessage(ChannelItem message)
-        {
-            _channelSupervisor.SendMessage(message);
-        }
-
-        public void SendMessage(MentionItem message)
-        {
-            _channelSupervisor.SendMessage(message);
-        }
-
-        public void SendMessage(MessageItem message)
-        {
-            _messageSupervisor.SendMessage(message);
-        }
-
-        #endregion
 
     }
 }

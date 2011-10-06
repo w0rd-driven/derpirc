@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
 using derpirc.Data;
 using derpirc.Data.Models;
 using IrcDotNet;
@@ -29,6 +31,9 @@ namespace derpirc.Core
             set { _isNetworkAvailable = value; }
         }
 
+        private object _threadLock = new object();
+        private BackgroundWorker _worker;
+
         // EFNet: Welcome to the $server Internet Relay Chat Network $nick
         // PowerPrecision: Welcome to the $server IRC Network $nick!$email@$host
         private static readonly Regex welcomeRegex = new Regex("^.*?Welcome to the (.*?) (IRC|Internet Relay Chat) Network (.*)", RegexOptions.Compiled);
@@ -37,42 +42,71 @@ namespace derpirc.Core
         {
             _unitOfWork = unitOfWork;
             _unitOfWorkSettings = unitOfWorkSettings;
+
+            _worker = new BackgroundWorker();
+            _worker.DoWork += new DoWorkEventHandler(DeferStartupWork);
+
+            DeferStartup(null);
+
+            // TODO: Move to method
+            //SupervisorFacade.Default.NetworkStatusChanged += (s, e) =>
+            //{
+            //    IsNetworkAvailable = e.IsAvailable;
+            //    if (!IsNetworkAvailable)
+            //    {
+
+            //    }
+            //    else
+            //    {
+
+            //    }
+            //};
         }
 
-        public void Initialize()
+        internal void DeferStartup(Action completed)
         {
-            SupervisorFacade.Default.NetworkStatusChanged += (s, e) =>
+            _worker.RunWorkerAsync(completed);
+        }
+
+        private void DeferStartupWork(object sender, DoWorkEventArgs e)
+        {
+            Action completed = e.Argument as Action;
+            lock (_threadLock)
             {
-                IsNetworkAvailable = e.IsAvailable;
-                if (!IsNetworkAvailable)
+                var session = GetDefaultSession();
+
+                // TODO: SmartMonitor
+                while (session == null)
                 {
-
+                    session = GetDefaultSession();
+                    Thread.Sleep(1000);
                 }
-                else
+
+                if (session != null)
                 {
-
+                    _session = session;
+                    var networks = _session.Networks;
+                    foreach (var item in networks)
+                    {
+                        var client = InitializeClient();
+                        client.Info.Id = item.Id;
+                        client.Info.NetworkName = item.Name;
+                        SupervisorFacade.Default.Clients.Add(client);
+                    }
+                    Connect();
                 }
-            };
+            }
 
-            var session = GetDefaultSession();
-            if (session != null)
+            if (completed != null)
             {
-                _session = session;
-                var networks = _session.Networks;
-                foreach (var item in networks)
-                {
-                    var client = InitializeClient();
-                    client.Info.Id = item.Id;
-                    client.Info.NetworkName = item.Name;
-                    SupervisorFacade.Default.Clients.Add(client);
-                }
-                Connect();
+                completed();
             }
         }
 
         public void Connect()
         {
-            foreach (var item in SupervisorFacade.Default.Clients)
+            var clients = SupervisorFacade.Default.Clients.AsEnumerable();
+            foreach (var item in clients)
             {
                 Connect(item.Client);
             }
@@ -80,6 +114,7 @@ namespace derpirc.Core
 
         public void Connect(IrcClient client)
         {
+            // TODO: SmartMonitor
             if (_registrationData == null)
                 _registrationData = GetRegistrationInfo();
             if (_registrationData != null)
@@ -93,8 +128,8 @@ namespace derpirc.Core
 
         public void Disconnect()
         {
-            var connectedClients = SupervisorFacade.Default.Clients.Where(x => x.Client.IsConnected);
-            foreach (var item in connectedClients)
+            var clients = SupervisorFacade.Default.Clients.Where(x => x.Client.IsConnected);
+            foreach (var item in clients)
             {
                 Disconnect(item.Client);
             }
@@ -104,6 +139,18 @@ namespace derpirc.Core
         {
             if (client.IsConnected)
                 client.Quit(_quitTimeout, _settings.QuitMessage);
+        }
+
+        public void Reconnect(bool force)
+        {
+            var clients = SupervisorFacade.Default.Clients.AsEnumerable();
+            if (!force)
+                clients = clients.Where(x => !x.Client.IsConnected);
+
+            foreach (var item in clients)
+            {
+                Connect(item.Client);
+            }
         }
 
         private IrcUserRegistrationInfo GetRegistrationInfo()
@@ -244,6 +291,8 @@ namespace derpirc.Core
             }
         }
 
+        #region Lookup methods
+
         public Session GetDefaultSession()
         {
             var result = _unitOfWork.Sessions.FindBy(x => x.Name == "default").FirstOrDefault();
@@ -317,6 +366,8 @@ namespace derpirc.Core
                 result = null;
             return result;
         }
+
+        #endregion
 
         public void Dispose()
         {

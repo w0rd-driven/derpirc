@@ -324,8 +324,6 @@ namespace derpirc.ViewModels
                 });
 
                 LoadInitialView();
-
-                _supervisor.Initialize();
             }
 
             if (completed != null)
