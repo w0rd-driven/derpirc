@@ -209,7 +209,7 @@ namespace derpirc.Core
         public IrcLocalUser GetLocalUserBySummary(IMessage channel)
         {
             var result = (from client in _clients
-                          where client.Id == channel.NetworkId
+                          where client.Info.Id == channel.NetworkId
                           select client.Client.LocalUser).FirstOrDefault();
             return result;
         }
@@ -230,10 +230,10 @@ namespace derpirc.Core
         public void UpdateStatus(IrcClient client, ClientState state, Exception error)
         {
             var foundClient = GetClientByIrcClient(client);
-            foundClient.State = state;
-            foundClient.Error = error;
+            foundClient.Info.State = state;
+            foundClient.Info.Error = error;
 
-            switch (foundClient.State)
+            switch (foundClient.Info.State)
             {
                 case ClientState.Inconceivable:
                     break;
@@ -257,7 +257,7 @@ namespace derpirc.Core
 
             var eventArgs = new ClientStatusEventArgs()
             {
-                Client = foundClient,
+                Info = foundClient.Info,
             };
             OnClientStatusChanged(this, eventArgs);
         }

@@ -5,6 +5,7 @@ using System.Windows.Data;
 using derpirc.Core;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Threading;
 
 namespace derpirc.ViewModels
 {
@@ -58,11 +59,11 @@ namespace derpirc.ViewModels
 
         public FrameworkElement LayoutRoot { get; set; }
 
-        private ObservableCollection<ClientItem> _connectionsList;
+        private ObservableCollection<ClientInfo> _connectionsList;
         public CollectionViewSource Connections { get; set; }
 
-        private ObservableCollection<ClientItem> _selectedItems;
-        public ObservableCollection<ClientItem> SelectedItems
+        private ObservableCollection<ClientInfo> _selectedItems;
+        public ObservableCollection<ClientInfo> SelectedItems
         {
             get { return _selectedItems; }
             set
@@ -82,30 +83,30 @@ namespace derpirc.ViewModels
         /// </summary>
         public ConnectionViewModel()
         {
-            _connectionsList = new ObservableCollection<ClientItem>();
+            _connectionsList = new ObservableCollection<ClientInfo>();
 
             if (IsInDesignMode)
             {
                 // Code runs in Blend --> create design time data.
-                _connectionsList.Add(new ClientItem()
+                _connectionsList.Add(new ClientInfo()
                 {
                     Id = 1,
                     NetworkName = "clefnet",
                     State = ClientState.Connected,
                 });
-                _connectionsList.Add(new ClientItem()
+                _connectionsList.Add(new ClientInfo()
                 {
                     Id = 2,
                     NetworkName = "peenode",
                     State = ClientState.Processed,
                 });
-                _connectionsList.Add(new ClientItem()
+                _connectionsList.Add(new ClientInfo()
                 {
                     Id = 3,
                     NetworkName = "palnet",
                     State = ClientState.Disconnected,
                 });
-                _connectionsList.Add(new ClientItem()
+                _connectionsList.Add(new ClientInfo()
                 {
                     Id = 4,
                     NetworkName = "urmom",
@@ -136,16 +137,22 @@ namespace derpirc.ViewModels
             _connectionsList.Clear();
             foreach (var item in SupervisorFacade.Default.Clients)
             {
-                _connectionsList.Add(item);
+                _connectionsList.Add(item.Info);
             }
 
             SupervisorFacade.Default.ClientStatusChanged += (s, e) => 
             {
-                var foundClient = _connectionsList.FirstOrDefault(x => x.Id == e.Client.Id);
+                var foundClient = _connectionsList.FirstOrDefault(x => x.Id == e.Info.Id);
                 if (foundClient == null)
-                    _connectionsList.Add(e.Client);
+                    _connectionsList.Add(e.Info);
                 else
-                    foundClient = e.Client;
+                {
+                    foundClient = e.Info;
+                }
+                DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                {
+                    Connections.View.Refresh();
+                });
             };
         }
 

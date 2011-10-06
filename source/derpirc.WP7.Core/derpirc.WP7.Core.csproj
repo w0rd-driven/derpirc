@@ -71,6 +71,7 @@
     <Compile Include="ChannelsSupervisor.cs" />
     <Compile Include="ChannelStatusEventArgs.cs" />
     <Compile Include="ChannelStatusTypeEnum.cs" />
+    <Compile Include="ClientInfo.cs" />
     <Compile Include="ClientItem.cs" />
     <Compile Include="ClientStateEnum.cs" />
     <Compile Include="ClientStatusEventArgs.cs" />

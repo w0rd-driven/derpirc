@@ -62,8 +62,8 @@ namespace derpirc.Core
                 foreach (var item in networks)
                 {
                     var client = InitializeClient();
-                    client.Id = item.Id;
-                    client.NetworkName = item.Name;
+                    client.Info.Id = item.Id;
+                    client.Info.NetworkName = item.Name;
                     SupervisorFacade.Default.Clients.Add(client);
                 }
                 Connect();
@@ -131,7 +131,6 @@ namespace derpirc.Core
         private ClientItem InitializeClient()
         {
             var result = new ClientItem();
-            result.State = ClientState.Inconceivable;
             result.Client.FloodPreventer = new IrcStandardFloodPreventer(4, 2000);
             result.Client.Connected += new EventHandler<EventArgs>(Client_Connected);
             result.Client.ConnectFailed += new EventHandler<IrcErrorEventArgs>(Client_ConnectFailed);
@@ -210,7 +209,7 @@ namespace derpirc.Core
         private void ProcessSession(IrcClient client)
         {
             var foundClient = SupervisorFacade.Default.GetClientByIrcClient(client);
-            if (foundClient.State == ClientState.Registered)
+            if (foundClient.Info.State == ClientState.Registered)
             {
                 SupervisorFacade.Default.UpdateStatus(client, ClientState.Processed, null);
                 var networkName = ParseNetworkName(client.WelcomeMessage);
@@ -257,7 +256,7 @@ namespace derpirc.Core
             if (_session != null && _session.Networks != null)
             {
                 var foundClient = SupervisorFacade.Default.GetClientByIrcClient(client);
-                var network = _session.Networks.FirstOrDefault(x => x.Id == foundClient.Id);
+                var network = _session.Networks.FirstOrDefault(x => x.Id == foundClient.Info.Id);
                 result = network.Server;
             }
             else
@@ -311,7 +310,7 @@ namespace derpirc.Core
             if (_session != null && _session.Networks != null)
             {
                 var foundClient = SupervisorFacade.Default.GetClientByIrcClient(client);
-                var network = _session.Networks.FirstOrDefault(x => x.Id == foundClient.Id);
+                var network = _session.Networks.FirstOrDefault(x => x.Id == foundClient.Info.Id);
                 result = network;
             }
             else
