@@ -89,23 +89,14 @@
     <Compile Include="Views\ChannelDetailView.xaml.cs">
       <DependentUpon>ChannelDetailView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\ChannelView.xaml.cs">
-      <DependentUpon>ChannelView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\ConnectionView.xaml.cs">
       <DependentUpon>ConnectionView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MentionDetailView.xaml.cs">
       <DependentUpon>MentionDetailView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\MentionView.xaml.cs">
-      <DependentUpon>MentionView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\MessageDetailView.xaml.cs">
       <DependentUpon>MessageDetailView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\MessageView.xaml.cs">
-      <DependentUpon>MessageView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Views\SettingsView.xaml.cs">
@@ -128,26 +119,12 @@
       <SubType>Form</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\MentionView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Include="Views\ChannelView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="Views\MessageDetailView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="Views\MessageView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Include="Views\SettingsView.xaml">
