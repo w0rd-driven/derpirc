@@ -1,0 +1,46 @@
+﻿<phone:PhoneApplicationPage x:Class="derpirc.Views.AboutView"
+                            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                            xmlns:edc="clr-namespace:Microsoft.Expression.Controls;assembly=Microsoft.Expression.Drawing"
+                            xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+                            xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+                            xmlns:controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls"
+                            xmlns:blend="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+                            xmlns:command="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Extras.WP71"
+                            xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
+                            xmlns:appbarutils="clr-namespace:AppBarUtils;assembly=AppBarUtils" 
+                            FontFamily="{StaticResource PhoneFontFamilyNormal}"
+                            FontSize="{StaticResource PhoneFontSizeNormal}"
+                            Foreground="{StaticResource PhoneForegroundBrush}"
+                            SupportedOrientations="PortraitOrLandscape" Orientation="Portrait"
+                            mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="696"
+                            shell:SystemTray.IsVisible="True"
+                            DataContext="{Binding AboutViewModel, Source={StaticResource Locator}}">
+
+    <Grid x:Name="LayoutRoot" Background="Transparent">
+        <controls:Pivot Title="derpirc" Style="{StaticResource SmallPivotStyle}" Margin="-2,0,2,0">
+            <blend:Interaction.Triggers>
+                <blend:EventTrigger EventName="LoadedPivotItem">
+                    <command:EventToCommand Command="{Binding PivotItemLoadedCommand}" PassEventArgsToCommand="True"/>
+                </blend:EventTrigger>
+            </blend:Interaction.Triggers>
+
+            <controls:PivotItem Header="about" Style="{StaticResource SmallPivotItemStyle}" DataContext="{Binding SettingsUserViewModel, Source={StaticResource Locator}}">
+                <ScrollViewer>
+                    <Grid>
+                    </Grid>
+                </ScrollViewer>
+            </controls:PivotItem>
+
+            <controls:PivotItem Header="history" Style="{StaticResource SmallPivotItemStyle}" DataContext="{Binding SettingsFormatViewModel, Source={StaticResource Locator}}">
+                <Grid>
+                </Grid>
+            </controls:PivotItem>
+
+            <controls:PivotItem Header="legal" Style="{StaticResource SmallPivotItemStyle}" DataContext="{Binding SettingsNetworkViewModel, Source={StaticResource Locator}}">
+            </controls:PivotItem>
+        </controls:Pivot>
+    </Grid>
+</phone:PhoneApplicationPage>

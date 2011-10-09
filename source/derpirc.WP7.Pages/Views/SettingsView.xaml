@@ -26,14 +26,14 @@
             </blend:EventTrigger>
         </blend:Interaction.Triggers>
 
-        <controls:Pivot Title="Settings" Style="{StaticResource SmallPivotStyle}" Margin="-2,0,2,0">
+        <controls:Pivot Title="derpirc" Style="{StaticResource SmallPivotStyle}" Margin="-2,0,2,0">
             <blend:Interaction.Triggers>
                 <blend:EventTrigger EventName="LoadedPivotItem">
                     <command:EventToCommand Command="{Binding PivotItemLoadedCommand}" PassEventArgsToCommand="True"/>
                 </blend:EventTrigger>
             </blend:Interaction.Triggers>
 
-            <controls:PivotItem Header="user" Style="{StaticResource SmallPivotItemStyle}" DataContext="{Binding SettingsUserViewModel, Source={StaticResource Locator}}">
+            <controls:PivotItem Header="settings" Style="{StaticResource SmallPivotItemStyle}" DataContext="{Binding SettingsUserViewModel, Source={StaticResource Locator}}">
                 <ScrollViewer>
                     <Grid>
                         <Grid.ColumnDefinitions>

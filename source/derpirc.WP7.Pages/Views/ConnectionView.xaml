@@ -32,14 +32,14 @@
         </Grid.RowDefinitions>
 
         <StackPanel x:Name="TitlePanel" Margin="24,24,0,12">
-            <TextBlock x:Name="PageTitle"
-                       Text="Connections"
-                       Margin="-3,-8,0,0"
-                       Style="{StaticResource PhoneTextTitle1Style}" />
             <TextBlock x:Name="Subtitle"
-                       Text="{Binding Subtitle}"
-                       Margin="-3,-8,0,0"
+                       Text="derpirc"
+                       Margin="-2,-6,0,0"
                        Style="{StaticResource TextBlockBase}" />
+            <TextBlock x:Name="PageTitle"
+                       Text="connections"
+                       Margin="-2,-10,0,0"
+                       Style="{StaticResource PhoneTextTitle1Style}" />
         </StackPanel>
 
         <Grid x:Name="ContentGrid" Grid.Row="1">
@@ -50,9 +50,14 @@
                 <RowDefinition Height="20" />
             </Grid.RowDefinitions>
 
-            <toolkit:MultiselectList x:Name="ConnectionsListBox" Margin="0,0,-12,0"
-                     ItemsSource="{Binding Connections.View}">
+            <toolkit:MultiselectList x:Name="ConnectionsList" Margin="0,0,-12,0"
+                                     ItemsSource="{Binding Connections.View}"
+                                     IsSelectionEnabled="{Binding IsSelectionEnabled, Mode=TwoWay}">
                 <blend:Interaction.Triggers>
+                    <blend:EventTrigger EventName="SelectionChanged">
+                        <command:EventToCommand Command="{Binding SelectionChangedCommand}"
+                                                CommandParameter="{Binding SelectedItems, ElementName=ConnectionsList}" />
+                    </blend:EventTrigger>
                     <blend:EventTrigger EventName="DoubleTap">
                         <command:EventToCommand Command="{Binding EditCommand}" />
                     </blend:EventTrigger>
@@ -72,11 +77,19 @@
     <phone:PhoneApplicationPage.ApplicationBar>
         <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True">
             <shell:ApplicationBar.Buttons>
-                <shell:ApplicationBarIconButton IconUri="/Icons/appbar.send.text.rest.png" Text="Reconnect" />
-                <shell:ApplicationBarIconButton IconUri="/Icons/appbar.switcher.rest.png" Text="Disconnect" />
+                <shell:ApplicationBarIconButton IconUri="/Icons/appbar.loop.png" Text="reconnect" />
+                <shell:ApplicationBarIconButton IconUri="/Icons/appbar.lines.png" Text="select" />
+                <shell:ApplicationBarIconButton IconUri="/Icons/appbar.close.png" Text="disconnect" />
             </shell:ApplicationBar.Buttons>
             <shell:ApplicationBar.MenuItems>
+                <shell:ApplicationBarMenuItem Text="connect" />
             </shell:ApplicationBar.MenuItems>
         </shell:ApplicationBar>
     </phone:PhoneApplicationPage.ApplicationBar>
+    <blend:Interaction.Behaviors>
+        <appbarutils:AppBarItemCommand Type="Button" Id="reconnect" Command="{Binding ReconnectCommand}" />
+        <appbarutils:AppBarItemCommand Type="Button" Id="select" Command="{Binding SelectCommand}" />
+        <appbarutils:AppBarItemCommand Type="Button" Id="disconnect" Command="{Binding DisconnectCommand}" />
+        <appbarutils:AppBarItemCommand Type="MenuItem" Id="connect" Command="{Binding ConnectCommand}" />
+    </blend:Interaction.Behaviors>
 </phone:PhoneApplicationPage>
