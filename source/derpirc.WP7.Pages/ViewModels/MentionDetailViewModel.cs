@@ -36,7 +36,6 @@ namespace derpirc.ViewModels
                 if (_canSend == value)
                     return;
 
-                var oldValue = _canSend;
                 _canSend = value;
                 RaisePropertyChanged(() => CanSend);
                 SendCommand.RaiseCanExecuteChanged();
@@ -62,7 +61,6 @@ namespace derpirc.ViewModels
                 if (_canSwitch == value)
                     return;
 
-                var oldValue = _canSwitch;
                 _canSwitch = value;
                 RaisePropertyChanged(() => CanSwitch);
                 SwitchCommand.RaiseCanExecuteChanged();
@@ -106,7 +104,6 @@ namespace derpirc.ViewModels
                 if (_model == value)
                     return;
 
-                var oldValue = _model;
                 _model = value;
                 RaisePropertyChanged(() => Model);
             }
@@ -121,7 +118,6 @@ namespace derpirc.ViewModels
                 if (_channelName == value)
                     return;
 
-                var oldValue = _channelName;
                 _channelName = value;
                 RaisePropertyChanged(() => NickName);
             }
@@ -136,7 +132,6 @@ namespace derpirc.ViewModels
                 if (_networkName == value)
                     return;
 
-                var oldValue = _networkName;
                 _networkName = value;
                 RaisePropertyChanged(() => NetworkName);
             }
@@ -154,7 +149,6 @@ namespace derpirc.ViewModels
                 if (_selectedItem == value)
                     return;
 
-                var oldValue = _selectedItem;
                 _selectedItem = value;
                 RaisePropertyChanged(() => SelectedItem);
             }
@@ -169,10 +163,9 @@ namespace derpirc.ViewModels
                 if (_sendMessage == value)
                     return;
 
-                var oldValue = _sendMessage;
                 _sendMessage = value;
                 RaisePropertyChanged(() => SendMessage);
-                CanSend = !string.IsNullOrEmpty(SendMessage);
+                CheckCanSend();
             }
         }
 
@@ -289,15 +282,26 @@ namespace derpirc.ViewModels
                 this.MessengerInstance.Register<GenericMessage<MentionItem>>(this, message =>
                 {
                     var target = message.Target as string;
-                    if (target == "in")
+                    if ((target == "in") && (message.Content != null))
                         AddIncoming(message.Content);
                 });
             }
         }
 
+        private void CheckCanSend()
+        {
+            var result = false;
+            if (!string.IsNullOrEmpty(SendMessage))
+            {
+                if (SendMessage != SendWatermark)
+                    result = true;
+            }
+            CanSend = result;
+        }
+
         public void Send()
         {
-            if (!string.IsNullOrEmpty(SendMessage))
+            if (!string.IsNullOrEmpty(SendMessage) && (SendMessage != SendWatermark))
             {
                 var newMessage = new MentionItem();
                 newMessage.Summary = Model;

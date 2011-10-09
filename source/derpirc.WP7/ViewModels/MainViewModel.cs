@@ -377,7 +377,8 @@ namespace derpirc.ViewModels
                 {
                     foundItem.LoadById(e.SummaryId);
                     var newMessage = foundItem.Model.Messages.FirstOrDefault(x => x.Id == e.MessageId);
-                    this.MessengerInstance.Send(new GenericMessage<ChannelItem>(this, "in", newMessage));
+                    if (newMessage != null)
+                        this.MessengerInstance.Send(new GenericMessage<ChannelItem>(this, "in", newMessage));
                 });
             }
         }
@@ -400,7 +401,8 @@ namespace derpirc.ViewModels
                 {
                     foundItem.LoadById(e.SummaryId);
                     var newMessage = foundItem.Model.Messages.FirstOrDefault(x => x.Id == e.MessageId);
-                    this.MessengerInstance.Send(new GenericMessage<MentionItem>(this, "in", newMessage));
+                    if (newMessage != null)
+                        this.MessengerInstance.Send(new GenericMessage<MentionItem>(this, "in", newMessage));
                 });
             }
         }
@@ -423,11 +425,11 @@ namespace derpirc.ViewModels
                 {
                     foundItem.LoadById(e.SummaryId);
                     var newMessage = foundItem.Model.Messages.FirstOrDefault(x => x.Id == e.MessageId);
-                    this.MessengerInstance.Send(new GenericMessage<MessageItem>(this, "in", newMessage));
+                    if (newMessage != null)
+                        this.MessengerInstance.Send(new GenericMessage<MessageItem>(this, "in", newMessage));
                 });
             }
         }
-
 
         #endregion
 
