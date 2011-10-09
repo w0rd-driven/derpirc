@@ -435,6 +435,7 @@ namespace derpirc.ViewModels
         {
             //_unitOfWork = new DataUnitOfWork();
             _unitOfWork = DataUnitOfWork.Default;
+            // HACK: Test First Init
             _unitOfWork.WipeDatabase();
             _unitOfWork.InitializeDatabase(false);
             var isExisting = _unitOfWork.DatabaseExists;

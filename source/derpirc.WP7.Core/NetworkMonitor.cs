@@ -13,12 +13,12 @@ namespace derpirc.Core
         /// <summary>
         /// The status subject.
         /// </summary>
-        private BehaviorSubject<NetworkType> statusSubject = new BehaviorSubject<NetworkType>(DetermineCurrentStatusImpl());
+        private BehaviorSubject<NetworkType> _statusSubject = new BehaviorSubject<NetworkType>(DetermineCurrentStatusImpl());
 
         /// <summary>
         /// The network observer.
         /// </summary>
-        private IDisposable networkObserver;
+        private IDisposable _networkObserver;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="NetworkMonitor"/> class. The frequency to check network connection is set to 500 ms.
@@ -35,9 +35,9 @@ namespace derpirc.Core
         /// </param>
         public NetworkMonitor(int frequency)
         {
-            this.networkObserver = Observable.Interval(TimeSpan.FromMilliseconds(frequency))
+            this._networkObserver = Observable.Interval(TimeSpan.FromMilliseconds(frequency))
                         .Select(DetermineCurrentStatus)
-                        .Subscribe(this.statusSubject);
+                        .Subscribe(this._statusSubject);
         }
 
         /// <summary>
@@ -45,16 +45,16 @@ namespace derpirc.Core
         /// </summary>
         public void Dispose()
         {
-            if (this.networkObserver != null)
+            if (this._networkObserver != null)
             {
-                this.networkObserver.Dispose();
-                this.networkObserver = null;
+                this._networkObserver.Dispose();
+                this._networkObserver = null;
             }
 
-            if (this.statusSubject != null)
+            if (this._statusSubject != null)
             {
-                this.statusSubject.OnCompleted();
-                this.statusSubject = null;
+                this._statusSubject.OnCompleted();
+                this._statusSubject = null;
             }
         }
 
@@ -67,7 +67,7 @@ namespace derpirc.Core
         /// </returns>
         public IObservable<NetworkType> Status()
         {
-            return this.statusSubject.DistinctUntilChanged();
+            return this._statusSubject.DistinctUntilChanged();
         }
 
         /// <summary>

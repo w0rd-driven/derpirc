@@ -9,7 +9,7 @@ using Microsoft.Phone.Reactive;
 
 namespace derpirc.Core
 {
-    public class SupervisorFacade
+    public class SupervisorFacade : IDisposable
     {
         #region Properties
 
@@ -42,6 +42,7 @@ namespace derpirc.Core
 
         #endregion
 
+        private bool _isDisposed;
         private object _threadLock = new object();
         private BackgroundWorker _worker;
 
@@ -49,7 +50,7 @@ namespace derpirc.Core
         private SettingsUnitOfWork _unitOfWorkSettings;
 
         private NetworkMonitor _networkMonitor;
-        private IDisposable statusObserver;
+        private IDisposable _statusObserver;
 
         private SessionSupervisor _sessionSupervisor;
         private ChannelsSupervisor _channelSupervisor;
@@ -87,17 +88,17 @@ namespace derpirc.Core
 
         public SupervisorFacade()
         {
-            _clients = new ObservableCollection<ClientItem>();
+            this._clients = new ObservableCollection<ClientItem>();
 
-            _worker = new BackgroundWorker();
-            _worker.DoWork += new DoWorkEventHandler(DeferStartupWork);
+            this._worker = new BackgroundWorker();
+            this._worker.DoWork += new DoWorkEventHandler(DeferStartupWork);
 
-            DeferStartup(null);
+            this.DeferStartup(null);
         }
 
         internal void DeferStartup(Action completed)
         {
-            _worker.RunWorkerAsync(completed);
+            this._worker.RunWorkerAsync(completed);
         }
 
         private void DeferStartupWork(object sender, DoWorkEventArgs e)
@@ -105,7 +106,7 @@ namespace derpirc.Core
             Action completed = e.Argument as Action;
             lock (_threadLock)
             {
-                Startup();
+                this.Startup();
             }
 
             if (completed != null)
@@ -116,48 +117,74 @@ namespace derpirc.Core
 
         private void Startup()
         {
-            _networkMonitor = new NetworkMonitor(10000);
-            statusObserver = _networkMonitor.Status()
+            this._networkMonitor = new NetworkMonitor(10000);
+            this._statusObserver = _networkMonitor.Status()
                 .ObserveOnDispatcher()
                 .Subscribe(type =>
                 {
-                    NetworkType = type;
+                    this.NetworkType = type;
                     if (type != NetworkType.None)
-                        IsNetworkAvailable = true;
+                        this.IsNetworkAvailable = true;
                     else
-                        IsNetworkAvailable = false;
+                        this.IsNetworkAvailable = false;
                     var eventArgs = new NetworkStatusEventArgs()
                     {
-                        IsAvailable = IsNetworkAvailable,
+                        IsAvailable = this.IsNetworkAvailable,
                         Type = type,
                     };
-                    OnNetworkStatusChanged(this, eventArgs);
+                    this.OnNetworkStatusChanged(this, eventArgs);
                 });
-            // HACK: Test First Init
-            _unitOfWork = new DataUnitOfWork();
-            _unitOfWorkSettings = new SettingsUnitOfWork();
+            this._unitOfWork = new DataUnitOfWork();
+            this._unitOfWorkSettings = new SettingsUnitOfWork();
 
-            _sessionSupervisor = new SessionSupervisor(_unitOfWork, _unitOfWorkSettings);
+            this._sessionSupervisor = new SessionSupervisor(_unitOfWork, _unitOfWorkSettings);
         }
 
         private void Shutdown()
         {
-            //if (this.statusObserver == null)
-            //    return;
-
-            //this.statusObserver.Dispose();
-            //this.statusObserver = null;
-            //_networkMonitor = null;
-            _sessionSupervisor = null;
-            _channelSupervisor = null;
-            _messageSupervisor = null;
+            this._sessionSupervisor = null;
+            this._channelSupervisor = null;
+            this._messageSupervisor = null;
         }
+
+        #region UI-facing methods
+
+        // ConnectionView
+        public void Connect(ObservableCollection<ClientInfo> clients)
+        {
+        }
+
+        public void Disconnect(ObservableCollection<ClientInfo> clients)
+        {
+        }
+
+        public void Reconnect(ObservableCollection<ClientInfo> clients, bool force = false)
+        {
+        }
+
+        // *DetailsView
+        public void SendMessage(ChannelItem message)
+        {
+            this._channelSupervisor.SendMessage(message);
+        }
+
+        public void SendMessage(MentionItem message)
+        {
+            this._channelSupervisor.SendMessage(message);
+        }
+
+        public void SendMessage(MessageItem message)
+        {
+            this._messageSupervisor.SendMessage(message);
+        }
+
+        #endregion
 
         #region Events
 
         void OnClientStatusChanged(object sender, ClientStatusEventArgs eventArgs)
         {
-            var handler = ClientStatusChanged;
+            var handler = this.ClientStatusChanged;
             if (handler != null)
             {
                 handler.Invoke(sender, eventArgs);
@@ -166,7 +193,7 @@ namespace derpirc.Core
 
         void OnNetworkStatusChanged(object sender, NetworkStatusEventArgs eventArgs)
         {
-            var handler = NetworkStatusChanged;
+            var handler = this.NetworkStatusChanged;
             if (handler != null)
             {
                 handler.Invoke(sender, eventArgs);
@@ -175,7 +202,7 @@ namespace derpirc.Core
 
         void OnChannelSupervisor_ChannelJoined(object sender, ChannelStatusEventArgs e)
         {
-            var handler = ChannelJoined;
+            var handler = this.ChannelJoined;
             if (handler != null)
             {
                 handler.Invoke(sender, e);
@@ -184,7 +211,7 @@ namespace derpirc.Core
 
         void OnChannelSupervisor_ChannelLeft(object sender, ChannelStatusEventArgs e)
         {
-            var handler = ChannelLeft;
+            var handler = this.ChannelLeft;
             if (handler != null)
             {
                 handler.Invoke(sender, e);
@@ -193,7 +220,7 @@ namespace derpirc.Core
 
         void OnChannelSupervisor_MessageReceived(object sender, MessageItemEventArgs e)
         {
-            var handler = ChannelItemReceived;
+            var handler = this.ChannelItemReceived;
             if (handler != null)
             {
                 handler.Invoke(sender, e);
@@ -202,7 +229,7 @@ namespace derpirc.Core
 
         void OnChannelSupervisor_MentionReceived(object sender, MessageItemEventArgs e)
         {
-            var handler = MentionItemReceived;
+            var handler = this.MentionItemReceived;
             if (handler != null)
             {
                 handler.Invoke(sender, e);
@@ -211,7 +238,7 @@ namespace derpirc.Core
 
         void OnMessageSupervisor_MessageReceived(object sender, MessageItemEventArgs e)
         {
-            var handler = MessageItemReceived;
+            var handler = this.MessageItemReceived;
             if (handler != null)
             {
                 handler.Invoke(sender, e);
@@ -220,11 +247,11 @@ namespace derpirc.Core
 
         #endregion
 
-        #region Lookup Methods
+        #region Lookup methods
 
         public IrcLocalUser GetLocalUserBySummary(IMessage channel)
         {
-            var result = (from client in _clients
+            var result = (from client in this._clients
                           where client.Info.Id == channel.NetworkId
                           select client.Client.LocalUser).FirstOrDefault();
             return result;
@@ -237,7 +264,7 @@ namespace derpirc.Core
 
         public ClientItem GetClientByIrcClient(IrcClient client)
         {
-            var result = (from clientItem in _clients
+            var result = (from clientItem in this._clients
                           where clientItem.Client == client
                           select clientItem).FirstOrDefault();
             return result;
@@ -245,40 +272,21 @@ namespace derpirc.Core
 
         #endregion
 
-        #region Passthrough Methods
-
-        public void SendMessage(ChannelItem message)
-        {
-            _channelSupervisor.SendMessage(message);
-        }
-
-        public void SendMessage(MentionItem message)
-        {
-            _channelSupervisor.SendMessage(message);
-        }
-
-        public void SendMessage(MessageItem message)
-        {
-            _messageSupervisor.SendMessage(message);
-        }
-
-        #endregion
-
         private void InitializeSupervisors()
         {
-            if (_channelSupervisor == null)
+            if (this._channelSupervisor == null)
             {
-                _channelSupervisor = new ChannelsSupervisor(_unitOfWork);
-                _channelSupervisor.ChannelJoined += new EventHandler<ChannelStatusEventArgs>(OnChannelSupervisor_ChannelJoined);
-                _channelSupervisor.ChannelLeft += new EventHandler<ChannelStatusEventArgs>(OnChannelSupervisor_ChannelLeft);
-                _channelSupervisor.ChannelItemReceived += new EventHandler<MessageItemEventArgs>(OnChannelSupervisor_MessageReceived);
-                _channelSupervisor.MentionItemReceived += new EventHandler<MessageItemEventArgs>(OnChannelSupervisor_MentionReceived);
+                this._channelSupervisor = new ChannelsSupervisor(_unitOfWork);
+                this._channelSupervisor.ChannelJoined += new EventHandler<ChannelStatusEventArgs>(OnChannelSupervisor_ChannelJoined);
+                this._channelSupervisor.ChannelLeft += new EventHandler<ChannelStatusEventArgs>(OnChannelSupervisor_ChannelLeft);
+                this._channelSupervisor.ChannelItemReceived += new EventHandler<MessageItemEventArgs>(OnChannelSupervisor_MessageReceived);
+                this._channelSupervisor.MentionItemReceived += new EventHandler<MessageItemEventArgs>(OnChannelSupervisor_MentionReceived);
             }
 
-            if (_messageSupervisor == null)
+            if (this._messageSupervisor == null)
             {
-                _messageSupervisor = new MessagesSupervisor(_unitOfWork);
-                _messageSupervisor.MessageItemReceived += new EventHandler<MessageItemEventArgs>(OnMessageSupervisor_MessageReceived);
+                this._messageSupervisor = new MessagesSupervisor(_unitOfWork);
+                this._messageSupervisor.MessageItemReceived += new EventHandler<MessageItemEventArgs>(OnMessageSupervisor_MessageReceived);
             }
         }
 
@@ -296,12 +304,12 @@ namespace derpirc.Core
                 case ClientState.Connected:
                     break;
                 case ClientState.Registered:
-                    AttachLocalUser(client.LocalUser);
+                    this.AttachLocalUser(client.LocalUser);
                     break;
                 case ClientState.Processed:
                     break;
                 case ClientState.Disconnected:
-                    DetachLocalUser(client.LocalUser);
+                    this.DetachLocalUser(client.LocalUser);
                     break;
                 case ClientState.Error:
                     break;
@@ -315,21 +323,44 @@ namespace derpirc.Core
             {
                 Info = foundClient.Info,
             };
-            OnClientStatusChanged(this, eventArgs);
+            this.OnClientStatusChanged(this, eventArgs);
         }
 
         private void AttachLocalUser(IrcLocalUser localUser)
         {
-            InitializeSupervisors();
-            _channelSupervisor.AttachLocalUser(localUser);
-            _messageSupervisor.AttachLocalUser(localUser);
+            this.InitializeSupervisors();
+            this._channelSupervisor.AttachLocalUser(localUser);
+            this._messageSupervisor.AttachLocalUser(localUser);
         }
 
         private void DetachLocalUser(IrcLocalUser localUser)
         {
-            _channelSupervisor.DetachLocalUser(localUser);
-            _messageSupervisor.DetachLocalUser(localUser);
+            this._channelSupervisor.DetachLocalUser(localUser);
+            this._messageSupervisor.DetachLocalUser(localUser);
         }
 
+        public void Dispose()
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected void Dispose(bool disposing)
+        {
+            if (!this._isDisposed)
+            {
+                if (disposing)
+                {
+                    if (this._statusObserver == null)
+                        return;
+
+                    this._statusObserver.Dispose();
+                    this._statusObserver = null;
+                    this._networkMonitor = null;
+                    this.Shutdown();
+                }
+            }
+            this._isDisposed = true;
+        }
     }
 }

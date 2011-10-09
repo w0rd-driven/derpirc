@@ -9,13 +9,33 @@ namespace derpirc.Core
     public class MessagesSupervisor : IDisposable
     {
         private bool _isDisposed;
+
         private DataUnitOfWork _unitOfWork;
+
         public event EventHandler<MessageItemEventArgs> MessageItemReceived;
 
         public MessagesSupervisor(DataUnitOfWork unitOfWork)
         {
-            _unitOfWork = unitOfWork;
+            this._unitOfWork = unitOfWork;
         }
+
+        public void AttachLocalUser(IrcLocalUser localUser)
+        {
+            localUser.NickNameChanged += this.LocalUser_NickNameChanged;
+            localUser.MessageReceived += this.LocalUser_MessageReceived;
+            localUser.NoticeReceived += this.LocalUser_NoticeReceived;
+            //localUser.MessageSent += this.LocalUser_MessageSent;
+        }
+
+        public void DetachLocalUser(IrcLocalUser localUser)
+        {
+            localUser.NickNameChanged -= this.LocalUser_NickNameChanged;
+            localUser.MessageReceived -= this.LocalUser_MessageReceived;
+            localUser.NoticeReceived -= this.LocalUser_NoticeReceived;
+            //localUser.MessageSent -= this.LocalUser_MessageSent;
+        }
+
+        #region UI-facing methods
 
         public void SendMessage(MessageItem message)
         {
@@ -23,39 +43,32 @@ namespace derpirc.Core
             {
                 var summary = message.Summary;
                 var localUser = SupervisorFacade.Default.GetLocalUserBySummary(summary);
-                localUser.SendMessage(summary.Name, message.Text);
 
-                // Add the source and MessageType at the last minute
-                message.Source = localUser.NickName;
-                message.Type = MessageType.Mine;
-
-                summary.Messages.Add(message);
-                _unitOfWork.Commit();
-                var eventArgs = new MessageItemEventArgs()
+                // TODO: Error check: If localUser == null, alert UI/internals
+                if (localUser != null)
                 {
-                    NetworkId = summary.NetworkId,
-                    SummaryId = summary.Id,
-                    MessageId = message.Id,
-                };
-                OnMessageItemReceived(eventArgs);
+                    localUser.SendMessage(summary.Name, message.Text);
+
+                    // Add the source and MessageType at the last minute
+                    message.Source = localUser.NickName;
+                    message.Type = MessageType.Mine;
+
+                    summary.Messages.Add(message);
+                    this._unitOfWork.Commit();
+
+                    // HACK: Use MessageSent event for this eventually
+                    var eventArgs = new MessageItemEventArgs()
+                    {
+                        NetworkId = summary.NetworkId,
+                        SummaryId = summary.Id,
+                        MessageId = message.Id,
+                    };
+                    this.OnMessageItemReceived(eventArgs);
+                }
             }
         }
 
-        public void AttachLocalUser(IrcLocalUser localUser)
-        {
-            localUser.NickNameChanged += LocalUser_NickNameChanged;
-            localUser.MessageReceived += LocalUser_MessageReceived;
-            //localUser.MessageSent += LocalUser_MessageSent;
-            //localUser.NoticeReceived += LocalUser_NoticeReceived;
-        }
-
-        public void DetachLocalUser(IrcLocalUser localUser)
-        {
-            localUser.NickNameChanged -= LocalUser_NickNameChanged;
-            localUser.MessageReceived -= LocalUser_MessageReceived;
-            //localUser.MessageSent -= LocalUser_MessageSent;
-            //localUser.NoticeReceived -= LocalUser_NoticeReceived;
-        }
+        #endregion
 
         private void LocalUser_MessageReceived(object sender, IrcMessageEventArgs e)
         {
@@ -66,17 +79,23 @@ namespace derpirc.Core
                 messageType = MessageType.Theirs;
             }
 
-            var summary = GetMessageSummary(e.Source as IrcUser);
-            var message = GetIrcMessage(summary, e, messageType);
-            summary.Messages.Add(message);
-            _unitOfWork.Commit();
-            var eventArgs = new MessageItemEventArgs()
+            // TODO: Error check: If summary == null, alert UI/internals
+            var summary = this.GetMessageSummary(e.Source as IrcUser);
+            if (summary != null)
             {
-                NetworkId = summary.NetworkId,
-                SummaryId = summary.Id,
-                MessageId = message.Id,
-            };
-            OnMessageItemReceived(eventArgs);
+                // HACK: This should never be null but just in case, keep an eye on it
+                var message = this.GetIrcMessage(summary, e, messageType);
+                summary.Messages.Add(message);
+                this._unitOfWork.Commit();
+
+                var eventArgs = new MessageItemEventArgs()
+                {
+                    NetworkId = summary.NetworkId,
+                    SummaryId = summary.Id,
+                    MessageId = message.Id,
+                };
+                this.OnMessageItemReceived(eventArgs);
+            }
         }
 
         private void LocalUser_NickNameChanged(object sender, EventArgs e)
@@ -91,17 +110,36 @@ namespace derpirc.Core
             //OnLocalUserNoticeReceived(localUser, e);
         }
 
+        #region Events
+
+        private void OnMessageItemReceived(MessageItemEventArgs e)
+        {
+            var handler = this.MessageItemReceived;
+            if (handler != null)
+            {
+                handler.Invoke(this, e);
+            }
+        }
+
+        #endregion
+
+        #region Lookup methods
+
         private Message GetMessageSummary(IrcUser user)
         {
             var network = SupervisorFacade.Default.GetNetworkByClient(user.Client);
-            var result = network.Messages.FirstOrDefault(x => x.Name == user.NickName.ToLower());
-            if (result == null)
+            if (network != null)
             {
-                result = new Message() { Name = user.NickName };
-                network.Messages.Add(result);
-                _unitOfWork.Commit();
+                var result = network.Messages.FirstOrDefault(x => x.Name == user.NickName.ToLower());
+                if (result == null)
+                {
+                    result = new Message() { Name = user.NickName };
+                    network.Messages.Add(result);
+                    this._unitOfWork.Commit();
+                }
+                return result;
             }
-            return result;
+            return null;
         }
 
         private MessageItem GetIrcMessage(Message summary, IrcMessageEventArgs eventArgs, MessageType messageType)
@@ -111,28 +149,16 @@ namespace derpirc.Core
             result.Timestamp = DateTime.Now;
             result.IsRead = false;
             result.Summary = summary;
-            //result.Source = eventArgs.Source.Name;
             result.Text = eventArgs.Text;
             result.Type = messageType;
             return result;
-        }
-
-        #region Events
-
-        private void OnMessageItemReceived(MessageItemEventArgs e)
-        {
-            var handler = MessageItemReceived;
-            if (handler != null)
-            {
-                handler.Invoke(this, e);
-            }
         }
 
         #endregion
 
         public void Dispose()
         {
-            Dispose(true);
+            this.Dispose(true);
             GC.SuppressFinalize(this);
         }
 
