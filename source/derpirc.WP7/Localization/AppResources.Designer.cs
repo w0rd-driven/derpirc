@@ -61,6 +61,24 @@ namespace derpirc.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to history.
+        /// </summary>
+        internal static string AboutHistoryTitle {
+            get {
+                return ResourceManager.GetString("AboutHistoryTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to legal.
+        /// </summary>
+        internal static string AboutLegalTitle {
+            get {
+                return ResourceManager.GetString("AboutLegalTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to about.
         /// </summary>
         internal static string AboutTitle {
@@ -84,6 +102,33 @@ namespace derpirc.Localization {
         internal static string ConnectionTitle {
             get {
                 return ResourceManager.GetString("ConnectionTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to formatting.
+        /// </summary>
+        internal static string SettingsFormattingTitle {
+            get {
+                return ResourceManager.GetString("SettingsFormattingTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to networks.
+        /// </summary>
+        internal static string SettingsNetworksTitle {
+            get {
+                return ResourceManager.GetString("SettingsNetworksTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to storage.
+        /// </summary>
+        internal static string SettingsStorageTitle {
+            get {
+                return ResourceManager.GetString("SettingsStorageTitle", resourceCulture);
             }
         }
         

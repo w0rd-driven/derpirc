@@ -27,12 +27,6 @@
         </blend:Interaction.Triggers>
 
         <controls:Pivot Style="{StaticResource SmallPivotStyle}" Margin="-2,0,2,0">
-            <blend:Interaction.Triggers>
-                <blend:EventTrigger EventName="LoadedPivotItem">
-                    <command:EventToCommand Command="{Binding PivotItemLoadedCommand}" PassEventArgsToCommand="True"/>
-                </blend:EventTrigger>
-            </blend:Interaction.Triggers>
-
             <controls:PivotItem Header="settings" Style="{StaticResource SmallPivotItemStyle}" DataContext="{Binding SettingsUserViewModel, Source={StaticResource Locator}}">
                 <ScrollViewer>
                     <Grid>

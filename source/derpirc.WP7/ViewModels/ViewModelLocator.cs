@@ -604,6 +604,56 @@ namespace derpirc.ViewModels
 
         #endregion
 
+        #region AboutViewModel
+
+        private static AboutViewModel _aboutViewModel;
+
+        /// <summary>
+        /// Gets the AboutViewModel property.
+        /// </summary>
+        public static AboutViewModel AboutStatic
+        {
+            get
+            {
+                if (_aboutViewModel == null)
+                    CreateAbout();
+
+                return _aboutViewModel;
+            }
+        }
+
+        /// <summary>
+        /// Gets the AboutViewModel property.
+        /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance",
+            "CA1822:MarkMembersAsStatic",
+            Justification = "This non-static member is needed for data binding purposes.")]
+        public AboutViewModel AboutViewModel
+        {
+            get { return AboutStatic; }
+        }
+
+        /// <summary>
+        /// Provides a deterministic way to delete the AboutViewModel property.
+        /// </summary>
+        public static void ClearAbout()
+        {
+            if (_aboutViewModel != null)
+                _aboutViewModel.Cleanup();
+            _aboutViewModel = null;
+        }
+
+        /// <summary>
+        /// Provides a deterministic way to create the AboutViewModel property.
+        /// </summary>
+        public static void CreateAbout()
+        {
+            if (_aboutViewModel == null)
+                _aboutViewModel = new AboutViewModel();
+        }
+
+        #endregion
+
         /// <summary>
         /// Initializes a new instance of the ViewModelLocator class.
         /// </summary>
@@ -636,6 +686,7 @@ namespace derpirc.ViewModels
             ClearSettingsFormat();
             ClearSettingsNetwork();
             ClearConnection();
+            ClearAbout();
         }
     }
 }

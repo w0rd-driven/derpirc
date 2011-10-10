@@ -15,18 +15,12 @@
                             FontSize="{StaticResource PhoneFontSizeNormal}"
                             Foreground="{StaticResource PhoneForegroundBrush}"
                             SupportedOrientations="PortraitOrLandscape" Orientation="Portrait"
-                            mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="696"
+                            mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="768"
                             shell:SystemTray.IsVisible="True"
                             DataContext="{Binding AboutViewModel, Source={StaticResource Locator}}">
 
     <Grid x:Name="LayoutRoot" Background="Transparent">
         <controls:Pivot Style="{StaticResource SmallPivotStyle}" Margin="-2,0,2,0">
-            <blend:Interaction.Triggers>
-                <blend:EventTrigger EventName="LoadedPivotItem">
-                    <command:EventToCommand Command="{Binding PivotItemLoadedCommand}" PassEventArgsToCommand="True"/>
-                </blend:EventTrigger>
-            </blend:Interaction.Triggers>
-
             <controls:PivotItem Header="about" Style="{StaticResource SmallPivotItemStyle}" DataContext="{Binding SettingsUserViewModel, Source={StaticResource Locator}}">
                 <ScrollViewer>
                     <Grid>

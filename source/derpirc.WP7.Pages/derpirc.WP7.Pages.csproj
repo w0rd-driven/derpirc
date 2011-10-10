@@ -81,6 +81,7 @@
       <Link>Properties\VersionAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Helpers\WatermarkBehavior.cs" />
+    <Compile Include="ViewModels\AboutViewModel.cs" />
     <Compile Include="ViewModels\ConnectionViewModel.cs" />
     <Compile Include="ViewModels\Settings\SettingsNetworkViewModel.cs" />
     <Compile Include="ViewModels\Settings\SettingsFormatViewModel.cs" />

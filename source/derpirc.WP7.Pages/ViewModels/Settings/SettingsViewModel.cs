@@ -1,7 +1,6 @@
 ﻿using System.Windows;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using Microsoft.Phone.Controls;
 
 namespace derpirc.ViewModels.Settings
 {
@@ -26,16 +25,6 @@ namespace derpirc.ViewModels.Settings
             {
                 return _layoutRootCommand ?? (_layoutRootCommand =
                     new RelayCommand<FrameworkElement>(sender => this.LayoutRoot = sender));
-            }
-        }
-
-        RelayCommand<PivotItemEventArgs> _pivotItemLoadedCommand;
-        public RelayCommand<PivotItemEventArgs> PivotItemLoadedCommand
-        {
-            get
-            {
-                return _pivotItemLoadedCommand ?? (_pivotItemLoadedCommand =
-                    new RelayCommand<PivotItemEventArgs>(eventArgs => PivotItemLoaded(eventArgs)));
             }
         }
 
@@ -143,11 +132,6 @@ namespace derpirc.ViewModels.Settings
         }
 
         private void OnNavigatedFrom()
-        {
-
-        }
-
-        private void PivotItemLoaded(PivotItemEventArgs eventArgs)
         {
 
         }
