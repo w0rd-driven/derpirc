@@ -91,6 +91,34 @@ namespace derpirc.ViewModels
 
         #region Properties
 
+        private string _pageTitle;
+        public string PageTitle
+        {
+            get { return _pageTitle; }
+            set
+            {
+                if (_pageTitle == value)
+                    return;
+
+                _pageTitle = value;
+                RaisePropertyChanged(() => PageTitle);
+            }
+        }
+
+        private string _pageSubTitle;
+        public string PageSubTitle
+        {
+            get { return _pageSubTitle; }
+            set
+            {
+                if (_pageSubTitle == value)
+                    return;
+
+                _pageSubTitle = value;
+                RaisePropertyChanged(() => PageSubTitle);
+            }
+        }
+
         public FrameworkElement LayoutRoot { get; set; }
 
         private Mention _model;
@@ -106,34 +134,6 @@ namespace derpirc.ViewModels
 
                 _model = value;
                 RaisePropertyChanged(() => Model);
-            }
-        }
-
-        private string _channelName;
-        public string NickName
-        {
-            get { return _channelName; }
-            set
-            {
-                if (_channelName == value)
-                    return;
-
-                _channelName = value;
-                RaisePropertyChanged(() => NickName);
-            }
-        }
-
-        private string _networkName;
-        public string NetworkName
-        {
-            get { return _networkName; }
-            set
-            {
-                if (_networkName == value)
-                    return;
-
-                _networkName = value;
-                RaisePropertyChanged(() => NetworkName);
             }
         }
 
@@ -196,6 +196,8 @@ namespace derpirc.ViewModels
         /// </summary>
         public MentionDetailViewModel(Mention model)
         {
+            _messagesList = new ObservableCollection<MentionItem>();
+
             if (IsInDesignMode)
             {
                 // Code runs in Blend --> create design time data.
@@ -212,11 +214,9 @@ namespace derpirc.ViewModels
                 };
                 model.Network = network;
                 model.UnreadCount = 4;
-                _messagesList = new ObservableCollection<MentionItem>();
+
                 _messagesList.Add(new MentionItem()
                 {
-                    Summary = model,
-                    SummaryId = model.Id,
                     Source = "w0rd-driven",
                     Text = "derpirc: hay",
                     Timestamp = DateTime.Now,
@@ -224,8 +224,6 @@ namespace derpirc.ViewModels
                 });
                 _messagesList.Add(new MentionItem()
                 {
-                    Summary = model,
-                    SummaryId = model.Id,
                     Source = "w0rd-driven",
                     Text = "derpirc: sup?",
                     Timestamp = DateTime.Now,
@@ -233,8 +231,6 @@ namespace derpirc.ViewModels
                 });
                 _messagesList.Add(new MentionItem()
                 {
-                    Summary = model,
-                    SummaryId = model.Id,
                     Source = "derpirc",
                     Text = "w0rd-driven: nm",
                     Timestamp = DateTime.Now,
@@ -242,8 +238,6 @@ namespace derpirc.ViewModels
                 });
                 _messagesList.Add(new MentionItem()
                 {
-                    Summary = model,
-                    SummaryId = model.Id,
                     Source = "w0rd-driven",
                     Text = "derpirc: lame",
                     Timestamp = DateTime.Now,
@@ -251,8 +245,6 @@ namespace derpirc.ViewModels
                 });
                 _messagesList.Add(new MentionItem()
                 {
-                    Summary = model,
-                    SummaryId = model.Id,
                     Source = "w0rd-driven",
                     Text = "derpirc: urmom!",
                     Timestamp = DateTime.Now,
@@ -260,24 +252,21 @@ namespace derpirc.ViewModels
                 });
                 _messagesList.Add(new MentionItem()
                 {
-                    Summary = model,
-                    SummaryId = model.Id,
                     Source = "derpirc",
                     Text = "w0rd-driven: no, urmom!",
                     Timestamp = DateTime.Now,
                     Type = MessageType.Mine,
                 });
-                Messages = new CollectionViewSource() { Source = _messagesList };
-                NickName = model.Name;
+
+                PageTitle = model.Name;
                 if (model.Network != null)
-                    NetworkName = model.Network.Name;
-                SendWatermark = string.Format("chat on {0}", NetworkName);
+                    PageSubTitle = model.Network.Name;
+                SendWatermark = string.Format("chat on {0}", PageSubTitle);
             }
             else
             {
                 // Code runs "for real": Connect to service, etc...
-                _messagesList = new ObservableCollection<MentionItem>();
-                Messages = new CollectionViewSource() { Source = _messagesList };
+
                 // This listens to both the sending of this VM and Receiving from the MainVM
                 this.MessengerInstance.Register<GenericMessage<MentionItem>>(this, message =>
                 {
@@ -286,6 +275,8 @@ namespace derpirc.ViewModels
                         AddIncoming(message.Content);
                 });
             }
+
+            Messages = new CollectionViewSource() { Source = _messagesList };
         }
 
         private void CheckCanSend()
@@ -322,7 +313,7 @@ namespace derpirc.ViewModels
         public void Switch()
         {
             // TODO: Wire in UI to choose where to send messages
-            SendWatermark = string.Format("chat on {0}", NetworkName);
+            SendWatermark = string.Format("chat on {0}", PageSubTitle);
         }
 
         private void OnNavigatedTo(IDictionary<string, string> queryString)
@@ -339,10 +330,10 @@ namespace derpirc.ViewModels
 
         private void UpdateViewModel(Mention model)
         {
-            NickName = model.Name;
+            PageTitle = model.Name;
             if (model.Network != null)
-                NetworkName = model.Network.Name;
-            SendWatermark = string.Format("chat on {0}", NetworkName);
+                PageSubTitle = model.Network.Name;
+            SendWatermark = string.Format("chat on {0}", PageSubTitle);
             DispatcherHelper.CheckBeginInvokeOnUI(() =>
             {
                 _messagesList.Clear();

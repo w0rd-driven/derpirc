@@ -32,14 +32,14 @@
         </Grid.RowDefinitions>
 
         <StackPanel x:Name="TitlePanel" Margin="24,24,0,12">
-            <TextBlock x:Name="Subtitle"
-                       Text="derpirc"
-                       Margin="-2,-6,0,0"
-                       Style="{StaticResource TextBlockBase}" />
             <TextBlock x:Name="PageTitle"
-                       Text="connections"
+                       Text="{Binding PageTitle}"
                        Margin="-2,-10,0,0"
                        Style="{StaticResource PhoneTextTitle1Style}" />
+            <TextBlock x:Name="PageSubTitle"
+                       Text="{Binding PageSubTitle}"
+                       Margin="-2,-6,0,0"
+                       Style="{StaticResource TextBlockBase}" />
         </StackPanel>
 
         <Grid x:Name="ContentGrid" Grid.Row="1">
@@ -64,10 +64,19 @@
                 </blend:Interaction.Triggers>
                 <toolkit:MultiselectList.ItemTemplate>
                     <DataTemplate>
-                        <StackPanel>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
                             <TextBlock Text="{Binding NetworkName}" />
-                            <TextBlock Text="{Binding State}" />
-                        </StackPanel>
+                            <TextBlock Text="{Binding State}" Grid.Column="1" />
+                            <TextBlock Text="{Binding Error.Message}" TextWrapping="Wrap" TextTrimming="WordEllipsis" Grid.Row="2" Grid.ColumnSpan="2" />
+                        </Grid>
                     </DataTemplate>
                 </toolkit:MultiselectList.ItemTemplate>
             </toolkit:MultiselectList>

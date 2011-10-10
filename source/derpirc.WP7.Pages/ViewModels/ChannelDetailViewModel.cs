@@ -91,6 +91,34 @@ namespace derpirc.ViewModels
 
         #region Properties
 
+        private string _pageTitle;
+        public string PageTitle
+        {
+            get { return _pageTitle; }
+            set
+            {
+                if (_pageTitle == value)
+                    return;
+
+                _pageTitle = value;
+                RaisePropertyChanged(() => PageTitle);
+            }
+        }
+
+        private string _pageSubTitle;
+        public string PageSubTitle
+        {
+            get { return _pageSubTitle; }
+            set
+            {
+                if (_pageSubTitle == value)
+                    return;
+
+                _pageSubTitle = value;
+                RaisePropertyChanged(() => PageSubTitle);
+            }
+        }
+
         public FrameworkElement LayoutRoot { get; set; }
 
         private Channel _model;
@@ -106,34 +134,6 @@ namespace derpirc.ViewModels
 
                 _model = value;
                 RaisePropertyChanged(() => Model);
-            }
-        }
-
-        private string _channelName;
-        public string ChannelName
-        {
-            get { return _channelName; }
-            set
-            {
-                if (_channelName == value)
-                    return;
-
-                _channelName = value;
-                RaisePropertyChanged(() => ChannelName);
-            }
-        }
-
-        private string _networkName;
-        public string NetworkName
-        {
-            get { return _networkName; }
-            set
-            {
-                if (_networkName == value)
-                    return;
-
-                _networkName = value;
-                RaisePropertyChanged(() => NetworkName);
             }
         }
 
@@ -209,6 +209,8 @@ namespace derpirc.ViewModels
         /// </summary>
         public ChannelDetailViewModel(Channel model)
         {
+            _messagesList = new ObservableCollection<ChannelItem>();
+
             if (IsInDesignMode)
             {
                 // Code runs in Blend --> create design time data.
@@ -225,11 +227,9 @@ namespace derpirc.ViewModels
                 };
                 model.Network = network;
                 model.UnreadCount = 4;
-                _messagesList = new ObservableCollection<ChannelItem>();
+
                 _messagesList.Add(new ChannelItem()
                 {
-                    Summary = model,
-                    SummaryId = model.Id,
                     Source = "derpirc",
                     Text = "hay",
                     Timestamp = DateTime.Now,
@@ -237,8 +237,6 @@ namespace derpirc.ViewModels
                 });
                 _messagesList.Add(new ChannelItem()
                 {
-                    Summary = model,
-                    SummaryId = model.Id,
                     Source = "derpirc",
                     Text = "sup?",
                     Timestamp = DateTime.Now,
@@ -246,8 +244,6 @@ namespace derpirc.ViewModels
                 });
                 _messagesList.Add(new ChannelItem()
                 {
-                    Summary = model,
-                    SummaryId = model.Id,
                     Source = "w0rd-driven",
                     Text = "nm",
                     Timestamp = DateTime.Now,
@@ -255,25 +251,22 @@ namespace derpirc.ViewModels
                 });
                 _messagesList.Add(new ChannelItem()
                 {
-                    Summary = model,
-                    SummaryId = model.Id,
                     Source = "derpirc",
                     Text = "lame",
                     Timestamp = DateTime.Now,
                     Type = MessageType.Mine,
                 });
-                Messages = new CollectionViewSource() { Source = _messagesList };
-                ChannelName = model.Name;
+
+                PageTitle = model.Name;
                 ChannelTopic = model.Topic;
                 if (model.Network != null)
-                    NetworkName = model.Network.Name;
-                SendWatermark = string.Format("chat on {0}", NetworkName);
+                    PageSubTitle = model.Network.Name;
+                SendWatermark = string.Format("chat on {0}", PageSubTitle);
             }
             else
             {
                 // Code runs "for real": Connect to service, etc...
-                _messagesList = new ObservableCollection<ChannelItem>();
-                Messages = new CollectionViewSource() { Source = _messagesList };
+
                 // This listens to both the sending of this VM and Receiving from the MainVM
                 this.MessengerInstance.Register<GenericMessage<ChannelItem>>(this, message =>
                 {
@@ -282,6 +275,8 @@ namespace derpirc.ViewModels
                         AddIncoming(message.Content);
                 });
             }
+
+            Messages = new CollectionViewSource() { Source = _messagesList };
         }
 
         private void CheckCanSend()
@@ -318,7 +313,7 @@ namespace derpirc.ViewModels
         public void Switch()
         {
             // TODO: Wire in UI to choose where to send messages
-            SendWatermark = string.Format("chat on {0}", NetworkName);
+            SendWatermark = string.Format("chat on {0}", PageSubTitle);
         }
 
         private void OnNavigatedTo(IDictionary<string, string> queryString)
@@ -335,11 +330,11 @@ namespace derpirc.ViewModels
 
         private void UpdateViewModel(Channel model)
         {
-            ChannelName = model.Name;
+            PageTitle = model.Name;
             ChannelTopic = model.Topic;
             if (model.Network != null)
-                NetworkName = model.Network.Name;
-            SendWatermark = string.Format("chat on {0}", NetworkName);
+                PageSubTitle = model.Network.Name;
+            SendWatermark = string.Format("chat on {0}", PageSubTitle);
             DispatcherHelper.CheckBeginInvokeOnUI(() =>
             {
                 _messagesList.Clear();

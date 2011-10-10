@@ -90,6 +90,34 @@ namespace derpirc.ViewModels
 
         #region Properties
 
+        private string _pageTitle;
+        public string PageTitle
+        {
+            get { return _pageTitle; }
+            set
+            {
+                if (_pageTitle == value)
+                    return;
+
+                _pageTitle = value;
+                RaisePropertyChanged(() => PageTitle);
+            }
+        }
+
+        private string _pageSubTitle;
+        public string PageSubTitle
+        {
+            get { return _pageSubTitle; }
+            set
+            {
+                if (_pageSubTitle == value)
+                    return;
+
+                _pageSubTitle = value;
+                RaisePropertyChanged(() => PageSubTitle);
+            }
+        }
+
         public FrameworkElement LayoutRoot { get; set; }
 
         private ObservableCollection<ClientInfo> _connectionsList;
@@ -147,6 +175,9 @@ namespace derpirc.ViewModels
         /// </summary>
         public ConnectionViewModel()
         {
+            // TODO: Localize
+            PageTitle = "connections";
+
             _connectionsList = new ObservableCollection<ClientInfo>();
 
             if (IsInDesignMode)
@@ -157,18 +188,21 @@ namespace derpirc.ViewModels
                     Id = 1,
                     NetworkName = "clefnet",
                     State = ClientState.Connected,
+                    Error = new Exception("This is a test."),
                 });
                 _connectionsList.Add(new ClientInfo()
                 {
                     Id = 2,
                     NetworkName = "peenode",
                     State = ClientState.Processed,
+                    Error = new Exception("This is only a test."),
                 });
                 _connectionsList.Add(new ClientInfo()
                 {
                     Id = 3,
                     NetworkName = "palnet",
                     State = ClientState.Disconnected,
+                    Error = new Exception("If this were an actual emergency, you'd be given a bunch of instructions herpderp."),
                 });
                 _connectionsList.Add(new ClientInfo()
                 {
