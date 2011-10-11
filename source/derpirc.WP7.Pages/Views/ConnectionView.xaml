@@ -33,7 +33,7 @@
 
         <StackPanel x:Name="TitlePanel" Margin="24,24,0,12">
             <TextBlock x:Name="PageTitle"
-                       Text="{Binding PageTitle}"
+                       Text="{Binding LocalizedResources.Connections, Source={StaticResource LocalizedStrings}}"
                        Margin="-2,-10,0,0"
                        Style="{StaticResource PhoneTextTitle1Style}" />
             <TextBlock x:Name="PageSubTitle"

@@ -27,7 +27,8 @@
         </blend:Interaction.Triggers>
 
         <controls:Pivot Style="{StaticResource SmallPivotStyle}" Margin="-2,0,2,0">
-            <controls:PivotItem Header="settings" Style="{StaticResource SmallPivotItemStyle}" DataContext="{Binding SettingsUserViewModel, Source={StaticResource Locator}}">
+            <controls:PivotItem Header="{Binding LocalizedResources.Settings, Source={StaticResource LocalizedStrings}}"
+                                Style="{StaticResource SmallPivotItemStyle}" DataContext="{Binding SettingsUserViewModel, Source={StaticResource Locator}}">
                 <ScrollViewer>
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -58,7 +59,8 @@
                 </ScrollViewer>
             </controls:PivotItem>
 
-            <controls:PivotItem Header="formatting" Style="{StaticResource SmallPivotItemStyle}" DataContext="{Binding SettingsFormatViewModel, Source={StaticResource Locator}}">
+            <controls:PivotItem Header="{Binding LocalizedResources.SettingsFormatting, Source={StaticResource LocalizedStrings}}"
+                                Style="{StaticResource SmallPivotItemStyle}" DataContext="{Binding SettingsFormatViewModel, Source={StaticResource Locator}}">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
@@ -85,7 +87,8 @@
                 </Grid>
             </controls:PivotItem>
 
-            <controls:PivotItem Header="networks" Style="{StaticResource SmallPivotItemStyle}" DataContext="{Binding SettingsNetworkViewModel, Source={StaticResource Locator}}">
+            <controls:PivotItem Header="{Binding LocalizedResources.SettingsNetworks, Source={StaticResource LocalizedStrings}}"
+                                Style="{StaticResource SmallPivotItemStyle}" DataContext="{Binding SettingsNetworkViewModel, Source={StaticResource Locator}}">
                 <ListBox x:Name="NetworksListBox" Margin="0,0,-12,0" ItemsSource="{Binding Networks.View}" 
                          SelectedItem="{Binding SelectedItem, Mode=TwoWay}" ItemContainerStyle="{StaticResource SmallPivotListBoxStyle}">
                     <blend:Interaction.Triggers>
@@ -100,8 +103,9 @@
                     </ListBox.ItemTemplate>
                 </ListBox>
             </controls:PivotItem>
-            
-            <controls:PivotItem Header="storage" Style="{StaticResource SmallPivotItemStyle}">
+
+            <controls:PivotItem Header="{Binding LocalizedResources.SettingsStorage, Source={StaticResource LocalizedStrings}}"
+                                Style="{StaticResource SmallPivotItemStyle}">
             </controls:PivotItem>
         </controls:Pivot>
     </Grid>

@@ -21,19 +21,24 @@
 
     <Grid x:Name="LayoutRoot" Background="Transparent">
         <controls:Pivot Style="{StaticResource SmallPivotStyle}" Margin="-2,0,2,0">
-            <controls:PivotItem Header="about" Style="{StaticResource SmallPivotItemStyle}" DataContext="{Binding SettingsUserViewModel, Source={StaticResource Locator}}">
+            <controls:PivotItem Header="{Binding LocalizedResources.About, Source={StaticResource LocalizedStrings}}"
+                                Style="{StaticResource SmallPivotItemStyle}" DataContext="{Binding SettingsUserViewModel, Source={StaticResource Locator}}">
                 <ScrollViewer>
                     <Grid>
                     </Grid>
                 </ScrollViewer>
             </controls:PivotItem>
 
-            <controls:PivotItem Header="history" Style="{StaticResource SmallPivotItemStyle}" DataContext="{Binding SettingsFormatViewModel, Source={StaticResource Locator}}">
+            <controls:PivotItem Header="{Binding LocalizedResources.AboutHistory, Source={StaticResource LocalizedStrings}}"
+                                Style="{StaticResource SmallPivotItemStyle}" DataContext="{Binding SettingsFormatViewModel, Source={StaticResource Locator}}">
                 <Grid>
                 </Grid>
             </controls:PivotItem>
 
-            <controls:PivotItem Header="legal" Style="{StaticResource SmallPivotItemStyle}" DataContext="{Binding SettingsNetworkViewModel, Source={StaticResource Locator}}">
+            <controls:PivotItem Header="{Binding LocalizedResources.AboutLegal, Source={StaticResource LocalizedStrings}}"
+                                Style="{StaticResource SmallPivotItemStyle}" DataContext="{Binding SettingsNetworkViewModel, Source={StaticResource Locator}}">
+                <Grid>
+                </Grid>
             </controls:PivotItem>
         </controls:Pivot>
     </Grid>

@@ -96,10 +96,11 @@
     <Compile Include="Helpers\LittleWatson.cs" />
     <Compile Include="Helpers\MessageTemplateSelector.cs" />
     <Compile Include="Localization\AppResources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
       <DependentUpon>AppResources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
     </Compile>
+    <Compile Include="Localization\LocalizedStrings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\ViewModelLocator.cs" />
     <BlendEmbeddedFont Include="Fonts\monof55.ttf">
@@ -198,7 +199,7 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Localization\AppResources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>AppResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>

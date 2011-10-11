@@ -121,6 +121,32 @@ namespace derpirc.ViewModels
             }
         }
 
+        private bool _canViewAbout;
+        public bool CanViewAbout
+        {
+            get { return _canViewConnections; }
+            set
+            {
+                if (_canViewAbout == value)
+                    return;
+
+                var oldValue = _canViewAbout;
+                _canViewAbout = value;
+                RaisePropertyChanged(() => CanViewAbout);
+                ViewAboutCommand.RaiseCanExecuteChanged();
+            }
+        }
+
+        RelayCommand _viewAboutCommand;
+        public RelayCommand ViewAboutCommand
+        {
+            get
+            {
+                return _viewAboutCommand ?? (_viewAboutCommand =
+                    new RelayCommand(() => this.ViewAbout()));
+            }
+        }
+
         #endregion
 
         #region Properties
@@ -255,8 +281,6 @@ namespace derpirc.ViewModels
             _channelsList = new ObservableCollection<ChannelViewModel>();
             _mentionsList = new ObservableCollection<MentionViewModel>();
             _messagesList = new ObservableCollection<MessageViewModel>();
-
-            CanViewSettings = true;
 
             if (IsInDesignMode)
             {
@@ -582,6 +606,13 @@ namespace derpirc.ViewModels
         private void ViewConnections()
         {
             var uriString = "/derpirc.Pages;component/Views/ConnectionView.xaml";
+            var uri = new Uri(uriString, UriKind.Relative);
+            NavigationService.Navigate(uri);
+        }
+
+        private void ViewAbout()
+        {
+            var uriString = "/derpirc.Pages;component/Views/AboutView.xaml";
             var uri = new Uri(uriString, UriKind.Relative);
             NavigationService.Navigate(uri);
         }

@@ -36,7 +36,8 @@
                     <command:EventToCommand Command="{Binding PivotItemLoadedCommand}" PassEventArgsToCommand="True"/>
                 </blend:EventTrigger>
             </blend:Interaction.Triggers>
-            <controls:PivotItem Header="channels" Style="{StaticResource SmallPivotItemStyle}">
+            <controls:PivotItem Header="{Binding LocalizedResources.MainChannels, Source={StaticResource LocalizedStrings}}"
+                                Style="{StaticResource SmallPivotItemStyle}">
                 <ListBox x:Name="ChannelListBox" Margin="0,0,-12,0" ItemsSource="{Binding Channels.View}" SelectedItem="{Binding SelectedChannel, Mode=TwoWay}" ItemContainerStyle="{StaticResource SmallPivotListBoxStyle}">
                     <blend:Interaction.Triggers>
                         <blend:EventTrigger EventName="DoubleTap">
@@ -91,8 +92,9 @@
                     </ListBox.ItemTemplate>
                 </ListBox>
             </controls:PivotItem>
- 
-            <controls:PivotItem Header="mentions" Style="{StaticResource SmallPivotItemStyle}">
+
+            <controls:PivotItem Header="{Binding LocalizedResources.MainMentions, Source={StaticResource LocalizedStrings}}"
+                                Style="{StaticResource SmallPivotItemStyle}">
                 <ListBox x:Name="MentionListBox" Margin="0,0,-12,0" ItemsSource="{Binding Mentions.View}" SelectedItem="{Binding SelectedMention, Mode=TwoWay}" ItemContainerStyle="{StaticResource SmallPivotListBoxStyle}">
                     <blend:Interaction.Triggers>
                         <blend:EventTrigger EventName="DoubleTap">
@@ -147,8 +149,9 @@
                     </ListBox.ItemTemplate>
                 </ListBox>
             </controls:PivotItem>
-            
-            <controls:PivotItem Header="messages" Style="{StaticResource SmallPivotItemStyle}">
+
+            <controls:PivotItem Header="{Binding LocalizedResources.MainMessages, Source={StaticResource LocalizedStrings}}"
+                                Style="{StaticResource SmallPivotItemStyle}">
                 <ListBox x:Name="MessageListBox" Margin="0,0,-12,0" ItemsSource="{Binding Messages.View}" SelectedItem="{Binding SelectedMessage, Mode=TwoWay}" ItemContainerStyle="{StaticResource SmallPivotListBoxStyle}">
                     <blend:Interaction.Triggers>
                         <blend:EventTrigger EventName="DoubleTap">
@@ -214,11 +217,13 @@
             <shell:ApplicationBar.MenuItems>
                 <shell:ApplicationBarMenuItem Text="connections" />
                 <shell:ApplicationBarMenuItem Text="settings" />
+                <shell:ApplicationBarMenuItem Text="about" />
             </shell:ApplicationBar.MenuItems>
         </shell:ApplicationBar>
     </phone:PhoneApplicationPage.ApplicationBar>
     <blend:Interaction.Behaviors>
         <appbarutils:AppBarItemCommand Type="MenuItem" Id="connections" Command="{Binding ViewConnectionsCommand}" />
         <appbarutils:AppBarItemCommand Type="MenuItem" Id="settings" Command="{Binding ViewSettingsCommand}" />
+        <appbarutils:AppBarItemCommand Type="MenuItem" Id="about" Command="{Binding ViewAboutCommand}" />
     </blend:Interaction.Behaviors>
 </phone:PhoneApplicationPage>

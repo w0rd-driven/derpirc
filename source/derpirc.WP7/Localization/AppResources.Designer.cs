@@ -22,7 +22,7 @@ namespace derpirc.Localization {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class AppResources {
+    public class AppResources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace derpirc.Localization {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("derpirc.Localization.AppResources", typeof(AppResources).Assembly);
@@ -51,7 +51,7 @@ namespace derpirc.Localization {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -61,83 +61,110 @@ namespace derpirc.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to about.
+        /// </summary>
+        public static string About {
+            get {
+                return ResourceManager.GetString("About", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to history.
         /// </summary>
-        internal static string AboutHistoryTitle {
+        public static string AboutHistory {
             get {
-                return ResourceManager.GetString("AboutHistoryTitle", resourceCulture);
+                return ResourceManager.GetString("AboutHistory", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to legal.
         /// </summary>
-        internal static string AboutLegalTitle {
+        public static string AboutLegal {
             get {
-                return ResourceManager.GetString("AboutLegalTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to about.
-        /// </summary>
-        internal static string AboutTitle {
-            get {
-                return ResourceManager.GetString("AboutTitle", resourceCulture);
+                return ResourceManager.GetString("AboutLegal", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to derpirc.
         /// </summary>
-        internal static string AppTitle {
+        public static string ApplicationName {
             get {
-                return ResourceManager.GetString("AppTitle", resourceCulture);
+                return ResourceManager.GetString("ApplicationName", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to connections.
         /// </summary>
-        internal static string ConnectionTitle {
+        public static string Connections {
             get {
-                return ResourceManager.GetString("ConnectionTitle", resourceCulture);
+                return ResourceManager.GetString("Connections", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to formatting.
+        ///   Looks up a localized string similar to channels.
         /// </summary>
-        internal static string SettingsFormattingTitle {
+        public static string MainChannels {
             get {
-                return ResourceManager.GetString("SettingsFormattingTitle", resourceCulture);
+                return ResourceManager.GetString("MainChannels", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to networks.
+        ///   Looks up a localized string similar to mentions.
         /// </summary>
-        internal static string SettingsNetworksTitle {
+        public static string MainMentions {
             get {
-                return ResourceManager.GetString("SettingsNetworksTitle", resourceCulture);
+                return ResourceManager.GetString("MainMentions", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to storage.
+        ///   Looks up a localized string similar to messages.
         /// </summary>
-        internal static string SettingsStorageTitle {
+        public static string MainMessages {
             get {
-                return ResourceManager.GetString("SettingsStorageTitle", resourceCulture);
+                return ResourceManager.GetString("MainMessages", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to settings.
         /// </summary>
-        internal static string SettingsTitle {
+        public static string Settings {
             get {
-                return ResourceManager.GetString("SettingsTitle", resourceCulture);
+                return ResourceManager.GetString("Settings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to formatting.
+        /// </summary>
+        public static string SettingsFormatting {
+            get {
+                return ResourceManager.GetString("SettingsFormatting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to networks.
+        /// </summary>
+        public static string SettingsNetworks {
+            get {
+                return ResourceManager.GetString("SettingsNetworks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to storage.
+        /// </summary>
+        public static string SettingsStorage {
+            get {
+                return ResourceManager.GetString("SettingsStorage", resourceCulture);
             }
         }
     }
