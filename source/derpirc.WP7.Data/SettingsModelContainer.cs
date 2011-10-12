@@ -109,6 +109,14 @@ namespace derpirc.Data
 
         #region Table Properties
 
+        public System.Data.Linq.Table<Favorite> Favorites
+        {
+            get
+            {
+                return this.GetTable<Favorite>();
+            }
+        }
+
         public System.Data.Linq.Table<Formatting> Formattings
         {
             get

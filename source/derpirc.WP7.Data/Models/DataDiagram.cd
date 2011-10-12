@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Class Name="derpirc.Data.Models.ChannelItem" Collapsed="true">
-    <Position X="3.5" Y="3.5" Width="1.5" />
+    <Position X="0.5" Y="5.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>ABCiGIABCgQQgABA0AECEAApjGCAAAAAAQABCAAUBAA=</HashCode>
       <FileName>Models\ChannelItem.cs</FileName>
@@ -12,7 +12,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="derpirc.Data.Models.Mention" Collapsed="true">
-    <Position X="7.25" Y="3.5" Width="1.5" />
+    <Position X="8.75" Y="3.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AQAiABABAQWAAQAAQMkIIAQBjrAARAIAABKCBQQUKAE=</HashCode>
       <FileName>Models\Mention.cs</FileName>
@@ -23,7 +23,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="derpirc.Data.Models.MentionItem" Collapsed="true">
-    <Position X="16" Y="3" Width="1.5" />
+    <Position X="11.75" Y="5.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>ABCiGIABCgQQgABA0AECEAApjGCAAAAAAQABCAAUBAA=</HashCode>
       <FileName>Models\MentionItem.cs</FileName>
@@ -34,7 +34,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="derpirc.Data.Models.Message" Collapsed="true">
-    <Position X="13.5" Y="3" Width="1.5" />
+    <Position X="5.5" Y="3.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AQAiIBABAAGAAQAAQIkIIAQBjLAARAIAIAKCBQQUKAE=</HashCode>
       <FileName>Models\Message.cs</FileName>
@@ -45,7 +45,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="derpirc.Data.Models.MessageItem" Collapsed="true">
-    <Position X="4.25" Y="6" Width="1.5" />
+    <Position X="4" Y="6" Width="1.5" />
     <TypeIdentifier>
       <HashCode>ABCiGIABCgQQgABA0AECEAApjGCAAAAAAQABCAAUBAA=</HashCode>
       <FileName>Models\MessageItem.cs</FileName>
@@ -56,7 +56,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="derpirc.Data.Models.Channel" Collapsed="true">
-    <Position X="7.25" Y="6" Width="1.5" />
+    <Position X="2.5" Y="3.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AQAiEhABAAGAAQAAQIkIIEQBjLAGRAIAAAKCBSQUKAE=</HashCode>
       <FileName>Models\Channel.cs</FileName>
@@ -67,9 +67,9 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="derpirc.Data.Models.Network" Collapsed="true">
-    <Position X="10.5" Y="3.5" Width="1.5" />
+    <Position X="7" Y="2.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>QAAiAAABBIAkCQIAcUEEIAwZjDCIVAQiAAAYBwAUEgI=</HashCode>
+      <HashCode>QAAiEAABBAAkCQAAYEkEIAwZjDAKUAQiAACYAwQWEAI=</HashCode>
       <FileName>Models\Network.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -78,7 +78,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="derpirc.Data.Models.Server" Collapsed="true">
-    <Position X="12" Y="5" Width="1.5" />
+    <Position X="10.25" Y="2.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>gAAiEQEBAECAAUAARAkEAAARjCBAAAJCABAARAQ0KAA=</HashCode>
       <FileName>Models\Server.cs</FileName>
@@ -89,29 +89,40 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="derpirc.Data.Models.Session" Collapsed="true">
-    <Position X="10.5" Y="2" Width="1.5" />
+    <Position X="7" Y="0.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAiAAABABAAAAAAQAEAIAQBjCAAQAIgAAAEAAAUAAA=</HashCode>
       <FileName>Models\Session.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
+  <Class Name="derpirc.Data.Models.Favorite" Collapsed="true">
+    <Position X="13.25" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAiAAABAACAAEAAwAkEIAQRjCAAQAICEAEABASUIAA=</HashCode>
+      <FileName>Models\Favorite.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Network" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
   <Interface Name="derpirc.Data.Models.IMessageItem" Collapsed="true">
-    <Position X="18" Y="2" Width="1.5" />
+    <Position X="0.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAgQAAAAAAAACEAAAAAAAAAAAAQAACAAAAAA=</HashCode>
       <FileName>Models\IMessageItem.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="derpirc.Data.Models.IMessage" Collapsed="true">
-    <Position X="19.75" Y="2" Width="1.5" />
+    <Position X="2.25" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAABAAAAEAAAAAAAAAAAQACAAAAAAAAAAAAAQAIAA=</HashCode>
       <FileName>Models\IMessage.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Enum Name="derpirc.Data.Models.MessageType" Collapsed="true">
-    <Position X="19.75" Y="2.75" Width="1.5" />
+    <Position X="1.5" Y="1.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAIAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAA=</HashCode>
       <FileName>Models\MessageTypeEnum.cs</FileName>

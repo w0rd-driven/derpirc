@@ -180,6 +180,14 @@ namespace derpirc.Data
             }
         }
 
+        public System.Data.Linq.Table<Favorite> Favorites
+        {
+            get
+            {
+                return this.GetTable<Favorite>();
+            }
+        }
+
         public System.Data.Linq.Table<Server> Servers
         {
             get

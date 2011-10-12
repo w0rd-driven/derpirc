@@ -43,34 +43,53 @@ namespace derpirc.Data.Models.Settings
         public static EntitySet<Network> CreateNetworks(Session session)
         {
             var result = new EntitySet<Network>();
+
+            // Favorites
+            var channel1 = new Favorite()
+            {
+                Name = "#wp7",
+                IsAutoConnect = true,
+            };
+            var channel2 = new Favorite()
+            {
+                Name = "#xna",
+                IsAutoConnect = true,
+            };
+            // Servers
             var server1 = new Server()
             {
                 DisplayName = "Random server",
                 HostName = "irc.efnet.org",
                 Ports = "6667",
             };
-            result.Add(new Network()
-            {
-                Session = session,
-                Server = server1,
-                Name = "EFNet",
-                IsJoinEnabled = true,
-                JoinChannels = "#wp7test",
-            });
             var server2 = new Server()
             {
                 DisplayName = "Random server",
                 HostName = "irc.node-3.net",
                 Ports = "6667",
             };
-            result.Add(new Network()
+
+            var item1 = new Network()
+            {
+                Session = session,
+                Server = server1,
+                DisplayName = "EFNet",
+                Name = "EFNet",
+            };
+            item1.Favorites.Add(channel1);
+            item1.Favorites.Add(channel2);
+            result.Add(item1);
+
+            var item2 = new Network()
             {
                 Session = session,
                 Server = server2,
+                DisplayName = "PowerPrecision",
                 Name = "PowerPrecision",
-                IsJoinEnabled = true,
-                JoinChannels = "#wp7, #xna",
-            });
+            };
+            item2.Favorites.Add(channel1);
+            item2.Favorites.Add(channel2);
+            result.Add(item2);
 
             return result;
         }

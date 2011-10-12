@@ -1,24 +1,27 @@
 -- User Table information:
--- Number of tables: 6
+-- Number of tables: 7
 -- Formatting: 0 row(s)
--- Server: 0 row(s)
--- Network: 0 row(s)
--- Session: 0 row(s)
 -- Storage: 0 row(s)
 -- User: 0 row(s)
+-- Session: 0 row(s)
+-- Network: 0 row(s)
+-- Server: 0 row(s)
+-- Favorite: 0 row(s)
 
 -- Drop existing tables
 DROP TABLE [Formatting];
+GO
+DROP TABLE [Storage];
+GO
+DROP TABLE [User];
+GO
+DROP TABLE [Favorite];
 GO
 DROP TABLE [Server];
 GO
 DROP TABLE [Network];
 GO
 DROP TABLE [Session];
-GO
-DROP TABLE [Storage];
-GO
-DROP TABLE [User];
 GO
 
 -- Create tables
@@ -30,32 +33,14 @@ CREATE TABLE [Formatting] (
 , [FontWeight] nvarchar(128) NULL
 );
 GO
-CREATE TABLE [Network] (
-  [Id] int NOT NULL  IDENTITY (1,1)
-, [SessionId] int NOT NULL
-, [ServerId] int NOT NULL
-, [Name] nvarchar(128) NOT NULL
-, [IsJoinEnabled] bit NULL
-, [JoinChannels] nvarchar(256) NULL
-);
-GO
-CREATE TABLE [Server] (
-  [Id] int NOT NULL  IDENTITY (1,1)
-, [NetworkId] int NOT NULL
-, [DisplayName] nvarchar(128) NULL
-, [HostName] nvarchar(128) NOT NULL
-, [Ports] nvarchar(256) NULL
-, [Password] nvarchar(128) NULL
-);
-GO
-CREATE TABLE [Session] (
-  [Id] int NOT NULL  IDENTITY (1,1)
-, [Name] nvarchar(128) NULL
-);
-GO
 CREATE TABLE [Storage] (
   [Id] int NOT NULL  IDENTITY (1,1)
 , [Name] nvarchar(128) NULL
+, [MaxNetworkRecords] int NOT NULL
+, [MaxNetworkChannels] int NOT NULL
+, [MaxRootRecords] int NOT NULL
+, [MaxMessageRecords] int NOT NULL
+, [AutoArchiveDays] int NOT NULL
 );
 GO
 CREATE TABLE [User] (
@@ -69,19 +54,51 @@ CREATE TABLE [User] (
 , [QuitMessage] nvarchar(256) NULL
 );
 GO
+CREATE TABLE [Session] (
+  [Id] int NOT NULL  IDENTITY (1,1)
+, [Name] nvarchar(128) NULL
+);
+GO
+CREATE TABLE [Network] (
+  [Id] int NOT NULL  IDENTITY (1,1)
+, [SessionId] int NOT NULL
+, [ServerId] int NOT NULL
+, [DisplayName] nvarchar(128) NULL
+, [Name] nvarchar(128) NOT NULL
+);
+GO
+CREATE TABLE [Server] (
+  [Id] int NOT NULL  IDENTITY (1,1)
+, [NetworkId] int NOT NULL
+, [DisplayName] nvarchar(128) NULL
+, [HostName] nvarchar(128) NOT NULL
+, [Ports] nvarchar(256) NULL
+, [Password] nvarchar(128) NULL
+);
+GO
+CREATE TABLE [Favorite] (
+  [Id] int NOT NULL  IDENTITY (1,1)
+, [NetworkId] int NOT NULL
+, [Name] nvarchar(128) NOT NULL
+, [IsAutoConnect] bit NULL
+, [Password] nvarchar(128) NULL
+);
+GO
 
 -- Primary keys
 ALTER TABLE [Formatting] ADD CONSTRAINT [PK_Formatting] PRIMARY KEY ([Id]);
 GO
-ALTER TABLE [Network] ADD CONSTRAINT [PK_Network] PRIMARY KEY ([Id]);
-GO
-ALTER TABLE [Session] ADD CONSTRAINT [PK_Session] PRIMARY KEY ([Id]);
-GO
-ALTER TABLE [Server] ADD CONSTRAINT [PK_Server] PRIMARY KEY ([Id]);
-GO
 ALTER TABLE [Storage] ADD CONSTRAINT [PK_Storage] PRIMARY KEY ([Id]);
 GO
 ALTER TABLE [User] ADD CONSTRAINT [PK_User] PRIMARY KEY ([Id]);
+GO
+ALTER TABLE [Session] ADD CONSTRAINT [PK_Session] PRIMARY KEY ([Id]);
+GO
+ALTER TABLE [Network] ADD CONSTRAINT [PK_Network] PRIMARY KEY ([Id]);
+GO
+ALTER TABLE [Server] ADD CONSTRAINT [PK_Server] PRIMARY KEY ([Id]);
+GO
+ALTER TABLE [Favorite] ADD CONSTRAINT [PK_Favorite] PRIMARY KEY ([Id]);
 GO
 
 -- Foreign keys
@@ -89,6 +106,9 @@ ALTER TABLE [Network] ADD CONSTRAINT [FK_Session_Network] FOREIGN KEY ([SessionI
 GO
 ALTER TABLE [Server] ADD CONSTRAINT [FK_Network_Server] FOREIGN KEY ([NetworkId]) REFERENCES [Network]([Id]) ON DELETE NO ACTION ON UPDATE NO ACTION;
 GO
+ALTER TABLE [Favorite] ADD CONSTRAINT [FK_Network_Channel] FOREIGN KEY ([NetworkId]) REFERENCES [Network]([Id]) ON DELETE NO ACTION ON UPDATE NO ACTION;
+GO
+
 
 
 

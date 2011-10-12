@@ -289,11 +289,11 @@ namespace derpirc.Core
 
         private void JoinSession(Network network, IrcClient client)
         {
-            if (network != null && network.IsJoinEnabled.HasValue && network.IsJoinEnabled.Value)
+            if (network != null)
             {
-                string[] separator = new string[] { ", " };
-                var channels = network.JoinChannels.Split(separator, StringSplitOptions.RemoveEmptyEntries);
-                client.Channels.Join(channels);
+                var channels = network.Favorites.Where(x => x.IsAutoConnect == true).Select(x => x.Name).AsEnumerable();
+                if (channels.Any())
+                    client.Channels.Join(channels);
             }
         }
 

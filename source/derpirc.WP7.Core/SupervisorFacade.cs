@@ -136,6 +136,8 @@ namespace derpirc.Core
                 });
             this._unitOfWork = new DataUnitOfWork();
             this._unitOfWorkSettings = new SettingsUnitOfWork();
+            //this._unitOfWorkSettings.WipeDatabase();
+            //this._unitOfWorkSettings.InitializeDatabase(false);
 
             this._sessionSupervisor = new SessionSupervisor(_unitOfWork, _unitOfWorkSettings);
         }

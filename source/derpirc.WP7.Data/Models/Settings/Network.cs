@@ -26,15 +26,15 @@ namespace derpirc.Data.Models.Settings
 
         private int _ServerId;
 
+        private string _DisplayName;
+
         private string _Name;
-
-        private System.Nullable<bool> _IsJoinEnabled;
-
-        private string _JoinChannels;
 
         private EntityRef<Server> _Server;
 
         private EntityRef<Session> _Session;
+
+        private EntitySet<Favorite> _Favorites;
 
         #region Extensibility Method Definitions
         partial void OnLoaded();
@@ -46,18 +46,17 @@ namespace derpirc.Data.Models.Settings
         partial void OnSessionIdChanged();
         partial void OnServerIdChanging(int value);
         partial void OnServerIdChanged();
+        partial void OnDisplayNameChanging(string value);
+        partial void OnDisplayNameChanged();
         partial void OnNameChanging(string value);
         partial void OnNameChanged();
-        partial void OnIsJoinEnabledChanging(System.Nullable<bool> value);
-        partial void OnIsJoinEnabledChanged();
-        partial void OnJoinChannelsChanging(string value);
-        partial void OnJoinChannelsChanged();
         #endregion
 
         public Network()
         {
             this._Server = default(EntityRef<Server>);
             this._Session = default(EntityRef<Session>);
+            this._Favorites = new EntitySet<Favorite>(new Action<Favorite>(this.attach_Favorites), new Action<Favorite>(this.detach_Favorites));
             OnCreated();
         }
 
@@ -125,6 +124,26 @@ namespace derpirc.Data.Models.Settings
             }
         }
 
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_DisplayName", DbType = "NVarChar(128)")]
+        public string DisplayName
+        {
+            get
+            {
+                return this._DisplayName;
+            }
+            set
+            {
+                if ((this._DisplayName != value.ToLower()))
+                {
+                    this.OnDisplayNameChanging(value.ToLower());
+                    this.SendPropertyChanging();
+                    this._DisplayName = value.ToLower();
+                    this.SendPropertyChanged("DisplayName");
+                    this.OnDisplayNameChanged();
+                }
+            }
+        }
+
         [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_Name", DbType = "NVarChar(128) NOT NULL", CanBeNull = false)]
         public string Name
         {
@@ -141,46 +160,6 @@ namespace derpirc.Data.Models.Settings
                     this._Name = value.ToLower();
                     this.SendPropertyChanged("Name");
                     this.OnNameChanged();
-                }
-            }
-        }
-
-        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_IsJoinEnabled", DbType = "Bit")]
-        public System.Nullable<bool> IsJoinEnabled
-        {
-            get
-            {
-                return this._IsJoinEnabled;
-            }
-            set
-            {
-                if ((this._IsJoinEnabled != value))
-                {
-                    this.OnIsJoinEnabledChanging(value);
-                    this.SendPropertyChanging();
-                    this._IsJoinEnabled = value;
-                    this.SendPropertyChanged("IsJoinEnabled");
-                    this.OnIsJoinEnabledChanged();
-                }
-            }
-        }
-
-        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_JoinChannels", DbType = "NVarChar(256)")]
-        public string JoinChannels
-        {
-            get
-            {
-                return this._JoinChannels;
-            }
-            set
-            {
-                if ((this._JoinChannels != value))
-                {
-                    this.OnJoinChannelsChanging(value);
-                    this.SendPropertyChanging();
-                    this._JoinChannels = value;
-                    this.SendPropertyChanged("JoinChannels");
-                    this.OnJoinChannelsChanged();
                 }
             }
         }
@@ -248,6 +227,19 @@ namespace derpirc.Data.Models.Settings
             }
         }
 
+        [global::System.Data.Linq.Mapping.AssociationAttribute(Name = "FK_Network_Favorite", Storage = "_Favorites", ThisKey = "Id", OtherKey = "NetworkId", DeleteRule = "NO ACTION")]
+        public EntitySet<Favorite> Favorites
+        {
+            get
+            {
+                return this._Favorites;
+            }
+            set
+            {
+                this._Favorites.Assign(value);
+            }
+        }
+
         public event PropertyChangingEventHandler PropertyChanging;
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -266,6 +258,18 @@ namespace derpirc.Data.Models.Settings
             {
                 this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
+        }
+
+        private void attach_Favorites(Favorite entity)
+        {
+            this.SendPropertyChanging();
+            entity.Network = this;
+        }
+
+        private void detach_Favorites(Favorite entity)
+        {
+            this.SendPropertyChanging();
+            entity.Network = null;
         }
     }
 }
