@@ -51,7 +51,7 @@
                         <TextBlock Name="FullNameLabel" Text="Full Name" VerticalAlignment="Center" FontSize="{StaticResource PhoneFontSizeMedium}" Grid.Row="2" />
                         <TextBox Name="FullNameTextBox" VerticalAlignment="Center" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding FullName, Mode=TwoWay}" />
                         <TextBlock Name="UserNameLabel" Text="Username" VerticalAlignment="Center" FontSize="{StaticResource PhoneFontSizeMedium}" Grid.Row="3" />
-                        <TextBox Name="UserNameTextBox" VerticalAlignment="Center" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding UserName, Mode=TwoWay}" />
+                        <TextBox Name="UserNameTextBox" VerticalAlignment="Center" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Username, Mode=TwoWay}" />
                         <toolkit:ToggleSwitch Name="InvisibleToggleSwitch" Header="Invisible" Grid.Row="4" Grid.ColumnSpan="2" IsChecked="{Binding IsInvisible, Mode=TwoWay}" />
                         <TextBlock Name="QuitMessageLabel" Text="Quit Msg" VerticalAlignment="Center" FontSize="{StaticResource PhoneFontSizeMedium}" Grid.Row="5" />
                         <TextBox Name="QuitMessageTextBox" VerticalAlignment="Center" Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding QuitMessage, Mode=TwoWay}" />

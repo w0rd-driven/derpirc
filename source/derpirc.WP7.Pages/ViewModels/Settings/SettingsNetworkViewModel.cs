@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Data;
 using derpirc.Data;
@@ -153,22 +152,22 @@ namespace derpirc.ViewModels.Settings
             }
         }
 
-        void Add()
+        private void Add()
         {
 
         }
 
-        void Edit()
+        private void Edit()
         {
 
         }
 
-        void Delete()
+        private void Delete()
         {
 
         }
 
-        void SelectItem()
+        private void SelectItem()
         {
             if (SelectedItem != null)
             {

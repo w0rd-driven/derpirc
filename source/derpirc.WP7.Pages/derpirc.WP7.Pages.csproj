@@ -83,6 +83,7 @@
     <Compile Include="Helpers\WatermarkBehavior.cs" />
     <Compile Include="ViewModels\AboutViewModel.cs" />
     <Compile Include="ViewModels\ConnectionViewModel.cs" />
+    <Compile Include="ViewModels\Settings\SettingsNetworkDetailViewModel.cs" />
     <Compile Include="ViewModels\Settings\SettingsNetworkViewModel.cs" />
     <Compile Include="ViewModels\Settings\SettingsFormatViewModel.cs" />
     <Compile Include="ViewModels\Settings\SettingsViewModel.cs" />
@@ -103,6 +104,9 @@
       <DependentUpon>MessageDetailView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Views\SettingsNetworkView.xaml.cs">
+      <DependentUpon>SettingsNetworkView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\SettingsView.xaml.cs">
       <DependentUpon>SettingsView.xaml</DependentUpon>
     </Compile>
@@ -135,6 +139,10 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Views\SettingsNetworkView.xaml">
+      <SubType>Form</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\SettingsView.xaml">
       <SubType>Form</SubType>
       <Generator>MSBuild:Compile</Generator>
