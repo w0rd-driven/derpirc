@@ -15,9 +15,7 @@ using Microsoft.Phone.Controls;
 
 namespace derpirc.ViewModels
 {
-    public class MainViewModelFactory : ViewModelFactory<MainViewModel, MainViewModel>
-    {
-    }
+    public class MainViewModelFactory : ViewModelFactory<MainViewModel, MainViewModel> { }
 
     public class MainViewModel : ViewModelBase
     {
@@ -280,11 +278,7 @@ namespace derpirc.ViewModels
         private DateTime _lastRefreshMentions;
         private DateTime _lastRefreshMessages;
 
-        public MainViewModel()
-            : this(new ApplicationFrameNavigationService(((App)Application.Current).RootFrame))
-        {
-
-        }
+        public MainViewModel() : this(new ApplicationFrameNavigationService(((App)Application.Current).RootFrame)) { }
 
         public MainViewModel(INavigationService navigationService)
         {

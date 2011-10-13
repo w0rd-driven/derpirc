@@ -6,9 +6,7 @@ using GalaSoft.MvvmLight;
 
 namespace derpirc.ViewModels
 {
-    public class MessageViewModelFactory : ViewModelFactory<MessageViewModel, MessageViewModel>
-    {
-    }
+    public class MessageViewModelFactory : ViewModelFactory<MessageViewModel, MessageViewModel> { }
 
     public class MessageViewModel : ViewModelBase
     {

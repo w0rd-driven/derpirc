@@ -15,7 +15,7 @@
                             FontSize="{StaticResource PhoneFontSizeNormal}"
                             Foreground="{StaticResource PhoneForegroundBrush}"
                             SupportedOrientations="PortraitOrLandscape" Orientation="Portrait"
-                            mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="696"
+                            mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="768"
                             shell:SystemTray.IsVisible="True"
                             DataContext="{Binding SettingsNetworkDetailViewModel, Source={StaticResource Locator}}">
 
@@ -26,42 +26,61 @@
             </blend:EventTrigger>
         </blend:Interaction.Triggers>
 
-        <controls:Pivot Style="{StaticResource SmallPivotStyle}" Margin="-2,0,2,0">
-            <controls:PivotItem Header="{Binding LocalizedResources.SettingsNetworkDetail, Source={StaticResource LocalizedStrings}}"
-                                Style="{StaticResource SmallPivotItemStyle}">
-                <ScrollViewer>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition />
-                            <ColumnDefinition />
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
-                        <TextBlock Name="DisplayNameLabel" Text="Display Name" VerticalAlignment="Center" FontSize="{StaticResource PhoneFontSizeMedium}" />
-                        <TextBox Name="DisplayNameTextBox"  VerticalAlignment="Center" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding DisplayName, Mode=TwoWay}" />
-                        <TextBlock Name="NameLabel" Text="Name" VerticalAlignment="Center" FontSize="{StaticResource PhoneFontSizeMedium}" Grid.Row="1" />
-                        <TextBox Name="NameTextBox" VerticalAlignment="Center" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Name, Mode=TwoWay}" />
-                        <toolkit:ToggleSwitch Name="AutoConnectToggleSwitch" Header="Auto connect" Grid.Row="4" Grid.ColumnSpan="2" IsChecked="{Binding IsAutoConnect, Mode=TwoWay}" />
-                    </Grid>
-                </ScrollViewer>
-            </controls:PivotItem>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
 
-            <controls:PivotItem Header="{Binding LocalizedResources.MainChannels, Source={StaticResource LocalizedStrings}}"
-                                Style="{StaticResource SmallPivotItemStyle}">
-                <Grid>
-                    <ListBox Name="ChannelsList" 
-                             ItemsSource="{Binding Channels.View}" SelectedItem="{Binding SelectedChannel, Mode=TwoWay}"
-                             Margin="12,4,12,12" Grid.Column="1" Grid.ColumnSpan="3" />
-                </Grid>
-            </controls:PivotItem>
-        </controls:Pivot>
+        <StackPanel x:Name="TitlePanel" Margin="24,24,0,12">
+            <TextBlock x:Name="PageTitle"
+                       Text="{Binding LocalizedResources.SettingsNetworkDetail, Source={StaticResource LocalizedStrings}}"
+                       Margin="-2,-10,0,0"
+                       Style="{StaticResource PhoneTextTitle1Style}" />
+            <TextBlock x:Name="PageSubTitle"
+                       Text="{Binding PageSubTitle}"
+                       Margin="-2,-6,0,0"
+                       Style="{StaticResource TextBlockBase}" />
+        </StackPanel>
+
+        <Grid x:Name="ContentGrid" Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <TextBlock Name="DisplayNameLabel" Text="Display Name" FontSize="{StaticResource PhoneFontSizeMedium}"
+                       VerticalAlignment="Center" />
+            <TextBox Name="DisplayNameTextBox" Text="{Binding DisplayName, Mode=TwoWay}"
+                     VerticalAlignment="Center" Grid.Column="1" Grid.ColumnSpan="2" />
+            <TextBlock Name="NameLabel" Text="Name" FontSize="{StaticResource PhoneFontSizeMedium}"
+                       VerticalAlignment="Center" Grid.Row="1" />
+            <TextBox Name="NameTextBox" Text="{Binding Name, Mode=TwoWay}"
+                     VerticalAlignment="Center" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" />
+            <TextBlock Name="ChannelsLabel" Text="{Binding LocalizedResources.MainChannels, Source={StaticResource LocalizedStrings}}" FontSize="{StaticResource PhoneFontSizeMedium}"
+                       VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Row="2" Grid.ColumnSpan="3" />
+            <ListBox Name="ChannelsList" ItemsSource="{Binding Favorites.View}" SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
+                     ItemContainerStyle="{StaticResource ListBoxItemStyle}" Margin="12,4,12,12" Grid.Row="3" Grid.ColumnSpan="3">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <TextBox Text="{Binding Name}" />
+                            <toolkit:ToggleSwitch Header="Join" IsChecked="{Binding IsAutoConnect, Mode=TwoWay}"
+                                                  Grid.Row="1" />
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
     </Grid>
     
     <!-- Sample code showing usage of ApplicationBar
@@ -76,6 +95,5 @@
         </shell:ApplicationBar>
     </phone:PhoneApplicationPage.ApplicationBar>
     -->
-
 
 </phone:PhoneApplicationPage>

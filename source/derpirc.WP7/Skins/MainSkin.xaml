@@ -37,6 +37,10 @@
         <Setter Property="TextWrapping" Value="Wrap" />
         <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
+    <Style x:Key="ListBoxItemStyle" TargetType="ListBoxItem">
+        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+    </Style>
     <Style x:Key="GridDetailMyMessage" TargetType="Grid">
         <Setter Property="Margin" Value="120,14,20,0" />
     </Style>

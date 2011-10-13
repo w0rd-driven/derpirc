@@ -48,6 +48,7 @@
       <HintPath>..\..\library\MVVMLight\WP71\GalaSoft.MvvmLight.WP71.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Phone" />
+    <Reference Include="System.Data.Linq" />
     <Reference Include="System.Windows" />
     <Reference Include="system" />
     <Reference Include="System.Core" />
@@ -120,6 +121,16 @@
       <Numbers>True</Numbers>
       <Punctuation>True</Punctuation>
     </BlendEmbeddedFont>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\derpirc.WP7.Core\derpirc.WP7.Core.csproj">
+      <Project>{37B15A4B-9768-40AF-BA53-6CB6CD50A4C1}</Project>
+      <Name>derpirc.WP7.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\derpirc.WP7.Data\derpirc.WP7.Data.csproj">
+      <Project>{26539181-F41F-45BB-82BD-92274DDEC3F7}</Project>
+      <Name>derpirc.WP7.Data</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.$(TargetFrameworkProfile).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.CSharp.targets" />

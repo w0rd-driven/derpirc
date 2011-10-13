@@ -151,6 +151,15 @@ namespace derpirc.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to network.
+        /// </summary>
+        public static string SettingsNetworkDetail {
+            get {
+                return ResourceManager.GetString("SettingsNetworkDetail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to networks.
         /// </summary>
         public static string SettingsNetworks {

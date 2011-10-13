@@ -10,9 +10,7 @@ using GalaSoft.MvvmLight.Command;
 
 namespace derpirc.ViewModels
 {
-    public class SettingsNetworkViewModelFactory : ViewModelFactory<SettingsNetworkViewModel, SettingsNetworkViewModel>
-    {
-    }
+    public class SettingsNetworkViewModelFactory : ViewModelFactory<SettingsNetworkViewModel, SettingsNetworkViewModel> { }
 
     public class SettingsNetworkViewModel : ViewModelBase
     {
@@ -130,14 +128,8 @@ namespace derpirc.ViewModels
 
         #endregion
 
-        public SettingsNetworkViewModel() : this(null)
-        {
+        public SettingsNetworkViewModel() : this(null) { }
 
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the SettingsNetworkViewModel class.
-        /// </summary>
         public SettingsNetworkViewModel(INavigationService navigationService)
         {
             _networksList = new ObservableCollection<Network>();

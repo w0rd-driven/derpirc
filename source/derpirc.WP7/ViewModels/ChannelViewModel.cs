@@ -6,9 +6,7 @@ using GalaSoft.MvvmLight;
 
 namespace derpirc.ViewModels
 {
-    public class ChannelViewModelFactory : ViewModelFactory<ChannelViewModel, ChannelViewModel>
-    {
-    }
+    public class ChannelViewModelFactory : ViewModelFactory<ChannelViewModel, ChannelViewModel> { }
 
     public class ChannelViewModel : ViewModelBase
     {

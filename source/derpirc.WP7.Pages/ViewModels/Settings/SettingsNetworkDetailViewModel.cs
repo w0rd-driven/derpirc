@@ -7,12 +7,23 @@ using derpirc.Data;
 using derpirc.Data.Models.Settings;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Threading;
 
 namespace derpirc.ViewModels
 {
     public class SettingsNetworkDetailViewModel : ViewModelBase
     {
         #region Commands
+
+        RelayCommand<IDictionary<string, string>> _navigatedToCommand;
+        public RelayCommand<IDictionary<string, string>> NavigatedToCommand
+        {
+            get
+            {
+                return _navigatedToCommand ?? (_navigatedToCommand =
+                    new RelayCommand<IDictionary<string, string>>(item => this.OnNavigatedTo(item)));
+            }
+        }
 
         private bool _canAdd;
         public bool CanAdd
@@ -174,18 +185,9 @@ namespace derpirc.ViewModels
         #endregion
 
         /// <summary>
-        /// Initializes a new instance of the ChannelDetailViewModel class.
+        /// Initializes a new instance of the SettingsNetworkDetailViewModel class.
         /// </summary>
-        public SettingsNetworkDetailViewModel() : this(new Network()) { }
-
-        /// <summary>
-        /// Initializes a new instance of the ChannelDetailViewModel class.
-        /// </summary>
-
-        /// <summary>
-        /// Initializes a new instance of the SettingsNetworkViewModel class.
-        /// </summary>
-        public SettingsNetworkDetailViewModel(Network model)
+        public SettingsNetworkDetailViewModel()
         {
             _favoritesList = new ObservableCollection<Favorite>();
 
@@ -194,10 +196,13 @@ namespace derpirc.ViewModels
             if (IsInDesignMode)
             {
                 // Code runs in Blend --> create design time data.
-                model.DisplayName = "clefnet 1";
-                model.Name = "clefnet";
+                DisplayName = "clefnet 1";
+                Name = "clefnet";
 
-                Model = model;
+                //_favoritesList.Add(new Favorite()
+                //{
+                //    Name
+                //});
             }
             else
             {
@@ -224,11 +229,14 @@ namespace derpirc.ViewModels
             DisplayName = model.DisplayName;
             Name = model.Name;
 
-            _favoritesList.Clear();
-            foreach (var item in model.Favorites)
+            DispatcherHelper.CheckBeginInvokeOnUI(() =>
             {
-                _favoritesList.Add(item);
-            }
+                _favoritesList.Clear();
+                foreach (var item in model.Favorites)
+                {
+                    _favoritesList.Add(item);
+                }
+            });
         }
 
         private void Add()

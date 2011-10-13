@@ -157,6 +157,10 @@
     <value>formatting</value>
     <comment>SettingsView Formatting PivotTitle</comment>
   </data>
+  <data name="SettingsNetworkDetail" xml:space="preserve">
+    <value>network</value>
+    <comment>SettingsNetworkView Network PivotTitle</comment>
+  </data>
   <data name="SettingsNetworks" xml:space="preserve">
     <value>networks</value>
     <comment>SettingsView Networks PivotTitle</comment>
