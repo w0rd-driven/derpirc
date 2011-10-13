@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "derpirc.WP7.Core", "derpirc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "derpirc.WP7.Data", "derpirc.WP7.Data\derpirc.WP7.Data.csproj", "{26539181-F41F-45BB-82BD-92274DDEC3F7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "derpirc.WP7.Extras", "derpirc.WP7.Extras\derpirc.WP7.Extras.csproj", "{529AC7BD-2658-4BBB-9E70-A6C122D42ED8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "derpirc.WP7.UICore", "derpirc.WP7.UICore\derpirc.WP7.UICore.csproj", "{529AC7BD-2658-4BBB-9E70-A6C122D42ED8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "derpirc.WP7.Pages", "derpirc.WP7.Pages\derpirc.WP7.Pages.csproj", "{30127F2E-5D95-466E-B1F7-81798945C8C5}"
 EndProject

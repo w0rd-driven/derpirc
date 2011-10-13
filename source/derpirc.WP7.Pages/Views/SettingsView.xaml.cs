@@ -1,4 +1,4 @@
-﻿using derpirc.ViewModels.Settings;
+﻿using derpirc.ViewModels;
 using Microsoft.Phone.Controls;
 
 namespace derpirc.Views

@@ -1,13 +1,19 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Data;
 using derpirc.Data;
 using derpirc.Data.Models.Settings;
+using derpirc.Helpers;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 
-namespace derpirc.ViewModels.Settings
+namespace derpirc.ViewModels
 {
+    public class SettingsNetworkViewModelFactory : ViewModelFactory<SettingsNetworkViewModel, SettingsNetworkViewModel>
+    {
+    }
+
     public class SettingsNetworkViewModel : ViewModelBase
     {
         #region Commands
@@ -78,6 +84,15 @@ namespace derpirc.ViewModels.Settings
 
         #region Properties
 
+        private readonly INavigationService _navigationService;
+        public INavigationService NavigationService
+        {
+            get
+            {
+                return this._navigationService;
+            }
+        }
+
         private Session _model;
         public Session Model
         {
@@ -115,12 +130,16 @@ namespace derpirc.ViewModels.Settings
 
         #endregion
 
+        public SettingsNetworkViewModel() : this(null)
+        {
+
+        }
+
         /// <summary>
         /// Initializes a new instance of the SettingsNetworkViewModel class.
         /// </summary>
-        public SettingsNetworkViewModel()
+        public SettingsNetworkViewModel(INavigationService navigationService)
         {
-
             _networksList = new ObservableCollection<Network>();
 
             if (IsInDesignMode)
@@ -130,6 +149,8 @@ namespace derpirc.ViewModels.Settings
             else
             {
                 // Code runs "for real": Connect to service, etc...
+                _navigationService = navigationService;
+
                 Load();
             }
 
@@ -173,12 +194,30 @@ namespace derpirc.ViewModels.Settings
             {
                 CanEdit = true;
                 CanDelete = true;
+                ViewDetails();
             }
             else
             {
                 CanEdit = false;
                 CanDelete = false;
             }
+        }
+
+        private void ViewDetails()
+        {
+            var id = string.Empty;
+            var uriString = string.Empty;
+            if (SelectedItem != null)
+            {
+                id = SelectedItem.Id.ToString();
+            }
+            else
+            {
+                id = "1";
+            }
+            uriString = string.Format("/derpirc.Pages;component/Views/SettingsNetworkView.xaml?id={0}", Uri.EscapeUriString(id));
+            var uri = new Uri(uriString, UriKind.Relative);
+            NavigationService.Navigate(uri);
         }
 
         public override void Cleanup()

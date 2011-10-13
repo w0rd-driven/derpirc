@@ -5,7 +5,7 @@ using derpirc.Data;
 using derpirc.Data.Models.Settings;
 using GalaSoft.MvvmLight;
 
-namespace derpirc.ViewModels.Settings
+namespace derpirc.ViewModels
 {
     public class SettingsFormatViewModel : ViewModelBase
     {

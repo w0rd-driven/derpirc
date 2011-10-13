@@ -80,7 +80,6 @@
     <Compile Include="..\VersionAssemblyInfo.cs">
       <Link>Properties\VersionAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Helpers\WatermarkBehavior.cs" />
     <Compile Include="ViewModels\AboutViewModel.cs" />
     <Compile Include="ViewModels\ConnectionViewModel.cs" />
     <Compile Include="ViewModels\Settings\SettingsNetworkDetailViewModel.cs" />
@@ -157,6 +156,10 @@
     <ProjectReference Include="..\derpirc.WP7.Data\derpirc.WP7.Data.csproj">
       <Project>{26539181-F41F-45BB-82BD-92274DDEC3F7}</Project>
       <Name>derpirc.WP7.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\derpirc.WP7.UICore\derpirc.WP7.UICore.csproj">
+      <Project>{529AC7BD-2658-4BBB-9E70-A6C122D42ED8}</Project>
+      <Name>derpirc.WP7.UICore</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.$(TargetFrameworkProfile).Overrides.targets" />

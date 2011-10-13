@@ -14,7 +14,7 @@
     <!-- Converters -->
     <converters:ConversationDateTimeConverter x:Key="ConversationDateTimeConverter" />
     <!-- Fonts -->
-    <FontFamily x:Key="FontFamilyNormal">/derpirc;component/Fonts/Fonts.zip#monofur</FontFamily>
+    <FontFamily x:Key="FontFamilyNormal">/derpirc.UICore;component/Fonts/Fonts.zip#monofur</FontFamily>
     <!-- Styles -->
     <Style x:Key="TextBlockBase" TargetType="TextBlock">
         <Setter Property="FontFamily" Value="{StaticResource FontFamilyNormal}" />

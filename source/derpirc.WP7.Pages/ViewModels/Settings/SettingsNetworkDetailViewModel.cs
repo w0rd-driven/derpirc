@@ -7,9 +7,8 @@ using derpirc.Data;
 using derpirc.Data.Models.Settings;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using System;
 
-namespace derpirc.ViewModels.Settings
+namespace derpirc.ViewModels
 {
     public class SettingsNetworkDetailViewModel : ViewModelBase
     {

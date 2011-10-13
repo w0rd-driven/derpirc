@@ -2,7 +2,7 @@
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 
-namespace derpirc.ViewModels.Settings
+namespace derpirc.ViewModels
 {
     public class SettingsViewModel : ViewModelBase
     {

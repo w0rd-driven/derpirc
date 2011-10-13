@@ -6,9 +6,10 @@ using GalaSoft.MvvmLight;
 
 namespace derpirc.ViewModels
 {
-    /// <summary>
-    /// List-based ItemViewModel
-    /// </summary>
+    public class MessageViewModelFactory : ViewModelFactory<MessageViewModel, MessageViewModel>
+    {
+    }
+
     public class MessageViewModel : ViewModelBase
     {
         #region Commands

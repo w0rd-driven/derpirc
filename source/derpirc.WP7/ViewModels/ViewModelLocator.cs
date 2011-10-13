@@ -4,6 +4,8 @@ namespace derpirc.ViewModels
 {
     public class ViewModelLocator
     {
+        private readonly BootStrapper bootStrapper;
+
         #region MainViewModel
 
         private static MainViewModel _mainViewModel;
@@ -49,7 +51,7 @@ namespace derpirc.ViewModels
         public static void CreateMain()
         {
             if (_mainViewModel == null)
-                _mainViewModel = new MainViewModel();
+                _mainViewModel = new MainViewModelFactory().ViewModel;
         }
 
         #endregion
@@ -99,7 +101,7 @@ namespace derpirc.ViewModels
         public static void CreateChannel()
         {
             if (_channelsViewModel == null)
-                _channelsViewModel = new ChannelViewModel();
+                _channelsViewModel = new ChannelViewModelFactory().ViewModel;
         }
 
         #endregion
@@ -199,7 +201,7 @@ namespace derpirc.ViewModels
         public static void CreateMention()
         {
             if (_mentionsViewModel == null)
-                _mentionsViewModel = new MentionViewModel();
+                _mentionsViewModel = new MentionViewModelFactory().ViewModel;
         }
 
         #endregion
@@ -299,7 +301,7 @@ namespace derpirc.ViewModels
         public static void CreateMessage()
         {
             if (_messagesViewModel == null)
-                _messagesViewModel = new MessageViewModel();
+                _messagesViewModel = new MessageViewModelFactory().ViewModel;
         }
 
         #endregion
@@ -356,12 +358,12 @@ namespace derpirc.ViewModels
 
         #region SettingsViewModel
 
-        private static Settings.SettingsViewModel _settingsViewModel;
+        private static SettingsViewModel _settingsViewModel;
 
         /// <summary>
         /// Gets the SettingsViewModel property.
         /// </summary>
-        public static Settings.SettingsViewModel SettingsStatic
+        public static SettingsViewModel SettingsStatic
         {
             get
             {
@@ -378,7 +380,7 @@ namespace derpirc.ViewModels
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance",
             "CA1822:MarkMembersAsStatic",
             Justification = "This non-static member is needed for data binding purposes.")]
-        public Settings.SettingsViewModel SettingsViewModel
+        public SettingsViewModel SettingsViewModel
         {
             get { return SettingsStatic; }
         }
@@ -399,19 +401,19 @@ namespace derpirc.ViewModels
         public static void CreateSettings()
         {
             if (_settingsViewModel == null)
-                _settingsViewModel = new Settings.SettingsViewModel();
+                _settingsViewModel = new SettingsViewModel();
         }
 
         #endregion
 
         #region SettingsUserViewModel
 
-        private static Settings.SettingsUserViewModel _settingsUserViewModel;
+        private static SettingsUserViewModel _settingsUserViewModel;
 
         /// <summary>
         /// Gets the SettingsUserViewModel property.
         /// </summary>
-        public static Settings.SettingsUserViewModel SettingsUserStatic
+        public static SettingsUserViewModel SettingsUserStatic
         {
             get
             {
@@ -428,7 +430,7 @@ namespace derpirc.ViewModels
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance",
             "CA1822:MarkMembersAsStatic",
             Justification = "This non-static member is needed for data binding purposes.")]
-        public Settings.SettingsUserViewModel SettingsUserViewModel
+        public SettingsUserViewModel SettingsUserViewModel
         {
             get { return SettingsUserStatic; }
         }
@@ -449,19 +451,19 @@ namespace derpirc.ViewModels
         public static void CreateSettingsUser()
         {
             if (_settingsUserViewModel == null)
-                _settingsUserViewModel = new Settings.SettingsUserViewModel();
+                _settingsUserViewModel = new SettingsUserViewModel();
         }
 
         #endregion
 
         #region SettingsFormatViewModel
 
-        private static Settings.SettingsFormatViewModel _settingsFormatViewModel;
+        private static SettingsFormatViewModel _settingsFormatViewModel;
 
         /// <summary>
         /// Gets the SettingsFormatViewModel property.
         /// </summary>
-        public static Settings.SettingsFormatViewModel SettingsFormatStatic
+        public static SettingsFormatViewModel SettingsFormatStatic
         {
             get
             {
@@ -478,7 +480,7 @@ namespace derpirc.ViewModels
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance",
             "CA1822:MarkMembersAsStatic",
             Justification = "This non-static member is needed for data binding purposes.")]
-        public Settings.SettingsFormatViewModel SettingsFormatViewModel
+        public SettingsFormatViewModel SettingsFormatViewModel
         {
             get { return SettingsFormatStatic; }
         }
@@ -499,19 +501,19 @@ namespace derpirc.ViewModels
         public static void CreateSettingsFormat()
         {
             if (_settingsFormatViewModel == null)
-                _settingsFormatViewModel = new Settings.SettingsFormatViewModel();
+                _settingsFormatViewModel = new SettingsFormatViewModel();
         }
 
         #endregion
 
         #region SettingsNetworkViewModel
 
-        private static Settings.SettingsNetworkViewModel _settingsNetworkViewModel;
+        private static SettingsNetworkViewModel _settingsNetworkViewModel;
 
         /// <summary>
         /// Gets the SettingsNetworkViewModel property.
         /// </summary>
-        public static Settings.SettingsNetworkViewModel SettingsNetworkStatic
+        public static SettingsNetworkViewModel SettingsNetworkStatic
         {
             get
             {
@@ -528,7 +530,7 @@ namespace derpirc.ViewModels
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance",
             "CA1822:MarkMembersAsStatic",
             Justification = "This non-static member is needed for data binding purposes.")]
-        public Settings.SettingsNetworkViewModel SettingsNetworkViewModel
+        public SettingsNetworkViewModel SettingsNetworkViewModel
         {
             get { return SettingsNetworkStatic; }
         }
@@ -549,7 +551,57 @@ namespace derpirc.ViewModels
         public static void CreateSettingsNetwork()
         {
             if (_settingsNetworkViewModel == null)
-                _settingsNetworkViewModel = new Settings.SettingsNetworkViewModel();
+                _settingsNetworkViewModel = new SettingsNetworkViewModelFactory().ViewModel;
+        }
+
+        #endregion
+
+        #region SettingsNetworkDetailViewModel
+
+        private static SettingsNetworkDetailViewModel _settingsNetworkDetailViewModel;
+
+        /// <summary>
+        /// Gets the SettingsNetworkDetailViewModel property.
+        /// </summary>
+        public static SettingsNetworkDetailViewModel SettingsNetworkDetailStatic
+        {
+            get
+            {
+                if (_settingsNetworkDetailViewModel == null)
+                    CreateSettingsNetworkDetail();
+
+                return _settingsNetworkDetailViewModel;
+            }
+        }
+
+        /// <summary>
+        /// Gets the SettingsNetworkDetailViewModel property.
+        /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance",
+            "CA1822:MarkMembersAsStatic",
+            Justification = "This non-static member is needed for data binding purposes.")]
+        public SettingsNetworkDetailViewModel SettingsNetworkDetailViewModel
+        {
+            get { return SettingsNetworkDetailStatic; }
+        }
+
+        /// <summary>
+        /// Provides a deterministic way to delete the SettingsNetworkDetailViewModel property.
+        /// </summary>
+        public static void ClearSettingsNetworkDetail()
+        {
+            if (_settingsNetworkDetailViewModel != null)
+                _settingsNetworkDetailViewModel.Cleanup();
+            _settingsNetworkDetailViewModel = null;
+        }
+
+        /// <summary>
+        /// Provides a deterministic way to create the SettingsNetworkDetailViewModel property.
+        /// </summary>
+        public static void CreateSettingsNetworkDetail()
+        {
+            if (_settingsNetworkDetailViewModel == null)
+                _settingsNetworkDetailViewModel = new SettingsNetworkDetailViewModel();
         }
 
         #endregion
@@ -659,6 +711,11 @@ namespace derpirc.ViewModels
         /// </summary>
         public ViewModelLocator()
         {
+            if (this.bootStrapper == null)
+            {
+                this.bootStrapper = new BootStrapper();
+            }
+
             if (ViewModelBase.IsInDesignModeStatic)
             {
                 // Create design time view models
@@ -685,6 +742,7 @@ namespace derpirc.ViewModels
             ClearSettingsUser();
             ClearSettingsFormat();
             ClearSettingsNetwork();
+            ClearSettingsNetworkDetail();
             ClearConnection();
             ClearAbout();
         }

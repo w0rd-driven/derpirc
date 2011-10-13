@@ -15,6 +15,10 @@ using Microsoft.Phone.Controls;
 
 namespace derpirc.ViewModels
 {
+    public class MainViewModelFactory : ViewModelFactory<MainViewModel, MainViewModel>
+    {
+    }
+
     public class MainViewModel : ViewModelBase
     {
         #region Commands
@@ -151,12 +155,12 @@ namespace derpirc.ViewModels
 
         #region Properties
 
-        private readonly INavigationService navigationService;
+        private readonly INavigationService _navigationService;
         public INavigationService NavigationService
         {
             get
             {
-                return this.navigationService;
+                return this._navigationService;
             }
         }
 
@@ -277,6 +281,12 @@ namespace derpirc.ViewModels
         private DateTime _lastRefreshMessages;
 
         public MainViewModel()
+            : this(new ApplicationFrameNavigationService(((App)Application.Current).RootFrame))
+        {
+
+        }
+
+        public MainViewModel(INavigationService navigationService)
         {
             _channelsList = new ObservableCollection<ChannelViewModel>();
             _mentionsList = new ObservableCollection<MentionViewModel>();
@@ -292,7 +302,7 @@ namespace derpirc.ViewModels
 
                 // TODO: For demo purposes, place initialization of everything here and in design mode. Otherwise, use state to determine what to construct.
                 // HACK: Execution order: 1
-                navigationService = new ApplicationFrameNavigationService(((App)Application.Current).RootFrame);
+                _navigationService = navigationService;
 
                 _worker = new BackgroundWorker();
                 _worker.DoWork += new DoWorkEventHandler(DeferStartupWork);
