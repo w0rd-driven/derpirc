@@ -101,4 +101,8 @@
         <appbarutils:AppBarItemCommand Type="Button" Id="disconnect" Command="{Binding DisconnectCommand}" />
         <appbarutils:AppBarItemCommand Type="MenuItem" Id="connect" Command="{Binding ConnectCommand}" />
     </blend:Interaction.Behaviors>
+    <blend:Interaction.Triggers>
+        <appbarutils:AppBarItemTrigger Type="Button" Id="reconnect" Text="reconnect" IsEnabled="{Binding CanReconnect}" />
+        <appbarutils:AppBarItemTrigger Type="Button" Id="disconnect" Text="disconnect" IsEnabled="{Binding CanDisconnect}" />
+    </blend:Interaction.Triggers>
 </phone:PhoneApplicationPage>

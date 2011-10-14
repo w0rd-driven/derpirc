@@ -517,29 +517,24 @@ namespace derpirc.ViewModels
         {
             // HACK: Execution order: 3
             // You can use PivotItemLoaded or SelectedItem/Index binding. This gets called every time the PivotItem shows so you need to track an IsVMLoaded
-            if (eventArgs.Item.Header.ToString() == "Channels")
+            var pivotControl = eventArgs.Item.Parent as Pivot;
+            if (pivotControl != null)
             {
-                //var channel = new ChannelSummaryViewModel();
-                //_channelsList.Add(channel);
-                //Channels.View.Refresh();
-                _lastRefreshChannels = DateTime.Now;
-                return;
-            }
-            if (eventArgs.Item.Header.ToString() == "Mentions")
-            {
-                //var mention = new MentionSummaryViewModel();
-                //_mentionsList.Add(mention);
-                //Mentions.View.Refresh();
-                _lastRefreshMentions = DateTime.Now;
-                return;
-            }
-            if (eventArgs.Item.Header.ToString() == "Messages")
-            {
-                //var message = new MessageSummaryViewModel();
-                //_messagesList.Add(message);
-                //Messages.View.Refresh();
-                _lastRefreshMessages = DateTime.Now;
-                return;
+                switch (pivotControl.SelectedIndex)
+                {
+                    // channels
+                    case 0:
+                        _lastRefreshChannels = DateTime.Now;
+                        break;
+                    // mentions
+                    case 1:
+                        _lastRefreshMentions = DateTime.Now;
+                        break;
+                    // messages
+                    case 2:
+                        _lastRefreshMessages = DateTime.Now;
+                        break;
+                }
             }
          }
 

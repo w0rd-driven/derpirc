@@ -66,6 +66,21 @@ namespace derpirc.ViewModels
             }
         }
 
+        private bool _canDisconnect;
+        public bool CanDisconnect
+        {
+            get { return _canDisconnect; }
+            set
+            {
+                if (_canDisconnect == value)
+                    return;
+
+                _canDisconnect = value;
+                DisconnectCommand.RaiseCanExecuteChanged();
+                RaisePropertyChanged(() => CanDisconnect);
+            }
+        }
+
         RelayCommand _disconnectCommand;
         public RelayCommand DisconnectCommand
         {
@@ -73,6 +88,21 @@ namespace derpirc.ViewModels
             {
                 return _disconnectCommand ?? (_disconnectCommand =
                     new RelayCommand(() => this.Disconnect(SelectedItems)));
+            }
+        }
+
+        private bool _canReconnect;
+        public bool CanReconnect
+        {
+            get { return _canReconnect; }
+            set
+            {
+                if (_canReconnect == value)
+                    return;
+
+                _canReconnect = value;
+                ReconnectCommand.RaiseCanExecuteChanged();
+                RaisePropertyChanged(() => CanReconnect);
             }
         }
 
@@ -265,6 +295,13 @@ namespace derpirc.ViewModels
                 // Set SelectedItem
                 if (list[0] != null)
                     SelectedItem = list[0];
+                CanDisconnect = true;
+                CanReconnect = true;
+            }
+            else
+            {
+                CanDisconnect = false;
+                CanReconnect = false;
             }
         }
 
@@ -281,16 +318,17 @@ namespace derpirc.ViewModels
 
         private void Default_ClientStatusChanged(object sender, ClientStatusEventArgs e)
         {
-            var foundClient = _connectionsList.FirstOrDefault(x => x.Id == e.Info.Id);
-            if (foundClient == null)
-                _connectionsList.Add(e.Info);
-            else
-            {
-                foundClient = e.Info;
-            }
-
             DispatcherHelper.CheckBeginInvokeOnUI(() =>
             {
+                var foundClient = _connectionsList.FirstOrDefault(x => x.Id == e.Info.Id);
+                if (foundClient == null)
+                {
+                    // Wait for Collection/PropertyChanged event
+                    _connectionsList.Add(e.Info);
+                }
+                else
+                    foundClient = e.Info;
+
                 Connections.View.Refresh();
             });
         }

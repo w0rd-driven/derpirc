@@ -115,5 +115,6 @@
         <appbarutils:AppBarItemTrigger Type="Button" Id="add" Text="add" IsEnabled="{Binding CanAdd}" />
         <appbarutils:AppBarItemTrigger Type="Button" Id="delete" Text="delete" IsEnabled="{Binding CanDelete}" />
         <appbarutils:AppBarItemTrigger Type="Button" Id="clear" Text="clear" IsEnabled="{Binding CanClear}" />
+        <appbarutils:AppBarTrigger IsVisible="{Binding IsAppBarVisible}" />
     </blend:Interaction.Triggers>
 </phone:PhoneApplicationPage>
