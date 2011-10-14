@@ -87,15 +87,9 @@ namespace derpirc.Data
 
         #region Extensibility Method Definitions
         partial void OnCreated();
-        partial void InsertFormatting(Formatting instance);
-        partial void UpdateFormatting(Formatting instance);
-        partial void DeleteFormatting(Formatting instance);
         partial void InsertNetwork(Network instance);
         partial void UpdateNetwork(Network instance);
         partial void DeleteNetwork(Network instance);
-        partial void InsertServer(Server instance);
-        partial void UpdateServer(Server instance);
-        partial void DeleteServer(Server instance);
         partial void InsertSession(Session instance);
         partial void UpdateSession(Session instance);
         partial void DeleteSession(Session instance);
@@ -117,27 +111,11 @@ namespace derpirc.Data
             }
         }
 
-        public System.Data.Linq.Table<Formatting> Formattings
-        {
-            get
-            {
-                return this.GetTable<Formatting>();
-            }
-        }
-
         public System.Data.Linq.Table<Network> Networks
         {
             get
             {
                 return this.GetTable<Network>();
-            }
-        }
-
-        public System.Data.Linq.Table<Server> Servers
-        {
-            get
-            {
-                return this.GetTable<Server>();
             }
         }
 
@@ -239,10 +217,6 @@ namespace derpirc.Data
         {
             var user = Factory.CreateUser();
             this.Users.InsertOnSubmit(user);
-            this.SubmitChanges();
-
-            var formatting = Factory.CreateFormatting();
-            this.Formattings.InsertOnSubmit(formatting);
             this.SubmitChanges();
 
             var session = Factory.CreateSession();

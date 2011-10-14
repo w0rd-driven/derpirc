@@ -33,28 +33,14 @@ namespace derpirc.Data.Models
                 Name = "#xna",
                 IsAutoConnect = true,
             };
-            // Servers
-            var server1 = new Server()
-            {
-                DisplayName = "Random server",
-                HostName = "irc.efnet.org",
-                ConnectedHostName = "irc.efnet.org",
-                Ports = "6667",
-            };
-            var server2 = new Server()
-            {
-                DisplayName = "Random server",
-                HostName = "irc.node-3.net",
-                ConnectedHostName = "irc.node-3.net",
-                Ports = "6667",
-            };
-
             var item1 = new Network()
             {
                 Session = session,
-                Server = server1,
                 DisplayName = "EFNet",
                 Name = "EFNet",
+                HostName = "irc.efnet.org",
+                ConnectedHostName = "irc.efnet.org",
+                Ports = "6667",
             };
             item1.Favorites.Add(channel1);
             result.Add(item1);
@@ -62,9 +48,11 @@ namespace derpirc.Data.Models
             var item2 = new Network()
             {
                 Session = session,
-                Server = server2,
                 DisplayName = "PowerPrecision",
                 Name = "PowerPrecision",
+                HostName = "irc.node-3.net",
+                ConnectedHostName = "irc.node-3.net",
+                Ports = "6667",
             };
             item2.Favorites.Add(channel2);
             item2.Favorites.Add(channel3);

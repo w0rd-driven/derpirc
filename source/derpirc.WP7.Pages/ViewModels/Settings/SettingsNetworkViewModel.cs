@@ -177,12 +177,6 @@ namespace derpirc.ViewModels
         private void Add()
         {
             //var session = 
-            var server = new Server()
-            {
-                DisplayName = "Random server",
-                HostName = "irc.(network).com",
-                Ports = "6667",
-            };
             var item = new Network();
             _networksList.Add(item);
         }

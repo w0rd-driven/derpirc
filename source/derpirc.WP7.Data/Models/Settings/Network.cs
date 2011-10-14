@@ -24,13 +24,15 @@ namespace derpirc.Data.Models.Settings
 
         private int _SessionId;
 
-        private int _ServerId;
-
         private string _DisplayName;
 
         private string _Name;
 
-        private EntityRef<Server> _Server;
+        private string _HostName;
+
+        private string _Ports;
+
+        private string _Password;
 
         private EntityRef<Session> _Session;
 
@@ -50,11 +52,16 @@ namespace derpirc.Data.Models.Settings
         partial void OnDisplayNameChanged();
         partial void OnNameChanging(string value);
         partial void OnNameChanged();
+        partial void OnHostNameChanging(string value);
+        partial void OnHostNameChanged();
+        partial void OnPortsChanging(string value);
+        partial void OnPortsChanged();
+        partial void OnPasswordChanging(string value);
+        partial void OnPasswordChanged();
         #endregion
 
         public Network()
         {
-            this._Server = default(EntityRef<Server>);
             this._Session = default(EntityRef<Session>);
             this._Favorites = new EntitySet<Favorite>(new Action<Favorite>(this.attach_Favorites), new Action<Favorite>(this.detach_Favorites));
             OnCreated();
@@ -104,26 +111,6 @@ namespace derpirc.Data.Models.Settings
             }
         }
 
-        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_ServerId", DbType = "Int NOT NULL")]
-        public int ServerId
-        {
-            get
-            {
-                return this._ServerId;
-            }
-            set
-            {
-                if ((this._ServerId != value))
-                {
-                    this.OnServerIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._ServerId = value;
-                    this.SendPropertyChanged("ServerId");
-                    this.OnServerIdChanged();
-                }
-            }
-        }
-
         [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_DisplayName", DbType = "NVarChar(128)")]
         public string DisplayName
         {
@@ -164,31 +151,62 @@ namespace derpirc.Data.Models.Settings
             }
         }
 
-        [global::System.Data.Linq.Mapping.AssociationAttribute(Name = "FK_Network_Server", Storage = "_Server", ThisKey = "Id", OtherKey = "Id", IsUnique = true, IsForeignKey = false, DeleteRule = "NO ACTION")]
-        public Server Server
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_HostName", DbType = "NVarChar(128) NOT NULL", CanBeNull = false)]
+        public string HostName
         {
             get
             {
-                return this._Server.Entity;
+                return this._HostName;
             }
             set
             {
-                Server previousValue = this._Server.Entity;
-                if (((previousValue != value)
-                            || (this._Server.HasLoadedOrAssignedValue == false)))
+                if ((this._HostName != value.ToLower()))
                 {
+                    this.OnHostNameChanging(value.ToLower());
                     this.SendPropertyChanging();
-                    if ((previousValue != null))
-                    {
-                        this._Server.Entity = null;
-                        previousValue.Network = null;
-                    }
-                    this._Server.Entity = value;
-                    if ((value != null))
-                    {
-                        value.Network = this;
-                    }
-                    this.SendPropertyChanged("Server");
+                    this._HostName = value.ToLower();
+                    this.SendPropertyChanged("HostName");
+                    this.OnHostNameChanged();
+                }
+            }
+        }
+
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_Ports", DbType = "NVarChar(256)")]
+        public string Ports
+        {
+            get
+            {
+                return this._Ports;
+            }
+            set
+            {
+                if ((this._Ports != value))
+                {
+                    this.OnPortsChanging(value);
+                    this.SendPropertyChanging();
+                    this._Ports = value;
+                    this.SendPropertyChanged("Ports");
+                    this.OnPortsChanged();
+                }
+            }
+        }
+
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_Password", DbType = "NVarChar(128)")]
+        public string Password
+        {
+            get
+            {
+                return this._Password;
+            }
+            set
+            {
+                if ((this._Password != value))
+                {
+                    this.OnPasswordChanging(value);
+                    this.SendPropertyChanging();
+                    this._Password = value;
+                    this.SendPropertyChanged("Password");
+                    this.OnPasswordChanged();
                 }
             }
         }

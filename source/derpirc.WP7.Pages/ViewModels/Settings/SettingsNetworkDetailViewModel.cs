@@ -328,7 +328,7 @@ namespace derpirc.ViewModels
 
         private void OnNavigatedFrom()
         {
-
+            this.IsAppBarVisible = false;
         }
 
         private void PivotItemLoaded(PivotItemEventArgs eventArgs)
@@ -352,12 +352,9 @@ namespace derpirc.ViewModels
         {
             DisplayName = model.DisplayName;
             Name = model.Name;
-            if (model.Server != null)
-            {
-                HostName = model.Server.HostName;
-                Ports = model.Server.Ports;
-                Password = model.Server.Password;
-            }
+            HostName = model.HostName;
+            Ports = model.Ports;
+            Password = model.Password;
 
             DispatcherHelper.CheckBeginInvokeOnUI(() =>
             {

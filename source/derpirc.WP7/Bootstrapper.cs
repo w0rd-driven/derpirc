@@ -102,7 +102,6 @@ namespace derpirc
 
             Container.Register<SettingsViewModel>(c => new SettingsViewModel());
             Container.Register<SettingsUserViewModel>(c => new SettingsUserViewModel());
-            Container.Register<SettingsFormatViewModel>(c => new SettingsFormatViewModel());
             Container.Register<SettingsNetworkViewModel>(c => new SettingsNetworkViewModel(c.Resolve<INavigationService>()));
             Container.Register<SettingsNetworkDetailViewModel>(c => new SettingsNetworkDetailViewModel());
 

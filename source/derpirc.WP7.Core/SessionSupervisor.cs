@@ -124,10 +124,10 @@ namespace derpirc.Core
                 this._registrationData = this.GetRegistrationInfo();
             if (this._registrationData != null)
             {
-                var server = this.GetServer(client);
-                var serverPort = this.GetServerPort(server);
+                var network = this.GetNetworkByClient(client);
+                var serverPort = this.GetServerPort(network);
                 if (client != null)
-                    client.Connect(server.HostName, serverPort, false, this._registrationData);
+                    client.Connect(network.HostName, serverPort, false, this._registrationData);
             }
         }
 
@@ -305,36 +305,11 @@ namespace derpirc.Core
             return result;
         }
 
-        public Server GetServer(IrcClient client)
-        {
-            Server result;
-            if (this._session != null && this._session.Networks != null)
-            {
-                var foundClient = SupervisorFacade.Default.GetClientByIrcClient(client);
-                var network = this._session.Networks.FirstOrDefault(x => x.Id == foundClient.Info.Id);
-                result = network.Server;
-            }
-            else
-                result = null;
-            return result;
-        }
-
-        public Server GetServer(IrcClient client, string serverName)
-        {
-            var result = this.GetServer(client);
-            if (result != null && result.HostName != serverName.ToLower())
-            {
-                result.HostName = serverName.ToLower();
-                this._unitOfWork.Commit();
-            }
-            return result;
-        }
-
-        public int GetServerPort(Server server)
+        public int GetServerPort(Network network)
         {
             int result = -1;
-            if (server != null)
-                int.TryParse(server.Ports, out result);
+            if (network != null)
+                int.TryParse(network.Ports, out result);
             return result;
         }
 

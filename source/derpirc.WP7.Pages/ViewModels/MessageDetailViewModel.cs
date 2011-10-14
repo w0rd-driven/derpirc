@@ -204,11 +204,7 @@ namespace derpirc.ViewModels
                 var network = new Network()
                 {
                     Name = "efnet",
-                };
-                var server = new Server()
-                {
                     HostName = "irc.efnet.org",
-                    Network = network,
                 };
                 model.Network = network;
                 model.UnreadCount = 4;

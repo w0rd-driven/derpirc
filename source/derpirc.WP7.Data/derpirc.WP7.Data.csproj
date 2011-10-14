@@ -59,7 +59,6 @@
     <Compile Include="ConnectionString.cs" />
     <Compile Include="Models\Favorite.cs" />
     <Compile Include="Models\Settings\Favorite.cs" />
-    <Compile Include="Models\Settings\Formatting.cs" />
     <Compile Include="Models\Channel.cs" />
     <Compile Include="Models\ChannelItem.cs" />
     <Compile Include="DataModelContainer.cs" />
@@ -68,10 +67,8 @@
     <Compile Include="Models\Message.cs" />
     <Compile Include="Models\MessageItem.cs" />
     <Compile Include="Models\Network.cs" />
-    <Compile Include="Models\Server.cs" />
     <Compile Include="Models\Session.cs" />
     <Compile Include="Models\Settings\Network.cs" />
-    <Compile Include="Models\Settings\Server.cs" />
     <Compile Include="Models\Settings\Session.cs" />
     <Compile Include="SettingsUnitOfWork.cs" />
     <Compile Include="Models\Factory.cs" />

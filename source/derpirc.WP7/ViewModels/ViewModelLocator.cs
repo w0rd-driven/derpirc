@@ -456,56 +456,6 @@ namespace derpirc.ViewModels
 
         #endregion
 
-        #region SettingsFormatViewModel
-
-        private static SettingsFormatViewModel _settingsFormatViewModel;
-
-        /// <summary>
-        /// Gets the SettingsFormatViewModel property.
-        /// </summary>
-        public static SettingsFormatViewModel SettingsFormatStatic
-        {
-            get
-            {
-                if (_settingsFormatViewModel == null)
-                    CreateSettingsFormat();
-
-                return _settingsFormatViewModel;
-            }
-        }
-
-        /// <summary>
-        /// Gets the SettingsFormatViewModel property.
-        /// </summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance",
-            "CA1822:MarkMembersAsStatic",
-            Justification = "This non-static member is needed for data binding purposes.")]
-        public SettingsFormatViewModel SettingsFormatViewModel
-        {
-            get { return SettingsFormatStatic; }
-        }
-
-        /// <summary>
-        /// Provides a deterministic way to delete the SettingsFormatViewModel property.
-        /// </summary>
-        public static void ClearSettingsFormat()
-        {
-            if (_settingsFormatViewModel != null)
-                _settingsFormatViewModel.Cleanup();
-            _settingsFormatViewModel = null;
-        }
-
-        /// <summary>
-        /// Provides a deterministic way to create the SettingsFormatViewModel property.
-        /// </summary>
-        public static void CreateSettingsFormat()
-        {
-            if (_settingsFormatViewModel == null)
-                _settingsFormatViewModel = new SettingsFormatViewModel();
-        }
-
-        #endregion
-
         #region SettingsNetworkViewModel
 
         private static SettingsNetworkViewModel _settingsNetworkViewModel;
@@ -740,7 +690,6 @@ namespace derpirc.ViewModels
             ClearMessageDetail();
             ClearSettings();
             ClearSettingsUser();
-            ClearSettingsFormat();
             ClearSettingsNetwork();
             ClearSettingsNetworkDetail();
             ClearConnection();

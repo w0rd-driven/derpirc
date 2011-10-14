@@ -57,12 +57,6 @@ namespace derpirc.Data
         }
         private SqlRepository<Network> _networks = null;
 
-        public IRepository<Server> Servers
-        {
-            get { return _servers ?? (_servers = new SqlRepository<Server>(_context)); }
-        }
-        private SqlRepository<Server> _servers = null;
-
         #endregion
 
         public bool DatabaseExists { get; set; }

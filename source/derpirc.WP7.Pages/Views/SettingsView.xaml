@@ -59,34 +59,6 @@
                 </ScrollViewer>
             </controls:PivotItem>
 
-            <controls:PivotItem Header="{Binding LocalizedResources.SettingsFormatting, Source={StaticResource LocalizedStrings}}"
-                                Style="{StaticResource SmallPivotItemStyle}" DataContext="{Binding SettingsFormatViewModel, Source={StaticResource Locator}}">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition />
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-                    <TextBlock Name="FontFamilyLabel" Text="Font" VerticalAlignment="Center" FontSize="{StaticResource PhoneFontSizeMedium}" Margin="0,0,18,0" />
-                    <toolkit:ListPicker Name="FontFamilyListPicker" 
-                                        ItemsSource="{Binding FontFamilies.View}" SelectedItem="{Binding FontFamily, Mode=TwoWay}" ExpansionMode="FullScreenOnly" 
-                                        VerticalAlignment="Center" Margin="12,4,12,12" Grid.Column="1" Grid.ColumnSpan="3" />
-                    <TextBlock Name="FontSizeLabel" Text="Size" VerticalAlignment="Center" FontSize="{StaticResource PhoneFontSizeMedium}" Margin="0,0,18,0" Grid.Row="1" />
-                    <toolkit:ListPicker Name="FontSizeListPicker" 
-                                        ItemsSource="{Binding FontSizes.View}" SelectedItem="{Binding FontSize, Mode=TwoWay}" ExpansionMode="FullScreenOnly" 
-                                        VerticalAlignment="Center" Margin="12,4,12,12" Grid.Row="1" Grid.Column="1" />
-                    <TextBlock Name="FontWeightLabel" Text="Weight" VerticalAlignment="Center" FontSize="{StaticResource PhoneFontSizeMedium}" Margin="0,0,18,0" Grid.Row="1" Grid.Column="2" />
-                    <toolkit:ListPicker Name="FontWeightListPicker" 
-                                        ItemsSource="{Binding FontWeights.View}" SelectedItem="{Binding FontWeight, Mode=TwoWay}" ExpansionMode="FullScreenOnly"
-                                        VerticalAlignment="Center" Margin="12,4,12,12" Grid.Row="1" Grid.Column="3" />
-                </Grid>
-            </controls:PivotItem>
-
             <controls:PivotItem Header="{Binding LocalizedResources.SettingsNetworks, Source={StaticResource LocalizedStrings}}"
                                 Style="{StaticResource SmallPivotItemStyle}" DataContext="{Binding SettingsNetworkViewModel, Source={StaticResource Locator}}">
                 <ListBox x:Name="NetworksList" 

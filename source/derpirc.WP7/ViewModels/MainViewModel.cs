@@ -369,9 +369,10 @@ namespace derpirc.ViewModels
             {
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
-                    var channelSummary = new ChannelViewModel();
-                    channelSummary.LoadById(e.SummaryId);
-                    _channelsList.Add(channelSummary);
+                    var summary = new ChannelViewModel();
+                    summary.LoadById(e.SummaryId);
+                    if (summary.Model != null)
+                        _channelsList.Add(summary);
                 });
             }
             else
@@ -394,9 +395,10 @@ namespace derpirc.ViewModels
             {
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
-                    var channelSummary = new ChannelViewModel();
-                    channelSummary.LoadById(e.SummaryId);
-                    _channelsList.Add(channelSummary);
+                    var summary = new ChannelViewModel();
+                    summary.LoadById(e.SummaryId);
+                    if (summary.Model != null)
+                        _channelsList.Add(summary);
                 });
             }
             else
@@ -418,9 +420,10 @@ namespace derpirc.ViewModels
             {
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
-                    var mentionSummary = new MentionViewModel();
-                    mentionSummary.LoadById(e.SummaryId);
-                    _mentionsList.Add(mentionSummary);
+                    var summary = new MentionViewModel();
+                    summary.LoadById(e.SummaryId);
+                    if (summary.Model != null)
+                        _mentionsList.Add(summary);
                 });
             }
             else
@@ -442,9 +445,10 @@ namespace derpirc.ViewModels
             {
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
-                    var messageSummary = new MessageViewModel();
-                    messageSummary.LoadById(e.SummaryId);
-                    _messagesList.Add(messageSummary);
+                    var summary = new MessageViewModel();
+                    summary.LoadById(e.SummaryId);
+                    if (summary.Model != null)
+                        _messagesList.Add(summary);
                 });
             }
             else

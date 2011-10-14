@@ -114,9 +114,6 @@ namespace derpirc.Data
         partial void InsertNetwork(Network instance);
         partial void UpdateNetwork(Network instance);
         partial void DeleteNetwork(Network instance);
-        partial void InsertServer(Server instance);
-        partial void UpdateServer(Server instance);
-        partial void DeleteServer(Server instance);
         partial void InsertSession(Session instance);
         partial void UpdateSession(Session instance);
         partial void DeleteSession(Session instance);
@@ -185,14 +182,6 @@ namespace derpirc.Data
             get
             {
                 return this.GetTable<Favorite>();
-            }
-        }
-
-        public System.Data.Linq.Table<Server> Servers
-        {
-            get
-            {
-                return this.GetTable<Server>();
             }
         }
 

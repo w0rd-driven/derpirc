@@ -19,18 +19,6 @@ namespace derpirc.Data.Models.Settings
             return result;
         }
 
-        public static Formatting CreateFormatting()
-        {
-            var result = new Formatting()
-            {
-                Name = "default",
-                FontFamily = "Monofur",
-                FontSize = "Small",
-                FontWeight = "Normal",
-            };
-            return result;
-        }
-
         public static Session CreateSession()
         {
             var result = new Session();
@@ -55,26 +43,13 @@ namespace derpirc.Data.Models.Settings
                 Name = "#xna",
                 IsAutoConnect = true,
             };
-            // Servers
-            var server1 = new Server()
-            {
-                DisplayName = "Random server",
-                HostName = "irc.efnet.org",
-                Ports = "6667",
-            };
-            var server2 = new Server()
-            {
-                DisplayName = "Random server",
-                HostName = "irc.node-3.net",
-                Ports = "6667",
-            };
-
             var item1 = new Network()
             {
                 Session = session,
-                Server = server1,
                 DisplayName = "EFNet",
                 Name = "EFNet",
+                HostName = "irc.efnet.org",
+                Ports = "6667",
             };
             item1.Favorites.Add(channel1);
             item1.Favorites.Add(channel2);
@@ -83,9 +58,10 @@ namespace derpirc.Data.Models.Settings
             var item2 = new Network()
             {
                 Session = session,
-                Server = server2,
                 DisplayName = "PowerPrecision",
                 Name = "PowerPrecision",
+                HostName = "irc.node-3.net",
+                Ports = "6667",
             };
             item2.Favorites.Add(channel1);
             item2.Favorites.Add(channel2);

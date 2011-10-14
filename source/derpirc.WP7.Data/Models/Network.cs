@@ -24,19 +24,23 @@ namespace derpirc.Data.Models
 
         private int _SessionId;
 
-        private int _ServerId;
-
         private string _DisplayName;
 
         private string _Name;
+
+        private string _HostName;
+
+        private string _ConnectedHostName;
+
+        private string _Ports;
+
+        private string _Password;
 
         private EntitySet<Channel> _Channels;
 
         private EntitySet<Mention> _Mentions;
 
         private EntitySet<Message> _Messages;
-
-        private EntityRef<Server> _Server;
 
         private EntityRef<Session> _Session;
 
@@ -56,6 +60,14 @@ namespace derpirc.Data.Models
         partial void OnDisplayNameChanged();
         partial void OnNameChanging(string value);
         partial void OnNameChanged();
+        partial void OnHostNameChanging(string value);
+        partial void OnHostNameChanged();
+        partial void OnConnectedHostNameChanging(string value);
+        partial void OnConnectedHostNameChanged();
+        partial void OnPortsChanging(string value);
+        partial void OnPortsChanged();
+        partial void OnPasswordChanging(string value);
+        partial void OnPasswordChanged();
         #endregion
 
         public Network()
@@ -63,7 +75,6 @@ namespace derpirc.Data.Models
             this._Channels = new EntitySet<Channel>(new Action<Channel>(this.attach_Channels), new Action<Channel>(this.detach_Channels));
             this._Mentions = new EntitySet<Mention>(new Action<Mention>(this.attach_Mentions), new Action<Mention>(this.detach_Mentions));
             this._Messages = new EntitySet<Message>(new Action<Message>(this.attach_Messages), new Action<Message>(this.detach_Messages));
-            this._Server = default(EntityRef<Server>);
             this._Session = default(EntityRef<Session>);
             this._Favorites = new EntitySet<Favorite>(new Action<Favorite>(this.attach_Favorites), new Action<Favorite>(this.detach_Favorites));
             OnCreated();
@@ -113,30 +124,6 @@ namespace derpirc.Data.Models
             }
         }
 
-        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_ServerId", DbType = "Int NOT NULL")]
-        public int ServerId
-        {
-            get
-            {
-                return this._ServerId;
-            }
-            set
-            {
-                if ((this._ServerId != value))
-                {
-                    if (this._Server.HasLoadedOrAssignedValue)
-                    {
-                        throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-                    }
-                    this.OnServerIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._ServerId = value;
-                    this.SendPropertyChanged("ServerId");
-                    this.OnServerIdChanged();
-                }
-            }
-        }
-
         [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_DisplayName", DbType = "NVarChar(128)")]
         public string DisplayName
         {
@@ -177,6 +164,86 @@ namespace derpirc.Data.Models
             }
         }
 
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_HostName", DbType = "NVarChar(128) NOT NULL", CanBeNull = false)]
+        public string HostName
+        {
+            get
+            {
+                return this._HostName;
+            }
+            set
+            {
+                if ((this._HostName != value.ToLower()))
+                {
+                    this.OnHostNameChanging(value.ToLower());
+                    this.SendPropertyChanging();
+                    this._HostName = value.ToLower();
+                    this.SendPropertyChanged("HostName");
+                    this.OnHostNameChanged();
+                }
+            }
+        }
+
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_HostName", DbType = "NVarChar(128) NOT NULL", CanBeNull = false)]
+        public string ConnectedHostName
+        {
+            get
+            {
+                return this._ConnectedHostName;
+            }
+            set
+            {
+                if ((this._ConnectedHostName != value.ToLower()))
+                {
+                    this.OnConnectedHostNameChanging(value.ToLower());
+                    this.SendPropertyChanging();
+                    this._ConnectedHostName = value.ToLower();
+                    this.SendPropertyChanged("ConnectedHostName");
+                    this.OnConnectedHostNameChanged();
+                }
+            }
+        }
+
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_Ports", DbType = "NVarChar(256)")]
+        public string Ports
+        {
+            get
+            {
+                return this._Ports;
+            }
+            set
+            {
+                if ((this._Ports != value))
+                {
+                    this.OnPortsChanging(value);
+                    this.SendPropertyChanging();
+                    this._Ports = value;
+                    this.SendPropertyChanged("Ports");
+                    this.OnPortsChanged();
+                }
+            }
+        }
+
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_Password", DbType = "NVarChar(128)")]
+        public string Password
+        {
+            get
+            {
+                return this._Password;
+            }
+            set
+            {
+                if ((this._Password != value))
+                {
+                    this.OnPasswordChanging(value);
+                    this.SendPropertyChanging();
+                    this._Password = value;
+                    this.SendPropertyChanged("Password");
+                    this.OnPasswordChanged();
+                }
+            }
+        }
+
         [global::System.Data.Linq.Mapping.AssociationAttribute(Name = "FK_Network_Channel", Storage = "_Channels", ThisKey = "Id", OtherKey = "NetworkId", DeleteRule = "NO ACTION")]
         public EntitySet<Channel> Channels
         {
@@ -213,35 +280,6 @@ namespace derpirc.Data.Models
             set
             {
                 this._Messages.Assign(value);
-            }
-        }
-
-        [global::System.Data.Linq.Mapping.AssociationAttribute(Name = "FK_Network_Server", Storage = "_Server", ThisKey = "Id", OtherKey = "Id", IsUnique = true, IsForeignKey = false, DeleteRule = "NO ACTION")]
-        public Server Server
-        {
-            get
-            {
-                return this._Server.Entity;
-            }
-            set
-            {
-                Server previousValue = this._Server.Entity;
-                if (((previousValue != value)
-                            || (this._Server.HasLoadedOrAssignedValue == false)))
-                {
-                    this.SendPropertyChanging();
-                    if ((previousValue != null))
-                    {
-                        this._Server.Entity = null;
-                        previousValue.Network = null;
-                    }
-                    this._Server.Entity = value;
-                    if ((value != null))
-                    {
-                        value.Network = this;
-                    }
-                    this.SendPropertyChanged("Server");
-                }
             }
         }
 
