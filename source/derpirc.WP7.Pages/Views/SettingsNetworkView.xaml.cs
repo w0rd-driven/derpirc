@@ -27,6 +27,7 @@ namespace derpirc.Views
         protected override void OnNavigatedFrom(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);
+            viewModel.NavigatedFromCommand.Execute(null);
         }
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)

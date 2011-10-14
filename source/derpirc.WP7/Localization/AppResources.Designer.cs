@@ -169,6 +169,15 @@ namespace derpirc.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to server information.
+        /// </summary>
+        public static string SettingsNetworkServerInfo {
+            get {
+                return ResourceManager.GetString("SettingsNetworkServerInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to storage.
         /// </summary>
         public static string SettingsStorage {

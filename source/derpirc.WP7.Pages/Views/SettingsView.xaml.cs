@@ -27,12 +27,15 @@ namespace derpirc.Views
         protected override void OnNavigatedFrom(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);
+            viewModel.NavigatedFromCommand.Execute(null);
         }
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
             viewModel.NavigatedToCommand.Execute(NavigationContext.QueryString);
+            if (e.NavigationMode == System.Windows.Navigation.NavigationMode.Back)
+                viewModel.UnselectItemCommand.Execute(null);
         }
     }
 }

@@ -89,8 +89,9 @@
 
             <controls:PivotItem Header="{Binding LocalizedResources.SettingsNetworks, Source={StaticResource LocalizedStrings}}"
                                 Style="{StaticResource SmallPivotItemStyle}" DataContext="{Binding SettingsNetworkViewModel, Source={StaticResource Locator}}">
-                <ListBox x:Name="NetworksListBox" Margin="0,0,-12,0" ItemsSource="{Binding Networks.View}" 
-                         SelectedItem="{Binding SelectedItem, Mode=TwoWay}" ItemContainerStyle="{StaticResource SmallPivotListBoxStyle}">
+                <ListBox x:Name="NetworksList" 
+                         ItemsSource="{Binding Networks.View}" SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
+                         Margin="0,0,-12,0" ItemContainerStyle="{StaticResource SmallPivotListBoxStyle}">
                     <blend:Interaction.Triggers>
                         <blend:EventTrigger EventName="DoubleTap">
                             <command:EventToCommand Command="{Binding EditCommand}" />
@@ -98,7 +99,7 @@
                     </blend:Interaction.Triggers>
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding Name}" />
+                            <TextBlock Text="{Binding Name}" FontSize="{StaticResource PhoneFontSizeMediumLarge}" />
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>

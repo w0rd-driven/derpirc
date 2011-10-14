@@ -8,6 +8,7 @@ using derpirc.Data.Models.Settings;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Threading;
+using Microsoft.Phone.Controls;
 
 namespace derpirc.ViewModels
 {
@@ -22,6 +23,36 @@ namespace derpirc.ViewModels
             {
                 return _navigatedToCommand ?? (_navigatedToCommand =
                     new RelayCommand<IDictionary<string, string>>(item => this.OnNavigatedTo(item)));
+            }
+        }
+
+        RelayCommand _navigatedFromCommand;
+        public RelayCommand NavigatedFromCommand
+        {
+            get
+            {
+                return _navigatedFromCommand ?? (_navigatedFromCommand =
+                    new RelayCommand(() => this.OnNavigatedFrom()));
+            }
+        }
+
+        RelayCommand<FrameworkElement> _layoutRootCommand;
+        public RelayCommand<FrameworkElement> LayoutRootCommand
+        {
+            get
+            {
+                return _layoutRootCommand ?? (_layoutRootCommand =
+                    new RelayCommand<FrameworkElement>(sender => this.LayoutRoot = sender));
+            }
+        }
+
+        RelayCommand<PivotItemEventArgs> _pivotItemLoadedCommand;
+        public RelayCommand<PivotItemEventArgs> PivotItemLoadedCommand
+        {
+            get
+            {
+                return _pivotItemLoadedCommand ?? (_pivotItemLoadedCommand =
+                    new RelayCommand<PivotItemEventArgs>(eventArgs => this.PivotItemLoaded(eventArgs)));
             }
         }
 
@@ -50,16 +81,6 @@ namespace derpirc.ViewModels
             }
         }
 
-        RelayCommand _editCommand;
-        public RelayCommand EditCommand
-        {
-            get
-            {
-                return _editCommand ?? (_editCommand =
-                    new RelayCommand(() => this.Edit(SelectedItem)));
-            }
-        }
-
         private bool _canDelete;
         public bool CanDelete
         {
@@ -69,7 +90,6 @@ namespace derpirc.ViewModels
                 if (_canDelete == value)
                     return;
 
-                var oldValue = _canDelete;
                 _canDelete = value;
                 RaisePropertyChanged(() => CanDelete);
                 DeleteCommand.RaiseCanExecuteChanged();
@@ -83,6 +103,31 @@ namespace derpirc.ViewModels
             {
                 return _deleteCommand ?? (_deleteCommand =
                     new RelayCommand(() => this.Delete(SelectedItem), () => this.CanDelete));
+            }
+        }
+
+        private bool _canClear;
+        public bool CanClear
+        {
+            get { return _canClear; }
+            set
+            {
+                if (_canClear == value)
+                    return;
+
+                _canClear = value;
+                RaisePropertyChanged(() => CanClear);
+                DeleteCommand.RaiseCanExecuteChanged();
+            }
+        }
+
+        RelayCommand _clearCommand;
+        public RelayCommand ClearCommand
+        {
+            get
+            {
+                return _clearCommand ?? (_clearCommand =
+                    new RelayCommand(() => this.Clear(), () => this.CanClear));
             }
         }
 
@@ -154,6 +199,20 @@ namespace derpirc.ViewModels
             }
         }
 
+        private bool _isAppBarVisible;
+        public bool IsAppBarVisible
+        {
+            get { return _isAppBarVisible; }
+            set
+            {
+                if (_isAppBarVisible == value)
+                    return;
+
+                _isAppBarVisible = value;
+                RaisePropertyChanged(() => IsAppBarVisible);
+            }
+        }
+
         private string _displayName;
         public string DisplayName
         {
@@ -182,6 +241,48 @@ namespace derpirc.ViewModels
             }
         }
 
+        private string _hostName;
+        public string HostName
+        {
+            get { return _hostName; }
+            set
+            {
+                if (_hostName == value)
+                    return;
+
+                _hostName = value;
+                RaisePropertyChanged(() => HostName);
+            }
+        }
+
+        private string _ports;
+        public string Ports
+        {
+            get { return _ports; }
+            set
+            {
+                if (_ports == value)
+                    return;
+
+                _ports = value;
+                RaisePropertyChanged(() => Ports);
+            }
+        }
+
+        private string _password;
+        public string Password
+        {
+            get { return _password; }
+            set
+            {
+                if (_password == value)
+                    return;
+
+                _password = value;
+                RaisePropertyChanged(() => Password);
+            }
+        }
+
         #endregion
 
         /// <summary>
@@ -191,13 +292,14 @@ namespace derpirc.ViewModels
         {
             _favoritesList = new ObservableCollection<Favorite>();
 
-            CanAdd = true;
-
             if (IsInDesignMode)
             {
                 // Code runs in Blend --> create design time data.
                 DisplayName = "clefnet 1";
                 Name = "clefnet";
+                HostName = "irc.efnet.org";
+                Ports = "6667";
+                Password = string.Empty;
 
                 //_favoritesList.Add(new Favorite()
                 //{
@@ -224,10 +326,38 @@ namespace derpirc.ViewModels
                 Model = model;
         }
 
+        private void OnNavigatedFrom()
+        {
+
+        }
+
+        private void PivotItemLoaded(PivotItemEventArgs eventArgs)
+        {
+            var pivotControl = eventArgs.Item.Parent as Pivot;
+            if (pivotControl != null)
+            {
+                switch (pivotControl.SelectedIndex)
+                {
+                    case 0:
+                        IsAppBarVisible = false;
+                        break;
+                    case 1:
+                        IsAppBarVisible = true;
+                        break;
+                }
+            }
+        }
+
         private void UpdateViewModel(Network model)
         {
             DisplayName = model.DisplayName;
             Name = model.Name;
+            if (model.Server != null)
+            {
+                HostName = model.Server.HostName;
+                Ports = model.Server.Ports;
+                Password = model.Server.Password;
+            }
 
             DispatcherHelper.CheckBeginInvokeOnUI(() =>
             {
@@ -236,6 +366,8 @@ namespace derpirc.ViewModels
                 {
                     _favoritesList.Add(item);
                 }
+                if (_favoritesList.Count > 0)
+                    CanClear = true;
             });
         }
 
@@ -246,17 +378,22 @@ namespace derpirc.ViewModels
                 Name = "#(new)",
                 IsAutoConnect = true,
             });
-        }
-
-        private void Edit(Favorite item)
-        {
-
+            CanClear = true;
         }
 
         private void Delete(Favorite item)
         {
+            CanDelete = false;
             if (_favoritesList.Contains(item))
                 _favoritesList.Remove(item);
+            if (_favoritesList.Count == 0)
+                CanClear = false;
+        }
+
+        private void Clear()
+        {
+            _favoritesList.Clear();
+            CanClear = false;
         }
 
         private void SelectItem()
@@ -264,6 +401,7 @@ namespace derpirc.ViewModels
             if (SelectedItem != null)
             {
                 CanDelete = true;
+                CanClear = true;
             }
             else
             {

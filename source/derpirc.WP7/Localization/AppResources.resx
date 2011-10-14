@@ -165,6 +165,10 @@
     <value>networks</value>
     <comment>SettingsView Networks PivotTitle</comment>
   </data>
+  <data name="SettingsNetworkServerInfo" xml:space="preserve">
+    <value>server information</value>
+    <comment>SettingsNetworkView ServerInformation</comment>
+  </data>
   <data name="SettingsStorage" xml:space="preserve">
     <value>storage</value>
     <comment>SettingsView Storage PivotTitle</comment>

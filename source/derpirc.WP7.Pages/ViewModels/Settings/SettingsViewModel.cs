@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Messaging;
 
 namespace derpirc.ViewModels
 {
@@ -18,6 +19,16 @@ namespace derpirc.ViewModels
             }
         }
 
+        RelayCommand _navigatedFromCommand;
+        public RelayCommand NavigatedFromCommand
+        {
+            get
+            {
+                return _navigatedFromCommand ?? (_navigatedFromCommand =
+                    new RelayCommand(() => this.OnNavigatedFrom()));
+            }
+        }
+
         RelayCommand<FrameworkElement> _layoutRootCommand;
         public RelayCommand<FrameworkElement> LayoutRootCommand
         {
@@ -28,65 +39,13 @@ namespace derpirc.ViewModels
             }
         }
 
-        RelayCommand _addCommand;
-        public RelayCommand AddCommand
+        RelayCommand _unselectItemCommand;
+        public RelayCommand UnselectItemCommand
         {
             get
             {
-                return _addCommand ?? (_addCommand =
-                    new RelayCommand(() => this.Add()));
-            }
-        }
-
-        private bool _canEdit;
-        public bool CanEdit
-        {
-            get { return _canEdit; }
-            set
-            {
-                if (_canEdit == value)
-                    return;
-
-                var oldValue = _canEdit;
-                _canEdit = value;
-                RaisePropertyChanged(() => CanEdit);
-                EditCommand.RaiseCanExecuteChanged();
-            }
-        }
-
-        RelayCommand _editCommand;
-        public RelayCommand EditCommand
-        {
-            get
-            {
-                return _editCommand ?? (_editCommand =
-                    new RelayCommand(() => this.Edit(), () => this.CanEdit));
-            }
-        }
-
-        private bool _canDelete;
-        public bool CanDelete
-        {
-            get { return _canDelete; }
-            set
-            {
-                if (_canDelete == value)
-                    return;
-
-                var oldValue = _canDelete;
-                _canDelete = value;
-                RaisePropertyChanged(() => CanDelete);
-                DeleteCommand.RaiseCanExecuteChanged();
-            }
-        }
-
-        RelayCommand _deleteCommand;
-        public RelayCommand DeleteCommand
-        {
-            get
-            {
-                return _deleteCommand ?? (_deleteCommand =
-                    new RelayCommand(() => this.Delete(), () => this.CanDelete));
+                return _unselectItemCommand ?? (_unselectItemCommand =
+                    new RelayCommand(() => this.UnselectItem()));
             }
         }
 
@@ -136,19 +95,9 @@ namespace derpirc.ViewModels
 
         }
 
-        private void Add()
+        private void UnselectItem()
         {
-
-        }
-
-        private void Edit()
-        {
-
-        }
-
-        private void Delete()
-        {
-
+            this.MessengerInstance.Send(new NotificationMessage("Unselect"), "SelectedNetwork");
         }
 
         public override void Cleanup()

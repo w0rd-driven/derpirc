@@ -7,6 +7,7 @@ using derpirc.Data.Models.Settings;
 using derpirc.Helpers;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Messaging;
 
 namespace derpirc.ViewModels
 {
@@ -35,7 +36,6 @@ namespace derpirc.ViewModels
                 if (_canEdit == value)
                     return;
 
-                var oldValue = _canEdit;
                 _canEdit = value;
                 RaisePropertyChanged(() => CanEdit);
                 EditCommand.RaiseCanExecuteChanged();
@@ -61,7 +61,6 @@ namespace derpirc.ViewModels
                 if (_canDelete == value)
                     return;
 
-                var oldValue = _canDelete;
                 _canDelete = value;
                 RaisePropertyChanged(() => CanDelete);
                 DeleteCommand.RaiseCanExecuteChanged();
@@ -74,7 +73,7 @@ namespace derpirc.ViewModels
             get
             {
                 return _deleteCommand ?? (_deleteCommand =
-                    new RelayCommand(() => this.Delete(), () => this.CanDelete));
+                    new RelayCommand(() => this.Delete(SelectedItem), () => this.CanDelete));
             }
         }
 
@@ -119,7 +118,6 @@ namespace derpirc.ViewModels
                 if (_selectedItem == value)
                     return;
 
-                var oldValue = _selectedItem;
                 _selectedItem = value;
                 RaisePropertyChanged(() => SelectedItem);
                 SelectItem();
@@ -143,6 +141,12 @@ namespace derpirc.ViewModels
                 // Code runs "for real": Connect to service, etc...
                 _navigationService = navigationService;
 
+                this.MessengerInstance.Register<NotificationMessage>(this, "SelectedNetwork", message =>
+                {
+                    var target = message.Target as string;
+                    this.UnselectItem();
+                });
+
                 Load();
             }
 
@@ -165,19 +169,28 @@ namespace derpirc.ViewModels
             }
         }
 
-        private void Add()
-        {
-
-        }
-
         private void Edit()
         {
-
+            ViewDetails(SelectedItem);
         }
 
-        private void Delete()
+        private void Add()
         {
+            //var session = 
+            var server = new Server()
+            {
+                DisplayName = "Random server",
+                HostName = "irc.(network).com",
+                Ports = "6667",
+            };
+            var item = new Network();
+            _networksList.Add(item);
+        }
 
+        private void Delete(Network item)
+        {
+            if (_networksList.Contains(item))
+                _networksList.Remove(item);
         }
 
         private void SelectItem()
@@ -186,7 +199,7 @@ namespace derpirc.ViewModels
             {
                 CanEdit = true;
                 CanDelete = true;
-                ViewDetails();
+                ViewDetails(SelectedItem);
             }
             else
             {
@@ -195,18 +208,17 @@ namespace derpirc.ViewModels
             }
         }
 
-        private void ViewDetails()
+        private void UnselectItem()
+        {
+            this.SelectedItem = null;
+        }
+
+        private void ViewDetails(Network item)
         {
             var id = string.Empty;
             var uriString = string.Empty;
-            if (SelectedItem != null)
-            {
-                id = SelectedItem.Id.ToString();
-            }
-            else
-            {
-                id = "1";
-            }
+            if (item != null)
+                id = item.Id.ToString();
             uriString = string.Format("/derpirc.Pages;component/Views/SettingsNetworkView.xaml?id={0}", Uri.EscapeUriString(id));
             var uri = new Uri(uriString, UriKind.Relative);
             NavigationService.Navigate(uri);

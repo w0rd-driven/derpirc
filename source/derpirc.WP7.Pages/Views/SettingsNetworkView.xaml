@@ -15,7 +15,7 @@
                             FontSize="{StaticResource PhoneFontSizeNormal}"
                             Foreground="{StaticResource PhoneForegroundBrush}"
                             SupportedOrientations="PortraitOrLandscape" Orientation="Portrait"
-                            mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="768"
+                            mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="696"
                             shell:SystemTray.IsVisible="True"
                             DataContext="{Binding SettingsNetworkDetailViewModel, Source={StaticResource Locator}}">
 
@@ -26,74 +26,94 @@
             </blend:EventTrigger>
         </blend:Interaction.Triggers>
 
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
+        <controls:Pivot Style="{StaticResource SmallPivotStyle}" Margin="-2,0,2,0">
+            <blend:Interaction.Triggers>
+                <blend:EventTrigger EventName="LoadedPivotItem">
+                    <command:EventToCommand Command="{Binding PivotItemLoadedCommand}" PassEventArgsToCommand="True"/>
+                </blend:EventTrigger>
+            </blend:Interaction.Triggers>
+            <controls:PivotItem Header="{Binding LocalizedResources.SettingsNetworkDetail, Source={StaticResource LocalizedStrings}}"
+                                Style="{StaticResource SmallPivotItemStyle}">
+                <ScrollViewer>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <TextBlock Name="NameLabel" Text="Name" FontSize="{StaticResource PhoneFontSizeMedium}"
+                                   VerticalAlignment="Center" />
+                        <TextBox Name="NameTextBox" Text="{Binding Name, Mode=TwoWay}"
+                                 VerticalAlignment="Center" Grid.Column="1" Grid.ColumnSpan="2" />
+                        <TextBlock Name="ServerInfoLabel" Text="{Binding LocalizedResources.SettingsNetworkServerInfo, Source={StaticResource LocalizedStrings}}" FontSize="{StaticResource PhoneFontSizeMediumLarge}"
+                                   VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Row="1" Grid.ColumnSpan="3" />
+                        <TextBlock Name="ServerHostNameLabel" Text="Host Name" FontSize="{StaticResource PhoneFontSizeMedium}"
+                                   VerticalAlignment="Center" Grid.Row="2" />
+                        <TextBox Name="ServerHostNameTextBox" Text="{Binding HostName, Mode=TwoWay}"
+                                 VerticalAlignment="Center" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" />
+                        <TextBlock Name="ServerPortsLabel" Text="Port" FontSize="{StaticResource PhoneFontSizeMedium}"
+                                   VerticalAlignment="Center" Grid.Row="3" />
+                        <TextBox Name="ServerPortsTextBox" Text="{Binding Ports, Mode=TwoWay}"
+                                 VerticalAlignment="Center" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" />
+                        <TextBlock Name="ServerPasswordLabel" Text="Password" FontSize="{StaticResource PhoneFontSizeMedium}"
+                                   VerticalAlignment="Center" Grid.Row="4" />
+                        <TextBox Name="ServerPasswordTextBox" Text="{Binding Password, Mode=TwoWay}"
+                                 VerticalAlignment="Center" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" />
+                    </Grid>
+                </ScrollViewer>
+            </controls:PivotItem>
 
-        <StackPanel x:Name="TitlePanel" Margin="24,24,0,12">
-            <TextBlock x:Name="PageTitle"
-                       Text="{Binding LocalizedResources.SettingsNetworkDetail, Source={StaticResource LocalizedStrings}}"
-                       Margin="-2,-10,0,0"
-                       Style="{StaticResource PhoneTextTitle1Style}" />
-            <TextBlock x:Name="PageSubTitle"
-                       Text="{Binding PageSubTitle}"
-                       Margin="-2,-6,0,0"
-                       Style="{StaticResource TextBlockBase}" />
-        </StackPanel>
+            <controls:PivotItem Header="{Binding LocalizedResources.MainChannels, Source={StaticResource LocalizedStrings}}"
+                                Style="{StaticResource SmallPivotItemStyle}">
+                <Grid>
+                    <ListBox Name="ChannelsList" ItemsSource="{Binding Favorites.View}" SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
+                             ItemContainerStyle="{StaticResource ListBoxItemStyle}" Margin="12,4,12,12" Grid.Row="3" Grid.ColumnSpan="3">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <TextBox Text="{Binding Name}" />
+                                    <toolkit:ToggleSwitch Header="Join" IsChecked="{Binding IsAutoConnect, Mode=TwoWay}"
+                                                          Grid.Row="1" />
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
+            </controls:PivotItem>
+        </controls:Pivot>
 
-        <Grid x:Name="ContentGrid" Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition />
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
-            <TextBlock Name="DisplayNameLabel" Text="Display Name" FontSize="{StaticResource PhoneFontSizeMedium}"
-                       VerticalAlignment="Center" />
-            <TextBox Name="DisplayNameTextBox" Text="{Binding DisplayName, Mode=TwoWay}"
-                     VerticalAlignment="Center" Grid.Column="1" Grid.ColumnSpan="2" />
-            <TextBlock Name="NameLabel" Text="Name" FontSize="{StaticResource PhoneFontSizeMedium}"
-                       VerticalAlignment="Center" Grid.Row="1" />
-            <TextBox Name="NameTextBox" Text="{Binding Name, Mode=TwoWay}"
-                     VerticalAlignment="Center" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" />
-            <TextBlock Name="ChannelsLabel" Text="{Binding LocalizedResources.MainChannels, Source={StaticResource LocalizedStrings}}" FontSize="{StaticResource PhoneFontSizeMedium}"
-                       VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Row="2" Grid.ColumnSpan="3" />
-            <ListBox Name="ChannelsList" ItemsSource="{Binding Favorites.View}" SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
-                     ItemContainerStyle="{StaticResource ListBoxItemStyle}" Margin="12,4,12,12" Grid.Row="3" Grid.ColumnSpan="3">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-                            <TextBox Text="{Binding Name}" />
-                            <toolkit:ToggleSwitch Header="Join" IsChecked="{Binding IsAutoConnect, Mode=TwoWay}"
-                                                  Grid.Row="1" />
-                        </Grid>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
-        </Grid>
     </Grid>
-    
-    <!-- Sample code showing usage of ApplicationBar
+
     <phone:PhoneApplicationPage.ApplicationBar>
-        <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True">
-            <shell:ApplicationBarIconButton x:Name="appbar_button1" IconUri="/Images/appbar_button1.png" Text="Button 1"></shell:ApplicationBarIconButton>
-            <shell:ApplicationBarIconButton x:Name="appbar_button2" IconUri="/Images/appbar_button2.png" Text="Button 2"></shell:ApplicationBarIconButton>
+        <shell:ApplicationBar IsVisible="True" IsMenuEnabled="False">
+            <shell:ApplicationBar.Buttons>
+                <shell:ApplicationBarIconButton IconUri="/Icons/appbar.add.png" Text="add" />
+                <shell:ApplicationBarIconButton IconUri="/Icons/appbar.delete.png" Text="delete" />
+                <shell:ApplicationBarIconButton IconUri="/Icons/appbar.clear.png" Text="clear" />
+            </shell:ApplicationBar.Buttons>
             <shell:ApplicationBar.MenuItems>
-                <shell:ApplicationBarMenuItem x:Name="menuItem1" Text="MenuItem 1"></shell:ApplicationBarMenuItem>
-                <shell:ApplicationBarMenuItem x:Name="menuItem2" Text="MenuItem 2"></shell:ApplicationBarMenuItem>
             </shell:ApplicationBar.MenuItems>
         </shell:ApplicationBar>
     </phone:PhoneApplicationPage.ApplicationBar>
-    -->
-
+    <blend:Interaction.Behaviors>
+        <appbarutils:AppBarItemCommand Type="Button" Id="add" Command="{Binding AddCommand}" />
+        <appbarutils:AppBarItemCommand Type="Button" Id="delete" Command="{Binding DeleteCommand}" />
+        <appbarutils:AppBarItemCommand Type="Button" Id="clear" Command="{Binding ClearCommand}" />
+    </blend:Interaction.Behaviors>
+    <blend:Interaction.Triggers>
+        <appbarutils:AppBarItemTrigger Type="Button" Id="add" Text="add" IsEnabled="{Binding CanAdd}" />
+        <appbarutils:AppBarItemTrigger Type="Button" Id="delete" Text="delete" IsEnabled="{Binding CanDelete}" />
+        <appbarutils:AppBarItemTrigger Type="Button" Id="clear" Text="clear" IsEnabled="{Binding CanClear}" />
+    </blend:Interaction.Triggers>
 </phone:PhoneApplicationPage>

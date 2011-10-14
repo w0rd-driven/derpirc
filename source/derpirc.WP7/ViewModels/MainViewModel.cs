@@ -37,7 +37,7 @@ namespace derpirc.ViewModels
             get
             {
                 return _pivotItemLoadedCommand ?? (_pivotItemLoadedCommand =
-                    new RelayCommand<PivotItemEventArgs>(eventArgs => PivotItemLoaded(eventArgs)));
+                    new RelayCommand<PivotItemEventArgs>(eventArgs => this.PivotItemLoaded(eventArgs)));
             }
         }
 
