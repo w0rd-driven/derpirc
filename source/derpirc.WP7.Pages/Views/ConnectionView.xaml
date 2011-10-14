@@ -50,7 +50,7 @@
                 <RowDefinition Height="20" />
             </Grid.RowDefinitions>
 
-            <toolkit:MultiselectList x:Name="ConnectionsList" Margin="0,0,-12,0"
+            <toolkit:MultiselectList x:Name="ConnectionsList"
                                      ItemsSource="{Binding Connections.View}"
                                      IsSelectionEnabled="{Binding IsSelectionEnabled, Mode=TwoWay}">
                 <blend:Interaction.Triggers>
@@ -75,7 +75,7 @@
                             </Grid.RowDefinitions>
                             <TextBlock Text="{Binding NetworkName}" />
                             <TextBlock Text="{Binding State}" Grid.Column="1" />
-                            <TextBlock Text="{Binding Error.Message}" TextWrapping="Wrap" TextTrimming="WordEllipsis" Grid.Row="2" Grid.ColumnSpan="2" />
+                            <TextBlock Text="{Binding Error.Message}" TextWrapping="Wrap" TextTrimming="WordEllipsis" Grid.Row="2" Grid.ColumnSpan="2" Margin="12,4" />
                         </Grid>
                     </DataTemplate>
                 </toolkit:MultiselectList.ItemTemplate>
