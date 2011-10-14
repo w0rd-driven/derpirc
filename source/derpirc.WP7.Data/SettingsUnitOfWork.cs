@@ -1,4 +1,5 @@
-﻿using System.Data.Linq;
+﻿using System.Collections.ObjectModel;
+using System.IO.IsolatedStorage;
 using derpirc.Data.Models.Settings;
 
 namespace derpirc.Data
@@ -7,35 +8,14 @@ namespace derpirc.Data
     {
         #region Properties
 
-        #region Tables
-
-        public IRepository<User> User
-        {
-            get { return _user ?? (_user = new SqlRepository<User>(_context)); }
-        }
-        private SqlRepository<User> _user = null;
-
-        public IRepository<Session> Sessions
-        {
-            get { return _sessions ?? (_sessions = new SqlRepository<Session>(_context)); }
-        }
-        private SqlRepository<Session> _sessions = null;
-
-        public IRepository<Network> Networks
-        {
-            get { return _networks ?? (_networks = new SqlRepository<Network>(_context)); }
-        }
-        private SqlRepository<Network> _networks = null;
+        public Client Client { get; set; }
+        public User User { get; set; }
+        public ObservableCollection<Network> Networks { get; set; }
+        public bool IsInitialized { get; set; }
 
         #endregion
 
-        public bool DatabaseExists { get; set; }
-        public ContextConnectionString ConnectionString { get; set; }
-
-        #endregion
-
-        //readonly DataContext _context;
-        private DataContext _context;
+        #region Static Impl
 
         // Modified for http://www.yoda.arachsys.com/csharp/singleton.html #4. (Jon Skeet is a code machine)
         private static readonly SettingsUnitOfWork defaultInstance = new SettingsUnitOfWork();
@@ -52,50 +32,105 @@ namespace derpirc.Data
         {
         }
 
+        #endregion
+
         public SettingsUnitOfWork()
         {
-            ConnectionString = new ContextConnectionString()
-            {
-                ConnectionString = "isostore:/Settings.sdf",
-            };
-            InitializeDatabase(false);
+            InitializeDatabase(true);
         }
 
         public void WipeDatabase()
         {
-            if (_context != null)
-                _context.DeleteDatabase();
+            GenerateSystemData();
+            Commit();
         }
 
         public void InitializeDatabase(bool wipe)
         {
-            var connectionString = ConnectionString.ToString();
-            if (_context == null)
-                _context = new SettingsModelContainer(connectionString);
-            var context = (_context as SettingsModelContainer);
-            context.InitializeDatabase(wipe);
-            DatabaseExists = context.DatabaseExists();
+            if (wipe)
+                WipeDatabase();
+            GetDefaultValues();
+        }
+
+        private void GetDefaultValues()
+        {
+            Client client;
+            ObservableCollection<Network> networks;
+            User user;
+
+            IsolatedStorageSettings.ApplicationSettings.TryGetValue<Client>("client", out client);
+            IsolatedStorageSettings.ApplicationSettings.TryGetValue<ObservableCollection<Network>>("networks", out networks);
+            IsolatedStorageSettings.ApplicationSettings.TryGetValue<User>("user", out user);
+
+            var isDataFound = false;
+            if (client != null)
+            {
+                isDataFound = true;
+                Client = client;
+            }
+            if (networks != null)
+            {
+                isDataFound = true;
+                Networks = networks;
+            }
+            if (user != null)
+            {
+                isDataFound = true;
+                User = user;
+            }
+            if (!isDataFound)
+            {
+                GenerateSystemData();
+                Commit();
+            }
+            else
+                IsInitialized = true;
         }
 
         public void Commit()
         {
-            try
+            if (Client != null)
             {
-                _context.SubmitChanges();
+                if (!IsolatedStorageSettings.ApplicationSettings.Contains("client"))
+                    IsolatedStorageSettings.ApplicationSettings.Add("client", Client);
+                else
+                {
+                    IsolatedStorageSettings.ApplicationSettings.Remove("client");
+                    IsolatedStorageSettings.ApplicationSettings.Add("client", Client);
+                }
             }
-            catch (System.InvalidOperationException)
+            if (Networks != null)
             {
+                if (!IsolatedStorageSettings.ApplicationSettings.Contains("networks"))
+                    IsolatedStorageSettings.ApplicationSettings.Add("user", Networks);
+                else
+                {
+                    IsolatedStorageSettings.ApplicationSettings.Remove("networks");
+                    IsolatedStorageSettings.ApplicationSettings.Add("networks", Networks);
+                }
+            }
+            if (User != null)
+            {
+                if (!IsolatedStorageSettings.ApplicationSettings.Contains("user"))
+                    IsolatedStorageSettings.ApplicationSettings.Add("user", User);
+                else
+                {
+                    IsolatedStorageSettings.ApplicationSettings.Remove("user");
+                    IsolatedStorageSettings.ApplicationSettings.Add("user", User);
+                }
+            }
+            IsolatedStorageSettings.ApplicationSettings.Save();
+        }
 
-            }
-            catch (System.Exception)
-            {
-                throw;
-            }
+        private void GenerateSystemData()
+        {
+            Client = Factory.CreateClient();
+            User = Factory.CreateUser();
+            Networks = Factory.CreateNetworks();
         }
 
         public void Dispose()
         {
-            _context.Dispose();
         }
     }
 }

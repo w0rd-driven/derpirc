@@ -69,10 +69,8 @@
     <Compile Include="Models\Network.cs" />
     <Compile Include="Models\Session.cs" />
     <Compile Include="Models\Settings\Network.cs" />
-    <Compile Include="Models\Settings\Session.cs" />
     <Compile Include="SettingsUnitOfWork.cs" />
     <Compile Include="Models\Factory.cs" />
-    <Compile Include="SettingsModelContainer.cs" />
     <Compile Include="FileModeEnum.cs" />
     <Compile Include="DataUnitOfWork.cs" />
     <Compile Include="IRepository.cs" />
@@ -88,7 +86,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Models\Settings\Factory.cs" />
     <Compile Include="SqlRepository.cs" />
-    <Compile Include="Models\Settings\Storage.cs" />
+    <Compile Include="Models\Settings\Client.cs" />
     <Compile Include="Models\Settings\User.cs" />
   </ItemGroup>
   <ItemGroup>

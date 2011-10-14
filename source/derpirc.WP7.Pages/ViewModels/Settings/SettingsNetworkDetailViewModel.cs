@@ -321,7 +321,7 @@ namespace derpirc.ViewModels
             queryString.TryGetValue("id", out id);
             var integerId = -1;
             int.TryParse(id, out integerId);
-            var model = SettingsUnitOfWork.Default.Networks.FindBy(x => x.Id == integerId).FirstOrDefault();
+            var model = SettingsUnitOfWork.Default.Networks.Where(x => x.Id == integerId).FirstOrDefault();
             if (model != null)
                 Model = model;
         }
@@ -350,22 +350,25 @@ namespace derpirc.ViewModels
 
         private void UpdateViewModel(Network model)
         {
-            DisplayName = model.DisplayName;
-            Name = model.Name;
-            HostName = model.HostName;
-            Ports = model.Ports;
-            Password = model.Password;
-
-            DispatcherHelper.CheckBeginInvokeOnUI(() =>
+            if (model != null)
             {
-                _favoritesList.Clear();
-                foreach (var item in model.Favorites)
+                DisplayName = model.DisplayName;
+                Name = model.Name;
+                HostName = model.HostName;
+                Ports = model.Ports;
+                Password = model.Password;
+
+                DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
-                    _favoritesList.Add(item);
-                }
-                if (_favoritesList.Count > 0)
-                    CanClear = true;
-            });
+                    _favoritesList.Clear();
+                    foreach (var item in model.Favorites)
+                    {
+                        _favoritesList.Add(item);
+                    }
+                    if (_favoritesList.Count > 0)
+                        CanClear = true;
+                });
+            }
         }
 
         private void Add()

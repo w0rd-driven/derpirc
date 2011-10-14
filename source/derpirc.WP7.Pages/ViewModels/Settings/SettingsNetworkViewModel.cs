@@ -90,22 +90,6 @@ namespace derpirc.ViewModels
             }
         }
 
-        private Session _model;
-        public Session Model
-        {
-            get { return _model; }
-            set
-            {
-                if (value != null)
-                    UpdateViewModel(value);
-                if (_model == value)
-                    return;
-
-                _model = value;
-                RaisePropertyChanged(() => Model);
-            }
-        }
-
         private ObservableCollection<Network> _networksList;
         public CollectionViewSource Networks { get; set; }
 
@@ -155,15 +139,9 @@ namespace derpirc.ViewModels
 
         private void Load()
         {
-            var model = SettingsUnitOfWork.Default.Sessions.FindBy(x => x.Name == "default").FirstOrDefault();
-            if (model != null)
-                Model = model;
-        }
-
-        private void UpdateViewModel(Session model)
-        {
+            var networks = SettingsUnitOfWork.Default.Networks;
             _networksList.Clear();
-            foreach (var item in model.Networks)
+            foreach (var item in networks)
             {
                 _networksList.Add(item);
             }

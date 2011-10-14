@@ -140,7 +140,7 @@ namespace derpirc.ViewModels
 
         private void Load()
         {
-            var model = SettingsUnitOfWork.Default.User.FindBy(x => x.Name == "default").FirstOrDefault();
+            var model = SettingsUnitOfWork.Default.User;
             if (model != null)
                 Model = model;
         }

@@ -9,20 +9,17 @@
 //------------------------------------------------------------------------------
 
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
 
 namespace derpirc.Data.Models.Settings
 {
-    [global::System.Data.Linq.Mapping.TableAttribute()]
-    public partial class Network : IBaseModel, INotifyPropertyChanging, INotifyPropertyChanged
+    public partial class Network : INotifyPropertyChanging, INotifyPropertyChanged
     {
         private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
 
         private int _Id;
-
-        private int _SessionId;
 
         private string _DisplayName;
 
@@ -34,20 +31,13 @@ namespace derpirc.Data.Models.Settings
 
         private string _Password;
 
-        private EntityRef<Session> _Session;
-
-        private EntitySet<Favorite> _Favorites;
+        private List<Favorite> _Favorites;
 
         #region Extensibility Method Definitions
         partial void OnLoaded();
-        partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
         partial void OnIdChanging(int value);
         partial void OnIdChanged();
-        partial void OnSessionIdChanging(int value);
-        partial void OnSessionIdChanged();
-        partial void OnServerIdChanging(int value);
-        partial void OnServerIdChanged();
         partial void OnDisplayNameChanging(string value);
         partial void OnDisplayNameChanged();
         partial void OnNameChanging(string value);
@@ -62,12 +52,10 @@ namespace derpirc.Data.Models.Settings
 
         public Network()
         {
-            this._Session = default(EntityRef<Session>);
-            this._Favorites = new EntitySet<Favorite>(new Action<Favorite>(this.attach_Favorites), new Action<Favorite>(this.detach_Favorites));
+            this._Favorites = new List<Favorite>();
             OnCreated();
         }
 
-        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_Id", AutoSync = AutoSync.OnInsert, DbType = "Int NOT NULL IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
         public int Id
         {
             get
@@ -87,31 +75,6 @@ namespace derpirc.Data.Models.Settings
             }
         }
 
-        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_SessionId", DbType = "Int NOT NULL")]
-        public int SessionId
-        {
-            get
-            {
-                return this._SessionId;
-            }
-            set
-            {
-                if ((this._SessionId != value))
-                {
-                    if (this._Session.HasLoadedOrAssignedValue)
-                    {
-                        throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-                    }
-                    this.OnSessionIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._SessionId = value;
-                    this.SendPropertyChanged("SessionId");
-                    this.OnSessionIdChanged();
-                }
-            }
-        }
-
-        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_DisplayName", DbType = "NVarChar(128)")]
         public string DisplayName
         {
             get
@@ -131,7 +94,6 @@ namespace derpirc.Data.Models.Settings
             }
         }
 
-        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_Name", DbType = "NVarChar(128) NOT NULL", CanBeNull = false)]
         public string Name
         {
             get
@@ -151,7 +113,6 @@ namespace derpirc.Data.Models.Settings
             }
         }
 
-        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_HostName", DbType = "NVarChar(128) NOT NULL", CanBeNull = false)]
         public string HostName
         {
             get
@@ -171,7 +132,6 @@ namespace derpirc.Data.Models.Settings
             }
         }
 
-        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_Ports", DbType = "NVarChar(256)")]
         public string Ports
         {
             get
@@ -191,7 +151,6 @@ namespace derpirc.Data.Models.Settings
             }
         }
 
-        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_Password", DbType = "NVarChar(128)")]
         public string Password
         {
             get
@@ -211,50 +170,18 @@ namespace derpirc.Data.Models.Settings
             }
         }
 
-        [global::System.Data.Linq.Mapping.AssociationAttribute(Name = "FK_Session_Network", Storage = "_Session", ThisKey = "SessionId", OtherKey = "Id", IsForeignKey = true)]
-        public Session Session
+        public IList<Favorite> Favorites
         {
             get
             {
-                return this._Session.Entity;
+                return _Favorites;
             }
             set
             {
-                Session previousValue = this._Session.Entity;
-                if (((previousValue != value)
-                            || (this._Session.HasLoadedOrAssignedValue == false)))
+                if (!ReferenceEquals(_Favorites, value))
                 {
-                    this.SendPropertyChanging();
-                    if ((previousValue != null))
-                    {
-                        this._Session.Entity = null;
-                        previousValue.Networks.Remove(this);
-                    }
-                    this._Session.Entity = value;
-                    if ((value != null))
-                    {
-                        value.Networks.Add(this);
-                        this._SessionId = value.Id;
-                    }
-                    else
-                    {
-                        this._SessionId = default(int);
-                    }
-                    this.SendPropertyChanged("Session");
+                    _Favorites = value as List<Favorite>;
                 }
-            }
-        }
-
-        [global::System.Data.Linq.Mapping.AssociationAttribute(Name = "FK_Network_Favorite", Storage = "_Favorites", ThisKey = "Id", OtherKey = "NetworkId", DeleteRule = "NO ACTION")]
-        public EntitySet<Favorite> Favorites
-        {
-            get
-            {
-                return this._Favorites;
-            }
-            set
-            {
-                this._Favorites.Assign(value);
             }
         }
 
@@ -276,18 +203,6 @@ namespace derpirc.Data.Models.Settings
             {
                 this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
-        }
-
-        private void attach_Favorites(Favorite entity)
-        {
-            this.SendPropertyChanging();
-            entity.Network = this;
-        }
-
-        private void detach_Favorites(Favorite entity)
-        {
-            this.SendPropertyChanging();
-            entity.Network = null;
         }
     }
 }

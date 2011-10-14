@@ -1,4 +1,4 @@
-﻿using System.Data.Linq;
+﻿using System.Collections.ObjectModel;
 
 namespace derpirc.Data.Models.Settings
 {
@@ -8,7 +8,6 @@ namespace derpirc.Data.Models.Settings
         {
             var result = new User()
             {
-                Name = "default",
                 NickName = "derpirc",
                 NickNameAlternate = "durpirc",
                 FullName = "derpirc WP7 IRC Client",
@@ -19,18 +18,9 @@ namespace derpirc.Data.Models.Settings
             return result;
         }
 
-        public static Session CreateSession()
+        public static ObservableCollection<Network> CreateNetworks()
         {
-            var result = new Session();
-            result.Name = "default";
-            var networks = CreateNetworks(result);
-            result.Networks = networks;
-            return result;
-        }
-
-        public static EntitySet<Network> CreateNetworks(Session session)
-        {
-            var result = new EntitySet<Network>();
+            var result = new ObservableCollection<Network>();
 
             // Favorites
             var channel1 = new Favorite()
@@ -43,9 +33,10 @@ namespace derpirc.Data.Models.Settings
                 Name = "#xna",
                 IsAutoConnect = true,
             };
+            // Networks
             var item1 = new Network()
             {
-                Session = session,
+                Id = 1,
                 DisplayName = "EFNet",
                 Name = "EFNet",
                 HostName = "irc.efnet.org",
@@ -54,10 +45,9 @@ namespace derpirc.Data.Models.Settings
             item1.Favorites.Add(channel1);
             item1.Favorites.Add(channel2);
             result.Add(item1);
-
             var item2 = new Network()
             {
-                Session = session,
+                Id = 2,
                 DisplayName = "PowerPrecision",
                 Name = "PowerPrecision",
                 HostName = "irc.node-3.net",
@@ -70,11 +60,11 @@ namespace derpirc.Data.Models.Settings
             return result;
         }
 
-        public static Storage CreateStorage()
+        public static Client CreateClient()
         {
-            var result = new Storage()
+            var result = new Client()
             {
-                Name = "default",
+                //Name = "default",
             };
             return result;
         }

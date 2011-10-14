@@ -164,7 +164,7 @@ namespace derpirc.Core
         {
             var result = new IrcUserRegistrationInfo();
 
-            this._settings = this._unitOfWorkSettings.User.FindBy(x => x.Name == "default").FirstOrDefault();
+            this._settings = this._unitOfWorkSettings.User;
             if (this._settings != null)
             {
                 result.NickName = this._settings.NickName;
