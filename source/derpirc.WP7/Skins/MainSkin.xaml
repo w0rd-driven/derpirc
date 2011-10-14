@@ -9,6 +9,7 @@
                     xmlns:primitives="clr-namespace:Microsoft.Phone.Controls.Primitives;assembly=Microsoft.Phone.Controls"
                     xmlns:converters="clr-namespace:derpirc.Converters"
                     xmlns:helpers="clr-namespace:derpirc.Helpers"
+                    xmlns:localcontrols="clr-namespace:derpirc.Controls;assembly=derpirc.UICore"
                     xmlns:edc="clr-namespace:Microsoft.Expression.Controls;assembly=Microsoft.Expression.Drawing"
                     mc:Ignorable="d">
     <!-- Converters -->
@@ -351,4 +352,36 @@
     <ControlTemplate x:Key="PhoneDisabledTextBoxTemplate" TargetType="TextBox">
         <ContentControl x:Name="ContentElement" BorderThickness="0" HorizontalContentAlignment="Stretch" Margin="{StaticResource PhoneTextBoxInnerMargin}" Padding="{TemplateBinding Padding}" VerticalContentAlignment="Stretch"/>
     </ControlTemplate>
+    <!-- NavigationList -->
+    <Style TargetType="localcontrols:NavigationList">
+        <Setter Property="ItemTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <TextBlock Text="{Binding}"/>
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate>
+                    <localcontrols:ItemsControlEx x:Name="itemsControl"
+                        ItemsSource="{Binding Path=ItemsSource, RelativeSource={RelativeSource TemplatedParent}}"
+                        ItemTemplate="{Binding Path=ItemTemplate, RelativeSource={RelativeSource TemplatedParent}}">
+                        <localcontrols:ItemsControlEx.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <VirtualizingStackPanel Orientation="Vertical"/>
+                            </ItemsPanelTemplate>
+                        </localcontrols:ItemsControlEx.ItemsPanel>
+                        <localcontrols:ItemsControlEx.Template>
+                            <ControlTemplate>
+                                <ScrollViewer>
+                                    <ItemsPresenter/>
+                                </ScrollViewer>
+                            </ControlTemplate>
+                        </localcontrols:ItemsControlEx.Template>
+                    </localcontrols:ItemsControlEx>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 </ResourceDictionary>
