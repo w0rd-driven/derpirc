@@ -12,7 +12,7 @@ using Microsoft.Phone.Controls;
 
 namespace derpirc.ViewModels
 {
-    public class SettingsNetworkDetailViewModel : ViewModelBase
+    public class NetworkDetailViewModel : ViewModelBase
     {
         #region Commands
 
@@ -53,6 +53,16 @@ namespace derpirc.ViewModels
             {
                 return _pivotItemLoadedCommand ?? (_pivotItemLoadedCommand =
                     new RelayCommand<PivotItemEventArgs>(eventArgs => this.PivotItemLoaded(eventArgs)));
+            }
+        }
+
+        RelayCommand _saveCommand;
+        public RelayCommand SaveCommand
+        {
+            get
+            {
+                return _saveCommand ?? (_saveCommand =
+                    new RelayCommand(() => this.Save()));
             }
         }
 
@@ -288,8 +298,9 @@ namespace derpirc.ViewModels
         /// <summary>
         /// Initializes a new instance of the SettingsNetworkDetailViewModel class.
         /// </summary>
-        public SettingsNetworkDetailViewModel()
+        public NetworkDetailViewModel()
         {
+            CanAdd = true;
             _favoritesList = new ObservableCollection<Favorite>();
 
             if (IsInDesignMode)
@@ -329,6 +340,7 @@ namespace derpirc.ViewModels
         private void OnNavigatedFrom()
         {
             this.IsAppBarVisible = false;
+            Save();
         }
 
         private void PivotItemLoaded(PivotItemEventArgs eventArgs)
@@ -371,11 +383,16 @@ namespace derpirc.ViewModels
             }
         }
 
+        private void Save()
+        {
+            // TODO: Settings.Save();
+        }
+
         private void Add()
         {
             _favoritesList.Add(new Favorite()
             {
-                Name = "#(new)",
+                Name = "#new",
                 IsAutoConnect = true,
             });
             CanClear = true;

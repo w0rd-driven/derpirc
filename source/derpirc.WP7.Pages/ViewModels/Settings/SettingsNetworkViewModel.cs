@@ -191,7 +191,7 @@ namespace derpirc.ViewModels
             var uriString = string.Empty;
             if (item != null)
                 id = item.Id.ToString();
-            uriString = string.Format("/derpirc.Pages;component/Views/SettingsNetworkView.xaml?id={0}", Uri.EscapeUriString(id));
+            uriString = string.Format("/derpirc.Pages;component/Views/NetworkDetailView.xaml?id={0}", Uri.EscapeUriString(id));
             var uri = new Uri(uriString, UriKind.Relative);
             NavigationService.Navigate(uri);
         }

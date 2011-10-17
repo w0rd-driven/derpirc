@@ -506,52 +506,52 @@ namespace derpirc.ViewModels
 
         #endregion
 
-        #region SettingsNetworkDetailViewModel
+        #region NetworkDetailViewModel
 
-        private static SettingsNetworkDetailViewModel _settingsNetworkDetailViewModel;
+        private static NetworkDetailViewModel _networkDetailViewModel;
 
         /// <summary>
-        /// Gets the SettingsNetworkDetailViewModel property.
+        /// Gets the NetworkDetailViewModel property.
         /// </summary>
-        public static SettingsNetworkDetailViewModel SettingsNetworkDetailStatic
+        public static NetworkDetailViewModel NetworkDetailStatic
         {
             get
             {
-                if (_settingsNetworkDetailViewModel == null)
-                    CreateSettingsNetworkDetail();
+                if (_networkDetailViewModel == null)
+                    CreateNetworkDetail();
 
-                return _settingsNetworkDetailViewModel;
+                return _networkDetailViewModel;
             }
         }
 
         /// <summary>
-        /// Gets the SettingsNetworkDetailViewModel property.
+        /// Gets the NetworkDetailViewModel property.
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance",
             "CA1822:MarkMembersAsStatic",
             Justification = "This non-static member is needed for data binding purposes.")]
-        public SettingsNetworkDetailViewModel SettingsNetworkDetailViewModel
+        public NetworkDetailViewModel NetworkDetailViewModel
         {
-            get { return SettingsNetworkDetailStatic; }
+            get { return NetworkDetailStatic; }
         }
 
         /// <summary>
-        /// Provides a deterministic way to delete the SettingsNetworkDetailViewModel property.
+        /// Provides a deterministic way to delete the NetworkDetailViewModel property.
         /// </summary>
-        public static void ClearSettingsNetworkDetail()
+        public static void ClearNetworkDetail()
         {
-            if (_settingsNetworkDetailViewModel != null)
-                _settingsNetworkDetailViewModel.Cleanup();
-            _settingsNetworkDetailViewModel = null;
+            if (_networkDetailViewModel != null)
+                _networkDetailViewModel.Cleanup();
+            _networkDetailViewModel = null;
         }
 
         /// <summary>
-        /// Provides a deterministic way to create the SettingsNetworkDetailViewModel property.
+        /// Provides a deterministic way to create the NetworkDetailViewModel property.
         /// </summary>
-        public static void CreateSettingsNetworkDetail()
+        public static void CreateNetworkDetail()
         {
-            if (_settingsNetworkDetailViewModel == null)
-                _settingsNetworkDetailViewModel = new SettingsNetworkDetailViewModel();
+            if (_networkDetailViewModel == null)
+                _networkDetailViewModel = new NetworkDetailViewModel();
         }
 
         #endregion
@@ -691,7 +691,7 @@ namespace derpirc.ViewModels
             ClearSettings();
             ClearSettingsUser();
             ClearSettingsNetwork();
-            ClearSettingsNetworkDetail();
+            ClearNetworkDetail();
             ClearConnection();
             ClearAbout();
         }

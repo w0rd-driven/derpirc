@@ -16,12 +16,9 @@ namespace derpirc.Views
             InitializeComponent();
         }
 
-        SettingsNetworkDetailViewModel viewModel
+        NetworkDetailViewModel viewModel
         {
-            get
-            {
-                return this.DataContext as SettingsNetworkDetailViewModel;
-            }
+            get { return this.DataContext as NetworkDetailViewModel; }
         }
 
         protected override void OnNavigatedFrom(System.Windows.Navigation.NavigationEventArgs e)
@@ -34,6 +31,20 @@ namespace derpirc.Views
         {
             base.OnNavigatedTo(e);
             viewModel.NavigatedToCommand.Execute(NavigationContext.QueryString);
+        }
+
+        private void Pivot_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            var pivot = sender as Pivot;
+            switch (pivot.SelectedIndex)
+            {
+                case 0:
+                    break;
+                case 1:
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }

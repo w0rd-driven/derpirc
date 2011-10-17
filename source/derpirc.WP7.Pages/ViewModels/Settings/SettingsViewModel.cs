@@ -1,7 +1,9 @@
 ﻿using System.Windows;
+using System.Windows.Navigation;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
+using Microsoft.Phone.Controls;
 
 namespace derpirc.ViewModels
 {
@@ -19,13 +21,13 @@ namespace derpirc.ViewModels
             }
         }
 
-        RelayCommand _navigatedFromCommand;
-        public RelayCommand NavigatedFromCommand
+        RelayCommand<NavigationEventArgs> _navigatedFromCommand;
+        public RelayCommand<NavigationEventArgs> NavigatedFromCommand
         {
             get
             {
                 return _navigatedFromCommand ?? (_navigatedFromCommand =
-                    new RelayCommand(() => this.OnNavigatedFrom()));
+                    new RelayCommand<NavigationEventArgs>(eventArgs => this.OnNavigatedFrom(eventArgs)));
             }
         }
 
@@ -39,6 +41,16 @@ namespace derpirc.ViewModels
             }
         }
 
+        RelayCommand<PivotItemEventArgs> _pivotItemLoadedCommand;
+        public RelayCommand<PivotItemEventArgs> PivotItemLoadedCommand
+        {
+            get
+            {
+                return _pivotItemLoadedCommand ?? (_pivotItemLoadedCommand =
+                    new RelayCommand<PivotItemEventArgs>(eventArgs => this.PivotItemLoaded(eventArgs)));
+            }
+        }
+
         RelayCommand _unselectItemCommand;
         public RelayCommand UnselectItemCommand
         {
@@ -46,6 +58,16 @@ namespace derpirc.ViewModels
             {
                 return _unselectItemCommand ?? (_unselectItemCommand =
                     new RelayCommand(() => this.UnselectItem()));
+            }
+        }
+
+        RelayCommand _saveCommand;
+        public RelayCommand SaveCommand
+        {
+            get
+            {
+                return _saveCommand ?? (_saveCommand =
+                    new RelayCommand(() => this.Save()));
             }
         }
 
@@ -67,6 +89,20 @@ namespace derpirc.ViewModels
             }
         }
 
+        private bool _isAppBarVisible;
+        public bool IsAppBarVisible
+        {
+            get { return _isAppBarVisible; }
+            set
+            {
+                if (_isAppBarVisible == value)
+                    return;
+
+                _isAppBarVisible = value;
+                RaisePropertyChanged(() => IsAppBarVisible);
+            }
+        }
+
         #endregion
 
         /// <summary>
@@ -74,7 +110,6 @@ namespace derpirc.ViewModels
         /// </summary>
         public SettingsViewModel()
         {
-
             if (IsInDesignMode)
             {
                 // Code runs in Blend --> create design time data.
@@ -87,17 +122,44 @@ namespace derpirc.ViewModels
 
         private void OnNavigatedTo()
         {
-
+            IsAppBarVisible = true;
         }
 
-        private void OnNavigatedFrom()
+        private void OnNavigatedFrom(NavigationEventArgs eventArgs)
         {
+            if (eventArgs.NavigationMode == NavigationMode.New)
+                IsAppBarVisible = false;
+            Save();
+        }
 
+        private void PivotItemLoaded(PivotItemEventArgs eventArgs)
+        {
+            var pivotControl = eventArgs.Item.Parent as Pivot;
+            if (pivotControl != null)
+            {
+                switch (pivotControl.SelectedIndex)
+                {
+                    case 0:
+                        IsAppBarVisible = false;
+                        break;
+                    case 1:
+                        IsAppBarVisible = true;
+                        break;
+                    case 2:
+                        IsAppBarVisible = false;
+                        break;
+                }
+            }
         }
 
         private void UnselectItem()
         {
             this.MessengerInstance.Send(new NotificationMessage("Unselect"), "SelectedNetwork");
+        }
+
+        private void Save()
+        {
+            // TODO: Settings.Save();
         }
 
         public override void Cleanup()

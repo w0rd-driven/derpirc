@@ -17,7 +17,7 @@
                             SupportedOrientations="PortraitOrLandscape" Orientation="Portrait"
                             mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="696"
                             shell:SystemTray.IsVisible="True"
-                            DataContext="{Binding SettingsNetworkDetailViewModel, Source={StaticResource Locator}}">
+                            DataContext="{Binding NetworkDetailViewModel, Source={StaticResource Locator}}">
 
     <Grid x:Name="LayoutRoot" Background="Transparent">
         <blend:Interaction.Triggers>
@@ -96,25 +96,25 @@
     </Grid>
 
     <phone:PhoneApplicationPage.ApplicationBar>
-        <shell:ApplicationBar IsVisible="True" IsMenuEnabled="False">
+        <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True">
             <shell:ApplicationBar.Buttons>
                 <shell:ApplicationBarIconButton IconUri="/Icons/appbar.add.png" Text="add" />
                 <shell:ApplicationBarIconButton IconUri="/Icons/appbar.delete.png" Text="delete" />
-                <shell:ApplicationBarIconButton IconUri="/Icons/appbar.clear.png" Text="clear" />
             </shell:ApplicationBar.Buttons>
             <shell:ApplicationBar.MenuItems>
+                <shell:ApplicationBarMenuItem Text="clear" />
             </shell:ApplicationBar.MenuItems>
         </shell:ApplicationBar>
     </phone:PhoneApplicationPage.ApplicationBar>
     <blend:Interaction.Behaviors>
         <appbarutils:AppBarItemCommand Type="Button" Id="add" Command="{Binding AddCommand}" />
         <appbarutils:AppBarItemCommand Type="Button" Id="delete" Command="{Binding DeleteCommand}" />
-        <appbarutils:AppBarItemCommand Type="Button" Id="clear" Command="{Binding ClearCommand}" />
+        <appbarutils:AppBarItemCommand Type="MenuItem" Id="clear" Command="{Binding ClearCommand}" />
     </blend:Interaction.Behaviors>
     <blend:Interaction.Triggers>
         <appbarutils:AppBarItemTrigger Type="Button" Id="add" Text="add" IsEnabled="{Binding CanAdd}" />
         <appbarutils:AppBarItemTrigger Type="Button" Id="delete" Text="delete" IsEnabled="{Binding CanDelete}" />
-        <appbarutils:AppBarItemTrigger Type="Button" Id="clear" Text="clear" IsEnabled="{Binding CanClear}" />
+        <appbarutils:AppBarItemTrigger Type="MenuItem" Id="clear" Text="clear" IsEnabled="{Binding CanClear}" />
         <appbarutils:AppBarTrigger IsVisible="{Binding IsAppBarVisible}" />
     </blend:Interaction.Triggers>
 </phone:PhoneApplicationPage>

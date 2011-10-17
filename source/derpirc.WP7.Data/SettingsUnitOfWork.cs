@@ -41,6 +41,7 @@ namespace derpirc.Data
 
         public void WipeDatabase()
         {
+            IsolatedStorageSettings.ApplicationSettings.Clear();
             GenerateSystemData();
             Commit();
         }

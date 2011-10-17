@@ -27,6 +27,11 @@
         </blend:Interaction.Triggers>
 
         <controls:Pivot Style="{StaticResource SmallPivotStyle}" Margin="-2,0,2,0">
+            <blend:Interaction.Triggers>
+                <blend:EventTrigger EventName="LoadedPivotItem">
+                    <command:EventToCommand Command="{Binding PivotItemLoadedCommand}" PassEventArgsToCommand="True"/>
+                </blend:EventTrigger>
+            </blend:Interaction.Triggers>
             <controls:PivotItem Header="{Binding LocalizedResources.Settings, Source={StaticResource LocalizedStrings}}"
                                 Style="{StaticResource SmallPivotItemStyle}" DataContext="{Binding SettingsUserViewModel, Source={StaticResource Locator}}">
                 <ScrollViewer>
@@ -86,11 +91,23 @@
     <phone:PhoneApplicationPage.ApplicationBar>
         <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True">
             <shell:ApplicationBar.Buttons>
+                <shell:ApplicationBarIconButton IconUri="/Icons/appbar.add.png" Text="add" />
+                <shell:ApplicationBarIconButton IconUri="/Icons/appbar.delete.png" Text="delete" />
             </shell:ApplicationBar.Buttons>
             <shell:ApplicationBar.MenuItems>
+                <shell:ApplicationBarMenuItem Text="clear" />
             </shell:ApplicationBar.MenuItems>
         </shell:ApplicationBar>
     </phone:PhoneApplicationPage.ApplicationBar>
     <blend:Interaction.Behaviors>
+        <appbarutils:AppBarItemCommand Type="Button" Id="add" Command="{Binding AddCommand}" />
+        <appbarutils:AppBarItemCommand Type="Button" Id="delete" Command="{Binding DeleteCommand}" />
+        <appbarutils:AppBarItemCommand Type="MenuItem" Id="clear" Command="{Binding ClearCommand}" />
     </blend:Interaction.Behaviors>
+    <blend:Interaction.Triggers>
+        <appbarutils:AppBarItemTrigger Type="Button" Id="add" Text="add" IsEnabled="{Binding CanAdd}" />
+        <appbarutils:AppBarItemTrigger Type="Button" Id="delete" Text="delete" IsEnabled="{Binding CanDelete}" />
+        <appbarutils:AppBarItemTrigger Type="MenuItem" Id="clear" Text="clear" IsEnabled="{Binding CanClear}" />
+        <appbarutils:AppBarTrigger IsVisible="{Binding IsAppBarVisible}" />
+    </blend:Interaction.Triggers>
 </phone:PhoneApplicationPage>
