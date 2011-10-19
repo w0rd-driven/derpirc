@@ -171,7 +171,7 @@ namespace derpirc.Core
             if (clients != null)
                 foreach (var clientInfo in clients)
                 {
-                    var client = GetIrcClientByClientInfo(clientInfo);
+                    var client = GetClientByClientInfo(clientInfo);
                     this._sessionSupervisor.Disconnect(client);
                 }
             else
@@ -183,7 +183,7 @@ namespace derpirc.Core
             if (clients != null)
                 foreach (var clientInfo in clients)
                 {
-                    var client = GetIrcClientByClientInfo(clientInfo);
+                    var client = GetClientByClientInfo(clientInfo);
                     this._sessionSupervisor.Reconnect(client, force);
                 }
             else
@@ -323,6 +323,14 @@ namespace derpirc.Core
             return result;
         }
 
+        public ClientItem GetClientByClientInfo(ClientInfo summary)
+        {
+            var result = (from client in this._clients
+                          where client.Info.Id == summary.Id
+                          select client).FirstOrDefault();
+            return result;
+        }
+
         public IrcClient GetIrcClientByClientInfo(ClientInfo summary)
         {
             var result = (from client in this._clients
@@ -406,6 +414,17 @@ namespace derpirc.Core
                 Info = foundClient.Info,
             };
             this.OnClientStatusChanged(this, eventArgs);
+        }
+
+        public void UpdateClient(ClientItem client, IrcClient newClient)
+        {
+            var foundClient = this.Clients.Where(x => x.Info.Id == client.Info.Id).FirstOrDefault();
+            if (foundClient != null)
+            {
+                foundClient.Client.Dispose();
+                foundClient.Client = null;
+                foundClient.Client = newClient;
+            }
         }
 
         private void AttachLocalUser(IrcLocalUser localUser)

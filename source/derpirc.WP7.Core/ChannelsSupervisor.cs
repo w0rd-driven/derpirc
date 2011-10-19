@@ -28,16 +28,22 @@ namespace derpirc.Core
 
         public void AttachLocalUser(IrcLocalUser localUser)
         {
-            localUser.JoinedChannel += this.LocalUser_JoinedChannel;
-            localUser.LeftChannel += this.LocalUser_LeftChannel;
-            // localUser.InviteReceived 
+            if (localUser != null)
+            {
+                localUser.JoinedChannel += this.LocalUser_JoinedChannel;
+                localUser.LeftChannel += this.LocalUser_LeftChannel;
+                // localUser.InviteReceived
+            }
         }
 
         public void DetachLocalUser(IrcLocalUser localUser)
         {
-            localUser.JoinedChannel -= this.LocalUser_JoinedChannel;
-            localUser.LeftChannel -= this.LocalUser_LeftChannel;
-            // localUser.InviteReceived 
+            if (localUser != null)
+            {
+                localUser.JoinedChannel -= this.LocalUser_JoinedChannel;
+                localUser.LeftChannel -= this.LocalUser_LeftChannel;
+                // localUser.InviteReceived
+            }
         }
 
         #region UI-facing methods

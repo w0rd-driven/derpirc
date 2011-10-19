@@ -92,7 +92,7 @@ namespace derpirc.Core
                     var networks = this._session.Networks;
                     foreach (var item in networks)
                     {
-                        var client = this.InitializeClient();
+                        var client = this.InitializeClientItem();
                         client.Info.Id = item.Id;
                         client.Info.NetworkName = item.Name;
                         SupervisorFacade.Default.Clients.Add(client);
@@ -137,14 +137,22 @@ namespace derpirc.Core
             var clients = SupervisorFacade.Default.Clients.Where(x => x.Client.IsConnected);
             foreach (var item in clients)
             {
-                this.Disconnect(item.Client);
+                this.Disconnect(item);
             }
         }
 
-        public void Disconnect(IrcClient client)
+        public void Disconnect(ClientItem item)
         {
-            if (client.IsConnected)
-                client.Quit(this._quitTimeout, this._settings.QuitMessage);
+            if (item.Client != null)
+            {
+                if (item.Client.IsConnected)
+                    item.Client.Quit(this._quitTimeout, this._settings.QuitMessage);
+                //if (!item.Client.IsConnected)
+                //{
+                //    var newClient = InitializeIrcClient();
+                //    SupervisorFacade.Default.UpdateClient(item, newClient);
+                //}
+            }
         }
 
         public void Reconnect(bool force = false)
@@ -156,16 +164,16 @@ namespace derpirc.Core
             foreach (var item in clients)
             {
                 if (item.Client.IsConnected)
-                    this.Disconnect(item.Client);
+                    this.Disconnect(item);
                 this.Connect(item.Client);
             }
         }
 
-        public void Reconnect(IrcClient client, bool force = false)
+        public void Reconnect(ClientItem item, bool force = false)
         {
-            if (client.IsConnected)
-                this.Disconnect(client);
-            this.Connect(client);
+            if (item.Client.IsConnected)
+                this.Disconnect(item);
+            this.Connect(item.Client);
         }
 
         public void SetNickName(IMessage target, string nickName)
@@ -213,30 +221,44 @@ namespace derpirc.Core
                 return null;
         }
 
-        private ClientItem InitializeClient()
+        private ClientItem InitializeClientItem()
         {
             var result = new ClientItem();
-            result.Client.FloodPreventer = new IrcStandardFloodPreventer(4, 2000);
+
+            result.Client = InitializeIrcClient();
+            result.CtcpClient = InitializeCtcpClient(result.Client);
+
+            return result;
+        }
+
+        private IrcClient InitializeIrcClient()
+        {
+            var result = new IrcClient();
+            result.FloodPreventer = new IrcStandardFloodPreventer(4, 2000);
             // Connection events
-            result.Client.Connected += new EventHandler<EventArgs>(Client_Connected);
-            result.Client.Disconnected += new EventHandler<EventArgs>(Client_Disconnected);
-            result.Client.ServerBounce += new EventHandler<IrcServerInfoEventArgs>(Client_Bounce);
+            result.Connected += new EventHandler<EventArgs>(Client_Connected);
+            result.Disconnected += new EventHandler<EventArgs>(Client_Disconnected);
+            result.ServerBounce += new EventHandler<IrcServerInfoEventArgs>(Client_Bounce);
 
             // Failure events
-            result.Client.ConnectFailed += new EventHandler<IrcErrorEventArgs>(Client_ConnectFailed);
-            result.Client.ProtocolError += new EventHandler<IrcProtocolErrorEventArgs>(Client_ProtocolError);
-            result.Client.Error += new EventHandler<IrcErrorEventArgs>(Client_Error);
-            result.Client.ErrorMessageReceived += new EventHandler<IrcErrorMessageEventArgs>(Client_ErrorMessageReceived);
+            result.ConnectFailed += new EventHandler<IrcErrorEventArgs>(Client_ConnectFailed);
+            result.ProtocolError += new EventHandler<IrcProtocolErrorEventArgs>(Client_ProtocolError);
+            result.Error += new EventHandler<IrcErrorEventArgs>(Client_Error);
+            result.ErrorMessageReceived += new EventHandler<IrcErrorMessageEventArgs>(Client_ErrorMessageReceived);
 
             // Detection events
-            result.Client.Registered += new EventHandler<EventArgs>(Client_Registered);
-            result.Client.NetworkInformationReceived += new EventHandler<EventArgs>(Client_NetworkInformationReceived);
+            result.Registered += new EventHandler<EventArgs>(Client_Registered);
+            result.NetworkInformationReceived += new EventHandler<EventArgs>(Client_NetworkInformationReceived);
+            return result;
+        }
 
-            // Ctcp
-            result.CtcpClient.Error += new EventHandler<IrcErrorEventArgs>(CtcpClient_Error);
-            result.CtcpClient.ErrorMessageReceived += new EventHandler<CtcpErrorMessageReceivedEventArgs>(CtcpClient_ErrorMessageReceived);
-            result.CtcpClient.ActionReceived += new EventHandler<CtcpMessageEventArgs>(CtcpClient_ActionReceived);
-            result.CtcpClient.ActionSent += new EventHandler<CtcpMessageEventArgs>(CtcpClient_ActionSent);
+        private CtcpClient InitializeCtcpClient(IrcClient client)
+        {
+            var result = new CtcpClient(client);
+            result.Error += new EventHandler<IrcErrorEventArgs>(CtcpClient_Error);
+            result.ErrorMessageReceived += new EventHandler<CtcpErrorMessageReceivedEventArgs>(CtcpClient_ErrorMessageReceived);
+            result.ActionReceived += new EventHandler<CtcpMessageEventArgs>(CtcpClient_ActionReceived);
+            result.ActionSent += new EventHandler<CtcpMessageEventArgs>(CtcpClient_ActionSent);
             return result;
         }
 

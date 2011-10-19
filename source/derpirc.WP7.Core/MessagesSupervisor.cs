@@ -21,18 +21,24 @@ namespace derpirc.Core
 
         public void AttachLocalUser(IrcLocalUser localUser)
         {
-            localUser.NickNameChanged += this.LocalUser_NickNameChanged;
-            localUser.MessageReceived += this.LocalUser_MessageReceived;
-            localUser.NoticeReceived += this.LocalUser_NoticeReceived;
-            //localUser.MessageSent += this.LocalUser_MessageSent;
+            if (localUser != null)
+            {
+                localUser.NickNameChanged += this.LocalUser_NickNameChanged;
+                localUser.MessageReceived += this.LocalUser_MessageReceived;
+                localUser.NoticeReceived += this.LocalUser_NoticeReceived;
+                //localUser.MessageSent += this.LocalUser_MessageSent;
+            }
         }
 
         public void DetachLocalUser(IrcLocalUser localUser)
         {
-            localUser.NickNameChanged -= this.LocalUser_NickNameChanged;
-            localUser.MessageReceived -= this.LocalUser_MessageReceived;
-            localUser.NoticeReceived -= this.LocalUser_NoticeReceived;
-            //localUser.MessageSent -= this.LocalUser_MessageSent;
+            if (localUser != null)
+            {
+                localUser.NickNameChanged -= this.LocalUser_NickNameChanged;
+                localUser.MessageReceived -= this.LocalUser_MessageReceived;
+                localUser.NoticeReceived -= this.LocalUser_NoticeReceived;
+                //localUser.MessageSent -= this.LocalUser_MessageSent;
+            }
         }
 
         #region UI-facing methods
