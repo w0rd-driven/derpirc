@@ -81,6 +81,7 @@
     <Compile Include="NetworkStatusEventArgs.cs" />
     <Compile Include="NetworkType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SettingsSupervisor.cs" />
     <Compile Include="SupervisorFacade.cs" />
   </ItemGroup>
   <ItemGroup>

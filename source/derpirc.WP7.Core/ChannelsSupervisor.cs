@@ -30,12 +30,14 @@ namespace derpirc.Core
         {
             localUser.JoinedChannel += this.LocalUser_JoinedChannel;
             localUser.LeftChannel += this.LocalUser_LeftChannel;
+            // localUser.InviteReceived 
         }
 
         public void DetachLocalUser(IrcLocalUser localUser)
         {
             localUser.JoinedChannel -= this.LocalUser_JoinedChannel;
             localUser.LeftChannel -= this.LocalUser_LeftChannel;
+            // localUser.InviteReceived 
         }
 
         #region UI-facing methods
@@ -102,6 +104,20 @@ namespace derpirc.Core
             }
         }
 
+        public void SetTopic(IMessage target, string topic)
+        {
+            var channel = SupervisorFacade.Default.GetIrcChannelBySummary(target);
+            if (channel != null && !string.IsNullOrEmpty(topic))
+                channel.SetTopic(topic);
+        }
+
+        public void SetModes(IMessage target, string modes)
+        {
+            var channel = SupervisorFacade.Default.GetIrcChannelBySummary(target);
+            if (channel != null && !string.IsNullOrEmpty(modes))
+                channel.SetModes(modes);
+        }
+
         #endregion
 
         private void LocalUser_JoinedChannel(object sender, IrcChannelEventArgs e)
@@ -109,6 +125,8 @@ namespace derpirc.Core
             var localUser = sender as IrcLocalUser;
             e.Channel.MessageReceived += this.Channel_MessageReceived;
             e.Channel.NoticeReceived += this.Channel_NoticeReceived;
+            e.Channel.TopicChanged += this.Channel_TopicChanged;
+            e.Channel.ModesChanged += this.Channel_ModesChanged;
             this.JoinChannel(e.Channel);
         }
 
@@ -117,6 +135,8 @@ namespace derpirc.Core
             var localUser = sender as IrcLocalUser;
             e.Channel.MessageReceived -= this.Channel_MessageReceived;
             e.Channel.NoticeReceived -= this.Channel_NoticeReceived;
+            e.Channel.TopicChanged -= this.Channel_TopicChanged;
+            e.Channel.ModesChanged -= this.Channel_ModesChanged;
             this.LeaveChannel(e.Channel);
         }
 
@@ -177,6 +197,16 @@ namespace derpirc.Core
         {
             var channel = sender as IrcChannel;
             //OnChannelNoticeReceived(channel, e);
+        }
+
+        private void Channel_TopicChanged(object sender, IrcUserEventArgs e)
+        {
+            var channel = sender as IrcChannel;
+        }
+
+        private void Channel_ModesChanged(object sender, IrcUserEventArgs e)
+        {
+            var channel = sender as IrcChannel;
         }
 
         private void JoinChannel(IrcChannel channel)

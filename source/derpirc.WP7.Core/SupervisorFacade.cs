@@ -6,6 +6,7 @@ using derpirc.Data;
 using derpirc.Data.Models;
 using IrcDotNet;
 using Microsoft.Phone.Reactive;
+using IrcDotNet.Ctcp;
 
 namespace derpirc.Core
 {
@@ -55,6 +56,7 @@ namespace derpirc.Core
         private SessionSupervisor _sessionSupervisor;
         private ChannelsSupervisor _channelSupervisor;
         private MessagesSupervisor _messageSupervisor;
+        private SettingsSupervisor _settingSupervisor;
 
         // HACK: UI and internal facing
         public event EventHandler<NetworkStatusEventArgs> NetworkStatusChanged;
@@ -137,6 +139,7 @@ namespace derpirc.Core
             this._unitOfWork = new DataUnitOfWork();
             this._unitOfWorkSettings = new SettingsUnitOfWork();
 
+            this._settingSupervisor = new SettingsSupervisor(_unitOfWork, _unitOfWorkSettings);
             this._sessionSupervisor = new SessionSupervisor(_unitOfWork, _unitOfWorkSettings);
         }
 
@@ -145,6 +148,7 @@ namespace derpirc.Core
             this._sessionSupervisor = null;
             this._channelSupervisor = null;
             this._messageSupervisor = null;
+            this._settingSupervisor = null;
         }
 
         #region UI-facing methods
@@ -152,14 +156,38 @@ namespace derpirc.Core
         // ConnectionView
         public void Connect(ObservableCollection<ClientInfo> clients)
         {
+            if (clients != null)
+                foreach (var clientInfo in clients)
+                {
+                    var client = GetIrcClientByClientInfo(clientInfo);
+                    this._sessionSupervisor.Connect(client);
+                }
+            else
+                this._sessionSupervisor.Connect();
         }
 
         public void Disconnect(ObservableCollection<ClientInfo> clients)
         {
+            if (clients != null)
+                foreach (var clientInfo in clients)
+                {
+                    var client = GetIrcClientByClientInfo(clientInfo);
+                    this._sessionSupervisor.Disconnect(client);
+                }
+            else
+                this._sessionSupervisor.Disconnect();
         }
 
         public void Reconnect(ObservableCollection<ClientInfo> clients, bool force = false)
         {
+            if (clients != null)
+                foreach (var clientInfo in clients)
+                {
+                    var client = GetIrcClientByClientInfo(clientInfo);
+                    this._sessionSupervisor.Reconnect(client, force);
+                }
+            else
+                this._sessionSupervisor.Reconnect(force);
         }
 
         // *DetailsView
@@ -176,6 +204,26 @@ namespace derpirc.Core
         public void SendMessage(MessageItem message)
         {
             this._messageSupervisor.SendMessage(message);
+        }
+
+        public void SetNickName(IMessage target, string nickName)
+        {
+            this._sessionSupervisor.SetNickName(target, nickName);
+        }
+
+        public void SendAction(IMessage target, string message)
+        {
+            this._sessionSupervisor.SendAction(target, message);
+        }
+
+        public void SetTopic(IMessage target, string topic)
+        {
+            this._channelSupervisor.SetTopic(target, topic);
+        }
+
+        public void SetModes(IMessage target, string modes)
+        {
+            this._channelSupervisor.SetModes(target, modes);
         }
 
         #endregion
@@ -249,11 +297,45 @@ namespace derpirc.Core
 
         #region Lookup methods
 
-        public IrcLocalUser GetLocalUserBySummary(IMessage channel)
+        public IrcLocalUser GetLocalUserBySummary(IMessage summary)
         {
             var result = (from client in this._clients
-                          where client.Info.Id == channel.NetworkId
+                          where client.Info.Id == summary.NetworkId
                           select client.Client.LocalUser).FirstOrDefault();
+            return result;
+        }
+
+        public IrcChannel GetIrcChannelBySummary(IMessage summary)
+        {
+            var result = (from client in this._clients
+                          from channel in client.Client.Channels
+                          where client.Info.Id == summary.NetworkId
+                          where channel.Name == summary.Name
+                          select channel).FirstOrDefault();
+            return result;
+        }
+
+        public IrcClient GetIrcClientBySummary(IMessage summary)
+        {
+            var result = (from client in this._clients
+                          where client.Info.Id == summary.NetworkId
+                          select client.Client).FirstOrDefault();
+            return result;
+        }
+
+        public IrcClient GetIrcClientByClientInfo(ClientInfo summary)
+        {
+            var result = (from client in this._clients
+                          where client.Info.Id == summary.Id
+                          select client.Client).FirstOrDefault();
+            return result;
+        }
+
+        public CtcpClient GetCtcpClientBySummary(IMessage summary)
+        {
+            var result = (from client in this._clients
+                          where client.Info.Id == summary.NetworkId
+                          select client.CtcpClient).FirstOrDefault();
             return result;
         }
 
@@ -335,8 +417,10 @@ namespace derpirc.Core
 
         private void DetachLocalUser(IrcLocalUser localUser)
         {
-            this._channelSupervisor.DetachLocalUser(localUser);
-            this._messageSupervisor.DetachLocalUser(localUser);
+            if (this._channelSupervisor != null)
+                this._channelSupervisor.DetachLocalUser(localUser);
+            if (this._messageSupervisor != null)
+                this._messageSupervisor.DetachLocalUser(localUser);
         }
 
         public void Dispose()

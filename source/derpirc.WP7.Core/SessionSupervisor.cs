@@ -8,6 +8,7 @@ using System.Threading;
 using derpirc.Data;
 using derpirc.Data.Models;
 using IrcDotNet;
+using IrcDotNet.Ctcp;
 
 namespace derpirc.Core
 {
@@ -154,7 +155,38 @@ namespace derpirc.Core
 
             foreach (var item in clients)
             {
+                if (item.Client.IsConnected)
+                    this.Disconnect(item.Client);
                 this.Connect(item.Client);
+            }
+        }
+
+        public void Reconnect(IrcClient client, bool force = false)
+        {
+            if (client.IsConnected)
+                this.Disconnect(client);
+            this.Connect(client);
+        }
+
+        public void SetNickName(IMessage target, string nickName)
+        {
+            if (target != null)
+            {
+                var localUser = SupervisorFacade.Default.GetLocalUserBySummary(target);
+                if (localUser != null && !string.IsNullOrEmpty(nickName))
+                    localUser.SetNickName(nickName);
+            }
+        }
+
+        public void SendAction(IMessage target, string message)
+        {
+            if (target != null)
+            {
+                var client = SupervisorFacade.Default.GetCtcpClientBySummary(target);
+                if (client != null)
+                {
+                    //client.SendAction(target.Name, message);
+                }
             }
         }
 
@@ -170,7 +202,7 @@ namespace derpirc.Core
                 result.NickName = this._settings.NickName;
                 result.RealName = this._settings.FullName;
                 result.UserName = this._settings.Username;
-                if (this._settings.IsInvisible.HasValue && this._settings.IsInvisible.Value)
+                if (this._settings.IsInvisible)
                 {
                     result.UserModes = new Collection<char>();
                     result.UserModes.Add('i');
@@ -185,14 +217,26 @@ namespace derpirc.Core
         {
             var result = new ClientItem();
             result.Client.FloodPreventer = new IrcStandardFloodPreventer(4, 2000);
+            // Connection events
             result.Client.Connected += new EventHandler<EventArgs>(Client_Connected);
-            result.Client.ConnectFailed += new EventHandler<IrcErrorEventArgs>(Client_ConnectFailed);
             result.Client.Disconnected += new EventHandler<EventArgs>(Client_Disconnected);
+            result.Client.ServerBounce += new EventHandler<IrcServerInfoEventArgs>(Client_Bounce);
+
+            // Failure events
+            result.Client.ConnectFailed += new EventHandler<IrcErrorEventArgs>(Client_ConnectFailed);
+            result.Client.ProtocolError += new EventHandler<IrcProtocolErrorEventArgs>(Client_ProtocolError);
             result.Client.Error += new EventHandler<IrcErrorEventArgs>(Client_Error);
             result.Client.ErrorMessageReceived += new EventHandler<IrcErrorMessageEventArgs>(Client_ErrorMessageReceived);
+
+            // Detection events
             result.Client.Registered += new EventHandler<EventArgs>(Client_Registered);
             result.Client.NetworkInformationReceived += new EventHandler<EventArgs>(Client_NetworkInformationReceived);
-            result.Client.ServerBounce += new EventHandler<IrcServerInfoEventArgs>(Client_Bounce);
+
+            // Ctcp
+            result.CtcpClient.Error += new EventHandler<IrcErrorEventArgs>(CtcpClient_Error);
+            result.CtcpClient.ErrorMessageReceived += new EventHandler<CtcpErrorMessageReceivedEventArgs>(CtcpClient_ErrorMessageReceived);
+            result.CtcpClient.ActionReceived += new EventHandler<CtcpMessageEventArgs>(CtcpClient_ActionReceived);
+            result.CtcpClient.ActionSent += new EventHandler<CtcpMessageEventArgs>(CtcpClient_ActionSent);
             return result;
         }
 
@@ -245,6 +289,25 @@ namespace derpirc.Core
             // TODO: Intercept "Closing Link... " timeouts
         }
 
+        private void Client_ProtocolError(object sender, IrcProtocolErrorEventArgs e)
+        {
+            var client = sender as IrcClient;
+            if (e.Code == 433)
+            {
+                // Nick in use
+            }
+        }
+
+        private void CtcpClient_Error(object sender, IrcErrorEventArgs e)
+        {
+            var client = sender as CtcpClient;
+        }
+
+        private void CtcpClient_ErrorMessageReceived(object sender, IrcDotNet.Ctcp.CtcpErrorMessageReceivedEventArgs e)
+        {
+            var client = sender as CtcpClient;
+        }
+
         #endregion
 
         private void Client_Registered(object sender, EventArgs e)
@@ -257,6 +320,14 @@ namespace derpirc.Core
         {
             var client = sender as IrcClient;
             this.ProcessSession(client);
+        }
+
+        private void CtcpClient_ActionReceived(object sender, CtcpMessageEventArgs e)
+        {
+        }
+
+        private void CtcpClient_ActionSent(object sender, CtcpMessageEventArgs e)
+        {
         }
 
         private void ProcessSession(IrcClient client)

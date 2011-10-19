@@ -1,6 +1,7 @@
 ﻿using System;
 using GalaSoft.MvvmLight;
 using IrcDotNet;
+using IrcDotNet.Ctcp;
 
 namespace derpirc.Core
 {
@@ -8,11 +9,13 @@ namespace derpirc.Core
     {
         public ClientInfo Info { get; set; }
         public IrcClient Client { get; set; }
+        public CtcpClient CtcpClient { get; set; }
 
         public ClientItem()
         {
             Info = new ClientInfo();
             Client = new IrcClient();
+            CtcpClient = new CtcpClient(Client);
         }
     }
 }
