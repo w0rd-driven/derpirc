@@ -278,7 +278,7 @@ namespace derpirc.ViewModels
         private DateTime _lastRefreshMentions;
         private DateTime _lastRefreshMessages;
 
-        public MainViewModel() : this(new ApplicationFrameNavigationService(((App)Application.Current).RootFrame)) { }
+        public MainViewModel() : this(null) { }
 
         public MainViewModel(INavigationService navigationService)
         {
@@ -289,6 +289,12 @@ namespace derpirc.ViewModels
             if (IsInDesignMode)
             {
                 // Code runs in Blend --> create design time data.
+                _channelsList.Add(new ChannelViewModel());
+                _channelsList.Add(new ChannelViewModel());
+                _mentionsList.Add(new MentionViewModel());
+                _mentionsList.Add(new MentionViewModel());
+                _messagesList.Add(new MessageViewModel());
+                _messagesList.Add(new MessageViewModel());
             }
             else
             {

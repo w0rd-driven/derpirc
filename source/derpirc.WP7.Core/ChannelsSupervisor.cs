@@ -327,7 +327,6 @@ namespace derpirc.Core
             // Set values
             result.Timestamp = DateTime.Now;
             result.IsRead = false;
-            result.Summary = summary;
             result.Source = eventArgs.Source.Name;
             result.Text = eventArgs.Text;
             result.Type = messageType;
@@ -340,7 +339,6 @@ namespace derpirc.Core
             // Set values
             result.Timestamp = DateTime.Now;
             result.IsRead = false;
-            result.Summary = summary;
             // This is technically a target but why bother changing one property for one IMessage?
             if (eventArgs.Targets.Count >= 1)
                 result.Source = eventArgs.Targets[0].Name;

@@ -170,10 +170,7 @@ namespace derpirc.ViewModels
 
         #endregion
 
-        /// <summary>
-        /// Initializes a new instance of the ChannelSummaryViewModel class.
-        /// </summary>
-        public ChannelViewModel() : this(new Channel()) { }
+        public ChannelViewModel() : this(null) { }
 
         /// <summary>
         /// Initializes a new instance of the ChannelSummaryViewModel class.
@@ -183,23 +180,15 @@ namespace derpirc.ViewModels
             if (IsInDesignMode)
             {
                 // code runs in blend --> create design time data.
-                model.Name = "#test";
-                model.Topic = "This is a test topic";
-                var network = new Network()
-                {
-                    Name = "efnet",
-                    HostName = "irc.efnet.org",
-                };
-                model.Network = network;
-                model.LastItem = new ChannelItem()
-                {
-                    Summary = model,
-                    IsRead = false,
-                    Source = "w0rd-driven",
-                    Text = "urmom!",
-                    Timestamp = DateTime.Now,
-                };
-                model.UnreadCount = 20;
+                ChannelName = "#test";
+                NetworkName = "clefnet";
+                ChannelTopic = "This is a test topic";
+                UnreadCount = 20;
+
+                MessageIsRead = false;
+                MessageSource = "w0rd-driven" + " on " + "clefnet";
+                MessageText = "urmom!";
+                MessageTimestamp = DateTime.Now;
             }
             else
             {

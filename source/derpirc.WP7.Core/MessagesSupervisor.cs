@@ -154,7 +154,6 @@ namespace derpirc.Core
             // Set values
             result.Timestamp = DateTime.Now;
             result.IsRead = false;
-            result.Summary = summary;
             result.Text = eventArgs.Text;
             result.Type = messageType;
             return result;

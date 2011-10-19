@@ -158,7 +158,7 @@ namespace derpirc.ViewModels
         /// <summary>
         /// Initializes a new instance of the MessageSummaryViewModel class.
         /// </summary>
-        public MessageViewModel() : this(new Message()) { }
+        public MessageViewModel() : this(null) { }
 
         /// <summary>
         /// Initializes a new instance of the MessageSummaryViewModel class.
@@ -168,22 +168,14 @@ namespace derpirc.ViewModels
             if (IsInDesignMode)
             {
                 // code runs in blend --> create design time data.
-                model.Name = "w0rd-driven";
-                var network = new Network()
-                {
-                    Name = "efnet",
-                    HostName = "irc.efnet.org",
-                };
-                model.Network = network;
-                model.LastItem = new MessageItem()
-                {
-                    Summary = model,
-                    IsRead = false,
-                    Source = "w0rd-driven",
-                    Text = "urmom!",
-                    Timestamp = DateTime.Now,
-                };
-                model.UnreadCount = 4;
+                NickName = "w0rd-driven";
+                NetworkName = "clefnet";
+                UnreadCount = 4;
+
+                MessageIsRead = false;
+                MessageSource = "clefnet";
+                MessageText = "urmom!";
+                MessageTimestamp = DateTime.Now;
             }
             else
             {
