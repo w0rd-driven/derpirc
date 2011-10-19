@@ -15,7 +15,7 @@ namespace derpirc.Data.Models.Settings
 
         private string _Username;
 
-        private System.Nullable<bool> _IsInvisible;
+        private bool _IsInvisible;
 
         private string _QuitMessage;
 
@@ -117,7 +117,7 @@ namespace derpirc.Data.Models.Settings
             }
         }
 
-        public System.Nullable<bool> IsInvisible
+        public bool IsInvisible
         {
             get
             {

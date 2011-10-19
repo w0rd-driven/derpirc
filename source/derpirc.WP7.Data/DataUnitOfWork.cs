@@ -61,11 +61,14 @@ namespace derpirc.Data
 
         public bool DatabaseExists { get; set; }
         public ContextConnectionString ConnectionString { get; set; }
+        public DbState State { get; set; }
 
         #endregion
 
         //readonly DataContext _context;
         private DataContext _context;
+
+        #region Singleton Impl
 
         // Modified for http://www.yoda.arachsys.com/csharp/singleton.html #4. (Jon Skeet is a code machine)
         private static readonly DataUnitOfWork defaultInstance = new DataUnitOfWork();
@@ -82,6 +85,8 @@ namespace derpirc.Data
         {
         }
 
+        #endregion
+
         public DataUnitOfWork()
         {
             ConnectionString = new ContextConnectionString()
@@ -93,8 +98,26 @@ namespace derpirc.Data
 
         public void WipeDatabase()
         {
-            if (_context != null)
-                _context.DeleteDatabase();
+            if (State == DbState.Initialized && _context != null)
+            {
+                var isComplete = false;
+                State = DbState.WipePending;
+                try
+                {
+                    _context.DeleteDatabase();
+                    isComplete = true;
+                }
+                catch (System.IO.IOException)
+                {
+
+                }
+                catch (System.Exception)
+                {
+                    throw;
+                }
+                if (isComplete)
+                    InitializeDatabase(false);
+            }
         }
 
         public void InitializeDatabase(bool wipe)
@@ -105,6 +128,7 @@ namespace derpirc.Data
             var context = (_context as DataModelContainer);
             context.InitializeDatabase(wipe);
             DatabaseExists = context.DatabaseExists();
+            State = DbState.Initialized;
         }
 
         public void Commit()

@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
 
 namespace derpirc.Data.Models.Settings
 {
@@ -18,17 +18,22 @@ namespace derpirc.Data.Models.Settings
             return result;
         }
 
-        public static ObservableCollection<Network> CreateNetworks()
+        public static List<Network> CreateNetworks()
         {
-            var result = new ObservableCollection<Network>();
+            var result = new List<Network>();
 
             // Favorites
             var channel1 = new Favorite()
             {
-                Name = "#wp7",
+                Name = "#wp7test",
                 IsAutoConnect = true,
             };
             var channel2 = new Favorite()
+            {
+                Name = "#wp7",
+                IsAutoConnect = true,
+            };
+            var channel3 = new Favorite()
             {
                 Name = "#xna",
                 IsAutoConnect = true,
@@ -43,7 +48,6 @@ namespace derpirc.Data.Models.Settings
                 Ports = "6667",
             };
             item1.Favorites.Add(channel1);
-            item1.Favorites.Add(channel2);
             result.Add(item1);
             var item2 = new Network()
             {
@@ -53,8 +57,8 @@ namespace derpirc.Data.Models.Settings
                 HostName = "irc.node-3.net",
                 Ports = "6667",
             };
-            item2.Favorites.Add(channel1);
             item2.Favorites.Add(channel2);
+            item2.Favorites.Add(channel3);
             result.Add(item2);
 
             return result;

@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
 using System.IO.IsolatedStorage;
 using derpirc.Data.Models.Settings;
 
@@ -10,12 +10,12 @@ namespace derpirc.Data
 
         public Client Client { get; set; }
         public User User { get; set; }
-        public ObservableCollection<Network> Networks { get; set; }
-        public bool IsInitialized { get; set; }
+        public List<Network> Networks { get; set; }
+        public DbState State { get; set; }
 
         #endregion
 
-        #region Static Impl
+        #region Singleton Impl
 
         // Modified for http://www.yoda.arachsys.com/csharp/singleton.html #4. (Jon Skeet is a code machine)
         private static readonly SettingsUnitOfWork defaultInstance = new SettingsUnitOfWork();
@@ -41,9 +41,10 @@ namespace derpirc.Data
 
         public void WipeDatabase()
         {
+            State = DbState.WipePending;
             IsolatedStorageSettings.ApplicationSettings.Clear();
             GenerateSystemData();
-            Commit();
+            State = DbState.Initialized;
         }
 
         public void InitializeDatabase(bool wipe)
@@ -56,36 +57,27 @@ namespace derpirc.Data
         private void GetDefaultValues()
         {
             Client client;
-            ObservableCollection<Network> networks;
+            List<Network> networks;
             User user;
 
             IsolatedStorageSettings.ApplicationSettings.TryGetValue<Client>("client", out client);
-            IsolatedStorageSettings.ApplicationSettings.TryGetValue<ObservableCollection<Network>>("networks", out networks);
+            IsolatedStorageSettings.ApplicationSettings.TryGetValue<List<Network>>("networks", out networks);
             IsolatedStorageSettings.ApplicationSettings.TryGetValue<User>("user", out user);
 
+            // HACK: Settings data relies on all properties being set
             var isDataFound = false;
-            if (client != null)
-            {
+            if (client != null && networks != null && user != null)
                 isDataFound = true;
-                Client = client;
-            }
-            if (networks != null)
-            {
-                isDataFound = true;
-                Networks = networks;
-            }
-            if (user != null)
-            {
-                isDataFound = true;
-                User = user;
-            }
+
+            Client = client;
+            Networks = networks;
+            User = user;
+
             if (!isDataFound)
             {
                 GenerateSystemData();
-                Commit();
             }
-            else
-                IsInitialized = true;
+            State = DbState.Initialized;
         }
 
         public void Commit()
@@ -103,7 +95,7 @@ namespace derpirc.Data
             if (Networks != null)
             {
                 if (!IsolatedStorageSettings.ApplicationSettings.Contains("networks"))
-                    IsolatedStorageSettings.ApplicationSettings.Add("user", Networks);
+                    IsolatedStorageSettings.ApplicationSettings.Add("networks", Networks);
                 else
                 {
                     IsolatedStorageSettings.ApplicationSettings.Remove("networks");
@@ -128,6 +120,7 @@ namespace derpirc.Data
             Client = Factory.CreateClient();
             User = Factory.CreateUser();
             Networks = Factory.CreateNetworks();
+            Commit();
         }
 
         public void Dispose()
