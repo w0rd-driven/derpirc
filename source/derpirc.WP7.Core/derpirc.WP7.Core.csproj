@@ -70,16 +70,16 @@
     </Compile>
     <Compile Include="ChannelsSupervisor.cs" />
     <Compile Include="ChannelStatusEventArgs.cs" />
-    <Compile Include="ChannelStatusTypeEnum.cs" />
-    <Compile Include="ClientInfo.cs" />
-    <Compile Include="ClientItem.cs" />
-    <Compile Include="ClientStateEnum.cs" />
+    <Compile Include="Models\ChannelStatusTypeEnum.cs" />
+    <Compile Include="Models\ClientInfo.cs" />
+    <Compile Include="Models\ClientItem.cs" />
+    <Compile Include="Models\ClientStateEnum.cs" />
     <Compile Include="ClientStatusEventArgs.cs" />
     <Compile Include="MessageItemEventArgs.cs" />
     <Compile Include="MessagesSupervisor.cs" />
     <Compile Include="NetworkMonitor.cs" />
     <Compile Include="NetworkStatusEventArgs.cs" />
-    <Compile Include="NetworkType.cs" />
+    <Compile Include="Models\NetworkTypeEnum.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SettingsSupervisor.cs" />
     <Compile Include="SupervisorFacade.cs" />

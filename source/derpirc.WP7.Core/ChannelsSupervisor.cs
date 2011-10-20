@@ -224,7 +224,7 @@ namespace derpirc.Core
                 var eventArgs = new ChannelStatusEventArgs()
                 {
                     SummaryId = summary.Id,
-                    Status = ChannelStatusType.Join,
+                    Status = ChannelStatus.Join,
                 };
                 this.OnChannelJoined(eventArgs);
             }
@@ -239,7 +239,7 @@ namespace derpirc.Core
                 var eventArgs = new ChannelStatusEventArgs()
                 {
                     SummaryId = summary.Id,
-                    Status = ChannelStatusType.Leave,
+                    Status = ChannelStatus.Leave,
                 };
                 this.OnChannelLeft(eventArgs);
             }
