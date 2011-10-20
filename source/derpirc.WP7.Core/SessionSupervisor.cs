@@ -384,6 +384,7 @@ namespace derpirc.Core
                 var channels = network.Favorites.Where(x => x.IsAutoConnect == true).Select(x => x.Name).AsEnumerable();
                 if (channels.Any())
                     client.Channels.Join(channels);
+                // TODO: Recovery : Channel not joined (due to +k or +b)
             }
         }
 

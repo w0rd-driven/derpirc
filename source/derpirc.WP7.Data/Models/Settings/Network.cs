@@ -10,7 +10,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 
 namespace derpirc.Data.Models.Settings
@@ -170,7 +169,7 @@ namespace derpirc.Data.Models.Settings
             }
         }
 
-        public IList<Favorite> Favorites
+        public List<Favorite> Favorites
         {
             get
             {
@@ -180,7 +179,7 @@ namespace derpirc.Data.Models.Settings
             {
                 if (!ReferenceEquals(_Favorites, value))
                 {
-                    _Favorites = value as List<Favorite>;
+                    _Favorites = value;
                 }
             }
         }

@@ -282,15 +282,15 @@ namespace derpirc.Data.Models
         private void attach_MentionItems(MentionItem entity)
         {
             this.SendPropertyChanging();
-            InsertMessageCount(entity);
             entity.Summary = this;
+            InsertMessageCount(entity);
         }
 
         private void detach_MentionItems(MentionItem entity)
         {
             this.SendPropertyChanging();
-            RemoveMessageCount(entity);
             entity.Summary = null;
+            RemoveMessageCount(entity);
         }
 
         private void InsertMessageCount(MentionItem entity)

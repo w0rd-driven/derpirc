@@ -58,6 +58,7 @@ namespace derpirc.Core
                 // TODO: Error check: If localUser == null, alert UI/internals
                 if (localUser != null)
                 {
+                    // TODO: Recovery : Message not sent
                     localUser.SendMessage(summary.Name, message.Text);
 
                     // Add the source and MessageType at the last minute
@@ -89,6 +90,7 @@ namespace derpirc.Core
                 // TODO: Error check: If localUser == null, alert UI/internals
                 if (localUser != null)
                 {
+                    // TODO: Recovery : Message not sent
                     localUser.SendMessage(summary.ChannelName, GetMentionText(summary.Name, message.Text));
 
                     // Add the source and MessageType at the last minute

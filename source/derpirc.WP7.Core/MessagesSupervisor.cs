@@ -25,8 +25,9 @@ namespace derpirc.Core
             {
                 localUser.NickNameChanged += this.LocalUser_NickNameChanged;
                 localUser.MessageReceived += this.LocalUser_MessageReceived;
+                localUser.MessageSent += this.LocalUser_MessageSent;
                 localUser.NoticeReceived += this.LocalUser_NoticeReceived;
-                //localUser.MessageSent += this.LocalUser_MessageSent;
+                localUser.NoticeSent += this.LocalUser_NoticeSent;
             }
         }
 
@@ -36,8 +37,9 @@ namespace derpirc.Core
             {
                 localUser.NickNameChanged -= this.LocalUser_NickNameChanged;
                 localUser.MessageReceived -= this.LocalUser_MessageReceived;
+                localUser.MessageSent -= this.LocalUser_MessageSent;
                 localUser.NoticeReceived -= this.LocalUser_NoticeReceived;
-                //localUser.MessageSent -= this.LocalUser_MessageSent;
+                localUser.NoticeSent -= this.LocalUser_NoticeSent;
             }
         }
 
@@ -53,6 +55,7 @@ namespace derpirc.Core
                 // TODO: Error check: If localUser == null, alert UI/internals
                 if (localUser != null)
                 {
+                    // TODO: Recovery : Message not sent
                     localUser.SendMessage(summary.Name, message.Text);
 
                     // Add the source and MessageType at the last minute
@@ -104,6 +107,17 @@ namespace derpirc.Core
             }
         }
 
+        private void LocalUser_MessageSent(object sender, IrcMessageEventArgs e)
+        {
+            var localUser = sender as IrcLocalUser;
+            var targets = e.Targets;
+            foreach (var item in targets)
+            {
+                var record = item;
+            }
+            //OnLocalUserMessageSent(localUser, e);
+        }
+
         private void LocalUser_NickNameChanged(object sender, EventArgs e)
         {
             var localUser = sender as IrcLocalUser;
@@ -113,7 +127,35 @@ namespace derpirc.Core
         private void LocalUser_NoticeReceived(object sender, IrcMessageEventArgs e)
         {
             var localUser = sender as IrcLocalUser;
-            //OnLocalUserNoticeReceived(localUser, e);
+            var messageType = MessageType.Theirs;
+            if (e.Source is IrcUser)
+            {
+                messageType = MessageType.Theirs;
+            }
+
+            // TODO: Error check: If summary == null, alert UI/internals
+            var summary = this.GetMessageSummary(e.Source as IrcUser);
+            if (summary != null)
+            {
+                // HACK: This should never be null but just in case, keep an eye on it
+                var message = this.GetIrcMessage(summary, e, messageType);
+                summary.Messages.Add(message);
+                this._unitOfWork.Commit();
+
+                var eventArgs = new MessageItemEventArgs()
+                {
+                    NetworkId = summary.NetworkId,
+                    SummaryId = summary.Id,
+                    MessageId = message.Id,
+                };
+                this.OnMessageItemReceived(eventArgs);
+            }
+        }
+
+        private void LocalUser_NoticeSent(object sender, IrcMessageEventArgs e)
+        {
+            var localUser = sender as IrcLocalUser;
+            //OnLocalUserNoticeSent(localUser, e);
         }
 
         #region Events
