@@ -208,31 +208,12 @@ namespace derpirc.Data
             }
         }
 
-        public void InitializeDatabase(bool wipe)
-        {
-            using (IsolatedStorageFile iso = IsolatedStorageFile.GetUserStoreForApplication())
-            {
-                if (wipe)
-                    WipeDatabase(iso);
-                else
-                {
-                    if (iso.FileExists(FileName))
-                        return;
-                }
-
-                CreateDatabase();
-            }
-        }
-
         private new void CreateDatabase()
         {
             try
             {
                 // Generate the database (with structure) from the code-based data context
                 base.CreateDatabase();
-
-                // Populate the database with system data
-                GenerateSystemData();
             }
             catch (Exception ex)
             {
@@ -241,10 +222,23 @@ namespace derpirc.Data
             }
         }
 
-        public void WipeDatabase(IsolatedStorageFile iso)
+        public void WipeDatabase()
         {
-            if (iso.FileExists(FileName))
-                iso.DeleteFile(FileName);
+            using (IsolatedStorageFile iso = IsolatedStorageFile.GetUserStoreForApplication())
+            {
+                if (iso.FileExists(FileName))
+                {
+                    try
+                    {
+                        base.DeleteDatabase();
+                    }
+                    catch (Exception ex)
+                    {
+                        //MessageBox.Show("Error while creating the DB: " + ex.Message);
+                        System.Diagnostics.Debug.WriteLine("Error while deleting the DB: " + ex.Message);
+                    }
+                }
+            }
         }
 
         public bool DatabaseExists(bool overrideResult = false)
@@ -261,13 +255,6 @@ namespace derpirc.Data
             }
             else
                 return false;
-        }
-
-        private void GenerateSystemData()
-        {
-            var session = Factory.CreateSession();
-            this.Sessions.InsertOnSubmit(session);
-            this.SubmitChanges();
         }
 
         #endregion

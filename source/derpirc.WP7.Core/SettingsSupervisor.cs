@@ -12,12 +12,9 @@ namespace derpirc.Core
         private bool _isDisposed;
 
         private DataUnitOfWork _unitOfWork;
-        private SettingsUnitOfWork _unitOfWorkSettings;
-
-        public SettingsSupervisor(DataUnitOfWork unitOfWork, SettingsUnitOfWork unitOfWorkSettings)
+        public SettingsSupervisor(DataUnitOfWork unitOfWork)
         {
             this._unitOfWork = unitOfWork;
-            this._unitOfWorkSettings = unitOfWorkSettings;
         }
 
         public void Dispose()

@@ -137,10 +137,9 @@ namespace derpirc.Core
                     this.OnNetworkStatusChanged(this, eventArgs);
                 });
             this._unitOfWork = new DataUnitOfWork();
-            this._unitOfWorkSettings = new SettingsUnitOfWork();
 
-            this._settingSupervisor = new SettingsSupervisor(_unitOfWork, _unitOfWorkSettings);
-            this._sessionSupervisor = new SessionSupervisor(_unitOfWork, _unitOfWorkSettings);
+            this._settingSupervisor = new SettingsSupervisor(_unitOfWork);
+            this._sessionSupervisor = new SessionSupervisor(_unitOfWork);
         }
 
         private void Shutdown()

@@ -475,46 +475,39 @@ namespace derpirc.ViewModels
         {
             //_unitOfWork = new DataUnitOfWork();
             _unitOfWork = DataUnitOfWork.Default;
-            // HACK: Test First Init
-            _unitOfWork.WipeDatabase();
-            _unitOfWork.InitializeDatabase(false);
-            var isExisting = _unitOfWork.DatabaseExists;
-            if (isExisting)
+
+            var channels = _unitOfWork.Channels.FindAll().ToList();
+            var mentions = _unitOfWork.Mentions.FindAll().ToList();
+            var messages = _unitOfWork.Messages.FindAll().ToList();
+
+            DispatcherHelper.CheckBeginInvokeOnUI(() =>
             {
-                var channels = _unitOfWork.Channels.FindAll().ToList();
-                var mentions = _unitOfWork.Mentions.FindAll().ToList();
-                var messages = _unitOfWork.Messages.FindAll().ToList();
-
-                DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                ProgressIndeterminate = true;
+                ProgressText = "Loading from database";
+                foreach (var item in channels)
                 {
-                    ProgressIndeterminate = true;
-                    ProgressText = "Loading from database";
+                    var itemSummary = new ChannelViewModel(item);
+                    _channelsList.Add(itemSummary);
+                }
+                _lastRefreshChannels = DateTime.Now;
 
-                    foreach (var item in channels)
-                    {
-                        var itemSummary = new ChannelViewModel(item);
-                        _channelsList.Add(itemSummary);
-                    }
-                    _lastRefreshChannels = DateTime.Now;
+                foreach (var item in mentions)
+                {
+                    var itemSummary = new MentionViewModel(item);
+                    _mentionsList.Add(itemSummary);
+                }
+                _lastRefreshMentions = DateTime.Now;
 
-                    foreach (var item in mentions)
-                    {
-                        var itemSummary = new MentionViewModel(item);
-                        _mentionsList.Add(itemSummary);
-                    }
-                    _lastRefreshMentions = DateTime.Now;
+                foreach (var item in messages)
+                {
+                    var itemSummary = new MessageViewModel(item);
+                    _messagesList.Add(itemSummary);
+                }
+                _lastRefreshMessages = DateTime.Now;
 
-                    foreach (var item in messages)
-                    {
-                        var itemSummary = new MessageViewModel(item);
-                        _messagesList.Add(itemSummary);
-                    }
-                    _lastRefreshMessages = DateTime.Now;
-
-                    ProgressIndeterminate = false;
-                    ProgressText = string.Empty;
-                });
-            }
+                ProgressIndeterminate = false;
+                ProgressText = string.Empty;
+            });
         }
 
         private void RootLoaded(FrameworkElement sender)

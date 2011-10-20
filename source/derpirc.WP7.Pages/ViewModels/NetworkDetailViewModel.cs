@@ -373,9 +373,12 @@ namespace derpirc.ViewModels
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
                     _favoritesList.Clear();
-                    foreach (var item in model.Favorites)
+                    if (model.Favorites != null)
                     {
-                        _favoritesList.Add(item);
+                        foreach (var item in model.Favorites)
+                        {
+                            _favoritesList.Add(item);
+                        }
                     }
                     if (_favoritesList.Count > 0)
                         CanClear = true;

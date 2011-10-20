@@ -36,7 +36,8 @@ namespace derpirc.Data
 
         public SettingsUnitOfWork()
         {
-            InitializeDatabase(true);
+            //WipeDatabase();
+            GetDefaultValues();
         }
 
         public void WipeDatabase()
@@ -45,13 +46,6 @@ namespace derpirc.Data
             IsolatedStorageSettings.ApplicationSettings.Clear();
             GenerateSystemData();
             State = DbState.Initialized;
-        }
-
-        public void InitializeDatabase(bool wipe)
-        {
-            if (wipe)
-                WipeDatabase();
-            GetDefaultValues();
         }
 
         private void GetDefaultValues()
@@ -121,10 +115,6 @@ namespace derpirc.Data
             User = Factory.CreateUser();
             Networks = Factory.CreateNetworks();
             Commit();
-        }
-
-        public void Dispose()
-        {
         }
     }
 }

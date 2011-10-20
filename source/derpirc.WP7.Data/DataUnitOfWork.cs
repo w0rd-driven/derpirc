@@ -1,9 +1,10 @@
-﻿using System.Data.Linq;
+﻿using System;
+using System.Data.Linq;
 using derpirc.Data.Models;
 
 namespace derpirc.Data
 {
-    public class DataUnitOfWork : IUnitOfWork
+    public class DataUnitOfWork : IUnitOfWork, IDisposable
     {
         #region Properties
 
@@ -59,13 +60,11 @@ namespace derpirc.Data
 
         #endregion
 
-        public bool DatabaseExists { get; set; }
         public ContextConnectionString ConnectionString { get; set; }
         public DbState State { get; set; }
 
         #endregion
 
-        //readonly DataContext _context;
         private DataContext _context;
 
         #region Singleton Impl
@@ -88,12 +87,14 @@ namespace derpirc.Data
         #endregion
 
         public DataUnitOfWork()
+            : this(new ContextConnectionString() { ConnectionString = "isostore:/IRC.sdf" })
         {
-            ConnectionString = new ContextConnectionString()
-            {
-                ConnectionString = "isostore:/IRC.sdf",
-            };
-            InitializeDatabase(false);
+        }
+
+        public DataUnitOfWork(ContextConnectionString connectionString)
+        {
+            ConnectionString = connectionString;
+            InitializeDatabase();
         }
 
         public void WipeDatabase()
@@ -102,32 +103,22 @@ namespace derpirc.Data
             {
                 var isComplete = false;
                 State = DbState.WipePending;
-                try
-                {
-                    _context.DeleteDatabase();
-                    isComplete = true;
-                }
-                catch (System.IO.IOException)
-                {
-
-                }
-                catch (System.Exception)
-                {
-                    throw;
-                }
+                var context = (_context as DataModelContainer);
+                context.WipeDatabase();
+                isComplete = true;
                 if (isComplete)
-                    InitializeDatabase(false);
+                    InitializeDatabase();
             }
         }
 
-        public void InitializeDatabase(bool wipe)
+        private void InitializeDatabase()
         {
             var connectionString = ConnectionString.ToString();
             if (_context == null)
                 _context = new DataModelContainer(connectionString);
             var context = (_context as DataModelContainer);
-            context.InitializeDatabase(wipe);
-            DatabaseExists = context.DatabaseExists();
+            context.InitializeDatabase();
+            GenerateSystemData();
             State = DbState.Initialized;
         }
 
@@ -145,6 +136,13 @@ namespace derpirc.Data
             {
                 throw;
             }
+        }
+
+        private void GenerateSystemData()
+        {
+            var session = Factory.CreateSession();
+            this.Sessions.Add(session);
+            this.Commit();
         }
 
         public void Dispose()

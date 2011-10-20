@@ -9,7 +9,7 @@ namespace derpirc.Data.Models.Settings
 
         private string _Name;
 
-        private System.Nullable<bool> _IsAutoConnect;
+        private bool _IsAutoConnect;
 
         private string _Password;
 
@@ -48,7 +48,7 @@ namespace derpirc.Data.Models.Settings
             }
         }
 
-        public System.Nullable<bool> IsAutoConnect
+        public bool IsAutoConnect
         {
             get
             {

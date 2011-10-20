@@ -29,7 +29,6 @@ namespace derpirc.Core
         private int _quitTimeout = 1000;
 
         private DataUnitOfWork _unitOfWork;
-        private SettingsUnitOfWork _unitOfWorkSettings;
 
         private Session _session;
         private Data.Models.Settings.User _settings;
@@ -42,11 +41,9 @@ namespace derpirc.Core
         // PowerPrecision: Welcome to the $server IRC Network $nick!$email@$host
         private static readonly Regex _welcomeRegex = new Regex("^.*?Welcome to the (.*?) (IRC|Internet Relay Chat) Network (.*)", RegexOptions.Compiled);
 
-        public SessionSupervisor(DataUnitOfWork unitOfWork, SettingsUnitOfWork unitOfWorkSettings)
+        public SessionSupervisor(DataUnitOfWork unitOfWork)
         {
             this._unitOfWork = unitOfWork;
-            this._unitOfWorkSettings = unitOfWorkSettings;
-
             this._worker = new BackgroundWorker();
             this._worker.DoWork += new DoWorkEventHandler(DeferStartupWork);
 
@@ -204,7 +201,7 @@ namespace derpirc.Core
         {
             var result = new IrcUserRegistrationInfo();
 
-            this._settings = this._unitOfWorkSettings.User;
+            this._settings = SettingsUnitOfWork.Default.User;
             if (this._settings != null)
             {
                 result.NickName = this._settings.NickName;

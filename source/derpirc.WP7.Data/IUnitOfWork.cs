@@ -2,10 +2,8 @@
 
 namespace derpirc.Data
 {
-    public interface IUnitOfWork : IDisposable
+    public interface IUnitOfWork
     {
         void Commit();
-        void InitializeDatabase(bool wipe);
-        void WipeDatabase();
     }
 }

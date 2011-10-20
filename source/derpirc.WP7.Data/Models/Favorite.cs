@@ -26,7 +26,7 @@ namespace derpirc.Data.Models
 
         private string _Name;
 
-        private System.Nullable<bool> _IsAutoConnect;
+        private bool _IsAutoConnect;
 
         private string _Password;
 
@@ -115,7 +115,7 @@ namespace derpirc.Data.Models
         }
 
         [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_IsAutoConnect", DbType = "Bit")]
-        public System.Nullable<bool> IsAutoConnect
+        public bool IsAutoConnect
         {
             get
             {
