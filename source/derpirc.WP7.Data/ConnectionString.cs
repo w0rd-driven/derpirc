@@ -27,10 +27,11 @@ namespace derpirc.Data
 
         public ContextConnectionString()
         {
+            DataSource = "isostore:/IRC.sdf";
             FileMode = FileMode.Default;
         }
 
-        public string ToString()
+        public new string ToString()
         {
             var result = string.Empty;
 

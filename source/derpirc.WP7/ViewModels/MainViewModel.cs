@@ -473,8 +473,11 @@ namespace derpirc.ViewModels
 
         private void LoadInitialView()
         {
-            //_unitOfWork = new DataUnitOfWork();
-            _unitOfWork = DataUnitOfWork.Default;
+            _unitOfWork = new DataUnitOfWork(new ContextConnectionString()
+            {
+                FileMode = FileMode.ReadOnly,
+            });
+            //_unitOfWork = DataUnitOfWork.Default;
 
             var channels = _unitOfWork.Channels.FindAll().ToList();
             var mentions = _unitOfWork.Mentions.FindAll().ToList();

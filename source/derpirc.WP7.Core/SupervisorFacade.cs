@@ -48,7 +48,6 @@ namespace derpirc.Core
         private BackgroundWorker _worker;
 
         private DataUnitOfWork _unitOfWork;
-        private SettingsUnitOfWork _unitOfWorkSettings;
 
         private NetworkMonitor _networkMonitor;
         private IDisposable _statusObserver;

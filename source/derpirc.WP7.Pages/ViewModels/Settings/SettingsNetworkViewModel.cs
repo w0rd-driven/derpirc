@@ -7,6 +7,7 @@ using derpirc.Data.Models.Settings;
 using derpirc.Helpers;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Messaging;
+using derpirc.Core;
 
 namespace derpirc.ViewModels
 {
@@ -188,6 +189,7 @@ namespace derpirc.ViewModels
         {
             SettingsUnitOfWork.Default.Networks = _networksList.ToList();
             SettingsUnitOfWork.Default.Commit(CommitType.Session);
+            SupervisorFacade.Default.CommitSettings();
         }
 
         public override void Cleanup()

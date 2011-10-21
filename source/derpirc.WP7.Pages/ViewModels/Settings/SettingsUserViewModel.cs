@@ -2,6 +2,7 @@
 using derpirc.Data.Models.Settings;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Messaging;
+using derpirc.Core;
 
 namespace derpirc.ViewModels
 {
@@ -169,6 +170,7 @@ namespace derpirc.ViewModels
             SettingsUnitOfWork.Default.User.IsInvisible = this.IsInvisible;
             SettingsUnitOfWork.Default.User.QuitMessage = this.QuitMessage;
             SettingsUnitOfWork.Default.Commit(CommitType.User);
+            SupervisorFacade.Default.CommitSettings();
         }
 
         public override void Cleanup()

@@ -87,7 +87,7 @@ namespace derpirc.Data
         #endregion
 
         public DataUnitOfWork()
-            : this(new ContextConnectionString() { ConnectionString = "isostore:/IRC.sdf" })
+            : this(new ContextConnectionString())
         {
         }
 
