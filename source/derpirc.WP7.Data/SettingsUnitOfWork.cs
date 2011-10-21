@@ -35,9 +35,14 @@ namespace derpirc.Data
 
         #endregion
 
-        public SettingsUnitOfWork()
+        public SettingsUnitOfWork() : this(false)
         {
-            //WipeDatabase();
+        }
+
+        public SettingsUnitOfWork(bool wipeBeforeUse)
+        {
+            if (wipeBeforeUse)
+                WipeDatabase();
             GetDefaultValues();
         }
 
@@ -85,36 +90,35 @@ namespace derpirc.Data
 
         public void Commit(CommitType type)
         {
+            var keyName = string.Empty;
             switch (type)
             {
                 case CommitType.User:
-                    if (User != null)
-                    {
-                        if (!IsolatedStorageSettings.ApplicationSettings.Contains("user"))
-                            IsolatedStorageSettings.ApplicationSettings.Add("user", User);
-                        else
-                        {
-                            IsolatedStorageSettings.ApplicationSettings.Remove("user");
-                            IsolatedStorageSettings.ApplicationSettings.Add("user", User);
-                        }
-                    }
+                    keyName = "user";
+                    SaveObject(type, keyName, User);
                     break;
                 case CommitType.Session:
-                    if (Session != null)
-                    {
-                        if (!IsolatedStorageSettings.ApplicationSettings.Contains("session"))
-                            IsolatedStorageSettings.ApplicationSettings.Add("session", Session);
-                        else
-                        {
-                            IsolatedStorageSettings.ApplicationSettings.Remove("session");
-                            IsolatedStorageSettings.ApplicationSettings.Add("session", Session);
-                        }
-                    }
+                    keyName = "session";
+                    SaveObject(type, keyName, Session);
                     break;
                 default:
                     break;
             }
-            IsolatedStorageSettings.ApplicationSettings.Save();
+        }
+
+        private void SaveObject(CommitType type, string keyName, object setting)
+        {
+            if (!string.IsNullOrEmpty(keyName))
+            {
+                if (!IsolatedStorageSettings.ApplicationSettings.Contains(keyName))
+                    IsolatedStorageSettings.ApplicationSettings.Add(keyName, setting);
+                else
+                {
+                    IsolatedStorageSettings.ApplicationSettings.Remove(keyName);
+                    IsolatedStorageSettings.ApplicationSettings.Add(keyName, setting);
+                }
+                IsolatedStorageSettings.ApplicationSettings.Save();
+            }
         }
 
         private void GenerateSystemData()
