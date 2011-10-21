@@ -129,7 +129,7 @@ namespace derpirc.ViewModels
 
         private void Load()
         {
-            var networks = SettingsUnitOfWork.Default.Networks;
+            var networks = SettingsUnitOfWork.Default.Session.Networks;
             _networksList.Clear();
             foreach (var item in networks)
             {
@@ -187,8 +187,9 @@ namespace derpirc.ViewModels
 
         private void Save()
         {
-            SettingsUnitOfWork.Default.Networks = _networksList.ToList();
-            SettingsUnitOfWork.Default.Commit(CommitType.Session);
+            var session = new Session() { Name = "config" };
+            session.Networks = _networksList.ToList();
+            SettingsUnitOfWork.Default.Session = session;
             SupervisorFacade.Default.CommitSettings();
         }
 

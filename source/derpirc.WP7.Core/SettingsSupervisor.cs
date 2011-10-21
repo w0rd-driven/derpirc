@@ -1,11 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using derpirc.Data;
 using derpirc.Data.Models;
-using System.Collections.Generic;
 
 namespace derpirc.Core
 {
+    /// <summary>
+    /// Responsible for converting settings session to running state
+    /// </summary>
     public class SettingsSupervisor : IDisposable
     {
         #region Properties
@@ -21,6 +24,9 @@ namespace derpirc.Core
             this._unitOfWork = unitOfWork;
         }
 
+        /// <summary>
+        /// Workhorse responsible for synchronizing configured and running sessions
+        /// </summary>
         private void ConfigureRunningState()
         {
             Session newSession = null;
@@ -63,6 +69,9 @@ namespace derpirc.Core
             PurgeOrphans();
         }
 
+        /// <summary>
+        /// Remove any stale channel or network logs
+        /// </summary>
         private void PurgeOrphans()
         {
             List<int> networksToSmash = new List<int>();
@@ -142,9 +151,11 @@ namespace derpirc.Core
 
         #endregion
 
+        /// <summary>
+        /// Calls private ConfigureRunningState() and PurgeOrphans() methods
+        /// </summary>
         public void Commit()
         {
-            SettingsUnitOfWork.Default.Commit();
             ConfigureRunningState();
         }
 

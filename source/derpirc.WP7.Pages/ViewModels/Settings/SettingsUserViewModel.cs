@@ -163,14 +163,15 @@ namespace derpirc.ViewModels
 
         private void Save()
         {
-            SettingsUnitOfWork.Default.User.NickName = this.NickName;
-            SettingsUnitOfWork.Default.User.NickNameAlternate = this.NickNameAlt;
-            SettingsUnitOfWork.Default.User.FullName = this.FullName;
-            SettingsUnitOfWork.Default.User.Username = this.Username;
-            SettingsUnitOfWork.Default.User.IsInvisible = this.IsInvisible;
-            SettingsUnitOfWork.Default.User.QuitMessage = this.QuitMessage;
-            SettingsUnitOfWork.Default.Commit(CommitType.User);
-            SupervisorFacade.Default.CommitSettings();
+            var newRecord = new User();
+            newRecord.NickName = this.NickName;
+            newRecord.NickNameAlternate = this.NickNameAlt;
+            newRecord.FullName = this.FullName;
+            newRecord.Username = this.Username;
+            newRecord.IsInvisible = this.IsInvisible;
+            newRecord.QuitMessage = this.QuitMessage;
+            SettingsUnitOfWork.Default.User = newRecord;
+            newRecord = null;
         }
 
         public override void Cleanup()

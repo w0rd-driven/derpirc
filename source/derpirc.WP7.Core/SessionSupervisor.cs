@@ -31,7 +31,6 @@ namespace derpirc.Core
 
         private DataUnitOfWork _unitOfWork;
 
-        private Session _session;
         private Data.Models.Settings.User _settings;
         private IrcRegistrationInfo _registrationData;
 
@@ -86,9 +85,7 @@ namespace derpirc.Core
 
                 if (session != null)
                 {
-                    this._session = session;
-                    var networks = this._session.Networks;
-                    foreach (var item in networks)
+                    foreach (var item in session.Networks)
                     {
                         var client = this.InitializeClientItem();
                         client.Info.Id = item.Id;
@@ -315,6 +312,7 @@ namespace derpirc.Core
             if (e.Code == 433)
             {
                 // Nick in use
+                NickCollision(client);
             }
         }
 
@@ -382,11 +380,30 @@ namespace derpirc.Core
         {
             if (network != null)
             {
-                var channels = network.Favorites.Where(x => x.IsAutoConnect == true).Select(x => x.Name).AsEnumerable();
+                var channels = network.Favorites.Where(x => x.IsAutoConnect == true)
+                    .Select(x => new Tuple<string, string>(x.Name, x.Password)).AsEnumerable();
                 if (channels.Any())
                     client.Channels.Join(channels);
                 // TODO: Recovery : Channel not joined (due to +k or +b)
             }
+        }
+
+        private void NickCollision(IrcClient client)
+        {
+            var foundClient = SupervisorFacade.Default.GetClientByIrcClient(client);
+
+            var nickNameAlternate = string.Empty;
+            if (foundClient.Info.NickNameRetryCount == 0)
+                nickNameAlternate = _settings.NickNameAlternate;
+            else
+            {
+                var suffix = foundClient.Info.NickNameRetryCount.ToString();
+                nickNameAlternate = client.LocalUser.NickName
+                    .Substring(0, client.LocalUser.NickName.Length - suffix.Length) + suffix;
+            }
+
+            client.LocalUser.SetNickName(nickNameAlternate);
+            foundClient.Info.NickNameRetryCount++;
         }
 
         #region Lookup methods
@@ -408,33 +425,26 @@ namespace derpirc.Core
         public List<Network> GetNetworks()
         {
             List<Network> result;
-            if (this._session != null && this._session.Networks != null)
-                result = this._session.Networks.ToList();
-            else
-                result = null;
-
+            var session = GetDefaultSession();
+            result = session.Networks.ToList();
             return result;
         }
 
         public Network GetNetworkByName(string networkName)
         {
             Network result;
-            if (this._session != null && this._session.Networks != null)
-                result = this._session.Networks.FirstOrDefault(x => x.Name == networkName.ToLower());
-            else
-                result = null;
+            var session = GetDefaultSession();
+            result = session.Networks.FirstOrDefault(x => x.Name == networkName.ToLower());
             return result;
         }
 
         public Network GetNetworkByClient(IrcClient client)
         {
             Network result;
-            if (this._session != null && this._session.Networks != null)
-            {
-                var foundClient = SupervisorFacade.Default.GetClientByIrcClient(client);
-                var network = this._session.Networks.FirstOrDefault(x => x.Id == foundClient.Info.Id);
-                result = network;
-            }
+            var session = GetDefaultSession();
+            var foundClient = SupervisorFacade.Default.GetClientByIrcClient(client);
+            if (foundClient != null)
+                result = session.Networks.FirstOrDefault(x => x.Id == foundClient.Info.Id);
             else
                 result = null;
             return result;

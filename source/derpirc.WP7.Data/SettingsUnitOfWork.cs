@@ -4,15 +4,44 @@ using derpirc.Data.Models.Settings;
 
 namespace derpirc.Data
 {
-    public class SettingsUnitOfWork : IUnitOfWork
+    public class SettingsUnitOfWork
     {
+        const string _userKeyName = "user";
+        const string _sessionKeyName = "session";
+
+        private IsolatedStorageSettings _settings;
+
         #region Properties
 
-        public Client Client { get; set; }
-        public User User { get; set; }
-        public Session Session { get; set; }
-        public List<Network> Networks { get; set; }
-        public DbState State { get; set; }
+        public User User
+        {
+            get
+            {
+                return GetValueOrDefault<User>(_userKeyName, Factory.CreateUser());
+            }
+            set
+            {
+                if (AddOrUpdateValue(_userKeyName, value))
+                {
+                    Save();
+                }
+            }
+        }
+
+        public Session Session
+        {
+            get
+            {
+                return GetValueOrDefault<Session>(_sessionKeyName, Factory.CreateSession());
+            }
+            set
+            {
+                if (AddOrUpdateValue(_sessionKeyName, value))
+                {
+                    Save();
+                }
+            }
+        }
 
         #endregion
 
@@ -41,92 +70,74 @@ namespace derpirc.Data
 
         public SettingsUnitOfWork(bool wipeBeforeUse)
         {
+            _settings = IsolatedStorageSettings.ApplicationSettings;
             if (wipeBeforeUse)
                 WipeDatabase();
-            GetDefaultValues();
         }
 
         public void WipeDatabase()
         {
-            State = DbState.WipePending;
-            IsolatedStorageSettings.ApplicationSettings.Clear();
-            GenerateSystemData();
-            State = DbState.Initialized;
+            _settings.Clear();
         }
 
-        private void GetDefaultValues()
+        /// <summary>
+        /// Update a setting value for our application. If the setting does not
+        /// exist, then add the setting.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public bool AddOrUpdateValue(string key, object value)
         {
-            Client client;
-            Session session;
-            User user;
+            bool valueChanged = false;
 
-            IsolatedStorageSettings.ApplicationSettings.TryGetValue<Client>("client", out client);
-            IsolatedStorageSettings.ApplicationSettings.TryGetValue<Session>("session", out session);
-            IsolatedStorageSettings.ApplicationSettings.TryGetValue<User>("user", out user);
-
-            // HACK: Settings data relies on all properties being set
-            var isDataFound = false;
-            if (client != null && session != null && user != null)
-                isDataFound = true;
-
-            Client = client;
-            Session = session;
-            User = user;
-
-            if (!isDataFound)
+            if (_settings.Contains(key))
             {
-                GenerateSystemData();
-            }
-            Networks = Session.Networks;
-
-            State = DbState.Initialized;
-        }
-
-        public void Commit()
-        {
-            Commit(CommitType.User);
-            Commit(CommitType.Session);
-        }
-
-        public void Commit(CommitType type)
-        {
-            var keyName = string.Empty;
-            switch (type)
-            {
-                case CommitType.User:
-                    keyName = "user";
-                    SaveObject(type, keyName, User);
-                    break;
-                case CommitType.Session:
-                    keyName = "session";
-                    SaveObject(type, keyName, Session);
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        private void SaveObject(CommitType type, string keyName, object setting)
-        {
-            if (!string.IsNullOrEmpty(keyName))
-            {
-                if (!IsolatedStorageSettings.ApplicationSettings.Contains(keyName))
-                    IsolatedStorageSettings.ApplicationSettings.Add(keyName, setting);
-                else
+                if (_settings[key] != value)
                 {
-                    IsolatedStorageSettings.ApplicationSettings.Remove(keyName);
-                    IsolatedStorageSettings.ApplicationSettings.Add(keyName, setting);
+                    _settings[key] = value;
+                    valueChanged = true;
                 }
-                IsolatedStorageSettings.ApplicationSettings.Save();
             }
+            else
+            {
+                _settings.Add(key, value);
+                valueChanged = true;
+            }
+            return valueChanged;
         }
 
-        private void GenerateSystemData()
+        /// <summary>
+        /// Get the current value of the setting, or if it is not found, set the 
+        /// setting to the default setting.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="Key"></param>
+        /// <param name="defaultValue"></param>
+        /// <returns></returns>
+        public T GetValueOrDefault<T>(string key, T defaultValue)
         {
-            Client = Factory.CreateClient();
-            User = Factory.CreateUser();
-            Session = Factory.CreateSession();
-            Commit();
+            T value;
+
+            // If the key exists, retrieve the value.
+            if (_settings.Contains(key))
+            {
+                value = (T)_settings[key];
+            }
+            // Otherwise, use the default value.
+            else
+            {
+                value = defaultValue;
+            }
+            return value;
+        }
+
+        /// <summary>
+        /// Save the settings.
+        /// </summary>
+        public void Save()
+        {
+            _settings.Save();
         }
     }
 }
