@@ -1,9 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace derpirc.Data.Models.Settings
 {
-    public partial class Favorite : IBaseModel, INotifyPropertyChanging, INotifyPropertyChanged
+    public partial class Session : IBaseModel, INotifyPropertyChanging, INotifyPropertyChanged
     {
         private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
 
@@ -11,25 +12,21 @@ namespace derpirc.Data.Models.Settings
 
         private string _Name;
 
-        private bool _IsAutoConnect;
-
-        private string _Password;
+        private List<Network> _Networks;
 
         #region Extensibility Method Definitions
         partial void OnLoaded();
+        partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
         partial void OnIdChanging(int value);
         partial void OnIdChanged();
         partial void OnNameChanging(string value);
         partial void OnNameChanged();
-        partial void OnIsAutoConnectChanging(System.Nullable<bool> value);
-        partial void OnIsAutoConnectChanged();
-        partial void OnPasswordChanging(string value);
-        partial void OnPasswordChanged();
         #endregion
 
-        public Favorite()
+        public Session()
         {
+            this._Networks = new List<Network>();
             OnCreated();
         }
 
@@ -60,51 +57,30 @@ namespace derpirc.Data.Models.Settings
             }
             set
             {
-                if ((this._Name != value.ToLower()))
+                if ((this._Name != value))
                 {
-                    this.OnNameChanging(value.ToLower());
+                    this.OnNameChanging(value);
                     this.SendPropertyChanging();
-                    this._Name = value.ToLower();
+                    this._Name = value;
                     this.SendPropertyChanged("Name");
                     this.OnNameChanged();
                 }
             }
         }
 
-        public bool IsAutoConnect
+        public List<Network> Networks
         {
             get
             {
-                return this._IsAutoConnect;
+                return this._Networks;
             }
             set
             {
-                if ((this._IsAutoConnect != value))
+                if (!ReferenceEquals(_Networks, value))
                 {
-                    this.OnIsAutoConnectChanging(value);
                     this.SendPropertyChanging();
-                    this._IsAutoConnect = value;
-                    this.SendPropertyChanged("IsAutoConnect");
-                    this.OnIsAutoConnectChanged();
-                }
-            }
-        }
-
-        public string Password
-        {
-            get
-            {
-                return this._Password;
-            }
-            set
-            {
-                if ((this._Password != value))
-                {
-                    this.OnPasswordChanging(value);
-                    this.SendPropertyChanging();
-                    this._Password = value;
-                    this.SendPropertyChanged("Password");
-                    this.OnPasswordChanged();
+                    this._Networks = value;
+                    this.SendPropertyChanged("Networks");
                 }
             }
         }

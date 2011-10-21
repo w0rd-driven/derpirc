@@ -4,16 +4,7 @@ namespace derpirc.Data.Models
 {
     public class Factory
     {
-        public static Session CreateSession()
-        {
-            var result = new Session();
-            result.Name = "default";
-            var networks = CreateNetworks(result);
-            result.Networks = networks;
-            return result;
-        }
-
-        public static EntitySet<Network> CreateNetworks(Session session)
+        public static EntitySet<Network> CreateNetworks()
         {
             var result = new EntitySet<Network>();
 
@@ -35,7 +26,6 @@ namespace derpirc.Data.Models
             };
             var item1 = new Network()
             {
-                Session = session,
                 DisplayName = "EFNet",
                 Name = "EFNet",
                 HostName = "irc.efnet.org",
@@ -47,7 +37,6 @@ namespace derpirc.Data.Models
 
             var item2 = new Network()
             {
-                Session = session,
                 DisplayName = "PowerPrecision",
                 Name = "PowerPrecision",
                 HostName = "irc.node-3.net",
@@ -58,6 +47,15 @@ namespace derpirc.Data.Models
             item2.Favorites.Add(channel3);
             result.Add(item2);
 
+            return result;
+        }
+
+        public static Session CreateSession()
+        {
+            var result = new Session();
+            result.Name = "default";
+            var networks = CreateNetworks();
+            result.Networks.AddRange(networks);
             return result;
         }
     }

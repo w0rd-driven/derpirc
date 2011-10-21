@@ -10,6 +10,7 @@ namespace derpirc.Data
 
         public Client Client { get; set; }
         public User User { get; set; }
+        public Session Session { get; set; }
         public List<Network> Networks { get; set; }
         public DbState State { get; set; }
 
@@ -51,26 +52,28 @@ namespace derpirc.Data
         private void GetDefaultValues()
         {
             Client client;
-            List<Network> networks;
+            Session session;
             User user;
 
             IsolatedStorageSettings.ApplicationSettings.TryGetValue<Client>("client", out client);
-            IsolatedStorageSettings.ApplicationSettings.TryGetValue<List<Network>>("networks", out networks);
+            IsolatedStorageSettings.ApplicationSettings.TryGetValue<Session>("session", out session);
             IsolatedStorageSettings.ApplicationSettings.TryGetValue<User>("user", out user);
 
             // HACK: Settings data relies on all properties being set
             var isDataFound = false;
-            if (client != null && networks != null && user != null)
+            if (client != null && session != null && user != null)
                 isDataFound = true;
 
             Client = client;
-            Networks = networks;
+            Session = session;
             User = user;
 
             if (!isDataFound)
             {
                 GenerateSystemData();
             }
+            Networks = Session.Networks;
+
             State = DbState.Initialized;
         }
 
@@ -86,14 +89,14 @@ namespace derpirc.Data
                     IsolatedStorageSettings.ApplicationSettings.Add("client", Client);
                 }
             }
-            if (Networks != null)
+            if (Session != null)
             {
-                if (!IsolatedStorageSettings.ApplicationSettings.Contains("networks"))
-                    IsolatedStorageSettings.ApplicationSettings.Add("networks", Networks);
+                if (!IsolatedStorageSettings.ApplicationSettings.Contains("session"))
+                    IsolatedStorageSettings.ApplicationSettings.Add("session", Session);
                 else
                 {
                     IsolatedStorageSettings.ApplicationSettings.Remove("networks");
-                    IsolatedStorageSettings.ApplicationSettings.Add("networks", Networks);
+                    IsolatedStorageSettings.ApplicationSettings.Add("networks", Session);
                 }
             }
             if (User != null)
@@ -113,7 +116,7 @@ namespace derpirc.Data
         {
             Client = Factory.CreateClient();
             User = Factory.CreateUser();
-            Networks = Factory.CreateNetworks();
+            Session = Factory.CreateSession();
             Commit();
         }
     }

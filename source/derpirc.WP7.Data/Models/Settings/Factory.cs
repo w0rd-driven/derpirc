@@ -4,16 +4,11 @@ namespace derpirc.Data.Models.Settings
 {
     public class Factory
     {
-        public static User CreateUser()
+        public static Client CreateClient()
         {
-            var result = new User()
+            var result = new Client()
             {
-                NickName = "derpirc",
-                NickNameAlternate = "durpirc",
-                FullName = "derpirc WP7 IRC Client",
-                Username = "derpirc",
-                IsInvisible = true,
-                QuitMessage = "I am a pretty pretty butterfly.",
+                //Name = "default",
             };
             return result;
         }
@@ -41,7 +36,6 @@ namespace derpirc.Data.Models.Settings
             // Networks
             var item1 = new Network()
             {
-                Id = 1,
                 DisplayName = "EFNet",
                 Name = "EFNet",
                 HostName = "irc.efnet.org",
@@ -51,7 +45,6 @@ namespace derpirc.Data.Models.Settings
             result.Add(item1);
             var item2 = new Network()
             {
-                Id = 2,
                 DisplayName = "PowerPrecision",
                 Name = "PowerPrecision",
                 HostName = "irc.node-3.net",
@@ -64,11 +57,36 @@ namespace derpirc.Data.Models.Settings
             return result;
         }
 
-        public static Client CreateClient()
+        public static Session CreateSession()
         {
-            var result = new Client()
+            var result = new Session();
+            result.Name = "config";
+            var networks = CreateNetworks();
+            result.Networks.AddRange(networks);
+            CleanNetworks(result);
+            return result;
+        }
+
+        private static void CleanNetworks(Session session)
+        {
+            if (session.Networks != null)
+                for (int index = 0; index < session.Networks.Count; index++)
+                {
+                    var record = session.Networks[index];
+                    record.Id = index + 1;
+                }
+        }
+
+        public static User CreateUser()
+        {
+            var result = new User()
             {
-                //Name = "default",
+                NickName = "derpirc",
+                NickNameAlternate = "durpirc",
+                FullName = "derpirc WP7 IRC Client",
+                Username = "derpirc",
+                IsInvisible = true,
+                QuitMessage = "I am a pretty pretty butterfly.",
             };
             return result;
         }

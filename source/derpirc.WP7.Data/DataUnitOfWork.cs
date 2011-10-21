@@ -118,7 +118,7 @@ namespace derpirc.Data
                 _context = new DataModelContainer(connectionString);
             var context = (_context as DataModelContainer);
             context.InitializeDatabase();
-            GenerateSystemData();
+            //GenerateSystemData();
             State = DbState.Initialized;
         }
 

@@ -140,6 +140,7 @@ namespace derpirc.Core
 
             this._settingSupervisor = new SettingsSupervisor(_unitOfWork);
             this._sessionSupervisor = new SessionSupervisor(_unitOfWork);
+            this._settingSupervisor.Commit();
         }
 
         private void Shutdown()
@@ -151,6 +152,12 @@ namespace derpirc.Core
         }
 
         #region UI-facing methods
+
+        // SettingsView
+        public void CommitSettings()
+        {
+            this._settingSupervisor.Commit();
+        }
 
         // ConnectionView
         public void Connect(ObservableCollection<ClientInfo> clients)
