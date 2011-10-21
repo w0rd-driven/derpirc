@@ -1,8 +1,7 @@
-﻿using System;
-using System.Linq;
-using derpirc.Data;
+﻿using derpirc.Data;
 using derpirc.Data.Models.Settings;
 using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Messaging;
 
 namespace derpirc.ViewModels
 {
@@ -86,8 +85,8 @@ namespace derpirc.ViewModels
             }
         }
 
-        private Nullable<bool> _isInvisible;
-        public Nullable<bool> IsInvisible
+        private bool _isInvisible;
+        public bool IsInvisible
         {
             get { return _isInvisible; }
             set
@@ -134,6 +133,12 @@ namespace derpirc.ViewModels
             else
             {
                 // Code runs "for real": Connect to service, etc...
+                this.MessengerInstance.Register<NotificationMessage>(this, "Save", message =>
+                {
+                    var target = message.Target as string;
+                    this.Save();
+                });
+
                 Load();
             }
         }
@@ -153,6 +158,17 @@ namespace derpirc.ViewModels
             Username = model.Username;
             IsInvisible = model.IsInvisible;
             QuitMessage = model.QuitMessage;
+        }
+
+        private void Save()
+        {
+            SettingsUnitOfWork.Default.User.NickName = this.NickName;
+            SettingsUnitOfWork.Default.User.NickNameAlternate = this.NickNameAlt;
+            SettingsUnitOfWork.Default.User.FullName = this.FullName;
+            SettingsUnitOfWork.Default.User.Username = this.Username;
+            SettingsUnitOfWork.Default.User.IsInvisible = this.IsInvisible;
+            SettingsUnitOfWork.Default.User.QuitMessage = this.QuitMessage;
+            SettingsUnitOfWork.Default.Commit(CommitType.User);
         }
 
         public override void Cleanup()

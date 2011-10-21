@@ -6,7 +6,6 @@ using derpirc.Data;
 using derpirc.Data.Models.Settings;
 using derpirc.Helpers;
 using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
 
 namespace derpirc.ViewModels
@@ -16,16 +15,6 @@ namespace derpirc.ViewModels
     public class SettingsNetworkViewModel : ViewModelBase
     {
         #region Commands
-
-        RelayCommand _addCommand;
-        public RelayCommand AddCommand
-        {
-            get
-            {
-                return _addCommand ?? (_addCommand =
-                    new RelayCommand(() => this.Add()));
-            }
-        }
 
         private bool _canEdit;
         public bool CanEdit
@@ -38,17 +27,7 @@ namespace derpirc.ViewModels
 
                 _canEdit = value;
                 RaisePropertyChanged(() => CanEdit);
-                EditCommand.RaiseCanExecuteChanged();
-            }
-        }
-
-        RelayCommand _editCommand;
-        public RelayCommand EditCommand
-        {
-            get
-            {
-                return _editCommand ?? (_editCommand =
-                    new RelayCommand(() => this.Edit(), () => this.CanEdit));
+                this.MessengerInstance.Send<NotificationMessage<bool>>(new NotificationMessage<bool>(this, "action", _canEdit, "edit"));
             }
         }
 
@@ -63,17 +42,7 @@ namespace derpirc.ViewModels
 
                 _canDelete = value;
                 RaisePropertyChanged(() => CanDelete);
-                DeleteCommand.RaiseCanExecuteChanged();
-            }
-        }
-
-        RelayCommand _deleteCommand;
-        public RelayCommand DeleteCommand
-        {
-            get
-            {
-                return _deleteCommand ?? (_deleteCommand =
-                    new RelayCommand(() => this.Delete(SelectedItem), () => this.CanDelete));
+                this.MessengerInstance.Send<NotificationMessage<bool>>(new NotificationMessage<bool>(this, "action", _canDelete, "delete"));
             }
         }
 
@@ -125,10 +94,30 @@ namespace derpirc.ViewModels
                 // Code runs "for real": Connect to service, etc...
                 _navigationService = navigationService;
 
-                this.MessengerInstance.Register<NotificationMessage>(this, "SelectedNetwork", message =>
+                this.MessengerInstance.Register<NotificationMessage>(this, "Network", message =>
                 {
                     var target = message.Target as string;
-                    this.UnselectItem();
+                    switch (message.Notification)
+                    {
+                        case "unselect":
+                            this.UnselectItem();
+                            break;
+                        case "add":
+                            this.Add();
+                            break;
+                        case "edit":
+                            this.Edit();
+                            break;
+                        case "delete":
+                            this.Delete(SelectedItem);
+                            break;
+                    }
+                });
+
+                this.MessengerInstance.Register<NotificationMessage>(this, "Save", message =>
+                {
+                    var target = message.Target as string;
+                    this.Save();
                 });
 
                 Load();
@@ -154,7 +143,6 @@ namespace derpirc.ViewModels
 
         private void Add()
         {
-            //var session = 
             var item = new Network();
             _networksList.Add(item);
         }
@@ -194,6 +182,12 @@ namespace derpirc.ViewModels
             uriString = string.Format("/derpirc.Pages;component/Views/NetworkDetailView.xaml?id={0}", Uri.EscapeUriString(id));
             var uri = new Uri(uriString, UriKind.Relative);
             NavigationService.Navigate(uri);
+        }
+
+        private void Save()
+        {
+            SettingsUnitOfWork.Default.Networks = _networksList.ToList();
+            SettingsUnitOfWork.Default.Commit(CommitType.Session);
         }
 
         public override void Cleanup()

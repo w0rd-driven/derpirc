@@ -79,35 +79,40 @@ namespace derpirc.Data
 
         public void Commit()
         {
-            if (Client != null)
+            Commit(CommitType.User);
+            Commit(CommitType.Session);
+        }
+
+        public void Commit(CommitType type)
+        {
+            switch (type)
             {
-                if (!IsolatedStorageSettings.ApplicationSettings.Contains("client"))
-                    IsolatedStorageSettings.ApplicationSettings.Add("client", Client);
-                else
-                {
-                    IsolatedStorageSettings.ApplicationSettings.Remove("client");
-                    IsolatedStorageSettings.ApplicationSettings.Add("client", Client);
-                }
-            }
-            if (Session != null)
-            {
-                if (!IsolatedStorageSettings.ApplicationSettings.Contains("session"))
-                    IsolatedStorageSettings.ApplicationSettings.Add("session", Session);
-                else
-                {
-                    IsolatedStorageSettings.ApplicationSettings.Remove("networks");
-                    IsolatedStorageSettings.ApplicationSettings.Add("networks", Session);
-                }
-            }
-            if (User != null)
-            {
-                if (!IsolatedStorageSettings.ApplicationSettings.Contains("user"))
-                    IsolatedStorageSettings.ApplicationSettings.Add("user", User);
-                else
-                {
-                    IsolatedStorageSettings.ApplicationSettings.Remove("user");
-                    IsolatedStorageSettings.ApplicationSettings.Add("user", User);
-                }
+                case CommitType.User:
+                    if (User != null)
+                    {
+                        if (!IsolatedStorageSettings.ApplicationSettings.Contains("user"))
+                            IsolatedStorageSettings.ApplicationSettings.Add("user", User);
+                        else
+                        {
+                            IsolatedStorageSettings.ApplicationSettings.Remove("user");
+                            IsolatedStorageSettings.ApplicationSettings.Add("user", User);
+                        }
+                    }
+                    break;
+                case CommitType.Session:
+                    if (Session != null)
+                    {
+                        if (!IsolatedStorageSettings.ApplicationSettings.Contains("session"))
+                            IsolatedStorageSettings.ApplicationSettings.Add("session", Session);
+                        else
+                        {
+                            IsolatedStorageSettings.ApplicationSettings.Remove("session");
+                            IsolatedStorageSettings.ApplicationSettings.Add("session", Session);
+                        }
+                    }
+                    break;
+                default:
+                    break;
             }
             IsolatedStorageSettings.ApplicationSettings.Save();
         }

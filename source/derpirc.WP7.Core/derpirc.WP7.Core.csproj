@@ -70,7 +70,7 @@
     </Compile>
     <Compile Include="ChannelsSupervisor.cs" />
     <Compile Include="ChannelStatusEventArgs.cs" />
-    <Compile Include="Models\ChannelStatusTypeEnum.cs" />
+    <Compile Include="Models\ChannelStatusEnum.cs" />
     <Compile Include="Models\ClientInfo.cs" />
     <Compile Include="Models\ClientItem.cs" />
     <Compile Include="Models\ClientStateEnum.cs" />

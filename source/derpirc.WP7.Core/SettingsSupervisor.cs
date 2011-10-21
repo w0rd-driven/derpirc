@@ -2,6 +2,7 @@
 using System.Linq;
 using derpirc.Data;
 using derpirc.Data.Models;
+using System.Collections.Generic;
 
 namespace derpirc.Core
 {
@@ -22,10 +23,14 @@ namespace derpirc.Core
 
         private void ConfigureRunningState()
         {
+            Session newSession = null;
             var defaultSession = _unitOfWork.Sessions.FindBy(x => x.Name == "default").FirstOrDefault();
             var configSession = SettingsUnitOfWork.Default.Session;
             if (defaultSession == null)
+            {
                 defaultSession = CreateSession();
+                newSession = defaultSession;
+            }
             foreach (var network in configSession.Networks)
             {
                 var foundNetwork = defaultSession.Networks.Where(x => x.Name == network.Name).FirstOrDefault();
@@ -52,7 +57,51 @@ namespace derpirc.Core
                     }
                 }
             }
+            if (newSession != null)
+                _unitOfWork.Sessions.Add(defaultSession);
             _unitOfWork.Commit();
+            PurgeOrphans();
+        }
+
+        private void PurgeOrphans()
+        {
+            List<int> networksToSmash = new List<int>();
+            List<int> favoritesToSmash = new List<int>();
+
+            var defaultSession = _unitOfWork.Sessions.FindBy(x => x.Name == "default").FirstOrDefault();
+            var configSession = SettingsUnitOfWork.Default.Session;
+            for (int index = 0; index < defaultSession.Networks.Count; index++)
+            {
+                var record = defaultSession.Networks[index];
+                var foundNetwork = configSession.Networks.Where(x => x.Name == record.Name).FirstOrDefault();
+                if (foundNetwork == null)
+                    networksToSmash.Add(index);
+                else
+                {
+                    for (int indexFavorite = 0; indexFavorite < foundNetwork.Favorites.Count; indexFavorite++)
+                    {
+                        var favoriteRecord = record.Favorites[index];
+                        var foundFavorite = foundNetwork.Favorites.Where(x => x.Name == record.Name).FirstOrDefault();
+                        if (foundNetwork == null)
+                            favoritesToSmash.Add(index);
+                    }
+                }
+                if (favoritesToSmash.Count > 0)
+                {
+                    foreach (var item in favoritesToSmash)
+                    {
+                        foundNetwork.Favorites.RemoveAt(item);
+                    }
+                }
+                favoritesToSmash.Clear();
+            }
+            if (networksToSmash.Count > 0)
+            {
+                foreach (var item in networksToSmash)
+                {
+                    defaultSession.Networks.RemoveAt(item);
+                }
+            }
         }
 
         #region Factory methods
@@ -61,8 +110,6 @@ namespace derpirc.Core
         {
             var result = new Session();
             result.Name = "default";
-            _unitOfWork.Sessions.Add(result);
-            _unitOfWork.Commit();
             return result;
         }
 

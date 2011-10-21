@@ -27,6 +27,7 @@ namespace derpirc.Core
 
         private bool _isDisposed;
         private int _quitTimeout = 1000;
+        private int _defaultServerPort = 6667;
 
         private DataUnitOfWork _unitOfWork;
 
@@ -398,7 +399,7 @@ namespace derpirc.Core
 
         public int GetServerPort(Network network)
         {
-            int result = -1;
+            int result = _defaultServerPort;
             if (network != null)
                 int.TryParse(network.Ports, out result);
             return result;

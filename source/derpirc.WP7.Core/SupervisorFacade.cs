@@ -140,7 +140,6 @@ namespace derpirc.Core
 
             this._settingSupervisor = new SettingsSupervisor(_unitOfWork);
             this._sessionSupervisor = new SessionSupervisor(_unitOfWork);
-            this._settingSupervisor.Commit();
         }
 
         private void Shutdown()

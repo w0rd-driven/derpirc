@@ -71,6 +71,66 @@ namespace derpirc.ViewModels
             }
         }
 
+        RelayCommand _addCommand;
+        public RelayCommand AddCommand
+        {
+            get
+            {
+                return _addCommand ?? (_addCommand =
+                    new RelayCommand(() => this.Add()));
+            }
+        }
+
+        private bool _canEdit;
+        public bool CanEdit
+        {
+            get { return _canEdit; }
+            set
+            {
+                if (_canEdit == value)
+                    return;
+
+                _canEdit = value;
+                EditCommand.RaiseCanExecuteChanged();
+                RaisePropertyChanged(() => CanEdit);
+            }
+        }
+
+        RelayCommand _editCommand;
+        public RelayCommand EditCommand
+        {
+            get
+            {
+                return _editCommand ?? (_editCommand =
+                    new RelayCommand(() => this.Edit(), () => this.CanEdit));
+            }
+        }
+
+        private bool _canDelete;
+        public bool CanDelete
+        {
+            get { return _canDelete; }
+            set
+            {
+                if (_canDelete == value)
+                    return;
+
+                _canDelete = value;
+                DeleteCommand.RaiseCanExecuteChanged();
+                RaisePropertyChanged(() => CanDelete);
+            }
+        }
+
+        RelayCommand _deleteCommand;
+        public RelayCommand DeleteCommand
+        {
+            get
+            {
+                return _deleteCommand ?? (_deleteCommand =
+                    new RelayCommand(() => this.Delete(), () => this.CanDelete));
+            }
+        }
+
         #endregion
 
         #region Properties
@@ -117,6 +177,25 @@ namespace derpirc.ViewModels
             else
             {
                 // Code runs "for real": Connect to service, etc...
+
+                this.MessengerInstance.Register<NotificationMessage<bool>>(this, message =>
+                {
+                    var target = message.Target as string;
+                    if (target == "action")
+                    {
+                        switch (message.Notification)
+                        {
+                            case "edit":
+                                CanEdit = message.Content;
+                                break;
+                            case "delete":
+                                CanDelete = message.Content;
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                });
             }
         }
 
@@ -129,7 +208,8 @@ namespace derpirc.ViewModels
         {
             if (eventArgs.NavigationMode == NavigationMode.New)
                 IsAppBarVisible = false;
-            Save();
+            if (eventArgs.NavigationMode == NavigationMode.Back)
+                Save();
         }
 
         private void PivotItemLoaded(PivotItemEventArgs eventArgs)
@@ -154,12 +234,27 @@ namespace derpirc.ViewModels
 
         private void UnselectItem()
         {
-            this.MessengerInstance.Send(new NotificationMessage("Unselect"), "SelectedNetwork");
+            this.MessengerInstance.Send(new NotificationMessage("unselect"), "Network");
         }
 
         private void Save()
         {
-            // TODO: Settings.Save();
+            this.MessengerInstance.Send(new NotificationMessage("save"), "Save");
+        }
+
+        private void Add()
+        {
+            this.MessengerInstance.Send(new NotificationMessage("add"), "Network");
+        }
+
+        private void Edit()
+        {
+            this.MessengerInstance.Send(new NotificationMessage("edit"), "Network");
+        }
+
+        private void Delete()
+        {
+            this.MessengerInstance.Send(new NotificationMessage("delete"), "Network");
         }
 
         public override void Cleanup()
