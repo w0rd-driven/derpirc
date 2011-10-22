@@ -24,7 +24,7 @@ namespace derpirc.Data
 
         public T FindById(int id)
         {
-            return _objectSet.SingleOrDefault(o => o.Id == id);
+            return _objectSet.SingleOrDefault(o => o.Id.Equals(id));
         }
 
         public void Add(T newEntity)

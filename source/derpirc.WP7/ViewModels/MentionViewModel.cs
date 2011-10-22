@@ -197,19 +197,16 @@ namespace derpirc.ViewModels
             NickName = model.Name;
             if (model.Network != null)
                 NetworkName = model.Network.Name;
-            UnreadCount = model.UnreadCount;
-            if (model.LastItem != null)
+            MessageSource = NetworkName;
+            MessageTimestamp = DateTime.Now;
+            UnreadCount = model.Messages.Count(x => x.IsRead == false);
+            LastMessage = model.Messages.Count > 0 ? model.Messages.Last() : null;
+            if (LastMessage != null)
             {
-                LastMessage = model.LastItem as MentionItem;
                 MessageIsRead = LastMessage.IsRead;
                 MessageSource = LastMessage.Source + " on " + NetworkName;
                 MessageText = LastMessage.Text;
                 MessageTimestamp = LastMessage.Timestamp;
-            }
-            else
-            {
-                MessageSource = NetworkName;
-                MessageTimestamp = DateTime.Now;
             }
         }
 

@@ -214,15 +214,10 @@ namespace derpirc.ViewModels
             if (IsInDesignMode)
             {
                 // Code runs in Blend --> create design time data.
-                model.Name = "#test";
-                model.Topic = "This is a test topic";
-                var network = new Network()
-                {
-                    Name = "efnet",
-                    HostName = "irc.efnet.org",
-                };
-                model.Network = network;
-                model.UnreadCount = 4;
+                PageTitle = "#test";
+                ChannelTopic = "This is a test topic";
+                PageSubTitle = "clefnet";
+                SendWatermark = string.Format("chat on {0}", PageSubTitle);
 
                 _messagesList.Add(new ChannelItem()
                 {
@@ -252,12 +247,6 @@ namespace derpirc.ViewModels
                     Timestamp = DateTime.Now,
                     Type = MessageType.Mine,
                 });
-
-                PageTitle = model.Name;
-                ChannelTopic = model.Topic;
-                if (model.Network != null)
-                    PageSubTitle = model.Network.Name;
-                SendWatermark = string.Format("chat on {0}", PageSubTitle);
             }
             else
             {
@@ -319,7 +308,7 @@ namespace derpirc.ViewModels
             queryString.TryGetValue("id", out id);
             var integerId = -1;
             int.TryParse(id, out integerId);
-            var model = DataUnitOfWork.Default.Channels.FindBy(x => x.Id == integerId).FirstOrDefault();
+            var model = DataUnitOfWork.Default.Channels.FindById(integerId);
             if (model != null)
                 Model = model;
         }
@@ -338,6 +327,8 @@ namespace derpirc.ViewModels
                 {
                     _messagesList.Add(item);
                 }
+                SelectedItem = _messagesList.Count > 0 ? _messagesList.Last() : null;
+                Messages.View.MoveCurrentToLast();
             });
         }
 
@@ -353,8 +344,9 @@ namespace derpirc.ViewModels
                         return;
                 }
                 _messagesList.Add(record);
+                SelectedItem = record;
+                Messages.View.MoveCurrentToLast();
             });
-            Messages.View.MoveCurrentToLast();
         }
 
         public override void Cleanup()

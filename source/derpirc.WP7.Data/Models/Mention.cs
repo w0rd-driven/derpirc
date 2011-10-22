@@ -29,12 +29,6 @@ namespace derpirc.Data.Models
 
         private string _ChannelName;
 
-        private System.Nullable<int> _LastItemId;
-
-        private System.Nullable<int> _Count;
-
-        private System.Nullable<int> _UnreadCount;
-
         private EntitySet<MentionItem> _Messages;
 
         private EntityRef<Network> _Network;
@@ -51,12 +45,6 @@ namespace derpirc.Data.Models
         partial void OnNameChanged();
         partial void OnChannelNameChanging(string value);
         partial void OnChannelNameChanged();
-        partial void OnLastItemIdChanging(System.Nullable<int> value);
-        partial void OnLastItemIdChanged();
-        partial void OnCountChanging(System.Nullable<int> value);
-        partial void OnCountChanged();
-        partial void OnUnreadCountChanging(System.Nullable<int> value);
-        partial void OnUnreadCountChanged();
         #endregion
 
         public Mention()
@@ -150,68 +138,6 @@ namespace derpirc.Data.Models
             }
         }
 
-        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_LastItemId", DbType = "Int")]
-        public System.Nullable<int> LastItemId
-        {
-            get
-            {
-                return this._LastItemId;
-            }
-            set
-            {
-                if ((this._LastItemId != value))
-                {
-                    this.OnLastItemIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._LastItemId = value;
-                    this.SendPropertyChanged("LastItemId");
-                    this.OnLastItemIdChanged();
-                }
-            }
-        }
-
-        public IMessageItem LastItem { get; set; }
-
-        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_Count", DbType = "Int")]
-        public System.Nullable<int> Count
-        {
-            get
-            {
-                return this._Count;
-            }
-            set
-            {
-                if ((this._Count != value))
-                {
-                    this.OnCountChanging(value);
-                    this.SendPropertyChanging();
-                    this._Count = value;
-                    this.SendPropertyChanged("Count");
-                    this.OnCountChanged();
-                }
-            }
-        }
-
-        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_UnreadCount", DbType = "Int")]
-        public System.Nullable<int> UnreadCount
-        {
-            get
-            {
-                return this._UnreadCount;
-            }
-            set
-            {
-                if ((this._UnreadCount != value))
-                {
-                    this.OnUnreadCountChanging(value);
-                    this.SendPropertyChanging();
-                    this._UnreadCount = value;
-                    this.SendPropertyChanged("UnreadCount");
-                    this.OnUnreadCountChanged();
-                }
-            }
-        }
-
         [global::System.Data.Linq.Mapping.AssociationAttribute(Name = "FK_Mention_MentionItem", Storage = "_Messages", ThisKey = "Id", OtherKey = "SummaryId", DeleteRule = "NO ACTION")]
         public EntitySet<MentionItem> Messages
         {
@@ -283,32 +209,12 @@ namespace derpirc.Data.Models
         {
             this.SendPropertyChanging();
             entity.Summary = this;
-            InsertMessageCount(entity);
         }
 
         private void detach_MentionItems(MentionItem entity)
         {
             this.SendPropertyChanging();
             entity.Summary = null;
-            RemoveMessageCount(entity);
-        }
-
-        private void InsertMessageCount(MentionItem entity)
-        {
-            LastItem = entity;
-            // Id is 0 here so inflate counts blindly
-            LastItemId = _Messages.Count + 1;
-            Count = _Messages.Count + 1;
-            UnreadCount = _Messages.Count(x => x.IsRead == false) + 1;
-        }
-
-        private void RemoveMessageCount(MentionItem entity)
-        {
-            LastItem = entity;
-            // Id is 0 here so inflate counts blindly
-            LastItemId = _Messages.Count - 1;
-            Count = _Messages.Count - 1;
-            UnreadCount = _Messages.Count(x => x.IsRead == false) - 1;
         }
     }
 }

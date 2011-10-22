@@ -200,14 +200,9 @@ namespace derpirc.ViewModels
             if (IsInDesignMode)
             {
                 // Code runs in Blend --> create design time data.
-                model.Name = "w0rd-driven";
-                var network = new Network()
-                {
-                    Name = "efnet",
-                    HostName = "irc.efnet.org",
-                };
-                model.Network = network;
-                model.UnreadCount = 4;
+                PageTitle = "w0rd-driven";
+                PageSubTitle = "clefnet";
+                SendWatermark = string.Format("chat on {0}", PageSubTitle);
 
                 _messagesList.Add(new MessageItem()
                 {
@@ -303,7 +298,7 @@ namespace derpirc.ViewModels
             queryString.TryGetValue("id", out id);
             var integerId = -1;
             int.TryParse(id, out integerId);
-            var model = DataUnitOfWork.Default.Messages.FindBy(x => x.Id == integerId).FirstOrDefault();
+            var model = DataUnitOfWork.Default.Messages.FindById(integerId);
             if (model != null)
                 Model = model;
         }
@@ -321,6 +316,8 @@ namespace derpirc.ViewModels
                 {
                     _messagesList.Add(item);
                 }
+                SelectedItem = _messagesList.Count > 0 ? _messagesList.Last() : null;
+                Messages.View.MoveCurrentToLast();
             });
         }
 
@@ -336,8 +333,9 @@ namespace derpirc.ViewModels
                         return;
                 }
                 _messagesList.Add(record);
+                SelectedItem = record;
+                Messages.View.MoveCurrentToLast();
             });
-            Messages.View.MoveCurrentToLast();
         }
 
         public override void Cleanup()

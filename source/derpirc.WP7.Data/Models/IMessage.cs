@@ -7,11 +7,7 @@ namespace derpirc.Data.Models
         int NetworkId { get; set; }
         Network Network { get; set; }
         string Name { get; set; }
-        Nullable<int> LastItemId { get; set; }
-        IMessageItem LastItem { get; set; }
-        Nullable<int> Count { get; set; }
-        Nullable<int> UnreadCount { get; set; }
-        // Not used because we segregate into Summary/Summary/Summary tables
+        // Not used because we segregate into Channel/Mention/Message tables
         //EntitySet<IMessageItem> Messages { get; set; }
     }
 }

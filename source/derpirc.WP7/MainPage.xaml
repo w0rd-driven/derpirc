@@ -79,7 +79,7 @@
                                                Text="{Binding MessageText}"
                                                Style="{StaticResource SummaryMessageStyle}" />
                                     <edc:Callout x:Name="calloutUnreadCount" Content="{Binding UnreadCount}" CalloutStyle="Rectangle" AnchorPoint="0.15,1.2" Grid.Column="1"
-                                                 Fill="{StaticResource PhoneDisabledBrush}" Height="26" Width="32" VerticalAlignment="Center" HorizontalAlignment="Right"
+                                                 Fill="{StaticResource PhoneDisabledBrush}" Height="26" Width="32" VerticalAlignment="Top" HorizontalAlignment="Right"
                                                  FontSize="{StaticResource PhoneFontSizeMedium}" />
                                     <TextBlock x:Name="textBlockMessageSource"
                                                Text="{Binding MessageSource}"
@@ -136,7 +136,7 @@
                                                Text="{Binding MessageText}"
                                                Style="{StaticResource SummaryMessageStyle}" />
                                     <edc:Callout x:Name="calloutUnreadCount" Content="{Binding UnreadCount}" CalloutStyle="Rectangle" AnchorPoint="0.15,1.2" Grid.Column="1"
-                                                 Fill="{StaticResource PhoneDisabledBrush}" Height="26" Width="32" VerticalAlignment="Center" HorizontalAlignment="Right"
+                                                 Fill="{StaticResource PhoneDisabledBrush}" Height="26" Width="32" VerticalAlignment="Top" HorizontalAlignment="Right"
                                                  FontSize="{StaticResource PhoneFontSizeMedium}" />
                                     <TextBlock x:Name="textBlockMessageSource"
                                                Text="{Binding MessageSource}"
@@ -193,7 +193,7 @@
                                                Text="{Binding MessageText}"
                                                Style="{StaticResource SummaryMessageStyle}" />
                                     <edc:Callout x:Name="calloutUnreadCount" Content="{Binding UnreadCount}" CalloutStyle="Rectangle" AnchorPoint="0.15,1.2" Grid.Column="1"
-                                                 Fill="{StaticResource PhoneDisabledBrush}" Height="26" Width="32" VerticalAlignment="Center" HorizontalAlignment="Right"
+                                                 Fill="{StaticResource PhoneDisabledBrush}" Height="26" Width="32" VerticalAlignment="Top" HorizontalAlignment="Right"
                                                  FontSize="{StaticResource PhoneFontSizeMedium}" />
                                     <TextBlock x:Name="textBlockMessageSource"
                                                Text="{Binding MessageSource}"
