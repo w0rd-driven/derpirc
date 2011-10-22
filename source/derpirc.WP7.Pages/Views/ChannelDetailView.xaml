@@ -43,12 +43,13 @@
             </Grid.RowDefinitions>
             
             <ListBox x:Name="MessagesListBox"
+                     SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
                      ItemsSource="{Binding Messages.View}"
                      ItemContainerStyle="{StaticResource SmallPivotListBoxStyle}"
                      ItemTemplate="{StaticResource TemplateDetailMessageSelector}" />
             
             <Grid Grid.Row="2" Style="{StaticResource GridDetailMyMessage}">
-                <TextBox Name="Send" Text="{Binding SendMessage, Mode=TwoWay}" Style="{StaticResource TextBoxTickStyle}" KeyUp="Send_KeyUp">
+                <TextBox x:Name="Send" Text="{Binding SendMessage, Mode=TwoWay}" Style="{StaticResource TextBoxTickStyle}" KeyUp="Send_KeyUp">
                     <blend:Interaction.Behaviors>
                         <helpers:WatermarkBehavior Watermark="{Binding SendWatermark}"
                                                    Foreground="{StaticResource PhoneTextBoxReadOnlyBrush}" />

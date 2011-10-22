@@ -43,6 +43,7 @@
             </Grid.RowDefinitions>
 
             <ListBox x:Name="MessagesListBox"
+                     SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
                      ItemsSource="{Binding Messages.View}"
                      ItemContainerStyle="{StaticResource SmallPivotListBoxStyle}"
                      ItemTemplate="{StaticResource TemplateDetailMessageSelector}" />

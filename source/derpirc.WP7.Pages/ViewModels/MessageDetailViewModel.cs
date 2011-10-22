@@ -316,9 +316,23 @@ namespace derpirc.ViewModels
                 {
                     _messagesList.Add(item);
                 }
-                SelectedItem = _messagesList.Count > 0 ? _messagesList.Last() : null;
+                PurgeOrphans(model);
                 Messages.View.MoveCurrentToLast();
             });
+        }
+
+        private void PurgeOrphans(Message model)
+        {
+            List<int> messagesToSmash = new List<int>();
+            var startingPos = _messagesList.Count - 1;
+
+            for (int index = startingPos; index >= 0; --index)
+            {
+                var record = _messagesList[index];
+                var foundMessage = model.Messages.Where(x => x.Id.Equals(record.Id)).FirstOrDefault();
+                if (foundMessage == null)
+                    _messagesList.RemoveAt(index);
+            }
         }
 
         private void AddIncoming(MessageItem record)
@@ -333,7 +347,6 @@ namespace derpirc.ViewModels
                         return;
                 }
                 _messagesList.Add(record);
-                SelectedItem = record;
                 Messages.View.MoveCurrentToLast();
             });
         }

@@ -322,14 +322,28 @@ namespace derpirc.ViewModels
             SendWatermark = string.Format("chat on {0}", PageSubTitle);
             DispatcherHelper.CheckBeginInvokeOnUI(() =>
             {
-                _messagesList.Clear();
                 foreach (var item in model.Messages)
                 {
-                    _messagesList.Add(item);
+                    if (!_messagesList.Contains(item))
+                        _messagesList.Add(item);
                 }
-                SelectedItem = _messagesList.Count > 0 ? _messagesList.Last() : null;
+                PurgeOrphans(model);
                 Messages.View.MoveCurrentToLast();
             });
+        }
+
+        private void PurgeOrphans(Channel model)
+        {
+            List<int> messagesToSmash = new List<int>();
+            var startingPos = _messagesList.Count - 1;
+
+            for (int index = startingPos; index >= 0; --index)
+            {
+                var record = _messagesList[index];
+                var foundMessage = model.Messages.Where(x => x.Id.Equals(record.Id)).FirstOrDefault();
+                if (foundMessage == null)
+                    _messagesList.RemoveAt(index);
+            }
         }
 
         private void AddIncoming(ChannelItem record)
@@ -344,7 +358,6 @@ namespace derpirc.ViewModels
                         return;
                 }
                 _messagesList.Add(record);
-                SelectedItem = record;
                 Messages.View.MoveCurrentToLast();
             });
         }
