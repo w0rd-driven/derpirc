@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Text.RegularExpressions;
 using derpirc.Data;
 using derpirc.Data.Models;
 using IrcDotNet;
@@ -12,9 +11,6 @@ namespace derpirc.Core
         private bool _isDisposed;
 
         private DataUnitOfWork _unitOfWork;
-
-        // Regex for splitting space-separated list of command parts until first parameter that begins with '/'.
-        private static readonly Regex commandPartsSplitRegex = new Regex("(?<! /.*) ", RegexOptions.Compiled);
 
         public event EventHandler<ChannelStatusEventArgs> ChannelJoined;
         public event EventHandler<ChannelStatusEventArgs> ChannelLeft;
@@ -32,7 +28,7 @@ namespace derpirc.Core
             {
                 localUser.JoinedChannel += this.LocalUser_JoinedChannel;
                 localUser.LeftChannel += this.LocalUser_LeftChannel;
-                // localUser.InviteReceived
+                localUser.InviteReceived += this.LocalUser_InviteReceived;
             }
         }
 
@@ -42,7 +38,7 @@ namespace derpirc.Core
             {
                 localUser.JoinedChannel -= this.LocalUser_JoinedChannel;
                 localUser.LeftChannel -= this.LocalUser_LeftChannel;
-                // localUser.InviteReceived
+                localUser.InviteReceived -= this.LocalUser_InviteReceived;
             }
         }
 
@@ -55,7 +51,6 @@ namespace derpirc.Core
                 var summary = message.Summary;
                 var localUser = SupervisorFacade.Default.GetLocalUserBySummary(summary);
 
-                // TODO: Error check: If localUser == null, alert UI/internals
                 if (localUser != null)
                 {
                     // TODO: Recovery : Message not sent
@@ -87,7 +82,6 @@ namespace derpirc.Core
                 var summary = message.Summary;
                 var localUser = SupervisorFacade.Default.GetLocalUserBySummary(summary);
 
-                // TODO: Error check: If localUser == null, alert UI/internals
                 if (localUser != null)
                 {
                     // TODO: Recovery : Message not sent
@@ -148,63 +142,38 @@ namespace derpirc.Core
             this.LeaveChannel(e.Channel);
         }
 
+        private void LocalUser_InviteReceived(object sender, IrcChannelInvitationEventArgs e)
+        {
+            // TODO: UI setting for join on invite. Default to true
+            var localUser = sender as IrcLocalUser;
+            var isJoinOnInvite = true;
+            // TODO: JoinOnInvite creates orphan records because no favorites are added
+            if (isJoinOnInvite)
+                localUser.Client.Channels.Join(e.Channel.Name);
+        }
+
         private void Channel_MessageReceived(object sender, IrcMessageEventArgs e)
         {
             var channel = sender as IrcChannel;
+            var ircUser = e.Source as IrcUser;
+            var messageText = e.Text;
             var messageType = MessageType.Theirs;
-            if (e.Source is IrcUser)
-            {
-                messageType = MessageType.Theirs;
-            }
 
             // Mentions are a simple string parse
             var isMention = e.Text.Contains(channel.Client.LocalUser.NickName);
-            if (isMention)
-            {
-                // TODO: Error check: If summary == null, alert UI/internals
-                var summary = this.GetMentionSummary(channel, e.Source as IrcUser);
-                if (summary != null)
-                {
-                    // HACK: This should never be null but just in case, keep an eye on it
-                    var message = this.GetIrcMessage(summary, e, messageType);
-                    summary.Messages.Add(message);
-                    this._unitOfWork.Commit();
-
-                    var eventArgs = new MessageItemEventArgs()
-                    {
-                        NetworkId = summary.NetworkId,
-                        SummaryId = summary.Id,
-                        MessageId = message.Id,
-                    };
-                    this.OnMentionItemReceived(eventArgs);
-                }
-            }
-            else
-            {
-                // TODO: Error check: If summary == null, alert UI/internals
-                var summary = this.GetChannelSummary(channel);
-                if (summary != null)
-                {
-                    // HACK: This should never be null but just in case, keep an eye on it
-                    var message = this.GetIrcMessage(summary, e, messageType);
-                    summary.Messages.Add(message);
-                    this._unitOfWork.Commit();
-
-                    var eventArgs = new MessageItemEventArgs()
-                    {
-                        NetworkId = summary.NetworkId,
-                        SummaryId = summary.Id,
-                        MessageId = message.Id,
-                    };
-                    this.OnChannelItemReceived(eventArgs);
-                }
-            }
+            AddMessage(channel, ircUser, messageText, messageType, isMention);
         }
 
         private void Channel_NoticeReceived(object sender, IrcMessageEventArgs e)
         {
             var channel = sender as IrcChannel;
-            //OnChannelNoticeReceived(channel, e);
+            var ircUser = e.Source as IrcUser;
+            var messageText = e.Text;
+            var messageType = MessageType.Theirs;
+
+            // Mentions are a simple string parse
+            var isMention = e.Text.Contains(channel.Client.LocalUser.NickName);
+            AddMessage(channel, ircUser, messageText, messageType, isMention);
         }
 
         private void Channel_TopicChanged(object sender, IrcUserEventArgs e)
@@ -219,7 +188,6 @@ namespace derpirc.Core
 
         private void JoinChannel(IrcChannel channel)
         {
-            // TODO: Error check: If summary == null, alert UI/internals
             var summary = this.GetChannelSummary(channel);
             if (summary != null)
             {
@@ -234,7 +202,6 @@ namespace derpirc.Core
 
         private void LeaveChannel(IrcChannel channel)
         {
-            // TODO: Error check: If summary == null, alert UI/internals
             var summary = this.GetChannelSummary(channel);
             if (summary != null)
             {
@@ -247,45 +214,46 @@ namespace derpirc.Core
             }
         }
 
-        #region Events
-
-        private void OnChannelJoined(ChannelStatusEventArgs e)
+        private void AddMessage(IrcChannel channel, IrcUser user, string text, MessageType type, bool isMention)
         {
-            var handler = ChannelJoined;
-            if (handler != null)
+            // Channel comes first
+            if (!isMention)
             {
-                handler.Invoke(this, e);
+                var summary = this.GetChannelSummary(channel);
+                if (summary != null)
+                {
+                    var message = this.GetIrcMessage(summary, user.NickName, text, type);
+                    summary.Messages.Add(message);
+                    this._unitOfWork.Commit();
+
+                    var eventArgs = new MessageItemEventArgs()
+                    {
+                        NetworkId = summary.NetworkId,
+                        SummaryId = summary.Id,
+                        MessageId = message.Id,
+                    };
+                    this.OnChannelItemReceived(eventArgs);
+                }
+            }
+            else
+            {
+                var summary = this.GetMentionSummary(channel, user);
+                if (summary != null)
+                {
+                    var message = this.GetIrcMessage(summary, channel.Name, text, type);
+                    summary.Messages.Add(message);
+                    this._unitOfWork.Commit();
+
+                    var eventArgs = new MessageItemEventArgs()
+                    {
+                        NetworkId = summary.NetworkId,
+                        SummaryId = summary.Id,
+                        MessageId = message.Id,
+                    };
+                    this.OnMentionItemReceived(eventArgs);
+                }
             }
         }
-
-        private void OnChannelLeft(ChannelStatusEventArgs e)
-        {
-            var handler = ChannelLeft;
-            if (handler != null)
-            {
-                handler.Invoke(this, e);
-            }
-        }
-
-        private void OnChannelItemReceived(MessageItemEventArgs e)
-        {
-            var handler = ChannelItemReceived;
-            if (handler != null)
-            {
-                handler.Invoke(this, e);
-            }
-        }
-
-        private void OnMentionItemReceived(MessageItemEventArgs e)
-        {
-            var handler = MentionItemReceived;
-            if (handler != null)
-            {
-                handler.Invoke(this, e);
-            }
-        }
-
-        #endregion
 
         #region Lookup methods
 
@@ -323,29 +291,27 @@ namespace derpirc.Core
             return null;
         }
 
-        private ChannelItem GetIrcMessage(Channel summary, IrcMessageEventArgs eventArgs, MessageType messageType)
+        private ChannelItem GetIrcMessage(Channel summary, string source, string text, MessageType type)
         {
             var result = new ChannelItem();
             // Set values
             result.Timestamp = DateTime.Now;
             result.IsRead = false;
-            result.Source = eventArgs.Source.Name;
-            result.Text = eventArgs.Text;
-            result.Type = messageType;
+            result.Source = source;
+            result.Text = text;
+            result.Type = type;
             return result;
         }
 
-        private MentionItem GetIrcMessage(Mention summary, IrcMessageEventArgs eventArgs, MessageType messageType)
+        private MentionItem GetIrcMessage(Mention summary, string source, string text, MessageType type)
         {
             var result = new MentionItem();
             // Set values
             result.Timestamp = DateTime.Now;
             result.IsRead = false;
-            // This is technically a target but why bother changing one property for one IMessage?
-            if (eventArgs.Targets.Count >= 1)
-                result.Source = eventArgs.Targets[0].Name;
-            result.Text = eventArgs.Text;
-            result.Type = messageType;
+            result.Source = source;
+            result.Text = text;
+            result.Type = type;
             return result;
         }
 
@@ -353,9 +319,50 @@ namespace derpirc.Core
         {
             var result = message;
             // TODO: UI setting for mention char string. Default to ":"
+            var mentionChar = ": ";
             if (!string.IsNullOrEmpty(name))
-                result = name + ": " + message;
+                result = name + mentionChar + message;
             return result;
+        }
+
+        #endregion
+
+        #region Events
+
+        private void OnChannelJoined(ChannelStatusEventArgs e)
+        {
+            var handler = ChannelJoined;
+            if (handler != null)
+            {
+                handler.Invoke(this, e);
+            }
+        }
+
+        private void OnChannelLeft(ChannelStatusEventArgs e)
+        {
+            var handler = ChannelLeft;
+            if (handler != null)
+            {
+                handler.Invoke(this, e);
+            }
+        }
+
+        private void OnChannelItemReceived(MessageItemEventArgs e)
+        {
+            var handler = ChannelItemReceived;
+            if (handler != null)
+            {
+                handler.Invoke(this, e);
+            }
+        }
+
+        private void OnMentionItemReceived(MessageItemEventArgs e)
+        {
+            var handler = MentionItemReceived;
+            if (handler != null)
+            {
+                handler.Invoke(this, e);
+            }
         }
 
         #endregion

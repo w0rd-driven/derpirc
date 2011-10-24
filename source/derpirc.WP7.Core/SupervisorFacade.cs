@@ -60,12 +60,12 @@ namespace derpirc.Core
         public event EventHandler<NetworkStatusEventArgs> NetworkStatusChanged;
 
         // HACK: UI facing
-        public event EventHandler<ClientStatusEventArgs> ClientStatusChanged;
         public event EventHandler<ChannelStatusEventArgs> ChannelJoined;
         public event EventHandler<ChannelStatusEventArgs> ChannelLeft;
         public event EventHandler<MessageItemEventArgs> ChannelItemReceived;
         public event EventHandler<MessageItemEventArgs> MentionItemReceived;
         public event EventHandler<MessageItemEventArgs> MessageItemReceived;
+        public event EventHandler<ClientStatusEventArgs> StateChanged;
 
         #region Singleton Impl
 
@@ -117,9 +117,9 @@ namespace derpirc.Core
 
         private void Startup()
         {
-            this._networkMonitor = new NetworkMonitor(10000);
+            this._networkMonitor = new NetworkMonitor(30000);
             this._statusObserver = _networkMonitor.Status()
-                .ObserveOnDispatcher()
+                .ObserveOn(Scheduler.ThreadPool)
                 .Subscribe(type =>
                 {
                     this.NetworkType = type;
@@ -132,11 +132,30 @@ namespace derpirc.Core
                         IsAvailable = this.IsNetworkAvailable,
                         Type = type,
                     };
-                    this.OnNetworkStatusChanged(this, eventArgs);
+                    this.OnNetworkStatusChanged(eventArgs);
                 });
             this._unitOfWork = new DataUnitOfWork();
 
             this._sessionSupervisor = new SessionSupervisor(_unitOfWork);
+            this._sessionSupervisor.StateChanged += this._sessionSupervisor_StateChanged;
+        }
+
+        void _sessionSupervisor_StateChanged(object sender, ClientStatusEventArgs e)
+        {
+            switch (e.Info.State)
+            {
+                case ClientState.Registered:
+                    var attachClient = GetIrcClientByClientInfo(e.Info);
+                    this.AttachLocalUser(attachClient.LocalUser);
+                    break;
+                case ClientState.Disconnected:
+                    var detachClient = GetIrcClientByClientInfo(e.Info);
+                    this.DetachLocalUser(detachClient.LocalUser);
+                    break;
+                default:
+                    break;
+            }
+            this.OnClientStatusChanged(e);
         }
 
         private void Shutdown()
@@ -160,9 +179,9 @@ namespace derpirc.Core
         public void Connect(ObservableCollection<ClientInfo> clients)
         {
             if (clients != null)
-                foreach (var clientInfo in clients)
+                for (int index = 0; index < clients.Count; index++)
                 {
-                    var client = GetIrcClientByClientInfo(clientInfo);
+                    var client = GetIrcClientByClientInfo(clients[index]);
                     this._sessionSupervisor.Connect(client);
                 }
             else
@@ -172,9 +191,9 @@ namespace derpirc.Core
         public void Disconnect(ObservableCollection<ClientInfo> clients)
         {
             if (clients != null)
-                foreach (var clientInfo in clients)
+                for (int index = 0; index < clients.Count; index++)
                 {
-                    var client = GetClientByClientInfo(clientInfo);
+                    var client = GetClientByClientInfo(clients[index]);
                     this._sessionSupervisor.Disconnect(client);
                 }
             else
@@ -184,9 +203,9 @@ namespace derpirc.Core
         public void Reconnect(ObservableCollection<ClientInfo> clients, bool force = false)
         {
             if (clients != null)
-                foreach (var clientInfo in clients)
+                for (int index = 0; index < clients.Count; index++)
                 {
-                    var client = GetClientByClientInfo(clientInfo);
+                    var client = GetClientByClientInfo(clients[index]);
                     this._sessionSupervisor.Reconnect(client, force);
                 }
             else
@@ -233,24 +252,6 @@ namespace derpirc.Core
 
         #region Events
 
-        void OnClientStatusChanged(object sender, ClientStatusEventArgs eventArgs)
-        {
-            var handler = this.ClientStatusChanged;
-            if (handler != null)
-            {
-                handler.Invoke(sender, eventArgs);
-            }
-        }
-
-        void OnNetworkStatusChanged(object sender, NetworkStatusEventArgs eventArgs)
-        {
-            var handler = this.NetworkStatusChanged;
-            if (handler != null)
-            {
-                handler.Invoke(sender, eventArgs);
-            }
-        }
-
         void OnChannelSupervisor_ChannelJoined(object sender, ChannelStatusEventArgs e)
         {
             var handler = this.ChannelJoined;
@@ -293,6 +294,24 @@ namespace derpirc.Core
             if (handler != null)
             {
                 handler.Invoke(sender, e);
+            }
+        }
+
+        void OnClientStatusChanged(ClientStatusEventArgs eventArgs)
+        {
+            var handler = this.StateChanged;
+            if (handler != null)
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+
+        void OnNetworkStatusChanged(NetworkStatusEventArgs eventArgs)
+        {
+            var handler = this.NetworkStatusChanged;
+            if (handler != null)
+            {
+                handler.Invoke(this, eventArgs);
             }
         }
 
@@ -370,53 +389,17 @@ namespace derpirc.Core
             if (this._channelSupervisor == null)
             {
                 this._channelSupervisor = new ChannelsSupervisor(_unitOfWork);
-                this._channelSupervisor.ChannelJoined += new EventHandler<ChannelStatusEventArgs>(OnChannelSupervisor_ChannelJoined);
-                this._channelSupervisor.ChannelLeft += new EventHandler<ChannelStatusEventArgs>(OnChannelSupervisor_ChannelLeft);
-                this._channelSupervisor.ChannelItemReceived += new EventHandler<MessageItemEventArgs>(OnChannelSupervisor_MessageReceived);
-                this._channelSupervisor.MentionItemReceived += new EventHandler<MessageItemEventArgs>(OnChannelSupervisor_MentionReceived);
+                this._channelSupervisor.ChannelJoined += this.OnChannelSupervisor_ChannelJoined;
+                this._channelSupervisor.ChannelLeft += this.OnChannelSupervisor_ChannelLeft;
+                this._channelSupervisor.ChannelItemReceived += this.OnChannelSupervisor_MessageReceived;
+                this._channelSupervisor.MentionItemReceived += this.OnChannelSupervisor_MentionReceived;
             }
 
             if (this._messageSupervisor == null)
             {
                 this._messageSupervisor = new MessagesSupervisor(_unitOfWork);
-                this._messageSupervisor.MessageItemReceived += new EventHandler<MessageItemEventArgs>(OnMessageSupervisor_MessageReceived);
+                this._messageSupervisor.MessageItemReceived += this.OnMessageSupervisor_MessageReceived;
             }
-        }
-
-        public void UpdateStatus(IrcClient client, ClientState state, Exception error)
-        {
-            // TODO: SmartMonitor
-            var foundClient = GetClientByIrcClient(client);
-            foundClient.Info.State = state;
-            foundClient.Info.Error = error;
-
-            switch (foundClient.Info.State)
-            {
-                case ClientState.Inconceivable:
-                    break;
-                case ClientState.Connected:
-                    break;
-                case ClientState.Registered:
-                    this.AttachLocalUser(client.LocalUser);
-                    break;
-                case ClientState.Processed:
-                    break;
-                case ClientState.Disconnected:
-                    this.DetachLocalUser(client.LocalUser);
-                    break;
-                case ClientState.Error:
-                    break;
-                case ClientState.Intervention:
-                    break;
-                default:
-                    break;
-            }
-
-            var eventArgs = new ClientStatusEventArgs()
-            {
-                Info = foundClient.Info,
-            };
-            this.OnClientStatusChanged(this, eventArgs);
         }
 
         public void UpdateClient(ClientItem client, IrcClient newClient)

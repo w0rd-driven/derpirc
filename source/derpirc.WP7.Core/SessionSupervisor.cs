@@ -25,6 +25,8 @@ namespace derpirc.Core
 
         #endregion
 
+        public event EventHandler<ClientStatusEventArgs> StateChanged;
+
         private bool _isDisposed;
         private int _quitTimeout = 1000;
         private int _defaultServerPort = 6667;
@@ -142,11 +144,12 @@ namespace derpirc.Core
             {
                 if (item.Client.IsConnected)
                     item.Client.Quit(this._quitTimeout, this._settings.QuitMessage);
-                //if (!item.Client.IsConnected)
-                //{
-                //    var newClient = InitializeIrcClient();
-                //    SupervisorFacade.Default.UpdateClient(item, newClient);
-                //}
+                Thread.Sleep(_quitTimeout);
+                if (!item.Client.IsConnected)
+                {
+                    var newClient = InitializeIrcClient();
+                    SupervisorFacade.Default.UpdateClient(item, newClient);
+                }
             }
         }
 
@@ -262,20 +265,20 @@ namespace derpirc.Core
         private void Client_Bounce(object sender, IrcServerInfoEventArgs e)
         {
             var client = sender as IrcClient;
-            SupervisorFacade.Default.UpdateStatus(client, ClientState.Disconnected, null);
+            UpdateState(client, ClientState.Disconnected, null);
             // Connect(client);
         }
 
         private void Client_Connected(object sender, EventArgs e)
         {
             var client = sender as IrcClient;
-            SupervisorFacade.Default.UpdateStatus(client, ClientState.Connected, null);
+            UpdateState(client, ClientState.Connected, null);
         }
 
         private void Client_Disconnected(object sender, EventArgs e)
         {
             var client = sender as IrcClient;
-            SupervisorFacade.Default.UpdateStatus(client, ClientState.Disconnected, null);
+            UpdateState(client, ClientState.Disconnected, null);
         }
 
         #endregion
@@ -285,7 +288,7 @@ namespace derpirc.Core
         private void Client_ConnectFailed(object sender, IrcErrorEventArgs e)
         {
             var client = sender as IrcClient;
-            SupervisorFacade.Default.UpdateStatus(client, ClientState.Error, e.Error);
+            UpdateState(client, ClientState.Error, e.Error);
         }
 
         private void Client_Error(object sender, IrcErrorEventArgs e)
@@ -293,11 +296,11 @@ namespace derpirc.Core
             var client = sender as IrcClient;
             if (e.Error.Message == "No such host is known")
             {
-                SupervisorFacade.Default.UpdateStatus(client, ClientState.Intervention, e.Error);
+                UpdateState(client, ClientState.Intervention, e.Error);
                 // TODO: Could not resolve hostname
             }
             else
-                SupervisorFacade.Default.UpdateStatus(client, ClientState.Error, e.Error);
+                UpdateState(client, ClientState.Error, e.Error);
         }
 
         private void Client_ErrorMessageReceived(object sender, IrcErrorMessageEventArgs e)
@@ -331,7 +334,7 @@ namespace derpirc.Core
         private void Client_Registered(object sender, EventArgs e)
         {
             var client = sender as IrcClient;
-            SupervisorFacade.Default.UpdateStatus(client, ClientState.Registered, null);
+            UpdateState(client, ClientState.Registered, null);
         }
 
         private void Client_NetworkInformationReceived(object sender, EventArgs e)
@@ -353,7 +356,7 @@ namespace derpirc.Core
             var foundClient = SupervisorFacade.Default.GetClientByIrcClient(client);
             if (foundClient.Info.State == ClientState.Registered)
             {
-                SupervisorFacade.Default.UpdateStatus(client, ClientState.Processed, null);
+                UpdateState(client, ClientState.Processed, null);
                 var networkName = this.ParseNetworkName(client.WelcomeMessage);
                 var matchedNetwork = this.GetNetworkByName(networkName);
                 this.JoinSession(matchedNetwork, client);
@@ -405,6 +408,29 @@ namespace derpirc.Core
             client.LocalUser.SetNickName(nickNameAlternate);
             foundClient.Info.NickNameRetryCount++;
         }
+
+        private void UpdateState(IrcClient client, ClientState state, Exception error)
+        {
+            var foundClient = SupervisorFacade.Default.GetClientByIrcClient(client);
+            foundClient.Info.State = state;
+            foundClient.Info.Error = error;
+            var eventArgs = new ClientStatusEventArgs()
+            {
+                Info = foundClient.Info,
+            };
+            OnStateChanged(eventArgs);
+        }
+
+        #region Events
+
+        void OnStateChanged(ClientStatusEventArgs eventArgs)
+        {
+            var handler = this.StateChanged;
+            if (handler != null)
+                handler.Invoke(this, eventArgs);
+        }
+
+        #endregion
 
         #region Lookup methods
 
