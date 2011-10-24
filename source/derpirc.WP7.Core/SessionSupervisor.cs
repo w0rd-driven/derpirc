@@ -142,10 +142,20 @@ namespace derpirc.Core
         {
             if (item.Client != null)
             {
-                if (item.Client.IsConnected)
-                    item.Client.Quit(this._quitTimeout, this._settings.QuitMessage);
-                Thread.Sleep(_quitTimeout);
-                if (!item.Client.IsConnected)
+                try
+                {
+                    var isConnected = item.Client.IsConnected;
+                    if (isConnected)
+                    {
+                        item.Client.Quit(this._quitTimeout, this._settings.QuitMessage);
+                        Thread.Sleep(_quitTimeout);
+                    }
+                }
+                catch (Exception exception)
+                {
+                    // HACK: IrcClient.IsDisposed snafu
+                }
+                finally
                 {
                     var newClient = InitializeIrcClient();
                     SupervisorFacade.Default.UpdateClient(item, newClient);
@@ -169,9 +179,20 @@ namespace derpirc.Core
 
         public void Reconnect(ClientItem item, bool force = false)
         {
-            if (item.Client.IsConnected)
-                this.Disconnect(item);
-            this.Connect(item.Client);
+            try
+            {
+                var isConnected = item.Client.IsConnected;
+                if (isConnected)
+                    this.Disconnect(item);
+            }
+            catch (Exception exception)
+            {
+                // HACK: IrcClient.IsDisposed snafu
+            }
+            finally
+            {
+                this.Connect(item.Client);
+            }
         }
 
         public void SetNickName(IMessage target, string nickName)
@@ -412,13 +433,16 @@ namespace derpirc.Core
         private void UpdateState(IrcClient client, ClientState state, Exception error)
         {
             var foundClient = SupervisorFacade.Default.GetClientByIrcClient(client);
-            foundClient.Info.State = state;
-            foundClient.Info.Error = error;
-            var eventArgs = new ClientStatusEventArgs()
+            if (foundClient != null)
             {
-                Info = foundClient.Info,
-            };
-            OnStateChanged(eventArgs);
+                foundClient.Info.State = state;
+                foundClient.Info.Error = error;
+                var eventArgs = new ClientStatusEventArgs()
+                {
+                    Info = foundClient.Info,
+                };
+                OnStateChanged(eventArgs);
+            }
         }
 
         #region Events

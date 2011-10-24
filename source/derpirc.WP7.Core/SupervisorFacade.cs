@@ -149,8 +149,9 @@ namespace derpirc.Core
                     this.AttachLocalUser(attachClient.LocalUser);
                     break;
                 case ClientState.Disconnected:
-                    var detachClient = GetIrcClientByClientInfo(e.Info);
-                    this.DetachLocalUser(detachClient.LocalUser);
+                    var detachClient = GetClientByClientInfo(e.Info);
+                    this.DetachLocalUser(detachClient.Client.LocalUser);
+                    this._sessionSupervisor.Disconnect(detachClient);
                     break;
                 default:
                     break;
