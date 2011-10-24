@@ -55,7 +55,6 @@ namespace derpirc.Core
         private SessionSupervisor _sessionSupervisor;
         private ChannelsSupervisor _channelSupervisor;
         private MessagesSupervisor _messageSupervisor;
-        private SettingsSupervisor _settingSupervisor;
 
         // HACK: UI and internal facing
         public event EventHandler<NetworkStatusEventArgs> NetworkStatusChanged;
@@ -137,7 +136,6 @@ namespace derpirc.Core
                 });
             this._unitOfWork = new DataUnitOfWork();
 
-            this._settingSupervisor = new SettingsSupervisor(_unitOfWork);
             this._sessionSupervisor = new SessionSupervisor(_unitOfWork);
         }
 
@@ -146,7 +144,6 @@ namespace derpirc.Core
             this._sessionSupervisor = null;
             this._channelSupervisor = null;
             this._messageSupervisor = null;
-            this._settingSupervisor = null;
         }
 
         #region UI-facing methods
@@ -154,7 +151,9 @@ namespace derpirc.Core
         // SettingsView
         public void CommitSettings()
         {
-            this._settingSupervisor.Commit();
+            var settingsSupervisorReference = new WeakReference(new SettingsSupervisor(_unitOfWork));
+            var settingsSupervisor = settingsSupervisorReference.Target as SettingsSupervisor;
+            settingsSupervisor.Commit();
         }
 
         // ConnectionView

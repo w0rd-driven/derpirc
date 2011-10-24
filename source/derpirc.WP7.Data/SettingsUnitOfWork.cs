@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using System.IO.IsolatedStorage;
 using derpirc.Data.Models.Settings;
 
@@ -13,6 +13,8 @@ namespace derpirc.Data
 
         #region Properties
 
+        public bool IsFactoryDefault { get; set; }
+
         public User User
         {
             get
@@ -21,10 +23,7 @@ namespace derpirc.Data
             }
             set
             {
-                if (AddOrUpdateValue(_userKeyName, value))
-                {
-                    Save();
-                }
+                if (AddOrUpdateValue(_userKeyName, value)) { Save(); }
             }
         }
 
@@ -36,10 +35,7 @@ namespace derpirc.Data
             }
             set
             {
-                if (AddOrUpdateValue(_sessionKeyName, value))
-                {
-                    Save();
-                }
+                if (AddOrUpdateValue(_sessionKeyName, value)) { Save(); }
             }
         }
 
@@ -71,6 +67,8 @@ namespace derpirc.Data
         public SettingsUnitOfWork(bool wipeBeforeUse)
         {
             _settings = IsolatedStorageSettings.ApplicationSettings;
+            if (_settings.Count == 0)
+                IsFactoryDefault = true;
             if (wipeBeforeUse)
                 WipeDatabase();
         }
@@ -78,6 +76,8 @@ namespace derpirc.Data
         public void WipeDatabase()
         {
             _settings.Clear();
+            if (_settings.Count == 0)
+                IsFactoryDefault = true;
         }
 
         /// <summary>
@@ -123,11 +123,13 @@ namespace derpirc.Data
             if (_settings.Contains(key))
             {
                 value = (T)_settings[key];
+                IsFactoryDefault = false;
             }
             // Otherwise, use the default value.
             else
             {
                 value = defaultValue;
+                IsFactoryDefault = true;
             }
             return value;
         }
@@ -137,7 +139,14 @@ namespace derpirc.Data
         /// </summary>
         public void Save()
         {
-            _settings.Save();
+            try
+            {
+                _settings.Save();
+            }
+            catch (Exception exception)
+            {
+                throw;
+            }
         }
     }
 }
