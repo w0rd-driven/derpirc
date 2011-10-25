@@ -2,12 +2,13 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Data;
+using derpirc.Core;
 using derpirc.Data;
 using derpirc.Data.Models.Settings;
 using derpirc.Helpers;
 using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
-using derpirc.Core;
 
 namespace derpirc.ViewModels
 {
@@ -16,6 +17,21 @@ namespace derpirc.ViewModels
     public class SettingsNetworkViewModel : ViewModelBase
     {
         #region Commands
+
+        private bool _canAdd;
+        public bool CanAdd
+        {
+            get { return _canAdd; }
+            set
+            {
+                if (_canAdd == value)
+                    return;
+
+                _canAdd = value;
+                RaisePropertyChanged(() => CanAdd);
+                this.MessengerInstance.Send<NotificationMessage<bool>>(new NotificationMessage<bool>(this, "action", _canAdd, "add"));
+            }
+        }
 
         private bool _canEdit;
         public bool CanEdit
@@ -27,8 +43,18 @@ namespace derpirc.ViewModels
                     return;
 
                 _canEdit = value;
+                EditCommand.RaiseCanExecuteChanged();
                 RaisePropertyChanged(() => CanEdit);
-                this.MessengerInstance.Send<NotificationMessage<bool>>(new NotificationMessage<bool>(this, "action", _canEdit, "edit"));
+            }
+        }
+
+        RelayCommand _editCommand;
+        public RelayCommand EditCommand
+        {
+            get
+            {
+                return _editCommand ?? (_editCommand =
+                    new RelayCommand(() => this.Edit(), () => this.CanEdit));
             }
         }
 
@@ -44,6 +70,21 @@ namespace derpirc.ViewModels
                 _canDelete = value;
                 RaisePropertyChanged(() => CanDelete);
                 this.MessengerInstance.Send<NotificationMessage<bool>>(new NotificationMessage<bool>(this, "action", _canDelete, "delete"));
+            }
+        }
+
+        private bool _canClear;
+        public bool CanClear
+        {
+            get { return _canClear; }
+            set
+            {
+                if (_canClear == value)
+                    return;
+
+                _canClear = value;
+                RaisePropertyChanged(() => CanClear);
+                this.MessengerInstance.Send<NotificationMessage<bool>>(new NotificationMessage<bool>(this, "action", _canClear, "clear"));
             }
         }
 
@@ -86,6 +127,8 @@ namespace derpirc.ViewModels
         {
             _networksList = new ObservableCollection<Network>();
 
+            CanAdd = true;
+
             if (IsInDesignMode)
             {
                 // Code runs in Blend --> create design time data.
@@ -106,11 +149,11 @@ namespace derpirc.ViewModels
                         case "add":
                             this.Add();
                             break;
-                        case "edit":
-                            this.Edit();
-                            break;
                         case "delete":
                             this.Delete(SelectedItem);
+                            break;
+                        case "clear":
+                            this.Clear();
                             break;
                     }
                 });
@@ -135,6 +178,8 @@ namespace derpirc.ViewModels
             {
                 _networksList.Add(item);
             }
+            if (_networksList.Count > 0)
+                CanClear = true;
         }
 
         private void Edit()
@@ -154,13 +199,18 @@ namespace derpirc.ViewModels
                 _networksList.Remove(item);
         }
 
+        private void Clear()
+        {
+            _networksList.Clear();
+        }
+
         private void SelectItem()
         {
             if (SelectedItem != null)
             {
                 CanEdit = true;
                 CanDelete = true;
-                ViewDetails(SelectedItem);
+                //ViewDetails(SelectedItem);
             }
             else
             {

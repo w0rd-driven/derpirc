@@ -58,9 +58,9 @@
                         <command:EventToCommand Command="{Binding SelectionChangedCommand}"
                                                 CommandParameter="{Binding SelectedItems, ElementName=ConnectionsList}" />
                     </blend:EventTrigger>
-                    <blend:EventTrigger EventName="DoubleTap">
+                    <!--<blend:EventTrigger EventName="DoubleTap">
                         <command:EventToCommand Command="{Binding EditCommand}" />
-                    </blend:EventTrigger>
+                    </blend:EventTrigger>-->
                 </blend:Interaction.Triggers>
                 <toolkit:MultiselectList.ItemTemplate>
                     <DataTemplate>

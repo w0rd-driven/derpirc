@@ -327,16 +327,47 @@ namespace derpirc.Core
         private void Client_ErrorMessageReceived(object sender, IrcErrorMessageEventArgs e)
         {
             var client = sender as IrcClient;
-            // TODO: Intercept "Closing Link... " timeouts
+            if (e.Message == "Closing Link: ")
+            {
+
+            }
+            // TODO: Intercept "Closing Link... " timeouts, not quits
         }
 
         private void Client_ProtocolError(object sender, IrcProtocolErrorEventArgs e)
         {
             var client = sender as IrcClient;
-            if (e.Code == 433)
+            var channelName = string.Empty;
+            switch (e.Code)
             {
-                // Nick in use
-                NickCollision(client);
+                case 464:
+                    // Bad server password
+                    break;
+                case 465:
+                    // Banned from server
+                    break;
+                case 433:
+                    // Nick in use
+                    NickCollision(client);
+                    break;
+                case 473:
+                    // Invite only (and you're not invited :()
+                    channelName = e.Parameters[0];
+                    // TODO: Recovery : Channel not joined (due to +k or +b)
+                    break;
+                case 474:
+                    // TODO: Recovery : Channel not joined (due to +k or +b)
+                    channelName = e.Parameters[0];
+                    // Banned
+                    break;
+                case 475:
+                    // TODO: Recovery : Channel not joined (due to +k or +b)
+                    channelName = e.Parameters[0];
+                    // Bad channel key
+                    break;
+                case 482:
+                    // Not operator
+                    break;
             }
         }
 

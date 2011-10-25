@@ -313,10 +313,10 @@ namespace derpirc.ViewModels
                 _connectionsList.Add(item.Info);
             }
 
-            SupervisorFacade.Default.ClientStatusChanged += new EventHandler<ClientStatusEventArgs>(Default_ClientStatusChanged);
+            SupervisorFacade.Default.StateChanged += this.StateChanged;
         }
 
-        private void Default_ClientStatusChanged(object sender, ClientStatusEventArgs e)
+        private void StateChanged(object sender, ClientStatusEventArgs e)
         {
             DispatcherHelper.CheckBeginInvokeOnUI(() =>
             {

@@ -16,13 +16,7 @@ namespace derpirc.Views
             InitializeComponent();
         }
 
-        ConnectionViewModel viewModel
-        {
-            get
-            {
-                return this.DataContext as ConnectionViewModel;
-            }
-        }
+        ConnectionViewModel viewModel { get { return this.DataContext as ConnectionViewModel; } }
 
         protected override void OnNavigatedFrom(System.Windows.Navigation.NavigationEventArgs e)
         {

@@ -71,38 +71,28 @@ namespace derpirc.ViewModels
             }
         }
 
+        private bool _canAdd;
+        public bool CanAdd
+        {
+            get { return _canAdd; }
+            set
+            {
+                if (_canAdd == value)
+                    return;
+
+                _canAdd = value;
+                AddCommand.RaiseCanExecuteChanged();
+                RaisePropertyChanged(() => CanAdd);
+            }
+        }
+
         RelayCommand _addCommand;
         public RelayCommand AddCommand
         {
             get
             {
                 return _addCommand ?? (_addCommand =
-                    new RelayCommand(() => this.Add()));
-            }
-        }
-
-        private bool _canEdit;
-        public bool CanEdit
-        {
-            get { return _canEdit; }
-            set
-            {
-                if (_canEdit == value)
-                    return;
-
-                _canEdit = value;
-                EditCommand.RaiseCanExecuteChanged();
-                RaisePropertyChanged(() => CanEdit);
-            }
-        }
-
-        RelayCommand _editCommand;
-        public RelayCommand EditCommand
-        {
-            get
-            {
-                return _editCommand ?? (_editCommand =
-                    new RelayCommand(() => this.Edit(), () => this.CanEdit));
+                    new RelayCommand(() => this.Add(), () => this.CanAdd));
             }
         }
 
@@ -128,6 +118,31 @@ namespace derpirc.ViewModels
             {
                 return _deleteCommand ?? (_deleteCommand =
                     new RelayCommand(() => this.Delete(), () => this.CanDelete));
+            }
+        }
+
+        private bool _canClear;
+        public bool CanClear
+        {
+            get { return _canClear; }
+            set
+            {
+                if (_canClear == value)
+                    return;
+
+                _canClear = value;
+                ClearCommand.RaiseCanExecuteChanged();
+                RaisePropertyChanged(() => CanClear);
+            }
+        }
+
+        RelayCommand _clearCommand;
+        public RelayCommand ClearCommand
+        {
+            get
+            {
+                return _clearCommand ?? (_clearCommand =
+                    new RelayCommand(() => this.Clear(), () => this.CanClear));
             }
         }
 
@@ -185,11 +200,14 @@ namespace derpirc.ViewModels
                     {
                         switch (message.Notification)
                         {
-                            case "edit":
-                                CanEdit = message.Content;
+                            case "add":
+                                CanAdd = message.Content;
                                 break;
                             case "delete":
                                 CanDelete = message.Content;
+                                break;
+                            case "clear":
+                                CanClear = message.Content;
                                 break;
                             default:
                                 break;
@@ -247,14 +265,14 @@ namespace derpirc.ViewModels
             this.MessengerInstance.Send(new NotificationMessage("add"), "Network");
         }
 
-        private void Edit()
-        {
-            this.MessengerInstance.Send(new NotificationMessage("edit"), "Network");
-        }
-
         private void Delete()
         {
             this.MessengerInstance.Send(new NotificationMessage("delete"), "Network");
+        }
+
+        private void Clear()
+        {
+            this.MessengerInstance.Send(new NotificationMessage("clear"), "Network");
         }
 
         public override void Cleanup()
