@@ -18,6 +18,8 @@ namespace derpirc.Data.Models
     [global::System.Data.Linq.Mapping.TableAttribute()]
     public partial class Network : IBaseModel, INotifyPropertyChanging, INotifyPropertyChanged
     {
+        private Binary _Version;
+
         private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
 
         private int _Id;
