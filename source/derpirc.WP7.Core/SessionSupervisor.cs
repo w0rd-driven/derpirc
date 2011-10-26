@@ -79,11 +79,12 @@ namespace derpirc.Core
                 var session = this.GetDefaultSession();
 
                 // TODO: SmartMonitor
-                while (session == null)
-                {
-                    session = this.GetDefaultSession();
-                    Thread.Sleep(1000);
-                }
+                // HACK: Turned off while loop since it breaks first run sync
+                //while (session == null)
+                //{
+                //    session = this.GetDefaultSession();
+                //    Thread.Sleep(1000);
+                //}
 
                 if (session != null)
                 {
@@ -106,7 +107,7 @@ namespace derpirc.Core
 
         #region UI-facing methods
 
-        public void Connect()
+        private void Connect()
         {
             var clients = SupervisorFacade.Default.Clients.AsEnumerable();
             foreach (var item in clients)
@@ -115,7 +116,7 @@ namespace derpirc.Core
             }
         }
 
-        public void Connect(IrcClient client)
+        private void Connect(IrcClient client)
         {
             // TODO: SmartMonitor
             if (this._registrationData == null)
@@ -353,15 +354,15 @@ namespace derpirc.Core
                 case 473:
                     // Invite only (and you're not invited :()
                     channelName = e.Parameters[0];
-                    // TODO: Recovery : Channel not joined (due to +k or +b)
+                    // TODO: Recovery : Channel not joined (due to +i)
                     break;
                 case 474:
-                    // TODO: Recovery : Channel not joined (due to +k or +b)
+                    // TODO: Recovery : Channel not joined (due to +b)
                     channelName = e.Parameters[0];
                     // Banned
                     break;
                 case 475:
-                    // TODO: Recovery : Channel not joined (due to +k or +b)
+                    // TODO: Recovery : Channel not joined (due to +k)
                     channelName = e.Parameters[0];
                     // Bad channel key
                     break;
@@ -397,10 +398,12 @@ namespace derpirc.Core
 
         private void CtcpClient_ActionReceived(object sender, CtcpMessageEventArgs e)
         {
+            var client = sender as CtcpClient;
         }
 
         private void CtcpClient_ActionSent(object sender, CtcpMessageEventArgs e)
         {
+            var client = sender as CtcpClient;
         }
 
         private void ProcessSession(IrcClient client)
@@ -439,7 +442,6 @@ namespace derpirc.Core
                     .Select(x => new Tuple<string, string>(x.Name, x.Password)).AsEnumerable();
                 if (channels.Any())
                     client.Channels.Join(channels);
-                // TODO: Recovery : Channel not joined (due to +k or +b)
             }
         }
 

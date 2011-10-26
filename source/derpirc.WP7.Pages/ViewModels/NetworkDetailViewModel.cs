@@ -62,7 +62,7 @@ namespace derpirc.ViewModels
             get
             {
                 return _saveCommand ?? (_saveCommand =
-                    new RelayCommand(() => this.Save()));
+                    new RelayCommand(() => this.Save(Model)));
             }
         }
 
@@ -340,7 +340,7 @@ namespace derpirc.ViewModels
         private void OnNavigatedFrom()
         {
             this.IsAppBarVisible = false;
-            Save();
+            Save(Model);
         }
 
         private void PivotItemLoaded(PivotItemEventArgs eventArgs)
@@ -386,9 +386,22 @@ namespace derpirc.ViewModels
             }
         }
 
-        private void Save()
+        private void Save(Network model)
         {
-            // TODO: Settings.Save();
+            if (model != null)
+            {
+                model.DisplayName = DisplayName;
+                model.Name = Name;
+                model.HostName = HostName;
+                model.Ports = Ports;
+                model.Password = Password;
+
+                DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                {
+                    model.Favorites.Clear();
+                    model.Favorites.AddRange(_favoritesList.ToList());
+                });
+            }
         }
 
         private void Add()

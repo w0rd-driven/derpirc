@@ -177,18 +177,6 @@ namespace derpirc.Core
         }
 
         // ConnectionView
-        public void Connect(ObservableCollection<ClientInfo> clients)
-        {
-            if (clients != null)
-                for (int index = 0; index < clients.Count; index++)
-                {
-                    var client = GetIrcClientByClientInfo(clients[index]);
-                    this._sessionSupervisor.Connect(client);
-                }
-            else
-                this._sessionSupervisor.Connect();
-        }
-
         public void Disconnect(ObservableCollection<ClientInfo> clients)
         {
             if (clients != null)

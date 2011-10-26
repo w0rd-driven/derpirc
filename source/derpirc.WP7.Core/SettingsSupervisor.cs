@@ -79,7 +79,7 @@ namespace derpirc.Core
 
             var defaultSession = _unitOfWork.Sessions.FindBy(x => x.Name == "default").FirstOrDefault();
             var configSession = SettingsUnitOfWork.Default.Session;
-            for (int index = 0; index < defaultSession.Networks.Count; index++)
+            for (int index = 0; index < defaultSession.Networks.Count - 1; index++)
             {
                 var record = defaultSession.Networks[index];
                 var foundNetwork = configSession.Networks.Where(x => x.Name == record.Name).FirstOrDefault();
@@ -87,7 +87,7 @@ namespace derpirc.Core
                     networksToSmash.Add(index);
                 else
                 {
-                    for (int indexFavorite = 0; indexFavorite < foundNetwork.Favorites.Count; indexFavorite++)
+                    for (int indexFavorite = 0; indexFavorite < foundNetwork.Favorites.Count - 1; indexFavorite++)
                     {
                         var favoriteRecord = record.Favorites[index];
                         var foundFavorite = foundNetwork.Favorites.Where(x => x.Name == record.Name).FirstOrDefault();
@@ -97,7 +97,7 @@ namespace derpirc.Core
                 }
                 if (favoritesToSmash.Count > 0)
                 {
-                    foreach (var item in favoritesToSmash)
+                    for (int item = favoritesToSmash.Count - 1; item >= 0; --item)
                     {
                         foundNetwork.Favorites.RemoveAt(item);
                     }
@@ -106,11 +106,12 @@ namespace derpirc.Core
             }
             if (networksToSmash.Count > 0)
             {
-                foreach (var item in networksToSmash)
+                for (int item = networksToSmash.Count - 1; item >= 0; --item)
                 {
                     defaultSession.Networks.RemoveAt(item);
                 }
             }
+            _unitOfWork.Commit();
         }
 
         #region Factory methods

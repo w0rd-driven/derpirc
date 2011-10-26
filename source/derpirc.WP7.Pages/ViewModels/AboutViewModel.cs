@@ -121,6 +121,7 @@ namespace derpirc.ViewModels
         private void Website()
         {
             var task = new WebBrowserTask();
+            // TODO: Get from strings
             task.Uri = new Uri("http://braytonium.com");
             task.Show();
         }

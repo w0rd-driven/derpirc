@@ -420,7 +420,7 @@ namespace derpirc.ViewModels
         private void Connect(ObservableCollection<ClientInfo> clients)
         {
             CanConnect = false;
-            SupervisorFacade.Default.Connect(clients);
+            SupervisorFacade.Default.Reconnect(clients);
             CanConnect = true;
         }
 
@@ -434,7 +434,7 @@ namespace derpirc.ViewModels
         private void Reconnect(ObservableCollection<ClientInfo> clients)
         {
             CanReconnect = false;
-            SupervisorFacade.Default.Reconnect(clients);
+            SupervisorFacade.Default.Reconnect(clients, true);
             CanReconnect = true;
         }
 
