@@ -2,18 +2,18 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+                    xmlns:edc="clr-namespace:Microsoft.Expression.Controls;assembly=Microsoft.Expression.Drawing"
                     xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
                     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
                     xmlns:controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls"
                     xmlns:primitives="clr-namespace:Microsoft.Phone.Controls.Primitives;assembly=Microsoft.Phone.Controls"
-                    xmlns:converters="clr-namespace:derpirc.Converters"
-                    xmlns:helpers="clr-namespace:derpirc.Helpers"
-                    xmlns:localcontrols="clr-namespace:derpirc.Controls;assembly=derpirc.UICore"
-                    xmlns:edc="clr-namespace:Microsoft.Expression.Controls;assembly=Microsoft.Expression.Drawing"
+                    xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib"
                     mc:Ignorable="d">
     <!-- Converters -->
-    <converters:ConversationDateTimeConverter x:Key="ConversationDateTimeConverter" />
+    <toolkit:RelativeTimeConverter x:Key="RelativeTimeConverter" />
+    <toolkit:ListViewDateTimeConverter x:Key="ListViewDateTimeConverter" />
+    
     <!-- Fonts -->
     <FontFamily x:Key="FontFamilyNormal">/derpirc.UICore;component/Fonts/Fonts.zip#monofur</FontFamily>
     <!-- Styles -->
@@ -168,188 +168,4 @@
             </Setter.Value>
         </Setter>
     </Style>
-    <Style x:Key="TextBoxTickStyle" TargetType="TextBox">
-        <Setter Property="FontFamily" Value="{StaticResource PhoneFontFamilyNormal}"/>
-        <Setter Property="FontSize" Value="{StaticResource PhoneFontSizeMediumLarge}"/>
-        <Setter Property="Background" Value="{StaticResource PhoneTextBoxBrush}"/>
-        <Setter Property="Foreground" Value="{StaticResource PhoneTextBoxForegroundBrush}"/>
-        <Setter Property="BorderBrush" Value="{StaticResource PhoneTextBoxBrush}"/>
-        <Setter Property="SelectionBackground" Value="{StaticResource PhoneAccentBrush}"/>
-        <Setter Property="SelectionForeground" Value="{StaticResource PhoneTextBoxSelectionForegroundBrush}"/>
-        <Setter Property="BorderThickness" Value="{StaticResource PhoneBorderThickness}"/>
-        <Setter Property="Margin" Value="-12"/>
-        <Setter Property="Padding" Value="2"/>
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="TextBox">
-                    <Grid Background="Transparent">
-                        <VisualStateManager.VisualStateGroups>
-                            <VisualStateGroup x:Name="CommonStates">
-                                <VisualState x:Name="Normal"/>
-                                <VisualState x:Name="MouseOver"/>
-                                <VisualState x:Name="Disabled">
-                                    <Storyboard>
-                                		<ColorAnimation Duration="0" To="{StaticResource PhoneDisabledColor}" 
-                                			Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)" Storyboard.TargetName="PathTickRight" d:IsOptimized="True" />
-                                		<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Visibility" Storyboard.TargetName="EnabledBorder">
-                                			<DiscreteObjectKeyFrame KeyTime="0">
-                                				<DiscreteObjectKeyFrame.Value>
-                                					<Visibility>Collapsed</Visibility>
-                                				</DiscreteObjectKeyFrame.Value>
-                                			</DiscreteObjectKeyFrame>
-                                		</ObjectAnimationUsingKeyFrames>
-                                		<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Visibility" Storyboard.TargetName="DisabledOrReadonlyBorder">
-                                			<DiscreteObjectKeyFrame KeyTime="0">
-                                				<DiscreteObjectKeyFrame.Value>
-                                					<Visibility>Visible</Visibility>
-                                				</DiscreteObjectKeyFrame.Value>
-                                			</DiscreteObjectKeyFrame>
-                                		</ObjectAnimationUsingKeyFrames>
-                                	</Storyboard>
-                                </VisualState>
-                                <VisualState x:Name="ReadOnly">
-                                    <Storyboard>
-                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Visibility" Storyboard.TargetName="EnabledBorder">
-                                            <DiscreteObjectKeyFrame KeyTime="0">
-                                                <DiscreteObjectKeyFrame.Value>
-                                                    <Visibility>Collapsed</Visibility>
-                                                </DiscreteObjectKeyFrame.Value>
-                                            </DiscreteObjectKeyFrame>
-                                        </ObjectAnimationUsingKeyFrames>
-                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Visibility" Storyboard.TargetName="DisabledOrReadonlyBorder">
-                                            <DiscreteObjectKeyFrame KeyTime="0">
-                                                <DiscreteObjectKeyFrame.Value>
-                                                    <Visibility>Visible</Visibility>
-                                                </DiscreteObjectKeyFrame.Value>
-                                            </DiscreteObjectKeyFrame>
-                                        </ObjectAnimationUsingKeyFrames>
-                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Background" Storyboard.TargetName="DisabledOrReadonlyBorder">
-                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource PhoneTextBoxBrush}"/>
-                                        </ObjectAnimationUsingKeyFrames>
-                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="BorderBrush" Storyboard.TargetName="DisabledOrReadonlyBorder">
-                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource PhoneTextBoxBrush}"/>
-                                        </ObjectAnimationUsingKeyFrames>
-                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Foreground" Storyboard.TargetName="DisabledOrReadonlyContent">
-                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource PhoneTextBoxReadOnlyBrush}"/>
-                                        </ObjectAnimationUsingKeyFrames>
-                                    </Storyboard>
-                                </VisualState>
-                            </VisualStateGroup>
-                            <VisualStateGroup x:Name="FocusStates">
-                                <VisualState x:Name="Focused">
-                                    <Storyboard>
-                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Background" Storyboard.TargetName="EnabledBorder">
-                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource PhoneTextBoxEditBackgroundBrush}"/>
-                                        </ObjectAnimationUsingKeyFrames>
-                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="BorderBrush" Storyboard.TargetName="EnabledBorder">
-                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource PhoneTextBoxEditBorderBrush}"/>
-                                        </ObjectAnimationUsingKeyFrames>
-                                        <ColorAnimation Duration="0" To="{StaticResource PhoneTextBoxEditBackgroundColor}" Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)" Storyboard.TargetName="PathTickRight" d:IsOptimized="True" />
-                                    </Storyboard>
-                                </VisualState>
-                                <VisualState x:Name="Unfocused"/>
-                            </VisualStateGroup>
-                        </VisualStateManager.VisualStateGroups>
-                        <Border x:Name="EnabledBorder" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Margin="{StaticResource PhoneTouchTargetOverhang}">
-                            <ContentControl x:Name="ContentElement" BorderThickness="0" HorizontalContentAlignment="Stretch" Margin="{StaticResource PhoneTextBoxInnerMargin}" Padding="{TemplateBinding Padding}" VerticalContentAlignment="Stretch"/>
-                        </Border>
-                    	<Path x:Name="PathTickRight" Data="m 0,0 l 16,0 l 0,16 l -16,-16" Margin="0,0,22,0" Stretch="Fill" UseLayoutRounding="False" Height="12" Width="20" VerticalAlignment="Bottom" HorizontalAlignment="Right" d:LayoutOverrides="GridBox" StrokeThickness="3">
-                    		<Path.Fill>
-                    			<SolidColorBrush Color="{StaticResource PhoneTextBoxColor}"/>
-                    		</Path.Fill>
-                    	</Path>
-                        <Border x:Name="DisabledOrReadonlyBorder" BorderBrush="{StaticResource PhoneDisabledBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="Transparent" Margin="{StaticResource PhoneTouchTargetOverhang}" Visibility="Collapsed">
-                            <TextBox x:Name="DisabledOrReadonlyContent" Background="Transparent" Foreground="{StaticResource PhoneDisabledBrush}" FontWeight="{TemplateBinding FontWeight}" FontStyle="{TemplateBinding FontStyle}" FontSize="{TemplateBinding FontSize}" FontFamily="{TemplateBinding FontFamily}" IsReadOnly="True" SelectionForeground="{TemplateBinding SelectionForeground}" SelectionBackground="{TemplateBinding SelectionBackground}" TextAlignment="{TemplateBinding TextAlignment}" TextWrapping="{TemplateBinding TextWrapping}" Text="{TemplateBinding Text}" Template="{StaticResource PhoneDisabledTextBoxTemplate}"/>
-                        </Border>
-                    </Grid>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-    <!-- DataTemplates -->
-    <DataTemplate x:Key="TemplateDetailMyMessage">
-    	<Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-            <Grid Style="{StaticResource GridDetailMyMessage}">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-                <Border x:Name="MessageContainer" Background="{StaticResource PhoneAccentBrush}">
-                    <StackPanel>
-                        <TextBlock x:Name="MessageText"
-                                   Text="{Binding Text}"
-                                   Style="{StaticResource DetailMessageStyle}" />
-                        <TextBlock x:Name="MessageTimestamp"
-                                   Text="{Binding Timestamp, Converter={StaticResource ConversationDateTimeConverter}}"
-                                   Style="{StaticResource DetailTimeStampStyle}" />
-                    </StackPanel>
-       	        </Border>
-                <Path x:Name="PathTick"
-                      Data="m 0,0 l 16,0 l 0,16 l -16,-16"
-           	          Fill="{Binding Background, ElementName=MessageContainer}"
-                      Height="12"
-                      Width="20"
-                      Stretch="Fill"
-                      HorizontalAlignment="Right"
-                      Margin="0,0,10,0"
-                      Grid.Row="1" />
-            </Grid>
-            <TextBlock x:Name="MessageStatus"
-                       Text="{Binding Status}"
-                       Style="{StaticResource DetailStatusStyle}"
-                       Grid.Row="1" />
-        </Grid>
-    </DataTemplate>
-    <DataTemplate x:Key="TemplateDetailTheirMessage">
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-            <Grid Style="{StaticResource GridDetailTheirMessage}">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-                <TextBlock x:Name="MessageSource"
-                           Text="{Binding Source}"
-                           Style="{StaticResource DetailSourceStyle}" />
-                <Path x:Name="PathTick"
-                      Data="m 0,0 l 0,16 l 16,0 l -16,-16"
-                      Fill="{Binding Background, ElementName=MessageContainer}"
-                      Height="12"
-                      Width="20"
-                      Stretch="Fill"
-                      HorizontalAlignment="Left"
-                      Margin="10,0,0,0"
-                      Grid.Row="1" />
-                <Border x:Name="MessageContainer" Grid.Row="2" Background="{StaticResource PhoneAccentBrush}">
-                    <StackPanel>
-                        <TextBlock x:Name="MessageText"
-                                   Text="{Binding Text}"
-                                   Style="{StaticResource DetailMessageStyle}" />
-                        <TextBlock x:Name="MessageTimestamp"
-                                   Text="{Binding Timestamp, Converter={StaticResource ConversationDateTimeConverter}}"
-                                   Style="{StaticResource DetailTimeStampStyle}" />
-                    </StackPanel>
-                </Border>
-            </Grid>
-            <TextBlock x:Name="MessageStatus"
-                       Text="{Binding Status}"
-                       Style="{StaticResource DetailStatusStyle}"
-                       Grid.Row="1" />
-        </Grid>
-    </DataTemplate>
-    <DataTemplate x:Key="TemplateDetailMessageSelector">
-        <helpers:MessageTemplateSelector Content="{Binding}" TemplateMyMessage="{StaticResource TemplateDetailMyMessage}" TemplateTheirMessage="{StaticResource TemplateDetailTheirMessage}" />
-    </DataTemplate>
-    <ControlTemplate x:Key="PhoneDisabledTextBoxTemplate" TargetType="TextBox">
-        <ContentControl x:Name="ContentElement" BorderThickness="0" HorizontalContentAlignment="Stretch" Margin="{StaticResource PhoneTextBoxInnerMargin}" Padding="{TemplateBinding Padding}" VerticalContentAlignment="Stretch"/>
-    </ControlTemplate>
 </ResourceDictionary>

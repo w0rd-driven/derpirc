@@ -20,26 +20,55 @@
                             DataContext="{Binding AboutViewModel, Source={StaticResource Locator}}">
 
     <Grid x:Name="LayoutRoot" Background="Transparent">
-        <controls:Pivot Style="{StaticResource SmallPivotStyle}" Margin="-2,0,2,0">
-            <controls:PivotItem Header="{Binding LocalizedResources.About, Source={StaticResource LocalizedStrings}}"
-                                Style="{StaticResource SmallPivotItemStyle}">
-                <ScrollViewer>
-                    <Grid>
-                    </Grid>
-                </ScrollViewer>
-            </controls:PivotItem>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
 
-            <controls:PivotItem Header="{Binding LocalizedResources.AboutHistory, Source={StaticResource LocalizedStrings}}"
-                                Style="{StaticResource SmallPivotItemStyle}">
-                <Grid>
-                </Grid>
-            </controls:PivotItem>
+        <StackPanel x:Name="TitlePanel" Margin="24,24,0,12">
+            <TextBlock x:Name="PageTitle"
+                       Text="{Binding LocalizedResources.About, Source={StaticResource LocalizedStrings}}"
+                       Margin="-2,-10,0,0"
+                       Style="{StaticResource PhoneTextTitle1Style}" />
+            <TextBlock x:Name="PageSubTitle"
+                       Text="{Binding PageSubTitle}"
+                       Margin="-2,-6,0,0"
+                       Style="{StaticResource TextBlockBase}" />
+        </StackPanel>
 
-            <controls:PivotItem Header="{Binding LocalizedResources.AboutLegal, Source={StaticResource LocalizedStrings}}"
-                                Style="{StaticResource SmallPivotItemStyle}">
+        <Grid x:Name="ContentGrid" Grid.Row="1">
+            <ScrollViewer>
                 <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="60" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="60" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Application Title" Style="{StaticResource TextBlockBase}" FontSize="{StaticResource PhoneFontSizeExtraLarge}" />
+                    <TextBlock Text="forged in the bowels of insanity by" Style="{StaticResource TextBlockBase}" FontSize="{StaticResource PhoneFontSizeMedium}"
+                       Grid.Row="1" />
+                    <TextBlock Text="Braytonium Software" Style="{StaticResource TextBlockBase}" FontSize="{StaticResource PhoneFontSizeMedium}"
+                       Grid.Row="2" />
+                    <HyperlinkButton Content="braytonium.com/applicationtitle" Command="{Binding WebsiteCommand}" HorizontalAlignment="Left"
+                             Grid.Row="3" />
+                    <TextBlock Text="Stroke my ego, plz:" Style="{StaticResource TextBlockBase}" FontSize="{StaticResource PhoneFontSizeMedium}"
+                       Grid.Row="5" />
+                    <HyperlinkButton Content="Review this (cr)app" Command="{Binding ReviewCommand}" HorizontalAlignment="Left"
+                             Grid.Row="6" />
+                    <TextBlock Text="Feedback or pony requests:" Style="{StaticResource TextBlockBase}" FontSize="{StaticResource PhoneFontSizeMedium}"
+                       Grid.Row="8" />
+                    <HyperlinkButton Content="applicationtitle@braytonium.com" Command="{Binding FeedbackCommand}" HorizontalAlignment="Left"
+                             Grid.Row="9" />
                 </Grid>
-            </controls:PivotItem>
-        </controls:Pivot>
+            </ScrollViewer>
+        </Grid>
     </Grid>
+
 </phone:PhoneApplicationPage>

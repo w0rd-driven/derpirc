@@ -16,7 +16,15 @@
                             SupportedOrientations="PortraitOrLandscape" Orientation="Portrait"
                             shell:SystemTray.IsVisible="True"
                             DataContext="{Binding MessageDetailViewModel, Source={StaticResource Locator}}">
-    
+
+    <phone:PhoneApplicationPage.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/derpirc.Pages;component/Skins/Details.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </phone:PhoneApplicationPage.Resources>
+
     <Grid x:Name="LayoutRoot" Background="Transparent">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />

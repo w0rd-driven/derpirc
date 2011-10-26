@@ -9,13 +9,21 @@
                             xmlns:command="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Extras.WP71"
                             xmlns:helpers="clr-namespace:derpirc.Helpers;assembly=derpirc.UICore"
                             xmlns:appbarutils="clr-namespace:AppBarUtils;assembly=AppBarUtils" 
-                            mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="696"
+                            mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="728"
                             FontFamily="{StaticResource PhoneFontFamilyNormal}"
                             FontSize="{StaticResource PhoneFontSizeNormal}"
                             Foreground="{StaticResource PhoneForegroundBrush}"
                             SupportedOrientations="PortraitOrLandscape" Orientation="Portrait"
                             shell:SystemTray.IsVisible="True"
                             DataContext="{Binding MentionDetailViewModel, Source={StaticResource Locator}}">
+
+    <phone:PhoneApplicationPage.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/derpirc.Pages;component/Skins/Details.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </phone:PhoneApplicationPage.Resources>
     
     <Grid x:Name="LayoutRoot" Background="Transparent">
         <Grid.RowDefinitions>

@@ -121,14 +121,6 @@
     <value>about</value>
     <comment>AboutView About PivotTitle</comment>
   </data>
-  <data name="AboutHistory" xml:space="preserve">
-    <value>history</value>
-    <comment>AboutView History PivotTitle</comment>
-  </data>
-  <data name="AboutLegal" xml:space="preserve">
-    <value>legal</value>
-    <comment>AboutView Legal PivotTitle</comment>
-  </data>
   <data name="ApplicationName" xml:space="preserve">
     <value>derpirc</value>
     <comment>Application Name</comment>

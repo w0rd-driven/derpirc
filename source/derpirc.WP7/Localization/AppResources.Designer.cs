@@ -70,24 +70,6 @@ namespace derpirc.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to history.
-        /// </summary>
-        public static string AboutHistory {
-            get {
-                return ResourceManager.GetString("AboutHistory", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to legal.
-        /// </summary>
-        public static string AboutLegal {
-            get {
-                return ResourceManager.GetString("AboutLegal", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to derpirc.
         /// </summary>
         public static string ApplicationName {
