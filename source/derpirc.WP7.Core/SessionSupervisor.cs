@@ -33,9 +33,6 @@ namespace derpirc.Core
 
         private DataUnitOfWork _unitOfWork;
 
-        private Data.Models.Settings.User _settings;
-        private IrcRegistrationInfo _registrationData;
-
         private object _threadLock = new object();
         private BackgroundWorker _worker;
 
@@ -76,7 +73,15 @@ namespace derpirc.Core
             Action completed = e.Argument as Action;
             lock (this._threadLock)
             {
-                var session = this.GetDefaultSession();
+                // Build Client list based on settings
+                for (int index = 0; index < SettingsUnitOfWork.Default.Session.Networks.Count; index++)
+                {
+                    var item = SettingsUnitOfWork.Default.Session.Networks[index];
+                    var client = this.InitializeClientItem();
+                    client.Info.Id = index + 1;
+                    client.Info.NetworkName = item.Name;
+                    SupervisorFacade.Default.Clients.Add(client);
+                }
 
                 // TODO: SmartMonitor
                 // HACK: Turned off while loop since it breaks first run sync
@@ -86,15 +91,10 @@ namespace derpirc.Core
                 //    Thread.Sleep(1000);
                 //}
 
+                var session = this.GetDefaultSession();
+
                 if (session != null)
                 {
-                    foreach (var item in session.Networks)
-                    {
-                        var client = this.InitializeClientItem();
-                        client.Info.Id = item.Id;
-                        client.Info.NetworkName = item.Name;
-                        SupervisorFacade.Default.Clients.Add(client);
-                    }
                     this.Connect();
                 }
             }
@@ -119,14 +119,12 @@ namespace derpirc.Core
         private void Connect(IrcClient client)
         {
             // TODO: SmartMonitor
-            if (this._registrationData == null)
-                this._registrationData = this.GetRegistrationInfo();
-            if (this._registrationData != null)
+            var network = this.GetNetworkByClient(client);
+            if (network != null && client != null)
             {
-                var network = this.GetNetworkByClient(client);
-                var serverPort = this.GetServerPort(network);
-                if (client != null)
-                    client.Connect(network.HostName, serverPort, false, this._registrationData);
+                var registrationData = GetRegistrationInfo();
+                if (registrationData != null)
+                    client.Connect(network.HostName, this.GetServerPort(network), false, registrationData);
             }
         }
 
@@ -148,7 +146,7 @@ namespace derpirc.Core
                     var isConnected = item.Client.IsConnected;
                     if (isConnected)
                     {
-                        item.Client.Quit(this._quitTimeout, this._settings.QuitMessage);
+                        item.Client.Quit(this._quitTimeout, SettingsUnitOfWork.Default.User.QuitMessage);
                         Thread.Sleep(_quitTimeout);
                     }
                 }
@@ -224,13 +222,12 @@ namespace derpirc.Core
         {
             var result = new IrcUserRegistrationInfo();
 
-            this._settings = SettingsUnitOfWork.Default.User;
-            if (this._settings != null)
+            if (SettingsUnitOfWork.Default.User != null)
             {
-                result.NickName = this._settings.NickName;
-                result.RealName = this._settings.FullName;
-                result.UserName = this._settings.Username;
-                if (this._settings.IsInvisible)
+                result.NickName = SettingsUnitOfWork.Default.User.NickName;
+                result.RealName = SettingsUnitOfWork.Default.User.FullName;
+                result.UserName = SettingsUnitOfWork.Default.User.Username;
+                if (SettingsUnitOfWork.Default.User.IsInvisible)
                 {
                     result.UserModes = new Collection<char>();
                     result.UserModes.Add('i');
@@ -451,7 +448,7 @@ namespace derpirc.Core
 
             var nickNameAlternate = string.Empty;
             if (foundClient.Info.NickNameRetryCount == 0)
-                nickNameAlternate = _settings.NickNameAlternate;
+                nickNameAlternate = SettingsUnitOfWork.Default.User.NickNameAlternate;
             else
             {
                 var suffix = foundClient.Info.NickNameRetryCount.ToString();
