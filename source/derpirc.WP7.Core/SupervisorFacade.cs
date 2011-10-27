@@ -195,7 +195,7 @@ namespace derpirc.Core
                 for (int index = 0; index < clients.Count; index++)
                 {
                     var client = GetClientByClientInfo(clients[index]);
-                    this._sessionSupervisor.Reconnect(client, force);
+                    this._sessionSupervisor.Reconnect(client);
                 }
             else
                 this._sessionSupervisor.Reconnect(force);

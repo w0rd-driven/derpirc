@@ -139,50 +139,14 @@ namespace derpirc.Core
 
         public void Disconnect(ClientItem item)
         {
-            if (item.Client != null)
-            {
-                try
-                {
-                    var isConnected = item.Client.IsConnected;
-                    if (isConnected)
-                    {
-                        item.Client.Quit(this._quitTimeout, SettingsUnitOfWork.Default.User.QuitMessage);
-                        Thread.Sleep(_quitTimeout);
-                    }
-                }
-                catch (Exception exception)
-                {
-                    // HACK: IrcClient.IsDisposed snafu
-                }
-                finally
-                {
-                    var newClient = InitializeIrcClient();
-                    SupervisorFacade.Default.UpdateClient(item, newClient);
-                }
-            }
-        }
-
-        public void Reconnect(bool force = false)
-        {
-            var clients = SupervisorFacade.Default.Clients.AsEnumerable();
-            if (!force)
-                clients = clients.Where(x => !x.Client.IsConnected);
-
-            foreach (var item in clients)
-            {
-                if (item.Client.IsConnected)
-                    this.Disconnect(item);
-                this.Connect(item.Client);
-            }
-        }
-
-        public void Reconnect(ClientItem item, bool force = false)
-        {
             try
             {
                 var isConnected = item.Client.IsConnected;
                 if (isConnected)
-                    this.Disconnect(item);
+                {
+                    item.Client.Quit(this._quitTimeout, SettingsUnitOfWork.Default.User.QuitMessage);
+                    Thread.Sleep(_quitTimeout);
+                }
             }
             catch (Exception exception)
             {
@@ -190,8 +154,34 @@ namespace derpirc.Core
             }
             finally
             {
-                this.Connect(item.Client);
+                var newClient = InitializeIrcClient();
+                SupervisorFacade.Default.UpdateClient(item, newClient);
             }
+        }
+
+        public void Reconnect(bool force = false)
+        {
+            try
+            {
+                var clients = SupervisorFacade.Default.Clients.AsEnumerable();
+                if (!force)
+                    clients = clients.Where(x => !x.Client.IsConnected);
+
+                foreach (var item in clients)
+                {
+                    Reconnect(item);
+                }
+            }
+            catch (Exception exception)
+            {
+                // HACK: IrcClient.IsDisposed snafu
+            }
+        }
+
+        public void Reconnect(ClientItem item)
+        {
+            this.Disconnect(item);
+            this.Connect(item.Client);
         }
 
         public void SetNickName(IMessage target, string nickName)
@@ -506,7 +496,10 @@ namespace derpirc.Core
         {
             List<Network> result;
             var session = GetDefaultSession();
-            result = session.Networks.ToList();
+            if (session != null)
+                result = session.Networks.ToList();
+            else
+                result = null;
             return result;
         }
 
@@ -514,7 +507,10 @@ namespace derpirc.Core
         {
             Network result;
             var session = GetDefaultSession();
-            result = session.Networks.FirstOrDefault(x => x.Name == networkName.ToLower());
+            if (session != null)
+                result = session.Networks.FirstOrDefault(x => x.Name == networkName.ToLower());
+            else
+                result = null;
             return result;
         }
 
@@ -523,7 +519,7 @@ namespace derpirc.Core
             Network result;
             var session = GetDefaultSession();
             var foundClient = SupervisorFacade.Default.GetClientByIrcClient(client);
-            if (foundClient != null)
+            if (session != null && foundClient != null)
                 result = session.Networks.FirstOrDefault(x => x.Id == foundClient.Info.Id);
             else
                 result = null;
