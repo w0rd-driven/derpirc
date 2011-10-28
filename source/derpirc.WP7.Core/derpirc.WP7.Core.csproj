@@ -68,7 +68,6 @@
     <Compile Include="..\VersionAssemblyInfo.cs">
       <Link>Properties\VersionAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="ChannelsSupervisor.cs" />
     <Compile Include="ChannelStatusEventArgs.cs" />
     <Compile Include="Models\ChannelStatusEnum.cs" />
     <Compile Include="Models\ClientInfo.cs" />
@@ -76,7 +75,7 @@
     <Compile Include="Models\ClientStateEnum.cs" />
     <Compile Include="ClientStatusEventArgs.cs" />
     <Compile Include="MessageItemEventArgs.cs" />
-    <Compile Include="MessagesSupervisor.cs" />
+    <Compile Include="LocalUserSupervisor.cs" />
     <Compile Include="NetworkMonitor.cs" />
     <Compile Include="NetworkStatusEventArgs.cs" />
     <Compile Include="Models\NetworkTypeEnum.cs" />
@@ -85,7 +84,7 @@
     <Compile Include="SupervisorFacade.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="SessionSupervisor.cs" />
+    <Compile Include="IrcClientSupervisor.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\derpirc.WP7.Data\derpirc.WP7.Data.csproj">

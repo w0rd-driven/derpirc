@@ -12,7 +12,7 @@ using IrcDotNet.Ctcp;
 
 namespace derpirc.Core
 {
-    public class SessionSupervisor : IDisposable
+    public class IrcClientSupervisor : IDisposable
     {
         #region Properties
 
@@ -40,7 +40,7 @@ namespace derpirc.Core
         // PowerPrecision: Welcome to the $server IRC Network $nick!$email@$host
         private static readonly Regex _welcomeRegex = new Regex("^.*?Welcome to the (.*?) (IRC|Internet Relay Chat) Network (.*)", RegexOptions.Compiled);
 
-        public SessionSupervisor(DataUnitOfWork unitOfWork)
+        public IrcClientSupervisor(DataUnitOfWork unitOfWork)
         {
             this._unitOfWork = unitOfWork;
             this._worker = new BackgroundWorker();
