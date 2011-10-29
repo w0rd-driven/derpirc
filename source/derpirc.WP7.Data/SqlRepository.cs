@@ -37,6 +37,11 @@ namespace derpirc.Data
             _objectSet.DeleteOnSubmit(entity);
         }
 
+        public int Count(Expression<Func<T, bool>> predicate)
+        {
+            return _objectSet.Count(predicate);
+        }
+
         protected ITable<T> _objectSet;
     }
 }

@@ -83,7 +83,7 @@ namespace derpirc.Core
                 if (summary is Message)
                 {
                     localUser.SendMessage(summary.Name, text);
-                    AddMessage(localUser.Client, null, localUser.NickName, text, Owner.Me);
+                    AddMessage(localUser.Client, null, summary.Name, text, Owner.Me);
                 }
             }
         }

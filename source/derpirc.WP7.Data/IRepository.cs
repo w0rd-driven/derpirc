@@ -12,5 +12,6 @@ namespace derpirc.Data
         T FindById(int id);
         void Add(T newEntity);
         void Remove(T entity);
+        int Count(Expression<Func<T, bool>> predicate);
     }
 }

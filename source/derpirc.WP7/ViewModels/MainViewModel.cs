@@ -370,14 +370,14 @@ namespace derpirc.ViewModels
 
         void _sessionSupervisor_ChannelJoined(object sender, Core.ChannelStatusEventArgs e)
         {
-            var foundItem = _channelsList.Where(x => x.Model.Id == e.SummaryId).FirstOrDefault();
+            var foundItem = _channelsList.Where(x => x.RecordId == e.SummaryId).FirstOrDefault();
             if (foundItem == null)
             {
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
                     var summary = new ChannelViewModel();
-                    summary.LoadById(e.SummaryId);
-                    if (summary.Model != null)
+                    var isLoaded = summary.LoadById(e.SummaryId);
+                    if (isLoaded != null)
                         _channelsList.Add(summary);
                 });
             }
@@ -396,14 +396,14 @@ namespace derpirc.ViewModels
 
         void _sessionSupervisor_ChannelItemReceived(object sender, Core.MessageItemEventArgs e)
         {
-            var foundItem = _channelsList.Where(x => x.Model.Id == e.SummaryId).FirstOrDefault();
+            var foundItem = _channelsList.Where(x => x.RecordId == e.SummaryId).FirstOrDefault();
             if (foundItem == null)
             {
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
                     var summary = new ChannelViewModel();
-                    summary.LoadById(e.SummaryId);
-                    if (summary.Model != null)
+                    var isLoaded = summary.LoadById(e.SummaryId);
+                    if (isLoaded != null)
                         _channelsList.Add(summary);
                 });
             }
@@ -411,24 +411,28 @@ namespace derpirc.ViewModels
             {
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
+                    // TODO: Handle Topic, UnreadCount, making subsequent LoadById's moot
                     foundItem.LoadById(e.SummaryId);
-                    var newMessage = foundItem.Model.Messages.FirstOrDefault(x => x.Id == e.MessageId);
+                    var newMessage = DataUnitOfWork.Default.ChannelItems.FindById(e.MessageId);
                     if (newMessage != null)
+                    {
+                        foundItem.LoadLastMessage(newMessage);
                         this.MessengerInstance.Send(new GenericMessage<ChannelItem>(this, "in", newMessage));
+                    }
                 });
             }
         }
 
         void _sessionSupervisor_MentionItemReceived(object sender, Core.MessageItemEventArgs e)
         {
-            var foundItem = _mentionsList.Where(x => x.Model.Id == e.SummaryId).FirstOrDefault();
+            var foundItem = _mentionsList.Where(x => x.RecordId == e.SummaryId).FirstOrDefault();
             if (foundItem == null)
             {
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
                     var summary = new MentionViewModel();
-                    summary.LoadById(e.SummaryId);
-                    if (summary.Model != null)
+                    var isLoaded = summary.LoadById(e.SummaryId);
+                    if (isLoaded != null)
                         _mentionsList.Add(summary);
                 });
             }
@@ -436,24 +440,28 @@ namespace derpirc.ViewModels
             {
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
+                    // TODO: Handle Topic, UnreadCount, making subsequent LoadById's moot
                     foundItem.LoadById(e.SummaryId);
-                    var newMessage = foundItem.Model.Messages.FirstOrDefault(x => x.Id == e.MessageId);
+                    var newMessage = DataUnitOfWork.Default.MentionItems.FindById(e.MessageId);
                     if (newMessage != null)
+                    {
+                        foundItem.LoadLastMessage(newMessage);
                         this.MessengerInstance.Send(new GenericMessage<MentionItem>(this, "in", newMessage));
+                    }
                 });
             }
         }
 
         void _sessionSupervisor_MessageItemReceived(object sender, Core.MessageItemEventArgs e)
         {
-            var foundItem = _messagesList.Where(x => x.Model.Id == e.SummaryId).FirstOrDefault();
+            var foundItem = _messagesList.Where(x => x.RecordId == e.SummaryId).FirstOrDefault();
             if (foundItem == null)
             {
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
                     var summary = new MessageViewModel();
-                    summary.LoadById(e.SummaryId);
-                    if (summary.Model != null)
+                    var isLoaded = summary.LoadById(e.SummaryId);
+                    if (isLoaded != null)
                         _messagesList.Add(summary);
                 });
             }
@@ -461,10 +469,14 @@ namespace derpirc.ViewModels
             {
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
+                    // TODO: Handle Topic, UnreadCount, making subsequent LoadById's moot
                     foundItem.LoadById(e.SummaryId);
-                    var newMessage = foundItem.Model.Messages.FirstOrDefault(x => x.Id == e.MessageId);
+                    var newMessage = DataUnitOfWork.Default.MessageItems.FindById(e.MessageId);
                     if (newMessage != null)
+                    {
+                        foundItem.LoadLastMessage(newMessage);
                         this.MessengerInstance.Send(new GenericMessage<MessageItem>(this, "in", newMessage));
+                    }
                 });
             }
         }
@@ -627,13 +639,7 @@ namespace derpirc.ViewModels
             var id = string.Empty;
             var uriString = string.Empty;
             if (SelectedChannel != null)
-            {
-                id = SelectedChannel.Model.Id.ToString();
-            }
-            else
-            {
-                id = "1";
-            }
+                id = SelectedChannel.RecordId.ToString();
             uriString = string.Format("/derpirc.Pages;component/Views/ChannelDetailView.xaml?id={0}", Uri.EscapeUriString(id));
             var uri = new Uri(uriString, UriKind.Relative);
             NavigationService.Navigate(uri);
@@ -644,13 +650,7 @@ namespace derpirc.ViewModels
             var id = string.Empty;
             var uriString = string.Empty;
             if (SelectedMention != null)
-            {
-                id = SelectedMention.Model.Id.ToString();
-            }
-            else
-            {
-                id = "1";
-            }
+                id = SelectedMention.RecordId.ToString();
             uriString = string.Format("/derpirc.Pages;component/Views/MentionDetailView.xaml?id={0}", Uri.EscapeUriString(id));
             var uri = new Uri(uriString, UriKind.Relative);
             NavigationService.Navigate(uri);
@@ -661,13 +661,7 @@ namespace derpirc.ViewModels
             var id = string.Empty;
             var uriString = string.Empty;
             if (SelectedMessage != null)
-            {
-                id = SelectedMessage.Model.Id.ToString();
-            }
-            else
-            {
-                id = "1";
-            }
+                id = SelectedMessage.RecordId.ToString();
             uriString = string.Format("/derpirc.Pages;component/Views/MessageDetailView.xaml?id={0}", Uri.EscapeUriString(id));
             var uri = new Uri(uriString, UriKind.Relative);
             NavigationService.Navigate(uri);

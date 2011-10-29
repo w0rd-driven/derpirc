@@ -16,20 +16,17 @@ namespace derpirc.ViewModels
 
         #region Properties
 
-        private Channel _model;
-        public Channel Model
+        private int _recordId;
+        public int RecordId
         {
-            get { return _model; }
+            get { return _recordId; }
             set
             {
-                if (value != null)
-                    UpdateViewModel(value);
-                if (_model == value)
+                if (_recordId == value)
                     return;
 
-                var oldValue = _model;
-                _model = value;
-                RaisePropertyChanged(() => Model);
+                _recordId = value;
+                RaisePropertyChanged(() => RecordId);
             }
         }
 
@@ -42,7 +39,6 @@ namespace derpirc.ViewModels
                 if (_channelName == value)
                     return;
 
-                var oldValue = _channelName;
                 _channelName = value;
                 RaisePropertyChanged(() => ChannelName);
             }
@@ -57,7 +53,6 @@ namespace derpirc.ViewModels
                 if (_networkName == value)
                     return;
 
-                var oldValue = _networkName;
                 _networkName = value;
                 RaisePropertyChanged(() => NetworkName);
             }
@@ -72,24 +67,8 @@ namespace derpirc.ViewModels
                 if (_channelTopic == value)
                     return;
 
-                var oldValue = _channelTopic;
                 _channelTopic = value;
                 RaisePropertyChanged(() => ChannelTopic);
-            }
-        }
-
-        private ChannelItem _lastMessage;
-        public ChannelItem LastMessage
-        {
-            get { return _lastMessage; }
-            set
-            {
-                if (_lastMessage == value)
-                    return;
-
-                var oldValue = _lastMessage;
-                _lastMessage = value;
-                RaisePropertyChanged(() => LastMessage);
             }
         }
 
@@ -102,7 +81,6 @@ namespace derpirc.ViewModels
                 if (_messageIsRead == value)
                     return;
 
-                var oldValue = _messageIsRead;
                 _messageIsRead = value;
                 RaisePropertyChanged(() => MessageIsRead);
             }
@@ -117,7 +95,6 @@ namespace derpirc.ViewModels
                 if (_messageSource == value)
                     return;
 
-                var oldValue = _messageSource;
                 _messageSource = value;
                 RaisePropertyChanged(() => MessageSource);
             }
@@ -132,7 +109,6 @@ namespace derpirc.ViewModels
                 if (_messageText == value)
                     return;
 
-                var oldValue = _messageText;
                 _messageText = value;
                 RaisePropertyChanged(() => MessageText);
             }
@@ -147,7 +123,6 @@ namespace derpirc.ViewModels
                 if (_messageTimestamp == value)
                     return;
 
-                var oldValue = _messageTimestamp;
                 _messageTimestamp = value;
                 RaisePropertyChanged(() => MessageTimestamp);
             }
@@ -162,7 +137,6 @@ namespace derpirc.ViewModels
                 if (_unreadCount == value)
                     return;
 
-                var oldValue = _unreadCount;
                 _unreadCount = value;
                 RaisePropertyChanged(() => UnreadCount);
             }
@@ -193,35 +167,52 @@ namespace derpirc.ViewModels
             else
             {
                 // code runs "for real": connect to service, etc...
+                if (model != null)
+                    UpdateViewModel(model);
             }
-
-            Model = model;
         }
 
-        public void LoadById(int summaryId)
+        public bool LoadById(int summaryId)
         {
-            var model = DataUnitOfWork.Default.Channels.FindBy(x => x.Id == summaryId).FirstOrDefault();
+            var result = false;
+            var model = DataUnitOfWork.Default.Channels.FindById(summaryId);
             if (model != null)
-                Model = model;
+            {
+                result = true;
+                UpdateViewModel(model);
+            }
+            return result;
+        }
+
+        public void LoadLastMessage(ChannelItem message)
+        {
+            if (message != null)
+            {
+                MessageIsRead = message.IsRead;
+                MessageSource = message.Source + " on " + NetworkName;
+                MessageText = message.Text;
+                MessageTimestamp = message.Timestamp;
+            }
+            else
+            {
+                // This only matters on channel join before a message is sent
+                MessageSource = NetworkName;
+                MessageTimestamp = DateTime.Now;
+            }
         }
 
         private void UpdateViewModel(Channel model)
         {
+            RecordId = model.Id;
             ChannelName = model.Name;
             if (model.Network != null)
                 NetworkName = model.Network.Name;
             ChannelTopic = model.Topic;
             MessageSource = NetworkName;
             MessageTimestamp = DateTime.Now;
-            UnreadCount = model.Messages.Count(x => x.IsRead == false);
-            LastMessage = model.Messages.Count > 0 ? model.Messages.Last() : null;
-            if (LastMessage != null)
-            {
-                MessageIsRead = LastMessage.IsRead;
-                MessageSource = LastMessage.Source + " on " + NetworkName;
-                MessageText = LastMessage.Text;
-                MessageTimestamp = LastMessage.Timestamp;
-            }
+            UnreadCount = DataUnitOfWork.Default.ChannelItems.Count(x => x.SummaryId == model.Id && x.IsRead == false);
+            var lastMessage = model.Messages.Count > 0 ? model.Messages.Last() : null;
+            LoadLastMessage(lastMessage);
         }
 
         public override void Cleanup()

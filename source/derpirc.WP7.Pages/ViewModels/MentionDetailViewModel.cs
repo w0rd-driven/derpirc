@@ -283,7 +283,7 @@ namespace derpirc.ViewModels
                 newMessage.Summary = Model;
                 newMessage.Owner = Owner.Me;
                 newMessage.Timestamp = DateTime.Now;
-                //newMessage.IsRead = true;
+                newMessage.IsRead = true;
                 newMessage.Text = SendMessage;
                 this.MessengerInstance.Send(new GenericMessage<MentionItem>(this, "out", newMessage));
                 // Steps: Place item in List. Detect send callback. Use a resend hyperlink if necessary
