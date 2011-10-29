@@ -32,7 +32,7 @@ namespace derpirc.Helpers
             _textBoxForeground = AssociatedObject.Foreground;
 
             base.OnAttached();
-            if (Watermark != null)
+            if (!string.IsNullOrEmpty(Watermark))
                 SetWatermarkText();
             AssociatedObject.TextChanged += TextChanged;
             AssociatedObject.GotFocus += GotFocus;
@@ -57,7 +57,7 @@ namespace derpirc.Helpers
         private void LostFocus(object sender, RoutedEventArgs e)
         {
             if (AssociatedObject.Text.Length == 0)
-                if (Watermark != null)
+                if (!string.IsNullOrEmpty(Watermark))
                     SetWatermarkText();
         }
 

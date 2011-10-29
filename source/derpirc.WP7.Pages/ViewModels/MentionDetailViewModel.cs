@@ -13,6 +13,8 @@ using GalaSoft.MvvmLight.Threading;
 
 namespace derpirc.ViewModels
 {
+    public class MentionDetailViewModelFactory : ViewModelFactory<MentionDetailViewModel, MentionDetailViewModel> { }
+
     public class MentionDetailViewModel : ViewModelBase
     {
         #region Commands
@@ -189,7 +191,7 @@ namespace derpirc.ViewModels
         /// <summary>
         /// Initializes a new instance of the ChannelDetailViewModel class.
         /// </summary>
-        public MentionDetailViewModel() : this(new Mention()) { }
+        public MentionDetailViewModel() : this(null) { }
 
         /// <summary>
         /// Initializes a new instance of the MentionDetailViewModel class.
@@ -318,20 +320,22 @@ namespace derpirc.ViewModels
             PageTitle = model.Name;
             if (model.Network != null)
                 PageSubTitle = model.Network.Name;
+            SendMessage = string.Empty;
             SendWatermark = string.Format("chat on {0}", PageSubTitle);
+            var messages = DataUnitOfWork.Default.MentionItems.FindBy(x => x.SummaryId == model.Id);
             DispatcherHelper.CheckBeginInvokeOnUI(() =>
             {
-                foreach (var item in model.Messages)
+                foreach (var item in messages)
                 {
                     if (!_messagesList.Contains(item))
                         _messagesList.Add(item);
                 }
-                PurgeOrphans(model);
+                PurgeOrphans(messages);
                 Messages.View.MoveCurrentToLast();
             });
         }
 
-        private void PurgeOrphans(Mention model)
+        private void PurgeOrphans(IQueryable<MentionItem> messages)
         {
             List<int> messagesToSmash = new List<int>();
             var startingPos = _messagesList.Count - 1;
@@ -339,7 +343,7 @@ namespace derpirc.ViewModels
             for (int index = startingPos; index >= 0; --index)
             {
                 var record = _messagesList[index];
-                var foundMessage = model.Messages.Where(x => x.Id.Equals(record.Id)).FirstOrDefault();
+                var foundMessage = messages.Where(x => x.Id.Equals(record.Id)).FirstOrDefault();
                 if (foundMessage == null)
                     _messagesList.RemoveAt(index);
             }
@@ -347,18 +351,21 @@ namespace derpirc.ViewModels
 
         private void AddIncoming(MentionItem record)
         {
-            DispatcherHelper.CheckBeginInvokeOnUI(() =>
+            if (record.SummaryId == Model.Id)
             {
-                // HACK: If Owner.Me, make sure it wasn't added by the UI. This could also serve as a MessageSent event
-                if (record.Owner == Owner.Me)
+                DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
-                    var foundItem = _messagesList.Where(x => x.Timestamp == record.Timestamp);
-                    if (foundItem != null)
-                        return;
-                }
-                _messagesList.Add(record);
-                Messages.View.MoveCurrentToLast();
-            });
+                    // HACK: If Owner.Me, make sure it wasn't added by the UI. This could also serve as a MessageSent event
+                    if (record.Owner == Owner.Me)
+                    {
+                        var foundItem = _messagesList.Where(x => x.Timestamp == record.Timestamp);
+                        if (foundItem != null)
+                            return;
+                    }
+                    _messagesList.Add(record);
+                    Messages.View.MoveCurrentToLast();
+                });
+            }
         }
 
         public override void Cleanup()

@@ -24,8 +24,6 @@ DROP TABLE [MessageItem];
 GO
 DROP TABLE [Message];
 GO
-DROP TABLE [Server];
-GO
 DROP TABLE [Favorite];
 GO
 DROP TABLE [Network];
@@ -39,9 +37,6 @@ CREATE TABLE [Channel] (
 , [NetworkId] int NOT NULL
 , [Name] nvarchar(64) NOT NULL
 , [Topic] nvarchar(256) NULL
-, [LastItemId] int NULL
-, [Count] int NULL
-, [UnreadCount] int NULL
 );
 GO
 CREATE TABLE [ChannelItem] (
@@ -49,9 +44,9 @@ CREATE TABLE [ChannelItem] (
 , [SummaryId] int NOT NULL
 , [Source] nvarchar(64) NULL
 , [Text] nvarchar(256) NULL
-, [Type] int NOT NULL
+, [Owner] int NOT NULL
 , [Timestamp] datetime NOT NULL
-, [IsRead] bit NULL
+, [IsRead] bit NOT NULL
 );
 GO
 CREATE TABLE [Mention] (
@@ -59,9 +54,6 @@ CREATE TABLE [Mention] (
 , [NetworkId] int NOT NULL
 , [Name] nvarchar(64) NOT NULL
 , [ChannelName] nvarchar(64) NOT NULL
-, [LastItemId] int NULL
-, [Count] int NULL
-, [UnreadCount] int NULL
 );
 GO
 CREATE TABLE [MentionItem] (
@@ -69,18 +61,15 @@ CREATE TABLE [MentionItem] (
 , [SummaryId] int NOT NULL
 , [Source] nvarchar(64) NULL
 , [Text] nvarchar(256) NULL
-, [Type] int NOT NULL
+, [Owner] int NOT NULL
 , [Timestamp] datetime NOT NULL
-, [IsRead] bit NULL
+, [IsRead] bit NOT NULL
 );
 GO
 CREATE TABLE [Message] (
   [Id] int NOT NULL  IDENTITY (1,1)
 , [NetworkId] int NOT NULL
 , [Name] nvarchar(64) NOT NULL
-, [LastItemId] int NULL
-, [Count] int NULL
-, [UnreadCount] int NULL
 );
 GO
 CREATE TABLE [MessageItem] (
@@ -88,9 +77,9 @@ CREATE TABLE [MessageItem] (
 , [SummaryId] int NOT NULL
 , [Source] nvarchar(64) NULL
 , [Text] nvarchar(256) NULL
-, [Type] int NOT NULL
+, [Owner] int NOT NULL
 , [Timestamp] datetime NOT NULL
-, [IsRead] bit NULL
+, [IsRead] bit NOT NULL
 );
 GO
 CREATE TABLE [Session] (
@@ -101,17 +90,10 @@ GO
 CREATE TABLE [Network] (
   [Id] int NOT NULL  IDENTITY (1,1)
 , [SessionId] int NOT NULL
-, [ServerId] int NOT NULL
 , [DisplayName] nvarchar(128) NULL
 , [Name] nvarchar(128) NOT NULL
-);
-GO
-CREATE TABLE [Server] (
-  [Id] int NOT NULL  IDENTITY (1,1)
-, [NetworkId] int NOT NULL
-, [ConnectedHostName] nvarchar(128) NULL
-, [DisplayName] nvarchar(128) NULL
 , [HostName] nvarchar(128) NOT NULL
+, [ConnectedHostName] nvarchar(128) NOT NULL
 , [Ports] nvarchar(256) NULL
 , [Password] nvarchar(128) NULL
 );
@@ -120,7 +102,7 @@ CREATE TABLE [Favorite] (
   [Id] int NOT NULL  IDENTITY (1,1)
 , [NetworkId] int NOT NULL
 , [Name] nvarchar(128) NOT NULL
-, [IsAutoConnect] bit NULL
+, [IsAutoConnect] bit NOT NULL
 , [Password] nvarchar(128) NULL
 );
 GO
@@ -142,8 +124,6 @@ ALTER TABLE [Session] ADD CONSTRAINT [PK_Session] PRIMARY KEY ([Id]);
 GO
 ALTER TABLE [Network] ADD CONSTRAINT [PK_Network] PRIMARY KEY ([Id]);
 GO
-ALTER TABLE [Server] ADD CONSTRAINT [PK_Server] PRIMARY KEY ([Id]);
-GO
 ALTER TABLE [Favorite] ADD CONSTRAINT [PK_Favorite] PRIMARY KEY ([Id]);
 GO
 
@@ -162,12 +142,8 @@ ALTER TABLE [MessageItem] ADD CONSTRAINT [FK_Message_MessageItem] FOREIGN KEY ([
 GO
 ALTER TABLE [Network] ADD CONSTRAINT [FK_Session_Network] FOREIGN KEY ([SessionId]) REFERENCES [Session]([Id]) ON DELETE NO ACTION ON UPDATE NO ACTION;
 GO
-ALTER TABLE [Server] ADD CONSTRAINT [FK_Network_Server] FOREIGN KEY ([NetworkId]) REFERENCES [Network]([Id]) ON DELETE NO ACTION ON UPDATE NO ACTION;
-GO
 ALTER TABLE [Favorite] ADD CONSTRAINT [FK_Network_Favorite] FOREIGN KEY ([NetworkId]) REFERENCES [Network]([Id]) ON DELETE NO ACTION ON UPDATE NO ACTION;
 GO
-
-
 
 
 

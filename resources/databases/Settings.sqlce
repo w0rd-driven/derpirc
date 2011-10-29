@@ -52,7 +52,3 @@ GO
 ALTER TABLE [Favorite] ADD CONSTRAINT [FK_Network_Channel] FOREIGN KEY ([NetworkId]) REFERENCES [Network]([Id]) ON DELETE NO ACTION ON UPDATE NO ACTION;
 GO
 
-
-
-
-

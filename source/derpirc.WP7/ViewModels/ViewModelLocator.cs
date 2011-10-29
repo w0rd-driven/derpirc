@@ -151,7 +151,7 @@ namespace derpirc.ViewModels
         public static void CreateChannelDetail()
         {
             if (_channelDetailViewModel == null)
-                _channelDetailViewModel = new ChannelDetailViewModel();
+                _channelDetailViewModel = new ChannelDetailViewModelFactory().ViewModel;
         }
 
         #endregion
@@ -251,7 +251,7 @@ namespace derpirc.ViewModels
         public static void CreateMentionDetail()
         {
             if (_mentionDetailViewModel == null)
-                _mentionDetailViewModel = new MentionDetailViewModel();
+                _mentionDetailViewModel = new MentionDetailViewModelFactory().ViewModel;
         }
 
         #endregion
@@ -351,7 +351,7 @@ namespace derpirc.ViewModels
         public static void CreateMessageDetail()
         {
             if (_messageDetailViewModel == null)
-                _messageDetailViewModel = new MessageDetailViewModel();
+                _messageDetailViewModel = new MessageDetailViewModelFactory().ViewModel;
         }
 
         #endregion

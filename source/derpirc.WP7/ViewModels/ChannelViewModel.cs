@@ -211,6 +211,7 @@ namespace derpirc.ViewModels
             MessageSource = NetworkName;
             MessageTimestamp = DateTime.Now;
             UnreadCount = DataUnitOfWork.Default.ChannelItems.Count(x => x.SummaryId == model.Id && x.IsRead == false);
+            // NOTE: Lookups on EntitySets only matter during initial load. They do not detect new children for some reason.
             var lastMessage = model.Messages.Count > 0 ? model.Messages.Last() : null;
             LoadLastMessage(lastMessage);
         }

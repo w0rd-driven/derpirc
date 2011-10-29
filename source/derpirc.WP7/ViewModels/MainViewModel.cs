@@ -377,7 +377,7 @@ namespace derpirc.ViewModels
                 {
                     var summary = new ChannelViewModel();
                     var isLoaded = summary.LoadById(e.SummaryId);
-                    if (isLoaded != null)
+                    if (isLoaded)
                         _channelsList.Add(summary);
                 });
             }
@@ -403,7 +403,7 @@ namespace derpirc.ViewModels
                 {
                     var summary = new ChannelViewModel();
                     var isLoaded = summary.LoadById(e.SummaryId);
-                    if (isLoaded != null)
+                    if (isLoaded)
                         _channelsList.Add(summary);
                 });
             }
@@ -432,7 +432,7 @@ namespace derpirc.ViewModels
                 {
                     var summary = new MentionViewModel();
                     var isLoaded = summary.LoadById(e.SummaryId);
-                    if (isLoaded != null)
+                    if (isLoaded)
                         _mentionsList.Add(summary);
                 });
             }
@@ -461,7 +461,7 @@ namespace derpirc.ViewModels
                 {
                     var summary = new MessageViewModel();
                     var isLoaded = summary.LoadById(e.SummaryId);
-                    if (isLoaded != null)
+                    if (isLoaded)
                         _messagesList.Add(summary);
                 });
             }
