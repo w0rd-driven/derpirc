@@ -224,28 +224,28 @@ namespace derpirc.ViewModels
                     Source = "derpirc",
                     Text = "hay",
                     Timestamp = DateTime.Now,
-                    Type = MessageType.Mine,
+                    Owner = Owner.Me,
                 });
                 _messagesList.Add(new ChannelItem()
                 {
                     Source = "derpirc",
                     Text = "sup?",
                     Timestamp = DateTime.Now,
-                    Type = MessageType.Mine,
+                    Owner = Owner.Me,
                 });
                 _messagesList.Add(new ChannelItem()
                 {
                     Source = "w0rd-driven",
                     Text = "nm",
                     Timestamp = DateTime.Now,
-                    Type = MessageType.Theirs,
+                    Owner = Owner.Them,
                 });
                 _messagesList.Add(new ChannelItem()
                 {
                     Source = "derpirc",
                     Text = "lame",
                     Timestamp = DateTime.Now,
-                    Type = MessageType.Mine,
+                    Owner = Owner.Me,
                 });
             }
             else
@@ -281,7 +281,7 @@ namespace derpirc.ViewModels
             {
                 var newMessage = new ChannelItem();
                 newMessage.Summary = Model;
-                newMessage.Type = MessageType.Mine;
+                newMessage.Owner = Owner.Me;
                 newMessage.Timestamp = DateTime.Now;
                 //newMessage.IsRead = true;
                 newMessage.Text = SendMessage;
@@ -350,8 +350,8 @@ namespace derpirc.ViewModels
         {
             DispatcherHelper.CheckBeginInvokeOnUI(() =>
             {
-                // HACK: If MessageType.Mine, make sure it wasn't added by the UI. This could also serve as a MessageSent event
-                if (record.Type == MessageType.Mine)
+                // HACK: If Owner.Me, make sure it wasn't added by the UI. This could also serve as a MessageSent event
+                if (record.Owner == Owner.Me)
                 {
                     var foundItem = _messagesList.Where(x => x.Timestamp == record.Timestamp);
                     if (foundItem != null)

@@ -30,7 +30,7 @@ namespace derpirc.Data.Models
 
         private string _Text;
 
-        private MessageType _Type;
+        private Owner _Owner;
 
         private System.DateTime _Timestamp;
 
@@ -50,8 +50,8 @@ namespace derpirc.Data.Models
         partial void OnSourceChanged();
         partial void OnTextChanging(string value);
         partial void OnTextChanged();
-        partial void OnTypeChanging(MessageType value);
-        partial void OnTypeChanged();
+        partial void OnOwnerChanging(Owner value);
+        partial void OnOwnerChanged();
         partial void OnTimestampChanging(System.DateTime value);
         partial void OnTimestampChanged();
         partial void OnIsReadChanging(bool value);
@@ -148,22 +148,22 @@ namespace derpirc.Data.Models
             }
         }
 
-        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_Type", DbType = "Int NOT NULL")]
-        public MessageType Type
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_Owner", DbType = "Int NOT NULL")]
+        public Owner Owner
         {
             get
             {
-                return this._Type;
+                return this._Owner;
             }
             set
             {
-                if ((this._Type != value))
+                if ((this._Owner != value))
                 {
-                    this.OnTypeChanging(value);
+                    this.OnOwnerChanging(value);
                     this.SendPropertyChanging();
-                    this._Type = value;
-                    this.SendPropertyChanged("Type");
-                    this.OnTypeChanged();
+                    this._Owner = value;
+                    this.SendPropertyChanged("Owner");
+                    this.OnOwnerChanged();
                 }
             }
         }

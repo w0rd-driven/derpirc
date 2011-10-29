@@ -22,11 +22,11 @@ namespace derpirc.Helpers
             var entity = item as IMessageItem;
             if (entity != null)
             {
-                switch (entity.Type)
+                switch (entity.Owner)
                 {
-                    case MessageType.Mine:
+                    case Owner.Me:
                         return TemplateMyMessage;
-                    case MessageType.Theirs:
+                    case Owner.Them:
                         return TemplateTheirMessage;
                     default:
                         break;

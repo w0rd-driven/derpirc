@@ -67,7 +67,7 @@ namespace derpirc.Core
                 if (summary is Channel)
                 {
                     localUser.SendMessage(summary.Name, text);
-                    AddMessage(localUser.Client, summary.Name, localUser.NickName, text, MessageType.Mine);
+                    AddMessage(localUser.Client, summary.Name, localUser.NickName, text, Owner.Me);
                 }
                 if (summary is Mention)
                 {
@@ -77,13 +77,13 @@ namespace derpirc.Core
                         var channelName = concreteSummary.ChannelName;
                         var mentionText = GetMentionText(summary.Name, text);
                         localUser.SendMessage(channelName, mentionText);
-                        AddMessage(localUser.Client, channelName, summary.Name, mentionText, MessageType.Mine);
+                        AddMessage(localUser.Client, channelName, summary.Name, mentionText, Owner.Me);
                     }
                 }
                 if (summary is Message)
                 {
                     localUser.SendMessage(summary.Name, text);
-                    AddMessage(localUser.Client, null, localUser.NickName, text, MessageType.Mine);
+                    AddMessage(localUser.Client, null, localUser.NickName, text, Owner.Me);
                 }
             }
         }
@@ -96,7 +96,7 @@ namespace derpirc.Core
             {
                 // TODO: Recovery : Notice not sent
                 localUser.SendNotice(summary.Name, text);
-                AddMessage(localUser.Client, null, localUser.NickName, text, MessageType.Mine);
+                AddMessage(localUser.Client, null, localUser.NickName, text, Owner.Me);
             }
         }
 
@@ -116,7 +116,7 @@ namespace derpirc.Core
 
         #endregion
 
-        #region Inbound Events
+        #region Subscriber Events
 
         private void LocalUser_JoinedChannel(object sender, IrcChannelEventArgs e)
         {
@@ -153,7 +153,7 @@ namespace derpirc.Core
             var channel = sender as IrcChannel;
             var ircUser = e.Source as IrcUser;
             var text = e.Text;
-            var type = MessageType.Theirs;
+            var type = Owner.Them;
 
             AddMessage(channel.Client, channel.Name, ircUser.NickName, text, type);
         }
@@ -163,7 +163,7 @@ namespace derpirc.Core
             var channel = sender as IrcChannel;
             var ircUser = e.Source as IrcUser;
             var text = e.Text;
-            var type = MessageType.Theirs;
+            var type = Owner.Them;
 
             AddMessage(channel.Client, channel.Name, ircUser.NickName, text, type);
         }
@@ -184,7 +184,7 @@ namespace derpirc.Core
             var localUser = sender as IrcLocalUser;
             var ircUser = e.Source as IrcUser;
             var text = e.Text;
-            var type = MessageType.Theirs;
+            var type = Owner.Them;
 
             AddMessage(ircUser.Client, null, ircUser.NickName, text, type);
         }
@@ -194,9 +194,9 @@ namespace derpirc.Core
             var localUser = sender as IrcLocalUser;
             var ircUser = e.Source as IrcUser;
             var text = e.Text;
-            var type = MessageType.Theirs;
+            var type = Owner.Them;
 
-            //AddMessage(ircUser.Client, null, ircUser.NickName, text, type);
+            //AddMessage(ircUser.Client, null, ircUser.NickName, text, owner);
         }
 
         private void LocalUser_MessageSent(object sender, IrcMessageEventArgs e)
@@ -252,8 +252,9 @@ namespace derpirc.Core
             }
         }
 
-        private void AddMessage(IrcClient client, string channelName, string nickName, string text, MessageType type)
+        private void AddMessage(IrcClient client, string channelName, string nickName, string text, Owner owner)
         {
+            var isRead = owner == Owner.Me ? true : false;
             if (!string.IsNullOrEmpty(channelName))
             {
                 if (text.Contains(client.LocalUser.NickName) || text.Contains(nickName))
@@ -262,7 +263,14 @@ namespace derpirc.Core
                     var summary = this.GetMention(client, channelName, nickName);
                     if (summary != null)
                     {
-                        var message = this.GetMessageItem(summary, channelName, text, type);
+                        var message = new MentionItem()
+                        {
+                            Source = channelName,
+                            Text = text,
+                            Owner = owner,
+                            Timestamp = DateTime.Now,
+                            IsRead = isRead,
+                        };
                         summary.Messages.Add(message);
                         this._unitOfWork.Commit();
 
@@ -281,7 +289,14 @@ namespace derpirc.Core
                     var summary = this.GetChannel(client, channelName);
                     if (summary != null)
                     {
-                        var message = this.GetMessageItem(summary, nickName, text, type);
+                        var message = new ChannelItem()
+                        {
+                            Source = nickName,
+                            Text = text,
+                            Owner = owner,
+                            Timestamp = DateTime.Now,
+                            IsRead = isRead,
+                        };
                         summary.Messages.Add(message);
                         this._unitOfWork.Commit();
 
@@ -301,7 +316,14 @@ namespace derpirc.Core
                 var summary = this.GetMessage(client, nickName);
                 if (summary != null)
                 {
-                    var message = this.GetMessageItem(summary, nickName, text, type);
+                    var message = new MessageItem()
+                    {
+                        Source = nickName,
+                        Text = text,
+                        Owner = owner,
+                        Timestamp = DateTime.Now,
+                        IsRead = isRead,
+                    };
                     summary.Messages.Add(message);
                     this._unitOfWork.Commit();
 
@@ -379,42 +401,6 @@ namespace derpirc.Core
             return null;
         }
 
-        private ChannelItem GetMessageItem(Channel summary, string source, string text, MessageType type)
-        {
-            var result = new ChannelItem();
-            // Set values
-            result.Timestamp = DateTime.Now;
-            result.IsRead = false;
-            result.Source = source;
-            result.Text = text;
-            result.Type = type;
-            return result;
-        }
-
-        private MentionItem GetMessageItem(Mention summary, string source, string text, MessageType type)
-        {
-            var result = new MentionItem();
-            // Set values
-            result.Timestamp = DateTime.Now;
-            result.IsRead = false;
-            result.Source = source;
-            result.Text = text;
-            result.Type = type;
-            return result;
-        }
-
-        private MessageItem GetMessageItem(Message summary, string source, string text, MessageType type)
-        {
-            var result = new MessageItem();
-            // Set values
-            result.Timestamp = DateTime.Now;
-            result.IsRead = false;
-            result.Source = source;
-            result.Text = text;
-            result.Type = type;
-            return result;
-        }
-
         private string GetMentionText(string name, string message)
         {
             var result = message;
@@ -427,7 +413,7 @@ namespace derpirc.Core
 
         #endregion
 
-        #region Outbound Events
+        #region Publisher Events
 
         private void OnChannelJoined(ChannelStatusEventArgs e)
         {

@@ -1,5 +1,4 @@
 ﻿using System;
-using GalaSoft.MvvmLight;
 using IrcDotNet;
 using IrcDotNet.Ctcp;
 

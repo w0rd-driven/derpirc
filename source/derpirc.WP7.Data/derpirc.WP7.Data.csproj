@@ -85,7 +85,7 @@
     <Compile Include="Models\IMessage.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Models\MessageTypeEnum.cs" />
+    <Compile Include="Models\OwnerEnum.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Models\Settings\Factory.cs" />
     <Compile Include="SqlRepository.cs" />

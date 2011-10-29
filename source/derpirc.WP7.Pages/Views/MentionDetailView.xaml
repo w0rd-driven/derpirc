@@ -9,7 +9,7 @@
                             xmlns:command="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Extras.WP71"
                             xmlns:helpers="clr-namespace:derpirc.Helpers;assembly=derpirc.UICore"
                             xmlns:appbarutils="clr-namespace:AppBarUtils;assembly=AppBarUtils" 
-                            mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="728"
+                            mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="696"
                             FontFamily="{StaticResource PhoneFontFamilyNormal}"
                             FontSize="{StaticResource PhoneFontSizeNormal}"
                             Foreground="{StaticResource PhoneForegroundBrush}"
