@@ -153,9 +153,9 @@ namespace derpirc.Core
             var channel = sender as IrcChannel;
             var ircUser = e.Source as IrcUser;
             var text = e.Text;
-            var type = Owner.Them;
+            var owner = Owner.Them;
 
-            AddMessage(channel.Client, channel.Name, ircUser.NickName, text, type);
+            AddMessage(channel.Client, channel.Name, ircUser.NickName, text, owner);
         }
 
         private void Channel_NoticeReceived(object sender, IrcMessageEventArgs e)
@@ -163,9 +163,9 @@ namespace derpirc.Core
             var channel = sender as IrcChannel;
             var ircUser = e.Source as IrcUser;
             var text = e.Text;
-            var type = Owner.Them;
+            var owner = Owner.Them;
 
-            AddMessage(channel.Client, channel.Name, ircUser.NickName, text, type);
+            AddMessage(channel.Client, channel.Name, ircUser.NickName, text, owner);
         }
 
         private void Channel_TopicChanged(object sender, IrcUserEventArgs e)
@@ -184,9 +184,9 @@ namespace derpirc.Core
             var localUser = sender as IrcLocalUser;
             var ircUser = e.Source as IrcUser;
             var text = e.Text;
-            var type = Owner.Them;
+            var owner = Owner.Them;
 
-            AddMessage(ircUser.Client, null, ircUser.NickName, text, type);
+            AddMessage(ircUser.Client, null, ircUser.NickName, text, owner);
         }
 
         private void LocalUser_NoticeReceived(object sender, IrcMessageEventArgs e)
@@ -194,7 +194,7 @@ namespace derpirc.Core
             var localUser = sender as IrcLocalUser;
             var ircUser = e.Source as IrcUser;
             var text = e.Text;
-            var type = Owner.Them;
+            var owner = Owner.Them;
 
             //AddMessage(ircUser.Client, null, ircUser.NickName, text, owner);
         }

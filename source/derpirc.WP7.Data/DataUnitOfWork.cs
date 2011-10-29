@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Data.Linq;
+using System.IO;
+using System.IO.IsolatedStorage;
 using derpirc.Data.Models;
 
 namespace derpirc.Data
@@ -62,6 +64,7 @@ namespace derpirc.Data
 
         public ContextConnectionString ConnectionString { get; set; }
         public DbState State { get; set; }
+        public string LogFileName { get; set; }
 
         #endregion
 
@@ -94,6 +97,7 @@ namespace derpirc.Data
         public DataUnitOfWork(ContextConnectionString connectionString)
         {
             ConnectionString = connectionString;
+            LogFileName = "SqlLog.log";
             InitializeDatabase();
         }
 
@@ -124,18 +128,43 @@ namespace derpirc.Data
 
         public void Commit()
         {
-            try
+            using (_context.Log = this.GetLog(LogFileName))
             {
-                _context.SubmitChanges();
+                try
+                {
+                    _context.SubmitChanges();
+                }
+                catch (ChangeConflictException exception)
+                {
+                    foreach (var objectChangeConflict in _context.ChangeConflicts)
+                    {
+                        objectChangeConflict.Resolve(RefreshMode.KeepChanges);
+                    }
+                    _context.SubmitChanges();
+                    _context.Log.WriteLine("Exception: " + exception.Message + "\nStack Trace: " + exception.StackTrace);
+                }
+                catch (InvalidOperationException exception)
+                {
+                    _context.Log.WriteLine("Exception: " + exception.Message + "\nStack Trace: " + exception.StackTrace);
+                }
+                catch (Exception exception)
+                {
+                    _context.Log.WriteLine("Exception: " + exception.Message + "\nStack Trace: " + exception.StackTrace);
+                }
+                finally
+                {
+                    _context.Log.Flush();
+                }
             }
-            catch (System.InvalidOperationException)
-            {
+            _context.Log = null;
+        }
 
-            }
-            catch (System.Exception)
-            {
-                throw;
-            }
+        protected StreamWriter GetLog(string filename, IsolatedStorageFile isoStore = null)
+        {
+            if (isoStore == null)
+                return new StreamWriter(IsolatedStorageFile.GetUserStoreForApplication().OpenFile(filename, System.IO.FileMode.OpenOrCreate));
+            else
+                return new StreamWriter(isoStore.OpenFile(filename, System.IO.FileMode.OpenOrCreate));
         }
 
         private void GenerateSystemData()

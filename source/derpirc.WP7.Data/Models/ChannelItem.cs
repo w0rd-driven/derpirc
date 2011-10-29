@@ -18,6 +18,7 @@ namespace derpirc.Data.Models
     [global::System.Data.Linq.Mapping.TableAttribute()]
     public partial class ChannelItem : IBaseModel, IMessageItem, INotifyPropertyChanging, INotifyPropertyChanged
     {
+        [Column(IsVersion = true)]
         private Binary _Version;
 
         private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);

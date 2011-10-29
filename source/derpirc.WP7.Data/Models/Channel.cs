@@ -12,13 +12,13 @@ using System;
 using System.ComponentModel;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
-using System.Linq;
 
 namespace derpirc.Data.Models
 {
     [global::System.Data.Linq.Mapping.TableAttribute()]
     public partial class Channel : IBaseModel, IMessage, INotifyPropertyChanging, INotifyPropertyChanged
     {
+        [Column(IsVersion = true)]
         private Binary _Version;
 
         private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
