@@ -60,6 +60,12 @@ namespace derpirc.Data
         }
         private SqlRepository<Network> _networks = null;
 
+        public IRepository<Favorite> Favorites
+        {
+            get { return _favorites ?? (_favorites = new SqlRepository<Favorite>(_context)); }
+        }
+        private SqlRepository<Favorite> _favorites = null;
+
         #endregion
 
         public ContextConnectionString ConnectionString { get; set; }

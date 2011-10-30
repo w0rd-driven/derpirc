@@ -74,32 +74,35 @@ namespace derpirc.Core
         /// </summary>
         private void PurgeOrphans()
         {
+            var isPurged = false;
             List<int> networksToSmash = new List<int>();
             List<int> favoritesToSmash = new List<int>();
 
             var defaultSession = _unitOfWork.Sessions.FindBy(x => x.Name == "default").FirstOrDefault();
             var configSession = SettingsUnitOfWork.Default.Session;
-            for (int index = 0; index < defaultSession.Networks.Count - 1; index++)
+            for (int index = 0; index <= defaultSession.Networks.Count - 1; index++)
             {
                 var record = defaultSession.Networks[index];
-                var foundNetwork = configSession.Networks.Where(x => x.Name == record.Name).FirstOrDefault();
-                if (foundNetwork == null)
+                var configNetwork = configSession.Networks.Where(x => x.Name == record.Name).FirstOrDefault();
+                if (configNetwork == null)
                     networksToSmash.Add(index);
                 else
                 {
-                    for (int indexFavorite = 0; indexFavorite < foundNetwork.Favorites.Count - 1; indexFavorite++)
+                    for (int indexFavorite = 0; indexFavorite <= record.Favorites.Count - 1; indexFavorite++)
                     {
-                        var favoriteRecord = record.Favorites[index];
-                        var foundFavorite = foundNetwork.Favorites.Where(x => x.Name == record.Name).FirstOrDefault();
-                        if (foundNetwork == null)
-                            favoritesToSmash.Add(index);
+                        var recordFavorite = record.Favorites[indexFavorite];
+                        var configFavorite = configNetwork.Favorites.Where(x => x.Name == recordFavorite.Name).FirstOrDefault();
+                        if (configFavorite == null)
+                            favoritesToSmash.Add(indexFavorite);
                     }
                 }
                 if (favoritesToSmash.Count > 0)
                 {
                     for (int item = favoritesToSmash.Count - 1; item >= 0; --item)
                     {
-                        foundNetwork.Favorites.RemoveAt(item);
+                        var recordFavorite = record.Favorites[item];
+                        _unitOfWork.Favorites.Remove(recordFavorite);
+                        isPurged = true;
                     }
                 }
                 favoritesToSmash.Clear();
@@ -108,10 +111,13 @@ namespace derpirc.Core
             {
                 for (int item = networksToSmash.Count - 1; item >= 0; --item)
                 {
-                    defaultSession.Networks.RemoveAt(item);
+                    var record = defaultSession.Networks[item];
+                    _unitOfWork.Networks.Remove(record);
+                    isPurged = true;
                 }
             }
-            _unitOfWork.Commit();
+            if (isPurged)
+                _unitOfWork.Commit();
         }
 
         #region Factory methods

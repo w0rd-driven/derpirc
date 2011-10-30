@@ -140,7 +140,7 @@ namespace derpirc.Data.Models
             }
         }
 
-        [global::System.Data.Linq.Mapping.AssociationAttribute(Name = "FK_Mention_MentionItem", Storage = "_Messages", ThisKey = "Id", OtherKey = "SummaryId", DeleteRule = "NO ACTION")]
+        [global::System.Data.Linq.Mapping.AssociationAttribute(Name = "FK_Mention_MentionItem", Storage = "_Messages", ThisKey = "Id", OtherKey = "SummaryId", DeleteRule = "CASCADE")]
         public EntitySet<MentionItem> Messages
         {
             get

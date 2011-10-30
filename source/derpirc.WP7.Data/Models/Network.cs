@@ -247,7 +247,7 @@ namespace derpirc.Data.Models
             }
         }
 
-        [global::System.Data.Linq.Mapping.AssociationAttribute(Name = "FK_Network_Channel", Storage = "_Channels", ThisKey = "Id", OtherKey = "NetworkId", DeleteRule = "NO ACTION")]
+        [global::System.Data.Linq.Mapping.AssociationAttribute(Name = "FK_Network_Channel", Storage = "_Channels", ThisKey = "Id", OtherKey = "NetworkId", DeleteRule = "CASCADE")]
         public EntitySet<Channel> Channels
         {
             get
@@ -260,7 +260,7 @@ namespace derpirc.Data.Models
             }
         }
 
-        [global::System.Data.Linq.Mapping.AssociationAttribute(Name = "FK_Network_Mention", Storage = "_Mentions", ThisKey = "Id", OtherKey = "NetworkId", DeleteRule = "NO ACTION")]
+        [global::System.Data.Linq.Mapping.AssociationAttribute(Name = "FK_Network_Mention", Storage = "_Mentions", ThisKey = "Id", OtherKey = "NetworkId", DeleteRule = "CASCADE")]
         public EntitySet<Mention> Mentions
         {
             get
@@ -273,7 +273,7 @@ namespace derpirc.Data.Models
             }
         }
 
-        [global::System.Data.Linq.Mapping.AssociationAttribute(Name = "FK_Network_Message", Storage = "_Messages", ThisKey = "Id", OtherKey = "NetworkId", DeleteRule = "NO ACTION")]
+        [global::System.Data.Linq.Mapping.AssociationAttribute(Name = "FK_Network_Message", Storage = "_Messages", ThisKey = "Id", OtherKey = "NetworkId", DeleteRule = "CASCADE")]
         public EntitySet<Message> Messages
         {
             get
@@ -320,7 +320,7 @@ namespace derpirc.Data.Models
             }
         }
 
-        [global::System.Data.Linq.Mapping.AssociationAttribute(Name = "FK_Network_Favorite", Storage = "_Favorites", ThisKey = "Id", OtherKey = "NetworkId", DeleteRule = "NO ACTION")]
+        [global::System.Data.Linq.Mapping.AssociationAttribute(Name = "FK_Network_Favorite", Storage = "_Favorites", ThisKey = "Id", OtherKey = "NetworkId", DeleteRule = "CASCADE")]
         public EntitySet<Favorite> Favorites
         {
             get

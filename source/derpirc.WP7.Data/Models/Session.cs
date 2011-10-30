@@ -85,7 +85,7 @@ namespace derpirc.Data.Models
             }
         }
 
-        [global::System.Data.Linq.Mapping.AssociationAttribute(Name = "FK_Session_Network", Storage = "_Networks", ThisKey = "Id", OtherKey = "SessionId", DeleteRule = "NO ACTION")]
+        [global::System.Data.Linq.Mapping.AssociationAttribute(Name = "FK_Session_Network", Storage = "_Networks", ThisKey = "Id", OtherKey = "SessionId", DeleteRule = "CASCADE")]
         public EntitySet<Network> Networks
         {
             get

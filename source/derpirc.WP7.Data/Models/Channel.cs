@@ -140,7 +140,7 @@ namespace derpirc.Data.Models
             }
         }
 
-        [global::System.Data.Linq.Mapping.AssociationAttribute(Name = "FK_Channel_ChannelItem", Storage = "_Messages", ThisKey = "Id", OtherKey = "SummaryId", DeleteRule = "NO ACTION")]
+        [global::System.Data.Linq.Mapping.AssociationAttribute(Name = "FK_Channel_ChannelItem", Storage = "_Messages", ThisKey = "Id", OtherKey = "SummaryId", DeleteRule = "CASCADE")]
         public EntitySet<ChannelItem> Messages
         {
             get
