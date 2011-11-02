@@ -161,7 +161,7 @@ namespace derpirc.ViewModels
                 this.MessengerInstance.Register<NotificationMessage>(this, "Save", message =>
                 {
                     var target = message.Target as string;
-                    this.Save();
+                    this.Save(true);
                 });
 
                 Load();
@@ -172,7 +172,7 @@ namespace derpirc.ViewModels
 
         private void Load()
         {
-            var networks = SettingsUnitOfWork.Default.Session.Networks;
+            var networks = SettingsUnitOfWork.Default.Networks;
             _networksList.Clear();
             foreach (var item in networks)
             {
@@ -189,8 +189,19 @@ namespace derpirc.ViewModels
 
         private void Add()
         {
+            var count = SettingsUnitOfWork.Default.Networks.Count;
             var item = new Network();
+            item.Id = count + 1;
+            item.Name = "New Network";
             _networksList.Add(item);
+            using (Networks.View.DeferRefresh())
+            {
+                //var networks = _networksList.ToList();
+                //networks.Add(item);
+                //SettingsUnitOfWork.Default.Networks = networks;
+                Save(false);
+                ViewDetails(item);
+            }
         }
 
         private void Delete(Network item)
@@ -210,7 +221,6 @@ namespace derpirc.ViewModels
             {
                 CanEdit = true;
                 CanDelete = true;
-                //ViewDetails(SelectedItem);
             }
             else
             {
@@ -235,12 +245,11 @@ namespace derpirc.ViewModels
             NavigationService.Navigate(uri);
         }
 
-        private void Save()
+        private void Save(bool commit)
         {
-            var session = new Session() { Name = "config" };
-            session.Networks = _networksList.ToList();
-            SettingsUnitOfWork.Default.Session = session;
-            SupervisorFacade.Default.CommitSettings();
+            SettingsUnitOfWork.Default.Networks = _networksList.ToList();
+            if (commit)
+                SupervisorFacade.Default.CommitSettings();
         }
 
         public override void Cleanup()

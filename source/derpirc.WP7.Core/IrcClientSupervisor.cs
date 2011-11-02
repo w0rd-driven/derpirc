@@ -74,9 +74,9 @@ namespace derpirc.Core
             lock (this._threadLock)
             {
                 // Build Client list based on settings
-                for (int index = 0; index < SettingsUnitOfWork.Default.Session.Networks.Count; index++)
+                for (int index = 0; index < SettingsUnitOfWork.Default.Networks.Count; index++)
                 {
-                    var item = SettingsUnitOfWork.Default.Session.Networks[index];
+                    var item = SettingsUnitOfWork.Default.Networks[index];
                     var client = this.InitializeClientItem();
                     client.Info.Id = index + 1;
                     client.Info.NetworkName = item.Name;

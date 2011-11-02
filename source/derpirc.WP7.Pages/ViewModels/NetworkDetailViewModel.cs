@@ -332,7 +332,7 @@ namespace derpirc.ViewModels
             queryString.TryGetValue("id", out id);
             var integerId = -1;
             int.TryParse(id, out integerId);
-            var model = SettingsUnitOfWork.Default.Session.Networks.Where(x => x.Id == integerId).FirstOrDefault();
+            var model = SettingsUnitOfWork.Default.Networks.Where(x => x.Id == integerId).FirstOrDefault();
             if (model != null)
                 Model = model;
         }

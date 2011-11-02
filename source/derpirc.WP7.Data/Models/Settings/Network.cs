@@ -72,11 +72,12 @@ namespace derpirc.Data.Models.Settings
             }
             set
             {
-                if ((this._DisplayName != value.ToLower()))
+                if (string.Compare(this._DisplayName, value, StringComparison.OrdinalIgnoreCase) != 0)
                 {
-                    this.OnDisplayNameChanging(value.ToLower());
+                    var newValue = (value ?? string.Empty).ToLowerInvariant();
+                    this.OnDisplayNameChanging(newValue);
                     this.SendPropertyChanging();
-                    this._DisplayName = value.ToLower();
+                    this._DisplayName = newValue;
                     this.SendPropertyChanged("DisplayName");
                     this.OnDisplayNameChanged();
                 }
@@ -91,11 +92,12 @@ namespace derpirc.Data.Models.Settings
             }
             set
             {
-                if ((this._Name != value.ToLower()))
+                if (string.Compare(this._Name, value, StringComparison.OrdinalIgnoreCase) != 0)
                 {
-                    this.OnNameChanging(value.ToLower());
+                    var newValue = (value ?? string.Empty).ToLowerInvariant();
+                    this.OnNameChanging(newValue);
                     this.SendPropertyChanging();
-                    this._Name = value.ToLower();
+                    this._Name = newValue;
                     this.SendPropertyChanged("Name");
                     this.OnNameChanged();
                 }
@@ -110,11 +112,12 @@ namespace derpirc.Data.Models.Settings
             }
             set
             {
-                if ((this._HostName != value.ToLower()))
+                if (string.Compare(this._HostName, value, StringComparison.OrdinalIgnoreCase) != 0)
                 {
-                    this.OnHostNameChanging(value.ToLower());
+                    var newValue = (value ?? string.Empty).ToLowerInvariant();
+                    this.OnHostNameChanging(newValue);
                     this.SendPropertyChanging();
-                    this._HostName = value.ToLower();
+                    this._HostName = newValue;
                     this.SendPropertyChanged("HostName");
                     this.OnHostNameChanged();
                 }

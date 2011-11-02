@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO.IsolatedStorage;
 using derpirc.Data.Models.Settings;
 
@@ -7,7 +8,7 @@ namespace derpirc.Data
     public class SettingsUnitOfWork
     {
         const string _userKeyName = "user";
-        const string _sessionKeyName = "session";
+        const string _networksKeyName = "networks";
 
         private IsolatedStorageSettings _settings;
 
@@ -27,15 +28,15 @@ namespace derpirc.Data
             }
         }
 
-        public Session Session
+        public List<Network> Networks
         {
             get
             {
-                return GetValueOrDefault<Session>(_sessionKeyName, Factory.CreateSession());
+                return GetValueOrDefault<List<Network>>(_networksKeyName, Factory.CreateNetworks());
             }
             set
             {
-                if (AddOrUpdateValue(_sessionKeyName, value)) { Save(); }
+                if (AddOrUpdateValue(_networksKeyName, value)) { Save(); }
             }
         }
 

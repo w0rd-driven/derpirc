@@ -31,13 +31,13 @@ namespace derpirc.Core
         {
             Session newSession = null;
             var defaultSession = _unitOfWork.Sessions.FindBy(x => x.Name == "default").FirstOrDefault();
-            var configSession = SettingsUnitOfWork.Default.Session;
+            var configNetworks = SettingsUnitOfWork.Default.Networks;
             if (defaultSession == null)
             {
                 defaultSession = CreateSession();
                 newSession = defaultSession;
             }
-            foreach (var network in configSession.Networks)
+            foreach (var network in configNetworks)
             {
                 var foundNetwork = defaultSession.Networks.Where(x => x.Name == network.Name).FirstOrDefault();
                 if (foundNetwork == null)
@@ -79,11 +79,11 @@ namespace derpirc.Core
             List<int> favoritesToSmash = new List<int>();
 
             var defaultSession = _unitOfWork.Sessions.FindBy(x => x.Name == "default").FirstOrDefault();
-            var configSession = SettingsUnitOfWork.Default.Session;
+            var configNetworks = SettingsUnitOfWork.Default.Networks;
             for (int index = 0; index <= defaultSession.Networks.Count - 1; index++)
             {
                 var record = defaultSession.Networks[index];
-                var configNetwork = configSession.Networks.Where(x => x.Name == record.Name).FirstOrDefault();
+                var configNetwork = configNetworks.Where(x => x.Name == record.Name).FirstOrDefault();
                 if (configNetwork == null)
                     networksToSmash.Add(index);
                 else
