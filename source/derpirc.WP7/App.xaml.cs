@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Navigation;
+using derpirc.Core;
 using derpirc.ViewModels;
 using GalaSoft.MvvmLight.Threading;
 using Microsoft.Phone.Controls;
@@ -9,6 +10,7 @@ namespace derpirc
 {
     public partial class App : Application
     {
+        private NetworkDetector _networkDetector;
         /// <summary>
         /// Provides easy access to the root frame of the Phone Application.
         /// </summary>
@@ -56,6 +58,7 @@ namespace derpirc
         {
             //Save the event type for later reference by the application.
             //ApplicationState.ApplicationStartup = AppOpenState.Launching;
+            _networkDetector = NetworkDetector.Default;
         }
 
         // Code to execute when the application is activated (brought to foreground)
@@ -65,6 +68,7 @@ namespace derpirc
             //Save the event type for later reference by the application.
             //ApplicationState.ApplicationStartup = AppOpenState.Activated;
             // Ensure that application state is restored appropriately
+            _networkDetector = NetworkDetector.Default;
         }
 
         // Code to execute when the application is deactivated (sent to background)

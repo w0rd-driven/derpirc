@@ -24,7 +24,7 @@ namespace derpirc.ViewModels
         {
             get
             {
-                return _navigatedToCommand ?? (_navigatedToCommand =
+                return _navigatedFromCommand ?? (_navigatedFromCommand =
                     new RelayCommand(() => this.OnNavigatedFrom()));
             }
         }

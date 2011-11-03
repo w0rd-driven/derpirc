@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
+using System.Threading;
 using derpirc.Data;
 using derpirc.Data.Models;
 using IrcDotNet;
-using Microsoft.Phone.Reactive;
 using IrcDotNet.Ctcp;
+using Microsoft.Phone.Reactive;
 
 namespace derpirc.Core
 {
@@ -21,42 +21,15 @@ namespace derpirc.Core
             set { _clients = value; }
         }
 
-        private NetworkType _networkType;
-        public NetworkType NetworkType
-        {
-            get { return _networkType; }
-            set { _networkType = value; }
-        }
-
-        private bool _isNetworkAvailable;
-        public bool IsNetworkAvailable
-        {
-            get { return _isNetworkAvailable; }
-            set
-            {
-                if (_isNetworkAvailable == value)
-                    return;
-
-                _isNetworkAvailable = value;
-            }
-        }
-
         #endregion
 
         private bool _isDisposed;
         private object _threadLock = new object();
-        private BackgroundWorker _worker;
 
         private DataUnitOfWork _unitOfWork;
 
-        private NetworkMonitor _networkMonitor;
-        private IDisposable _statusObserver;
-
         private IrcClientSupervisor _clientSupervisor;
         private LocalUserSupervisor _luserSupervisor;
-
-        // HACK: UI and internal facing
-        public event EventHandler<NetworkStatusEventArgs> NetworkStatusChanged;
 
         // HACK: UI facing
         public event EventHandler<ChannelStatusEventArgs> ChannelJoined;
@@ -89,54 +62,21 @@ namespace derpirc.Core
         {
             this._clients = new ObservableCollection<ClientItem>();
 
-            this._worker = new BackgroundWorker();
-            this._worker.DoWork += new DoWorkEventHandler(DeferStartupWork);
-
-            this.DeferStartup(null);
+            ThreadPool.QueueUserWorkItem((object userState) =>
+            {
+                Startup(userState);
+            });
         }
 
-        internal void DeferStartup(Action completed)
+        private void Startup(object userState)
         {
-            this._worker.RunWorkerAsync(completed);
-        }
-
-        private void DeferStartupWork(object sender, DoWorkEventArgs e)
-        {
-            Action completed = e.Argument as Action;
             lock (_threadLock)
             {
-                this.Startup();
+                this._unitOfWork = new DataUnitOfWork();
+
+                this._clientSupervisor = new IrcClientSupervisor(_unitOfWork);
+                this._clientSupervisor.StateChanged += this._sessionSupervisor_StateChanged;
             }
-
-            if (completed != null)
-            {
-                completed();
-            }
-        }
-
-        private void Startup()
-        {
-            this._networkMonitor = new NetworkMonitor(30000);
-            this._statusObserver = _networkMonitor.Status()
-                .ObserveOn(Scheduler.ThreadPool)
-                .Subscribe(type =>
-                {
-                    this.NetworkType = type;
-                    if (type != NetworkType.None)
-                        this.IsNetworkAvailable = true;
-                    else
-                        this.IsNetworkAvailable = false;
-                    var eventArgs = new NetworkStatusEventArgs()
-                    {
-                        IsAvailable = this.IsNetworkAvailable,
-                        Type = type,
-                    };
-                    this.OnNetworkStatusChanged(eventArgs);
-                });
-            this._unitOfWork = new DataUnitOfWork();
-
-            this._clientSupervisor = new IrcClientSupervisor(_unitOfWork);
-            this._clientSupervisor.StateChanged += this._sessionSupervisor_StateChanged;
         }
 
         void _sessionSupervisor_StateChanged(object sender, ClientStatusEventArgs e)
@@ -293,15 +233,6 @@ namespace derpirc.Core
             }
         }
 
-        void OnNetworkStatusChanged(NetworkStatusEventArgs eventArgs)
-        {
-            var handler = this.NetworkStatusChanged;
-            if (handler != null)
-            {
-                handler.Invoke(this, eventArgs);
-            }
-        }
-
         #endregion
 
         #region Lookup methods
@@ -419,12 +350,6 @@ namespace derpirc.Core
             {
                 if (disposing)
                 {
-                    if (this._statusObserver == null)
-                        return;
-
-                    this._statusObserver.Dispose();
-                    this._statusObserver = null;
-                    this._networkMonitor = null;
                     this.Shutdown();
                 }
             }

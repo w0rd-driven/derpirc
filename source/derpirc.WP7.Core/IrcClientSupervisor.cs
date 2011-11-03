@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -34,7 +33,6 @@ namespace derpirc.Core
         private DataUnitOfWork _unitOfWork;
 
         private object _threadLock = new object();
-        private BackgroundWorker _worker;
 
         // EFNet: Welcome to the $server Internet Relay Chat Network $nick
         // PowerPrecision: Welcome to the $server IRC Network $nick!$email@$host
@@ -43,10 +41,11 @@ namespace derpirc.Core
         public IrcClientSupervisor(DataUnitOfWork unitOfWork)
         {
             this._unitOfWork = unitOfWork;
-            this._worker = new BackgroundWorker();
-            this._worker.DoWork += new DoWorkEventHandler(DeferStartupWork);
 
-            this.DeferStartup(null);
+            ThreadPool.QueueUserWorkItem((object userState) =>
+            {
+                Startup(userState);
+            });
 
             // TODO: Move to method
             //SupervisorFacade.Default.NetworkStatusChanged += (s, e) =>
@@ -63,14 +62,8 @@ namespace derpirc.Core
             //};
         }
 
-        internal void DeferStartup(Action completed)
+        private void Startup(object userState)
         {
-            this._worker.RunWorkerAsync(completed);
-        }
-
-        private void DeferStartupWork(object sender, DoWorkEventArgs e)
-        {
-            Action completed = e.Argument as Action;
             lock (this._threadLock)
             {
                 // Build Client list based on settings
@@ -97,11 +90,6 @@ namespace derpirc.Core
                 {
                     this.Connect();
                 }
-            }
-
-            if (completed != null)
-            {
-                completed();
             }
         }
 

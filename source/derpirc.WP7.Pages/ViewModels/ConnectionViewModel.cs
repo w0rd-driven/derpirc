@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
@@ -255,6 +256,7 @@ namespace derpirc.ViewModels
                     return;
 
                 _isNetworkAvailable = value;
+                CheckCanConnect(value);
                 RaisePropertyChanged(() => IsNetworkAvailable);
             }
         }
@@ -359,22 +361,16 @@ namespace derpirc.ViewModels
                 // Set SelectedItem
                 if (list[0] != null)
                     SelectedItem = list[0];
-                CanConnect = true;
-                CanDisconnect = true;
-                CanReconnect = true;
             }
             else
-            {
-                CanConnect = false;
-                CanDisconnect = false;
-                CanReconnect = false;
-            }
+                SelectedItem = null;
+            CheckCanConnect(IsNetworkAvailable);
         }
 
         private void Load()
         {
-            NetworkType = SupervisorFacade.Default.NetworkType;
-            IsNetworkAvailable = SupervisorFacade.Default.IsNetworkAvailable;
+            NetworkType = NetworkDetector.Default.GetCurrentNetworkType();
+            //IsNetworkAvailable = SupervisorFacade.Default.IsNetworkAvailable;
 
             _connectionsList.Clear();
             foreach (var item in SupervisorFacade.Default.Clients)
@@ -382,34 +378,93 @@ namespace derpirc.ViewModels
                 _connectionsList.Add(item.Info);
             }
 
-            SupervisorFacade.Default.StateChanged += this.StateChanged;
-            SupervisorFacade.Default.NetworkStatusChanged += this.NetworkStatusChanged;
+            SupervisorFacade.Default.Clients.CollectionChanged += (s, e) => { OnCollectionChanged(e); };
+            SupervisorFacade.Default.StateChanged += (s, e) => { AddOrUpdate(e.Info); };
+            NetworkDetector.Default.OnStatusChanged += (s, e) => { OnNetworkStatusChanged(e); };
         }
 
-        private void StateChanged(object sender, ClientStatusEventArgs e)
+        private void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (var item in e.NewItems)
+                    {
+                        var recordItem = item as ClientItem;
+                        AddOrUpdate(recordItem.Info);
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (var item in e.OldItems)
+                    {
+                        var recordItem = item as ClientItem;
+                        Remove(recordItem.Info);
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Replace:
+                    break;
+                case NotifyCollectionChangedAction.Reset:
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void AddOrUpdate(ClientInfo client)
         {
             DispatcherHelper.CheckBeginInvokeOnUI(() =>
             {
-                var foundClient = _connectionsList.FirstOrDefault(x => x.Id == e.Info.Id);
+                var foundClient = _connectionsList.FirstOrDefault(x => x.Id == client.Id);
                 if (foundClient == null)
                 {
                     // Wait for Collection/PropertyChanged event
-                    _connectionsList.Add(e.Info);
+                    _connectionsList.Add(client);
                 }
                 else
-                    foundClient = e.Info;
+                    foundClient = client;
 
                 Connections.View.Refresh();
             });
         }
 
-        private void NetworkStatusChanged(object sender, NetworkStatusEventArgs e)
+        private void Remove(ClientInfo client)
+        {
+            if (_connectionsList.Contains(client))
+                _connectionsList.Remove(client);
+        }
+
+        private void OnNetworkStatusChanged(NetworkStatusEventArgs e)
         {
             DispatcherHelper.CheckBeginInvokeOnUI(() =>
             {
                 NetworkType = e.Type;
                 IsNetworkAvailable = e.IsAvailable;
             });
+        }
+
+        private void CheckCanConnect(bool isNetworkAvailable)
+        {
+            if (isNetworkAvailable)
+            {
+                if (SelectedItem != null)
+                {
+                   CanConnect = true;
+                    CanReconnect = true;
+                    CanDisconnect = true;
+                }
+                else
+                {
+                    CanConnect = false;
+                    CanReconnect = false;
+                    CanDisconnect = false;
+                }
+            }
+            else
+            {
+                CanConnect = false;
+                CanReconnect = false;
+                CanDisconnect = false;
+            }
         }
 
         private void Select()
