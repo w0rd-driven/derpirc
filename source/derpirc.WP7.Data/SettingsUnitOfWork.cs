@@ -16,27 +16,31 @@ namespace derpirc.Data
 
         public bool IsFactoryDefault { get; set; }
 
+        private User _user;
         public User User
         {
-            get
-            {
-                return GetValueOrDefault<User>(_userKeyName, Factory.CreateUser());
-            }
+            get { return _user ?? (_user = GetValueOrDefault<User>(_userKeyName, Factory.CreateUser())); }
             set
             {
-                if (AddOrUpdateValue(_userKeyName, value)) { Save(); }
+                if (AddOrUpdateValue(_userKeyName, value))
+                {
+                    _user = value;
+                    Save();
+                }
             }
         }
 
+        private List<Network> _networks;
         public List<Network> Networks
         {
-            get
-            {
-                return GetValueOrDefault<List<Network>>(_networksKeyName, Factory.CreateNetworks());
-            }
+            get { return _networks ?? (_networks = GetValueOrDefault<List<Network>>(_networksKeyName, Factory.CreateNetworks())); }
             set
             {
-                if (AddOrUpdateValue(_networksKeyName, value)) { Save(); }
+                if (AddOrUpdateValue(_networksKeyName, value))
+                {
+                    _networks = value;
+                    Save();
+                }
             }
         }
 

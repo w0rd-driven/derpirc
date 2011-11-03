@@ -121,6 +121,8 @@ namespace derpirc.ViewModels
 
         #endregion
 
+        private Network _addingRecord;
+
         public SettingsNetworkViewModel() : this(null) { }
 
         public SettingsNetworkViewModel(INavigationService navigationService)
@@ -190,18 +192,14 @@ namespace derpirc.ViewModels
         private void Add()
         {
             var count = SettingsUnitOfWork.Default.Networks.Count;
-            var item = new Network();
-            item.Id = count + 1;
-            item.Name = "New Network";
-            _networksList.Add(item);
-            using (Networks.View.DeferRefresh())
-            {
-                //var networks = _networksList.ToList();
-                //networks.Add(item);
-                //SettingsUnitOfWork.Default.Networks = networks;
-                Save(false);
-                ViewDetails(item);
-            }
+            // We're playing throw the record. THROW
+            _addingRecord = new Network();
+            _addingRecord.Id = count + 1;
+            _addingRecord.Name = "New Network";
+            _addingRecord.HostName = "newnetwork";
+            _addingRecord.Ports = "6667";
+            SettingsUnitOfWork.Default.Networks.Add(_addingRecord);
+            ViewDetails(_addingRecord);
         }
 
         private void Delete(Network item)
@@ -231,6 +229,13 @@ namespace derpirc.ViewModels
 
         private void UnselectItem()
         {
+            // We're playing throw the record. CATCH & SHIT ON IT
+            if (_addingRecord != null)
+            {
+                SettingsUnitOfWork.Default.Networks.Remove(_addingRecord);
+                _networksList.Add(_addingRecord);
+                _addingRecord = null;
+            }
             this.SelectedItem = null;
         }
 
