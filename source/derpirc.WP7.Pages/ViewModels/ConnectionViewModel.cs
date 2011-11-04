@@ -38,6 +38,16 @@ namespace derpirc.ViewModels
             }
         }
 
+        RelayCommand _navigatedFromCommand;
+        public RelayCommand NavigatedFromCommand
+        {
+            get
+            {
+                return _navigatedFromCommand ?? (_navigatedFromCommand =
+                    new RelayCommand(() => this.OnNavigatedFrom()));
+            }
+        }
+
         RelayCommand<IList> _selectionChangedToCommand;
         public RelayCommand<IList> SelectionChangedCommand
         {
@@ -345,7 +355,7 @@ namespace derpirc.ViewModels
 
         private void OnNavigatedFrom()
         {
-
+            this.IsSelectionEnabled = false;
         }
 
         private void SelectionChanged(IList items)
@@ -370,7 +380,7 @@ namespace derpirc.ViewModels
         private void Load()
         {
             NetworkType = NetworkDetector.Default.GetCurrentNetworkType();
-            //IsNetworkAvailable = SupervisorFacade.Default.IsNetworkAvailable;
+            IsNetworkAvailable = NetworkDetector.Default.IsNetworkAvailable;
 
             _connectionsList.Clear();
             foreach (var item in SupervisorFacade.Default.Clients)

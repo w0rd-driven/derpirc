@@ -27,6 +27,7 @@ namespace derpirc.Core
         public event EventHandler<ClientStatusEventArgs> StateChanged;
 
         private bool _isDisposed;
+
         private int _quitTimeout = 1000;
         private int _defaultServerPort = 6667;
 
@@ -41,25 +42,10 @@ namespace derpirc.Core
         public IrcClientSupervisor(DataUnitOfWork unitOfWork)
         {
             this._unitOfWork = unitOfWork;
-
             ThreadPool.QueueUserWorkItem((object userState) =>
             {
                 Startup(userState);
             });
-
-            // TODO: Move to method
-            //SupervisorFacade.Default.NetworkStatusChanged += (s, e) =>
-            //{
-            //    IsNetworkAvailable = e.IsAvailable;
-            //    if (!IsNetworkAvailable)
-            //    {
-
-            //    }
-            //    else
-            //    {
-
-            //    }
-            //};
         }
 
         private void Startup(object userState)
@@ -67,6 +53,8 @@ namespace derpirc.Core
             lock (this._threadLock)
             {
                 // Build Client list based on settings
+                NetworkDetector.Default.SetNetworkPolling();
+                NetworkDetector.Default.OnStatusChanged += this.Network_OnStatusChanged;
                 for (int index = 0; index < SettingsUnitOfWork.Default.Networks.Count; index++)
                 {
                     var item = SettingsUnitOfWork.Default.Networks[index];
@@ -75,21 +63,37 @@ namespace derpirc.Core
                     client.Info.NetworkName = item.Name;
                     SupervisorFacade.Default.Clients.Add(client);
                 }
+            }
+        }
 
-                // TODO: SmartMonitor
-                // HACK: Turned off while loop since it breaks first run sync
-                //while (session == null)
-                //{
-                //    session = this.GetDefaultSession();
-                //    Thread.Sleep(1000);
-                //}
+        private void Network_OnStatusChanged(object sender, NetworkStatusEventArgs e)
+        {
+            if (e.IsAvailable)
+                NetworkUp();
+            else
+                NetworkDown();
+        }
 
+        private void NetworkUp()
+        {
+            if (!IsNetworkAvailable)
+            {
+                // Do work
+                IsNetworkAvailable = true;
                 var session = this.GetDefaultSession();
-
                 if (session != null)
                 {
                     this.Connect();
                 }
+            }
+        }
+
+        private void NetworkDown()
+        {
+            if (IsNetworkAvailable)
+            {
+                // Do work
+                IsNetworkAvailable = false;
             }
         }
 
@@ -100,6 +104,11 @@ namespace derpirc.Core
             var clients = SupervisorFacade.Default.Clients.AsEnumerable();
             foreach (var item in clients)
             {
+                if (item.Client == null)
+                {
+                    item.Client = InitializeIrcClient();
+                    item.CtcpClient = InitializeCtcpClient(item.Client);
+                }
                 this.Connect(item.Client);
             }
         }
@@ -143,7 +152,8 @@ namespace derpirc.Core
             finally
             {
                 var newClient = InitializeIrcClient();
-                SupervisorFacade.Default.UpdateClient(item, newClient);
+                var newCtcpClient = InitializeCtcpClient(newClient);
+                SupervisorFacade.Default.UpdateClient(item, newCtcpClient);
             }
         }
 
@@ -228,33 +238,43 @@ namespace derpirc.Core
 
         private IrcClient InitializeIrcClient()
         {
-            var result = new IrcClient();
-            result.FloodPreventer = new IrcStandardFloodPreventer(4, 2000);
-            // Connection events
-            result.Connected += new EventHandler<EventArgs>(Client_Connected);
-            result.Disconnected += new EventHandler<EventArgs>(Client_Disconnected);
-            result.ServerBounce += new EventHandler<IrcServerInfoEventArgs>(Client_Bounce);
+            if (IsNetworkAvailable)
+            {
+                var result = new IrcClient();
+                result.FloodPreventer = new IrcStandardFloodPreventer(4, 2000);
+                // Connection events
+                result.Connected += new EventHandler<EventArgs>(Client_Connected);
+                result.Disconnected += new EventHandler<EventArgs>(Client_Disconnected);
+                result.ServerBounce += new EventHandler<IrcServerInfoEventArgs>(Client_Bounce);
 
-            // Failure events
-            result.ConnectFailed += new EventHandler<IrcErrorEventArgs>(Client_ConnectFailed);
-            result.ProtocolError += new EventHandler<IrcProtocolErrorEventArgs>(Client_ProtocolError);
-            result.Error += new EventHandler<IrcErrorEventArgs>(Client_Error);
-            result.ErrorMessageReceived += new EventHandler<IrcErrorMessageEventArgs>(Client_ErrorMessageReceived);
+                // Failure events
+                result.ConnectFailed += new EventHandler<IrcErrorEventArgs>(Client_ConnectFailed);
+                result.ProtocolError += new EventHandler<IrcProtocolErrorEventArgs>(Client_ProtocolError);
+                result.Error += new EventHandler<IrcErrorEventArgs>(Client_Error);
+                result.ErrorMessageReceived += new EventHandler<IrcErrorMessageEventArgs>(Client_ErrorMessageReceived);
 
-            // Detection events
-            result.Registered += new EventHandler<EventArgs>(Client_Registered);
-            result.NetworkInformationReceived += new EventHandler<EventArgs>(Client_NetworkInformationReceived);
-            return result;
+                // Detection events
+                result.Registered += new EventHandler<EventArgs>(Client_Registered);
+                result.NetworkInformationReceived += new EventHandler<EventArgs>(Client_NetworkInformationReceived);
+                return result;
+            }
+            else
+                return null;
         }
 
         private CtcpClient InitializeCtcpClient(IrcClient client)
         {
-            var result = new CtcpClient(client);
-            result.Error += new EventHandler<IrcErrorEventArgs>(CtcpClient_Error);
-            result.ErrorMessageReceived += new EventHandler<CtcpErrorMessageReceivedEventArgs>(CtcpClient_ErrorMessageReceived);
-            result.ActionReceived += new EventHandler<CtcpMessageEventArgs>(CtcpClient_ActionReceived);
-            result.ActionSent += new EventHandler<CtcpMessageEventArgs>(CtcpClient_ActionSent);
-            return result;
+            if (IsNetworkAvailable && client != null)
+            {
+                var result = new CtcpClient(client);
+                result.Error += new EventHandler<IrcErrorEventArgs>(CtcpClient_Error);
+                result.ErrorMessageReceived += new EventHandler<CtcpErrorMessageReceivedEventArgs>(CtcpClient_ErrorMessageReceived);
+                result.ActionReceived += new EventHandler<CtcpMessageEventArgs>(CtcpClient_ActionReceived);
+                result.ActionSent += new EventHandler<CtcpMessageEventArgs>(CtcpClient_ActionSent);
+                return result;
+            }
+            else
+                return null;
         }
 
         #region Connection events

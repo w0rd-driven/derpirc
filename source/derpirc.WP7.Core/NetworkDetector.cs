@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Windows.Threading;
-using Microsoft.Phone.Net.NetworkInformation;
 using System.Threading;
+using Microsoft.Phone.Net.NetworkInformation;
 
 /**********************************************/
 /*      Copyright of Gabor Dolhai @ 2010      */
@@ -30,7 +29,7 @@ namespace derpirc.Core
         public event EventHandler<NetworkStatusEventArgs> OnAsyncGetNetworkTypeCompleted;
         #endregion
 
-        private DispatcherTimer updateTimer, pollTimer;
+        private Timer updateTimer, pollTimer;
         private Queue<long> requestQueue;  //queue to store the requests timestemps
         private BackgroundWorker networkWorker;
         private bool online = false;
@@ -64,12 +63,6 @@ namespace derpirc.Core
             requestQueue = new Queue<long>();
             requestQueue.Clear();
             requestStatus = NetworkTypeRequestStatus.Default;
-            updateTimer = new DispatcherTimer();
-            updateTimer.Tick += new EventHandler(updateTimer_Tick);
-            updateTimer.Interval = new TimeSpan(0, 0, 0, 0, 300);//there is no need to restart the BGWorker sooner then 300 millisec because the ~3request/sec requestlimit
-            //updateTimer.Start();
-            pollTimer = new DispatcherTimer();
-            pollTimer.Tick += new EventHandler(pollTimer_Tick);
             networkWorker = new BackgroundWorker();
             networkWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(networkWorker_RunWorkerCompleted);
             networkWorker.DoWork += new DoWorkEventHandler(networkWorker_DoWork);
@@ -154,11 +147,13 @@ namespace derpirc.Core
             }
             for (int i = 0; i < requestQueue.Count; i++)
             {
-                if (requestQueue.Peek() < DateTime.Now.Ticks) requestQueue.Dequeue();
+                if (requestQueue.Peek() < DateTime.Now.Ticks)
+                    requestQueue.Dequeue();
                 //the requests before this moment just got answered
                 //if other requests are coming right after this, they will be served inside the next networkWorker_RunWorkerCompleted
             }
-            if (requestQueue.Count == 0) updateTimer.Stop();
+            if (requestQueue.Count == 0)
+                StopUpdate();
             if (IsInstantRequestPresent)  //the user requested a single poll
             {
                 RaiseNotify(OnAsyncGetNetworkTypeCompleted, new NetworkStatusEventArgs(online, GetCurrentNetworkType()));
@@ -173,7 +168,7 @@ namespace derpirc.Core
         private void EnqueueRequest()
         {
             requestQueue.Enqueue(DateTime.Now.Ticks);
-            if (!updateTimer.IsEnabled) updateTimer.Start();
+            StartUpdate();
         }
 
         private void DetectOnlineStatus() //are we connected to any network or not
@@ -199,21 +194,26 @@ namespace derpirc.Core
             }
         }
 
-        void pollTimer_Tick(object sender, EventArgs e)
+        private void StartUpdate()
         {
-            EnqueueRequest();
+            var interval = new TimeSpan(0, 0, 0, 0, 300);
+            updateTimer = new Timer(new TimerCallback((o) =>
+            {
+                if (requestQueue.Count > 0)
+                {
+                    if (!networkWorker.IsBusy)
+                    {
+                        requestStatus = NetworkTypeRequestStatus.Started;
+                        networkWorker.RunWorkerAsync();
+                    }
+                }
+            }), null, interval, TimeSpan.Zero);
         }
 
-        void updateTimer_Tick(object sender, EventArgs e)
+        private void StopUpdate()
         {
-            if (requestQueue.Count > 0)
-            {
-                if (!networkWorker.IsBusy)
-                {
-                    requestStatus = NetworkTypeRequestStatus.Started;
-                    networkWorker.RunWorkerAsync();
-                }
-            }
+            if (updateTimer != null)
+                updateTimer.Dispose();
         }
 
         #region Event Handling
@@ -280,18 +280,30 @@ namespace derpirc.Core
                 requestStatus = NetworkTypeRequestStatus.Started;
                 networkWorker.RunWorkerAsync();
             }
-            if (!updateTimer.IsEnabled) updateTimer.Start();
+            StartUpdate();
+        }
+
+        public void SetNetworkPolling()
+        {
+            this.SetNetworkPolling(0, 30, 0);
         }
 
         public void SetNetworkPolling(int Minutes, int Seconds, int Milliseconds)
         {
-            pollTimer.Interval = new TimeSpan(0, 0, Minutes, Seconds, Milliseconds);
-            if (!pollTimer.IsEnabled) pollTimer.Start();
+            if (pollTimer == null)
+            {
+                var interval = new TimeSpan(0, 0, Minutes, Seconds, Milliseconds);
+                pollTimer = new Timer(new TimerCallback((o) =>
+                {
+                    EnqueueRequest();
+                }), null, TimeSpan.Zero, interval);
+            }
         }
 
         public void DisableNetworkPolling()
         {
-            if (pollTimer.IsEnabled) pollTimer.Stop();
+            if (pollTimer != null)
+                pollTimer.Dispose();
         }
 
         public NetworkType GetCurrentNetworkType()
@@ -301,25 +313,37 @@ namespace derpirc.Core
             {
                 case NetworkInterfaceType.Ethernet:
                     result = NetworkType.Ethernet;
+                    IsNetworkAvailable = true;
                     break;
                 case NetworkInterfaceType.MobileBroadbandCdma:
                     result = NetworkType.Data;
+                    IsNetworkAvailable = true;
                     break;
                 case NetworkInterfaceType.MobileBroadbandGsm:
                     result = NetworkType.Data;
+                    IsNetworkAvailable = true;
                     break;
                 case NetworkInterfaceType.None:
                     result = NetworkType.None;
+                    IsNetworkAvailable = false;
                     break;
                 case NetworkInterfaceType.Unknown:
                     result = NetworkType.Undefined;
+                    IsNetworkAvailable = false;
                     break;
                 case NetworkInterfaceType.Wireless80211:
                     result = NetworkType.Wireless;
+                    IsNetworkAvailable = true;
+                    break;
+                default:
+                    result = NetworkType.Undefined;
+                    IsNetworkAvailable = false;
                     break;
             }
             return result;
         }
+
+        public bool IsNetworkAvailable { get; set; }
 
         public NetworkTypeRequestStatus GetRequestStatus()
         {

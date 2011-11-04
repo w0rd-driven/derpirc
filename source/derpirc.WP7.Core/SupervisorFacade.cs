@@ -315,14 +315,21 @@ namespace derpirc.Core
             }
         }
 
-        public void UpdateClient(ClientItem client, IrcClient newClient)
+        public void UpdateClient(ClientItem client, CtcpClient newClient)
         {
             var foundClient = this.Clients.Where(x => x.Info.Id == client.Info.Id).FirstOrDefault();
             if (foundClient != null)
             {
-                foundClient.Client.Dispose();
-                foundClient.Client = null;
-                foundClient.Client = newClient;
+                if (foundClient.Client != null)
+                {
+                    foundClient.Client.Dispose();
+                    foundClient.Client = null;
+                }
+                if (newClient != null)
+                {
+                    foundClient.CtcpClient = newClient;
+                    foundClient.Client = newClient.IrcClient;
+                }
             }
         }
 

@@ -13,8 +13,6 @@ namespace derpirc.Core
         public ClientItem()
         {
             Info = new ClientInfo();
-            Client = new IrcClient();
-            CtcpClient = new CtcpClient(Client);
         }
     }
 }
