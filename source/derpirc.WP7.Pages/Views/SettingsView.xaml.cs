@@ -1,4 +1,5 @@
-﻿using derpirc.ViewModels;
+﻿using System.Windows.Navigation;
+using derpirc.ViewModels;
 using Microsoft.Phone.Controls;
 
 namespace derpirc.Views
@@ -16,26 +17,18 @@ namespace derpirc.Views
             InitializeComponent();
         }
 
-        SettingsViewModel viewModel
+        SettingsViewModel viewModel { get { return this.DataContext as SettingsViewModel; } }
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            get
-            {
-                return this.DataContext as SettingsViewModel;
-            }
+            base.OnNavigatedTo(e);
+            viewModel.NavigatedToCommand.Execute(e);
         }
 
-        protected override void OnNavigatedFrom(System.Windows.Navigation.NavigationEventArgs e)
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);
             viewModel.NavigatedFromCommand.Execute(e);
-        }
-
-        protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
-        {
-            base.OnNavigatedTo(e);
-            viewModel.NavigatedToCommand.Execute(NavigationContext.QueryString);
-            if (e.NavigationMode == System.Windows.Navigation.NavigationMode.Back)
-                viewModel.UnselectItemCommand.Execute(null);
         }
     }
 }

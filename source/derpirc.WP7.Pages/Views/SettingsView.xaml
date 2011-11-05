@@ -17,6 +17,7 @@
                             SupportedOrientations="PortraitOrLandscape" Orientation="Portrait"
                             mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="696"
                             shell:SystemTray.IsVisible="True"
+                            toolkit:TiltEffect.IsTiltEnabled="True"
                             DataContext="{Binding SettingsViewModel, Source={StaticResource Locator}}">
 
     <Grid x:Name="LayoutRoot" Background="Transparent">
@@ -69,14 +70,9 @@
                 <ListBox x:Name="NetworksList" 
                          ItemsSource="{Binding Networks.View}" SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
                          Margin="0,0,-12,0" ItemContainerStyle="{StaticResource SmallPivotListBoxStyle}">
-                    <blend:Interaction.Triggers>
-                        <blend:EventTrigger EventName="DoubleTap">
-                            <command:EventToCommand Command="{Binding EditCommand}" />
-                        </blend:EventTrigger>
-                    </blend:Interaction.Triggers>
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding Name}" FontSize="{StaticResource PhoneFontSizeMediumLarge}" />
+                            <TextBlock Text="{Binding Name}" FontSize="{StaticResource PhoneFontSizeLarge}" />
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>

@@ -1,14 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
+﻿using System.Windows.Navigation;
+using derpirc.ViewModels;
 using Microsoft.Phone.Controls;
 
 namespace derpirc
@@ -19,6 +10,22 @@ namespace derpirc
         public MainPage()
         {
             InitializeComponent();
+        }
+
+        MainViewModel viewModel { get { return this.DataContext as MainViewModel; } }
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+            viewModel.NavigatedToCommand.Execute(NavigationContext.QueryString);
+            if (e.NavigationMode == NavigationMode.Back)
+                viewModel.UnselectItemCommand.Execute(null);
+        }
+
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            base.OnNavigatedFrom(e);
+            viewModel.NavigatedFromCommand.Execute(e);
         }
     }
 }

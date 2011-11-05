@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Data;
+using System.Windows.Navigation;
 using derpirc.Core;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
@@ -28,23 +29,23 @@ namespace derpirc.ViewModels
             }
         }
 
-        RelayCommand _navigatedToCommand;
-        public RelayCommand NavigatedToCommand
+        RelayCommand<NavigationEventArgs> _navigatedToCommand;
+        public RelayCommand<NavigationEventArgs> NavigatedToCommand
         {
             get
             {
                 return _navigatedToCommand ?? (_navigatedToCommand =
-                    new RelayCommand(() => this.OnNavigatedTo()));
+                    new RelayCommand<NavigationEventArgs>(eventArgs => this.OnNavigatedTo(eventArgs)));
             }
         }
 
-        RelayCommand _navigatedFromCommand;
-        public RelayCommand NavigatedFromCommand
+        RelayCommand<NavigationEventArgs> _navigatedFromCommand;
+        public RelayCommand<NavigationEventArgs> NavigatedFromCommand
         {
             get
             {
                 return _navigatedFromCommand ?? (_navigatedFromCommand =
-                    new RelayCommand(() => this.OnNavigatedFrom()));
+                    new RelayCommand<NavigationEventArgs>(eventArgs => this.OnNavigatedFrom(eventArgs)));
             }
         }
 
@@ -78,7 +79,7 @@ namespace derpirc.ViewModels
                     return;
 
                 _canConnect = value;
-                ConnectCommand.RaiseCanExecuteChanged();
+                DispatcherHelper.CheckBeginInvokeOnUI(() => ConnectCommand.RaiseCanExecuteChanged());
                 RaisePropertyChanged(() => CanConnect);
             }
         }
@@ -103,7 +104,7 @@ namespace derpirc.ViewModels
                     return;
 
                 _canDisconnect = value;
-                DisconnectCommand.RaiseCanExecuteChanged();
+                DispatcherHelper.CheckBeginInvokeOnUI(() => DisconnectCommand.RaiseCanExecuteChanged());
                 RaisePropertyChanged(() => CanDisconnect);
             }
         }
@@ -128,7 +129,7 @@ namespace derpirc.ViewModels
                     return;
 
                 _canReconnect = value;
-                ReconnectCommand.RaiseCanExecuteChanged();
+                DispatcherHelper.CheckBeginInvokeOnUI(() => ReconnectCommand.RaiseCanExecuteChanged());
                 RaisePropertyChanged(() => CanReconnect);
             }
         }
@@ -348,14 +349,22 @@ namespace derpirc.ViewModels
             }
         }
 
-        private void OnNavigatedTo()
+        private void OnNavigatedTo(NavigationEventArgs eventArgs)
         {
-
+            if (eventArgs.NavigationMode == NavigationMode.Back)
+            {
+                // Resuming from a task...
+                // TODO: Restart sockets automatically
+            }
         }
 
-        private void OnNavigatedFrom()
+        private void OnNavigatedFrom(NavigationEventArgs eventArgs)
         {
             this.IsSelectionEnabled = false;
+            if (eventArgs.NavigationMode == NavigationMode.New)
+            {
+                // A task is being called...
+            }
         }
 
         private void SelectionChanged(IList items)
@@ -422,34 +431,29 @@ namespace derpirc.ViewModels
 
         private void AddOrUpdate(ClientInfo client)
         {
-            DispatcherHelper.CheckBeginInvokeOnUI(() =>
+            var foundClient = _connectionsList.FirstOrDefault(x => x.Id == client.Id);
+            if (foundClient == null)
             {
-                var foundClient = _connectionsList.FirstOrDefault(x => x.Id == client.Id);
-                if (foundClient == null)
-                {
-                    // Wait for Collection/PropertyChanged event
-                    _connectionsList.Add(client);
-                }
-                else
-                    foundClient = client;
+                // Wait for Collection/PropertyChanged event
+                _connectionsList.Add(client);
+            }
+            else
+                foundClient = client;
 
-                Connections.View.Refresh();
-            });
+            DispatcherHelper.CheckBeginInvokeOnUI(() => Connections.View.Refresh());
         }
 
         private void Remove(ClientInfo client)
         {
             if (_connectionsList.Contains(client))
                 _connectionsList.Remove(client);
+            DispatcherHelper.CheckBeginInvokeOnUI(() => Connections.View.Refresh());
         }
 
         private void OnNetworkStatusChanged(NetworkStatusEventArgs e)
         {
-            DispatcherHelper.CheckBeginInvokeOnUI(() =>
-            {
-                NetworkType = e.Type;
-                IsNetworkAvailable = e.IsAvailable;
-            });
+            NetworkType = e.Type;
+            IsNetworkAvailable = e.IsAvailable;
         }
 
         private void CheckCanConnect(bool isNetworkAvailable)

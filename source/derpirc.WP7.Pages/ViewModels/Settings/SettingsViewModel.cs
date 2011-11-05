@@ -3,6 +3,7 @@ using System.Windows.Navigation;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
+using GalaSoft.MvvmLight.Threading;
 using Microsoft.Phone.Controls;
 
 namespace derpirc.ViewModels
@@ -11,13 +12,13 @@ namespace derpirc.ViewModels
     {
         #region Commands
 
-        RelayCommand _navigatedToCommand;
-        public RelayCommand NavigatedToCommand
+        RelayCommand<NavigationEventArgs> _navigatedToCommand;
+        public RelayCommand<NavigationEventArgs> NavigatedToCommand
         {
             get
             {
                 return _navigatedToCommand ?? (_navigatedToCommand =
-                    new RelayCommand(() => this.OnNavigatedTo()));
+                    new RelayCommand<NavigationEventArgs>(eventArgs => this.OnNavigatedTo(eventArgs)));
             }
         }
 
@@ -51,16 +52,6 @@ namespace derpirc.ViewModels
             }
         }
 
-        RelayCommand _unselectItemCommand;
-        public RelayCommand UnselectItemCommand
-        {
-            get
-            {
-                return _unselectItemCommand ?? (_unselectItemCommand =
-                    new RelayCommand(() => this.UnselectItem()));
-            }
-        }
-
         RelayCommand _saveCommand;
         public RelayCommand SaveCommand
         {
@@ -81,7 +72,7 @@ namespace derpirc.ViewModels
                     return;
 
                 _canAdd = value;
-                AddCommand.RaiseCanExecuteChanged();
+                DispatcherHelper.CheckBeginInvokeOnUI(() => AddCommand.RaiseCanExecuteChanged());
                 RaisePropertyChanged(() => CanAdd);
             }
         }
@@ -106,7 +97,7 @@ namespace derpirc.ViewModels
                     return;
 
                 _canDelete = value;
-                DeleteCommand.RaiseCanExecuteChanged();
+                DispatcherHelper.CheckBeginInvokeOnUI(() => DeleteCommand.RaiseCanExecuteChanged());
                 RaisePropertyChanged(() => CanDelete);
             }
         }
@@ -131,7 +122,7 @@ namespace derpirc.ViewModels
                     return;
 
                 _canClear = value;
-                ClearCommand.RaiseCanExecuteChanged();
+                DispatcherHelper.CheckBeginInvokeOnUI(() => ClearCommand.RaiseCanExecuteChanged());
                 RaisePropertyChanged(() => CanClear);
             }
         }
@@ -217,17 +208,28 @@ namespace derpirc.ViewModels
             }
         }
 
-        private void OnNavigatedTo()
+        private void OnNavigatedTo(NavigationEventArgs eventArgs)
         {
-            IsAppBarVisible = true;
+            // Resuming shows as a back mode so be careful it was navigation-driven. Could also inspect the Uri but ugh
+            if (eventArgs.NavigationMode == NavigationMode.Back && eventArgs.IsNavigationInitiator)
+            {
+                IsAppBarVisible = true;
+                UnselectItem();
+            }
+            if (!eventArgs.IsNavigationInitiator)
+            {
+                // Resuming...
+                // TODO: Restart sockets automatically
+            }
         }
 
         private void OnNavigatedFrom(NavigationEventArgs eventArgs)
         {
-            if (eventArgs.NavigationMode == NavigationMode.New)
-                IsAppBarVisible = false;
             if (eventArgs.NavigationMode == NavigationMode.Back)
+            {
+                IsAppBarVisible = false;
                 Save();
+            }
         }
 
         private void PivotItemLoaded(PivotItemEventArgs eventArgs)

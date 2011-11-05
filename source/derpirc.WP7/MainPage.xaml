@@ -19,6 +19,7 @@
                             Foreground="{StaticResource PhoneForegroundBrush}"
                             SupportedOrientations="PortraitOrLandscape" Orientation="Portrait"
                             shell:SystemTray.IsVisible="True"
+                            toolkit:TiltEffect.IsTiltEnabled="True"
                             DataContext="{Binding MainViewModel, Source={StaticResource Locator}}">
 
     <Grid x:Name="LayoutRoot" Background="Transparent">
@@ -38,12 +39,9 @@
             </blend:Interaction.Triggers>
             <controls:PivotItem Header="{Binding LocalizedResources.MainChannels, Source={StaticResource LocalizedStrings}}"
                                 Style="{StaticResource SmallPivotItemStyle}">
-                <ListBox x:Name="ChannelListBox" Margin="0,0,-12,0" ItemsSource="{Binding Channels.View}" SelectedItem="{Binding SelectedChannel, Mode=TwoWay}" ItemContainerStyle="{StaticResource SmallPivotListBoxStyle}">
-                    <blend:Interaction.Triggers>
-                        <blend:EventTrigger EventName="DoubleTap">
-                            <command:EventToCommand Command="{Binding SelectChannelCommand}" />
-                        </blend:EventTrigger>
-                    </blend:Interaction.Triggers>
+                <ListBox x:Name="ChannelListBox" ItemsSource="{Binding Channels.View}" SelectedItem="{Binding SelectedChannel, Mode=TwoWay}"
+                         Margin="0,0,-12,0"
+                         ItemContainerStyle="{StaticResource SmallPivotListBoxStyle}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <Grid>
@@ -87,6 +85,12 @@
                                                Grid.ColumnSpan="2"
                                                Grid.Row="2" />
                                 </Grid>
+                                <toolkit:ContextMenuService.ContextMenu>
+                                    <toolkit:ContextMenu x:Name="ChannelsContextMenu">
+                                        <toolkit:MenuItem Header="part" />
+                                        <toolkit:MenuItem Header="remove" />
+                                    </toolkit:ContextMenu>
+                                </toolkit:ContextMenuService.ContextMenu>
                             </Grid>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
@@ -95,12 +99,9 @@
 
             <controls:PivotItem Header="{Binding LocalizedResources.MainMentions, Source={StaticResource LocalizedStrings}}"
                                 Style="{StaticResource SmallPivotItemStyle}">
-                <ListBox x:Name="MentionListBox" Margin="0,0,-12,0" ItemsSource="{Binding Mentions.View}" SelectedItem="{Binding SelectedMention, Mode=TwoWay}" ItemContainerStyle="{StaticResource SmallPivotListBoxStyle}">
-                    <blend:Interaction.Triggers>
-                        <blend:EventTrigger EventName="DoubleTap">
-                            <command:EventToCommand Command="{Binding SelectMentionCommand}" />
-                        </blend:EventTrigger>
-                    </blend:Interaction.Triggers>
+                <ListBox x:Name="MentionListBox" ItemsSource="{Binding Mentions.View}" SelectedItem="{Binding SelectedMention, Mode=TwoWay}"
+                         Margin="0,0,-12,0"
+                         ItemContainerStyle="{StaticResource SmallPivotListBoxStyle}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <Grid>
@@ -144,6 +145,11 @@
                                                Grid.ColumnSpan="2"
                                                Grid.Row="2" />
                                 </Grid>
+                                <toolkit:ContextMenuService.ContextMenu>
+                                    <toolkit:ContextMenu x:Name="MentionsContextMenu">
+                                        <toolkit:MenuItem Header="remove" />
+                                    </toolkit:ContextMenu>
+                                </toolkit:ContextMenuService.ContextMenu>
                             </Grid>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
@@ -152,12 +158,9 @@
 
             <controls:PivotItem Header="{Binding LocalizedResources.MainMessages, Source={StaticResource LocalizedStrings}}"
                                 Style="{StaticResource SmallPivotItemStyle}">
-                <ListBox x:Name="MessageListBox" Margin="0,0,-12,0" ItemsSource="{Binding Messages.View}" SelectedItem="{Binding SelectedMessage, Mode=TwoWay}" ItemContainerStyle="{StaticResource SmallPivotListBoxStyle}">
-                    <blend:Interaction.Triggers>
-                        <blend:EventTrigger EventName="DoubleTap">
-                            <command:EventToCommand Command="{Binding SelectMessageCommand}" />
-                        </blend:EventTrigger>
-                    </blend:Interaction.Triggers>
+                <ListBox x:Name="MessageListBox" ItemsSource="{Binding Messages.View}" SelectedItem="{Binding SelectedMessage, Mode=TwoWay}"
+                         Margin="0,0,-12,0"
+                         ItemContainerStyle="{StaticResource SmallPivotListBoxStyle}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <Grid>
@@ -201,6 +204,11 @@
                                                Grid.ColumnSpan="2"
                                                Grid.Row="2" />
                                 </Grid>
+                                <toolkit:ContextMenuService.ContextMenu>
+                                    <toolkit:ContextMenu x:Name="MessagesContextMenu">
+                                        <toolkit:MenuItem Header="remove" />
+                                    </toolkit:ContextMenu>
+                                </toolkit:ContextMenuService.ContextMenu>
                             </Grid>
                         </DataTemplate>
                     </ListBox.ItemTemplate>

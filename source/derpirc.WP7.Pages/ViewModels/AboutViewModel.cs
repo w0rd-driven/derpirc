@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Navigation;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Microsoft.Phone.Tasks;
@@ -9,23 +10,23 @@ namespace derpirc.ViewModels
     {
         #region Commands
 
-        RelayCommand _navigatedToCommand;
-        public RelayCommand NavigatedToCommand
+        RelayCommand<NavigationEventArgs> _navigatedToCommand;
+        public RelayCommand<NavigationEventArgs> NavigatedToCommand
         {
             get
             {
                 return _navigatedToCommand ?? (_navigatedToCommand =
-                    new RelayCommand(() => this.OnNavigatedTo()));
+                    new RelayCommand<NavigationEventArgs>(eventArgs => this.OnNavigatedTo(eventArgs)));
             }
         }
 
-        RelayCommand _navigatedFromCommand;
-        public RelayCommand NavigatedFromCommand
+        RelayCommand<NavigationEventArgs> _navigatedFromCommand;
+        public RelayCommand<NavigationEventArgs> NavigatedFromCommand
         {
             get
             {
                 return _navigatedFromCommand ?? (_navigatedFromCommand =
-                    new RelayCommand(() => this.OnNavigatedFrom()));
+                    new RelayCommand<NavigationEventArgs>(eventArgs => this.OnNavigatedFrom(eventArgs)));
             }
         }
 
@@ -108,14 +109,21 @@ namespace derpirc.ViewModels
             }
         }
 
-        private void OnNavigatedTo()
+        private void OnNavigatedTo(NavigationEventArgs eventArgs)
         {
-
+            if (eventArgs.NavigationMode == NavigationMode.Back)
+            {
+                // Resuming from a task...
+                // TODO: Restart sockets automatically
+            }
         }
 
-        private void OnNavigatedFrom()
+        private void OnNavigatedFrom(NavigationEventArgs eventArgs)
         {
-
+            if (eventArgs.NavigationMode == NavigationMode.New)
+            {
+                // A task is being called...
+            }
         }
 
         private void Website()

@@ -1,4 +1,5 @@
-﻿using derpirc.ViewModels;
+﻿using System.Windows.Navigation;
+using derpirc.ViewModels;
 using Microsoft.Phone.Controls;
 
 namespace derpirc.Views
@@ -18,16 +19,16 @@ namespace derpirc.Views
 
         ConnectionViewModel viewModel { get { return this.DataContext as ConnectionViewModel; } }
 
-        protected override void OnNavigatedFrom(System.Windows.Navigation.NavigationEventArgs e)
-        {
-            base.OnNavigatedFrom(e);
-            viewModel.NavigatedFromCommand.Execute(null);
-        }
-
-        protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
+        protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            viewModel.NavigatedToCommand.Execute(NavigationContext.QueryString);
+            viewModel.NavigatedToCommand.Execute(e);
+        }
+
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            base.OnNavigatedFrom(e);
+            viewModel.NavigatedFromCommand.Execute(e);
         }
     }
 }

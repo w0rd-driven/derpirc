@@ -2,7 +2,6 @@
 using derpirc.Data.Models.Settings;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Messaging;
-using derpirc.Core;
 
 namespace derpirc.ViewModels
 {

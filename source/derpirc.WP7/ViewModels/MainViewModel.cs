@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Data;
+using System.Windows.Navigation;
 using derpirc.Data;
 using derpirc.Data.Models;
 using derpirc.Helpers;
@@ -20,6 +21,26 @@ namespace derpirc.ViewModels
     public class MainViewModel : ViewModelBase
     {
         #region Commands
+
+        RelayCommand _navigatedToCommand;
+        public RelayCommand NavigatedToCommand
+        {
+            get
+            {
+                return _navigatedToCommand ?? (_navigatedToCommand =
+                    new RelayCommand(() => this.OnNavigatedTo()));
+            }
+        }
+
+        RelayCommand<NavigationEventArgs> _navigatedFromCommand;
+        public RelayCommand<NavigationEventArgs> NavigatedFromCommand
+        {
+            get
+            {
+                return _navigatedFromCommand ?? (_navigatedFromCommand =
+                    new RelayCommand<NavigationEventArgs>(eventArgs => this.OnNavigatedFrom(eventArgs)));
+            }
+        }
 
         RelayCommand<FrameworkElement> _layoutRootCommand;
         public RelayCommand<FrameworkElement> LayoutRootCommand
@@ -41,33 +62,13 @@ namespace derpirc.ViewModels
             }
         }
 
-        RelayCommand _selectChannelCommand;
-        public RelayCommand SelectChannelCommand
+        RelayCommand _unselectItemCommand;
+        public RelayCommand UnselectItemCommand
         {
             get
             {
-                return _selectChannelCommand ?? (_selectChannelCommand =
-                    new RelayCommand(() => this.SelectChannel()));
-            }
-        }
-
-        RelayCommand _selectMentionCommand;
-        public RelayCommand SelectMentionCommand
-        {
-            get
-            {
-                return _selectMentionCommand ?? (_selectMentionCommand =
-                    new RelayCommand(() => this.SelectMention()));
-            }
-        }
-
-        RelayCommand _selectMessageCommand;
-        public RelayCommand SelectMessageCommand
-        {
-            get
-            {
-                return _selectMessageCommand ?? (_selectMessageCommand =
-                    new RelayCommand(() => this.SelectMessage()));
+                return _unselectItemCommand ?? (_unselectItemCommand =
+                    new RelayCommand(() => this.UnselectItem()));
             }
         }
 
@@ -80,10 +81,9 @@ namespace derpirc.ViewModels
                 if (_canViewSettings == value)
                     return;
 
-                var oldValue = _canViewSettings;
                 _canViewSettings = value;
+                DispatcherHelper.CheckBeginInvokeOnUI(() => ViewSettingsCommand.RaiseCanExecuteChanged());
                 RaisePropertyChanged(() => CanViewSettings);
-                ViewSettingsCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -106,10 +106,9 @@ namespace derpirc.ViewModels
                 if (_canViewConnections == value)
                     return;
 
-                var oldValue = _canViewConnections;
                 _canViewConnections = value;
+                DispatcherHelper.CheckBeginInvokeOnUI(() => ViewConnectionsCommand.RaiseCanExecuteChanged());
                 RaisePropertyChanged(() => CanViewConnections);
-                ViewConnectionsCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -132,10 +131,9 @@ namespace derpirc.ViewModels
                 if (_canViewAbout == value)
                     return;
 
-                var oldValue = _canViewAbout;
                 _canViewAbout = value;
+                DispatcherHelper.CheckBeginInvokeOnUI(() => ViewAboutCommand.RaiseCanExecuteChanged());
                 RaisePropertyChanged(() => CanViewAbout);
-                ViewAboutCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -156,10 +154,7 @@ namespace derpirc.ViewModels
         private readonly INavigationService _navigationService;
         public INavigationService NavigationService
         {
-            get
-            {
-                return this._navigationService;
-            }
+            get { return this._navigationService; }
         }
 
         private FrameworkElement _layoutRoot;
@@ -171,7 +166,6 @@ namespace derpirc.ViewModels
                 if (_layoutRoot == value)
                     return;
 
-                var oldValue = _layoutRoot;
                 _layoutRoot = value;
                 RaisePropertyChanged(() => LayoutRoot);
             }
@@ -186,9 +180,10 @@ namespace derpirc.ViewModels
                 if (_selectedChannel == value)
                     return;
 
-                var oldValue = _selectedChannel;
                 _selectedChannel = value;
                 RaisePropertyChanged(() => SelectedChannel);
+                if (SelectedChannel != null)
+                    SelectChannel();
             }
         }
 
@@ -204,9 +199,10 @@ namespace derpirc.ViewModels
                 if (_selectedMention == value)
                     return;
 
-                var oldValue = _selectedMention;
                 _selectedMention = value;
                 RaisePropertyChanged(() => SelectedMention);
+                if (SelectedMention != null)
+                    SelectMention();
             }
         }
 
@@ -222,9 +218,10 @@ namespace derpirc.ViewModels
                 if (_selectedMessage == value)
                     return;
 
-                var oldValue = _selectedMessage;
                 _selectedMessage = value;
                 RaisePropertyChanged(() => SelectedMessage);
+                if (SelectedMessage != null)
+                    SelectMessage();
             }
         }
 
@@ -261,7 +258,6 @@ namespace derpirc.ViewModels
                 if (_progressText == value)
                     return;
 
-                var oldValue = _progressText;
                 _progressText = value;
                 RaisePropertyChanged(() => ProgressText);
             }
@@ -285,6 +281,9 @@ namespace derpirc.ViewModels
             _channelsList = new ObservableCollection<ChannelViewModel>();
             _mentionsList = new ObservableCollection<MentionViewModel>();
             _messagesList = new ObservableCollection<MessageViewModel>();
+            Channels = new CollectionViewSource() { Source = _channelsList };
+            Mentions = new CollectionViewSource() { Source = _mentionsList };
+            Messages = new CollectionViewSource() { Source = _messagesList };
 
             if (IsInDesignMode)
             {
@@ -309,10 +308,6 @@ namespace derpirc.ViewModels
 
                 DeferStartup(null);
             }
-
-            Channels = new CollectionViewSource() { Source = _channelsList };
-            Mentions = new CollectionViewSource() { Source = _mentionsList };
-            Messages = new CollectionViewSource() { Source = _messagesList };
         }
 
         internal void DeferStartup(Action completed)
@@ -602,15 +597,10 @@ namespace derpirc.ViewModels
             //ApplicationState.ApplicationStartup = AppOpenState.None;
         }
 
-        private void OnNavigatedFrom()
+        private void OnNavigatedFrom(NavigationEventArgs eventArgs)
         {
             //Save required state in either the Phone Application service or Page Application service depending on the structure of your application.
             //Clear the flag indicating that the page constructor has been called.
-        }
-
-        public void LoadData()
-        {
-            this.IsDataLoaded = true;
         }
 
         private void ViewSettings()
@@ -640,9 +630,12 @@ namespace derpirc.ViewModels
             var uriString = string.Empty;
             if (SelectedChannel != null)
                 id = SelectedChannel.RecordId.ToString();
-            uriString = string.Format("/derpirc.Pages;component/Views/ChannelDetailView.xaml?id={0}", Uri.EscapeUriString(id));
-            var uri = new Uri(uriString, UriKind.Relative);
-            NavigationService.Navigate(uri);
+            if (!string.IsNullOrEmpty(id))
+            {
+                uriString = string.Format("/derpirc.Pages;component/Views/ChannelDetailView.xaml?id={0}", Uri.EscapeUriString(id));
+                var uri = new Uri(uriString, UriKind.Relative);
+                NavigationService.Navigate(uri);
+            }
         }
 
         private void SelectMention()
@@ -651,9 +644,12 @@ namespace derpirc.ViewModels
             var uriString = string.Empty;
             if (SelectedMention != null)
                 id = SelectedMention.RecordId.ToString();
-            uriString = string.Format("/derpirc.Pages;component/Views/MentionDetailView.xaml?id={0}", Uri.EscapeUriString(id));
-            var uri = new Uri(uriString, UriKind.Relative);
-            NavigationService.Navigate(uri);
+            if (!string.IsNullOrEmpty(id))
+            {
+                uriString = string.Format("/derpirc.Pages;component/Views/MentionDetailView.xaml?id={0}", Uri.EscapeUriString(id));
+                var uri = new Uri(uriString, UriKind.Relative);
+                NavigationService.Navigate(uri);
+            }
         }
 
         private void SelectMessage()
@@ -662,9 +658,19 @@ namespace derpirc.ViewModels
             var uriString = string.Empty;
             if (SelectedMessage != null)
                 id = SelectedMessage.RecordId.ToString();
-            uriString = string.Format("/derpirc.Pages;component/Views/MessageDetailView.xaml?id={0}", Uri.EscapeUriString(id));
-            var uri = new Uri(uriString, UriKind.Relative);
-            NavigationService.Navigate(uri);
+            if (!string.IsNullOrEmpty(id))
+            {
+                uriString = string.Format("/derpirc.Pages;component/Views/MessageDetailView.xaml?id={0}", Uri.EscapeUriString(id));
+                var uri = new Uri(uriString, UriKind.Relative);
+                NavigationService.Navigate(uri);
+            }
+        }
+
+        private void UnselectItem()
+        {
+            SelectedChannel = null;
+            SelectedMention = null;
+            SelectedMessage = null;
         }
 
         public void Send(ChannelItem message)

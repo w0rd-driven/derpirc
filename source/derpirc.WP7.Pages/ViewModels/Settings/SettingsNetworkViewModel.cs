@@ -9,6 +9,7 @@ using derpirc.Helpers;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
+using GalaSoft.MvvmLight.Threading;
 
 namespace derpirc.ViewModels
 {
@@ -30,31 +31,6 @@ namespace derpirc.ViewModels
                 _canAdd = value;
                 RaisePropertyChanged(() => CanAdd);
                 this.MessengerInstance.Send<NotificationMessage<bool>>(new NotificationMessage<bool>(this, "action", _canAdd, "add"));
-            }
-        }
-
-        private bool _canEdit;
-        public bool CanEdit
-        {
-            get { return _canEdit; }
-            set
-            {
-                if (_canEdit == value)
-                    return;
-
-                _canEdit = value;
-                EditCommand.RaiseCanExecuteChanged();
-                RaisePropertyChanged(() => CanEdit);
-            }
-        }
-
-        RelayCommand _editCommand;
-        public RelayCommand EditCommand
-        {
-            get
-            {
-                return _editCommand ?? (_editCommand =
-                    new RelayCommand(() => this.Edit(), () => this.CanEdit));
             }
         }
 
@@ -95,10 +71,7 @@ namespace derpirc.ViewModels
         private readonly INavigationService _navigationService;
         public INavigationService NavigationService
         {
-            get
-            {
-                return this._navigationService;
-            }
+            get { return this._navigationService; }
         }
 
         private ObservableCollection<Network> _networksList;
@@ -184,11 +157,6 @@ namespace derpirc.ViewModels
                 CanClear = true;
         }
 
-        private void Edit()
-        {
-            ViewDetails(SelectedItem);
-        }
-
         private void Add()
         {
             var count = SettingsUnitOfWork.Default.Networks.Count;
@@ -217,14 +185,11 @@ namespace derpirc.ViewModels
         {
             if (SelectedItem != null)
             {
-                CanEdit = true;
                 CanDelete = true;
+                ViewDetails(SelectedItem);
             }
             else
-            {
-                CanEdit = false;
                 CanDelete = false;
-            }
         }
 
         private void UnselectItem()
@@ -245,9 +210,12 @@ namespace derpirc.ViewModels
             var uriString = string.Empty;
             if (item != null)
                 id = item.Id.ToString();
-            uriString = string.Format("/derpirc.Pages;component/Views/NetworkDetailView.xaml?id={0}", Uri.EscapeUriString(id));
-            var uri = new Uri(uriString, UriKind.Relative);
-            NavigationService.Navigate(uri);
+            if (!string.IsNullOrEmpty(id))
+            {
+                uriString = string.Format("/derpirc.Pages;component/Views/NetworkDetailView.xaml?id={0}", Uri.EscapeUriString(id));
+                var uri = new Uri(uriString, UriKind.Relative);
+                NavigationService.Navigate(uri);
+            }
         }
 
         private void Save(bool commit)
