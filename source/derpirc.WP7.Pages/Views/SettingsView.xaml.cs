@@ -1,4 +1,7 @@
-﻿using System.Windows.Navigation;
+﻿using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Navigation;
+using derpirc.Data.Models.Settings;
 using derpirc.ViewModels;
 using Microsoft.Phone.Controls;
 
@@ -15,6 +18,7 @@ namespace derpirc.Views
         public SettingsView()
         {
             InitializeComponent();
+            TiltEffect.TiltableItems.Add(typeof(MenuItem)); 
         }
 
         SettingsViewModel viewModel { get { return this.DataContext as SettingsViewModel; } }
@@ -29,6 +33,17 @@ namespace derpirc.Views
         {
             base.OnNavigatedFrom(e);
             viewModel.NavigatedFromCommand.Execute(e);
+        }
+
+        private void DeleteNetworkItem_Click(object sender, RoutedEventArgs e)
+        {
+            var menuItem = (sender as MenuItem);
+            string header = menuItem.Header.ToString();
+
+            var listBoxItem = this.NetworksList.ItemContainerGenerator.ContainerFromItem(menuItem.DataContext) as ListBoxItem;
+            if (listBoxItem == null)
+                return;
+            viewModel.DeleteCommand.Execute(listBoxItem.DataContext as Network);
         }
     }
 }

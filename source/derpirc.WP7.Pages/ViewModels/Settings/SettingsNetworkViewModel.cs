@@ -7,9 +7,7 @@ using derpirc.Data;
 using derpirc.Data.Models.Settings;
 using derpirc.Helpers;
 using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
-using GalaSoft.MvvmLight.Threading;
 
 namespace derpirc.ViewModels
 {
@@ -31,21 +29,6 @@ namespace derpirc.ViewModels
                 _canAdd = value;
                 RaisePropertyChanged(() => CanAdd);
                 this.MessengerInstance.Send<NotificationMessage<bool>>(new NotificationMessage<bool>(this, "action", _canAdd, "add"));
-            }
-        }
-
-        private bool _canDelete;
-        public bool CanDelete
-        {
-            get { return _canDelete; }
-            set
-            {
-                if (_canDelete == value)
-                    return;
-
-                _canDelete = value;
-                RaisePropertyChanged(() => CanDelete);
-                this.MessengerInstance.Send<NotificationMessage<bool>>(new NotificationMessage<bool>(this, "action", _canDelete, "delete"));
             }
         }
 
@@ -101,6 +84,7 @@ namespace derpirc.ViewModels
         public SettingsNetworkViewModel(INavigationService navigationService)
         {
             _networksList = new ObservableCollection<Network>();
+            Networks = new CollectionViewSource() { Source = _networksList };
 
             CanAdd = true;
 
@@ -113,7 +97,7 @@ namespace derpirc.ViewModels
                 // Code runs "for real": Connect to service, etc...
                 _navigationService = navigationService;
 
-                this.MessengerInstance.Register<NotificationMessage>(this, "Network", message =>
+                this.MessengerInstance.Register<NotificationMessage<Network>>(this, "Network", message =>
                 {
                     var target = message.Target as string;
                     switch (message.Notification)
@@ -125,7 +109,7 @@ namespace derpirc.ViewModels
                             this.Add();
                             break;
                         case "delete":
-                            this.Delete(SelectedItem);
+                            this.Delete(message.Content);
                             break;
                         case "clear":
                             this.Clear();
@@ -141,8 +125,6 @@ namespace derpirc.ViewModels
 
                 Load();
             }
-
-            Networks = new CollectionViewSource() { Source = _networksList };
         }
 
         private void Load()
@@ -167,6 +149,7 @@ namespace derpirc.ViewModels
             _addingRecord.HostName = "newnetwork";
             _addingRecord.Ports = "6667";
             SettingsUnitOfWork.Default.Networks.Add(_addingRecord);
+            CanAdd = false;
             ViewDetails(_addingRecord);
         }
 
@@ -184,12 +167,7 @@ namespace derpirc.ViewModels
         private void SelectItem()
         {
             if (SelectedItem != null)
-            {
-                CanDelete = true;
                 ViewDetails(SelectedItem);
-            }
-            else
-                CanDelete = false;
         }
 
         private void UnselectItem()
@@ -200,6 +178,7 @@ namespace derpirc.ViewModels
                 SettingsUnitOfWork.Default.Networks.Remove(_addingRecord);
                 _networksList.Add(_addingRecord);
                 _addingRecord = null;
+                CanAdd = true;
             }
             this.SelectedItem = null;
         }

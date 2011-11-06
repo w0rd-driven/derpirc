@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Navigation;
+using derpirc.Data.Models.Settings;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
@@ -87,28 +88,13 @@ namespace derpirc.ViewModels
             }
         }
 
-        private bool _canDelete;
-        public bool CanDelete
-        {
-            get { return _canDelete; }
-            set
-            {
-                if (_canDelete == value)
-                    return;
-
-                _canDelete = value;
-                DispatcherHelper.CheckBeginInvokeOnUI(() => DeleteCommand.RaiseCanExecuteChanged());
-                RaisePropertyChanged(() => CanDelete);
-            }
-        }
-
-        RelayCommand _deleteCommand;
-        public RelayCommand DeleteCommand
+        RelayCommand<Network> _deleteCommand;
+        public RelayCommand<Network> DeleteCommand
         {
             get
             {
                 return _deleteCommand ?? (_deleteCommand =
-                    new RelayCommand(() => this.Delete(), () => this.CanDelete));
+                    new RelayCommand<Network>(network => this.Delete(network)));
             }
         }
 
@@ -194,9 +180,6 @@ namespace derpirc.ViewModels
                             case "add":
                                 CanAdd = message.Content;
                                 break;
-                            case "delete":
-                                CanDelete = message.Content;
-                                break;
                             case "clear":
                                 CanClear = message.Content;
                                 break;
@@ -254,27 +237,27 @@ namespace derpirc.ViewModels
 
         private void UnselectItem()
         {
-            this.MessengerInstance.Send(new NotificationMessage("unselect"), "Network");
+            this.MessengerInstance.Send(new NotificationMessage<Network>(null, "unselect"), "Network");
         }
 
         private void Save()
         {
-            this.MessengerInstance.Send(new NotificationMessage("save"), "Save");
+            this.MessengerInstance.Send(new NotificationMessage<Network>(null, "save"), "Save");
         }
 
         private void Add()
         {
-            this.MessengerInstance.Send(new NotificationMessage("add"), "Network");
+            this.MessengerInstance.Send(new NotificationMessage<Network>(null, "add"), "Network");
         }
 
-        private void Delete()
+        private void Delete(Network item)
         {
-            this.MessengerInstance.Send(new NotificationMessage("delete"), "Network");
+            this.MessengerInstance.Send(new NotificationMessage<Network>(item, "delete"), "Network");
         }
 
         private void Clear()
         {
-            this.MessengerInstance.Send(new NotificationMessage("clear"), "Network");
+            this.MessengerInstance.Send(new NotificationMessage<Network>(null, "clear"), "Network");
         }
 
         public override void Cleanup()

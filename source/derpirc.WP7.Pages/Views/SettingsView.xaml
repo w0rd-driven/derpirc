@@ -10,7 +10,7 @@
                             xmlns:blend="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
                             xmlns:command="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Extras.WP71"
                             xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
-                            xmlns:appbarutils="clr-namespace:AppBarUtils;assembly=AppBarUtils" 
+                            xmlns:appbarutils="clr-namespace:AppBarUtils;assembly=AppBarUtils"
                             FontFamily="{StaticResource PhoneFontFamilyNormal}"
                             FontSize="{StaticResource PhoneFontSizeNormal}"
                             Foreground="{StaticResource PhoneForegroundBrush}"
@@ -19,7 +19,7 @@
                             shell:SystemTray.IsVisible="True"
                             toolkit:TiltEffect.IsTiltEnabled="True"
                             DataContext="{Binding SettingsViewModel, Source={StaticResource Locator}}">
-
+    
     <Grid x:Name="LayoutRoot" Background="Transparent">
         <blend:Interaction.Triggers>
             <blend:EventTrigger EventName="Loaded">
@@ -72,7 +72,15 @@
                          Margin="0,0,-12,0" ItemContainerStyle="{StaticResource SmallPivotListBoxStyle}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding Name}" FontSize="{StaticResource PhoneFontSizeLarge}" />
+                            <Grid>
+                                <toolkit:ContextMenuService.ContextMenu>
+                                    <toolkit:ContextMenu x:Name="NetworksContextMenu">
+                                        <toolkit:MenuItem Header="delete" Click="DeleteNetworkItem_Click">
+                                        </toolkit:MenuItem>
+                                    </toolkit:ContextMenu>
+                                </toolkit:ContextMenuService.ContextMenu>
+                                <TextBlock Text="{Binding Name}" FontSize="{StaticResource PhoneFontSizeLarge}" />
+                            </Grid>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
@@ -88,7 +96,6 @@
         <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True">
             <shell:ApplicationBar.Buttons>
                 <shell:ApplicationBarIconButton IconUri="/Icons/appbar.add.png" Text="add" />
-                <shell:ApplicationBarIconButton IconUri="/Icons/appbar.delete.png" Text="delete" />
             </shell:ApplicationBar.Buttons>
             <shell:ApplicationBar.MenuItems>
                 <shell:ApplicationBarMenuItem Text="clear" />
@@ -97,12 +104,10 @@
     </phone:PhoneApplicationPage.ApplicationBar>
     <blend:Interaction.Behaviors>
         <appbarutils:AppBarItemCommand Type="Button" Id="add" Command="{Binding AddCommand}" />
-        <appbarutils:AppBarItemCommand Type="Button" Id="delete" Command="{Binding DeleteCommand}" />
         <appbarutils:AppBarItemCommand Type="MenuItem" Id="clear" Command="{Binding ClearCommand}" />
     </blend:Interaction.Behaviors>
     <blend:Interaction.Triggers>
         <appbarutils:AppBarItemTrigger Type="Button" Id="add" Text="add" IsEnabled="{Binding CanAdd}" />
-        <appbarutils:AppBarItemTrigger Type="Button" Id="delete" Text="delete" IsEnabled="{Binding CanDelete}" />
         <appbarutils:AppBarItemTrigger Type="MenuItem" Id="clear" Text="clear" IsEnabled="{Binding CanClear}" />
         <appbarutils:AppBarTrigger IsVisible="{Binding IsAppBarVisible}" />
     </blend:Interaction.Triggers>
