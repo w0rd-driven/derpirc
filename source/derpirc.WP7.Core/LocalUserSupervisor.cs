@@ -10,6 +10,7 @@ namespace derpirc.Core
     {
         private bool _isDisposed;
 
+        private IrcClientSupervisor _clientSupervisor;
         private DataUnitOfWork _unitOfWork;
 
         public event EventHandler<ChannelStatusEventArgs> ChannelJoined;
@@ -18,8 +19,9 @@ namespace derpirc.Core
         public event EventHandler<MessageItemEventArgs> MentionItemReceived;
         public event EventHandler<MessageItemEventArgs> MessageItemReceived;
 
-        public LocalUserSupervisor(DataUnitOfWork unitOfWork)
+        public LocalUserSupervisor(IrcClientSupervisor clientSupervisor, DataUnitOfWork unitOfWork)
         {
+            this._clientSupervisor = clientSupervisor;
             this._unitOfWork = unitOfWork;
         }
 
@@ -352,53 +354,63 @@ namespace derpirc.Core
 
         private Channel GetChannel(IrcClient client, string channelName)
         {
-            var network = SupervisorFacade.Default.GetNetworkByClient(client);
-            if (network != null)
+            Channel result = null;
+            // If _clientSupervisor is ever null we have huge problems but check anyway
+            if (_clientSupervisor != null)
             {
-                var result = network.Channels.FirstOrDefault(x => x.Name == channelName.ToLower());
-                if (result == null)
+                var network = _clientSupervisor.GetNetworkByClient(client);
+                if (network != null)
                 {
-                    result = new Channel() { Name = channelName };
-                    network.Channels.Add(result);
-                    this._unitOfWork.Commit();
+                    result = network.Channels.FirstOrDefault(x => x.Name == channelName.ToLower());
+                    if (result == null)
+                    {
+                        result = new Channel() { Name = channelName };
+                        network.Channels.Add(result);
+                        this._unitOfWork.Commit();
+                    }
                 }
-                return result;
             }
-            return null;
+            return result;
         }
 
         private Mention GetMention(IrcClient client, string channelName, string nickName)
         {
-            var network = SupervisorFacade.Default.GetNetworkByClient(client);
-            if (network != null)
+            Mention result = null;
+            if (_clientSupervisor != null)
             {
-                var result = network.Mentions.FirstOrDefault(x => x.Name == nickName.ToLower());
-                if (result == null)
+                var network = _clientSupervisor.GetNetworkByClient(client);
+                if (network != null)
                 {
-                    result = new Mention() { Name = nickName, ChannelName = channelName };
-                    network.Mentions.Add(result);
-                    this._unitOfWork.Commit();
+                    result = network.Mentions.FirstOrDefault(x => x.Name == nickName.ToLower());
+                    if (result == null)
+                    {
+                        result = new Mention() { Name = nickName, ChannelName = channelName };
+                        network.Mentions.Add(result);
+                        this._unitOfWork.Commit();
+                    }
                 }
-                return result;
             }
-            return null;
+            return result;
         }
 
         private Message GetMessage(IrcClient client, string nickName)
         {
-            var network = SupervisorFacade.Default.GetNetworkByClient(client);
-            if (network != null)
+            Message result = null;
+            if (_clientSupervisor != null)
             {
-                var result = network.Messages.FirstOrDefault(x => x.Name == nickName.ToLower());
-                if (result == null)
+                var network = _clientSupervisor.GetNetworkByClient(client);
+                if (network != null)
                 {
-                    result = new Message() { Name = nickName };
-                    network.Messages.Add(result);
-                    this._unitOfWork.Commit();
+                    result = network.Messages.FirstOrDefault(x => x.Name == nickName.ToLower());
+                    if (result == null)
+                    {
+                        result = new Message() { Name = nickName };
+                        network.Messages.Add(result);
+                        this._unitOfWork.Commit();
+                    }
                 }
-                return result;
             }
-            return null;
+            return result;
         }
 
         private string GetMentionText(string name, string message)

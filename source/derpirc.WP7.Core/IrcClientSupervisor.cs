@@ -406,6 +406,9 @@ namespace derpirc.Core
                 UpdateState(client, ClientState.Processed, null);
                 var networkName = this.ParseNetworkName(client.WelcomeMessage);
                 var matchedNetwork = this.GetNetworkByName(networkName);
+                // Contingency to brute force join whatever channels are defined for this network
+                if (matchedNetwork == null)
+                    matchedNetwork = this.GetNetworkByClient(client);
                 this.JoinSession(matchedNetwork, client);
 
                 // Change local servername to match for easy reconnects

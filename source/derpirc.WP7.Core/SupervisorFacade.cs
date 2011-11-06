@@ -293,11 +293,6 @@ namespace derpirc.Core
             return result;
         }
 
-        public Network GetNetworkByClient(IrcClient client)
-        {
-            return _clientSupervisor.GetNetworkByClient(client);
-        }
-
         public ClientItem GetClientByIrcClient(IrcClient client)
         {
             ClientItem result = null;
@@ -316,7 +311,7 @@ namespace derpirc.Core
         {
             if (this._luserSupervisor == null)
             {
-                this._luserSupervisor = new LocalUserSupervisor(_unitOfWork);
+                this._luserSupervisor = new LocalUserSupervisor(_clientSupervisor, _unitOfWork);
                 this._luserSupervisor.ChannelJoined += this.OnChannelSupervisor_ChannelJoined;
                 this._luserSupervisor.ChannelLeft += this.OnChannelSupervisor_ChannelLeft;
                 this._luserSupervisor.ChannelItemReceived += this.OnChannelSupervisor_MessageReceived;
