@@ -59,7 +59,6 @@ namespace derpirc.Core
                 {
                     var item = SettingsUnitOfWork.Default.Networks[index];
                     var client = this.InitializeClientItem();
-                    client.Info.Id = index + 1;
                     client.Info.NetworkName = item.Name;
                     SupervisorFacade.Default.Clients.Add(client);
                 }
@@ -83,7 +82,7 @@ namespace derpirc.Core
                 var session = this.GetDefaultSession();
                 if (session != null)
                 {
-                    this.Connect();
+                    this.Reconnect(true);
                 }
             }
         }
@@ -104,24 +103,24 @@ namespace derpirc.Core
             var clients = SupervisorFacade.Default.Clients.AsEnumerable();
             foreach (var item in clients)
             {
-                if (item.Client == null)
-                {
-                    item.Client = InitializeIrcClient();
-                    item.CtcpClient = InitializeCtcpClient(item.Client);
-                }
-                this.Connect(item.Client);
+                this.Connect(item);
             }
         }
 
-        private void Connect(IrcClient client)
+        private void Connect(ClientItem item)
         {
             // TODO: SmartMonitor
-            var network = this.GetNetworkByClient(client);
-            if (network != null && client != null)
+            if (item.Client == null)
+            {
+                item.Client = InitializeIrcClient();
+                item.CtcpClient = InitializeCtcpClient(item.Client);
+            }
+            var network = this.GetNetworkByClient(item.Client);
+            if (network != null && item.Client != null)
             {
                 var registrationData = GetRegistrationInfo();
                 if (registrationData != null)
-                    client.Connect(network.HostName, this.GetServerPort(network), false, registrationData);
+                    item.Client.Connect(network.HostName, this.GetServerPort(network), false, registrationData);
             }
         }
 
@@ -138,11 +137,14 @@ namespace derpirc.Core
         {
             try
             {
-                var isConnected = item.Client.IsConnected;
-                if (isConnected)
+                if (item.Client != null)
                 {
-                    item.Client.Quit(this._quitTimeout, SettingsUnitOfWork.Default.User.QuitMessage);
-                    Thread.Sleep(_quitTimeout);
+                    var isConnected = item.Client.IsConnected;
+                    if (isConnected)
+                    {
+                        item.Client.Quit(this._quitTimeout, SettingsUnitOfWork.Default.User.QuitMessage);
+                        Thread.Sleep(_quitTimeout);
+                    }
                 }
             }
             catch (Exception exception)
@@ -151,35 +153,30 @@ namespace derpirc.Core
             }
             finally
             {
-                var newClient = InitializeIrcClient();
-                var newCtcpClient = InitializeCtcpClient(newClient);
-                SupervisorFacade.Default.UpdateClient(item, newCtcpClient);
+                if (item.Client != null)
+                {
+                    item.Client.Dispose();
+                    item.Client = null;
+                }
             }
         }
 
         public void Reconnect(bool force = false)
         {
-            try
-            {
-                var clients = SupervisorFacade.Default.Clients.AsEnumerable();
-                if (!force)
-                    clients = clients.Where(x => !x.Client.IsConnected);
+            var clients = SupervisorFacade.Default.Clients.AsEnumerable();
+            if (!force)
+                clients = clients.Where(x => !x.Client.IsConnected);
 
-                foreach (var item in clients)
-                {
-                    Reconnect(item);
-                }
-            }
-            catch (Exception exception)
+            foreach (var item in clients)
             {
-                // HACK: IrcClient.IsDisposed snafu
+                Reconnect(item);
             }
         }
 
         public void Reconnect(ClientItem item)
         {
             this.Disconnect(item);
-            this.Connect(item.Client);
+            this.Connect(item);
         }
 
         public void SetNickName(IMessage target, string nickName)
@@ -513,24 +510,20 @@ namespace derpirc.Core
 
         public Network GetNetworkByName(string networkName)
         {
-            Network result;
+            Network result = null;
             var session = GetDefaultSession();
             if (session != null)
                 result = session.Networks.FirstOrDefault(x => x.Name == networkName.ToLower());
-            else
-                result = null;
             return result;
         }
 
         public Network GetNetworkByClient(IrcClient client)
         {
-            Network result;
+            Network result = null;
             var session = GetDefaultSession();
             var foundClient = SupervisorFacade.Default.GetClientByIrcClient(client);
             if (session != null && foundClient != null)
-                result = session.Networks.FirstOrDefault(x => x.Id == foundClient.Info.Id);
-            else
-                result = null;
+                result = session.Networks.FirstOrDefault(x => x.Name == foundClient.Info.NetworkName);
             return result;
         }
 

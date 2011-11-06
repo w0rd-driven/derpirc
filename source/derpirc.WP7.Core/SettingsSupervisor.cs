@@ -44,8 +44,6 @@ namespace derpirc.Core
                     foundNetwork = CreateNetwork(defaultSession, network);
                 else
                 {
-                    foundNetwork.Name = network.Name;
-                    foundNetwork.DisplayName = network.DisplayName;
                     foundNetwork.HostName = network.HostName;
                     foundNetwork.Ports = network.Ports;
                     foundNetwork.Password = network.Password;
@@ -57,7 +55,6 @@ namespace derpirc.Core
                         CreateFavorite(foundNetwork, favorite);
                     else
                     {
-                        foundFavorite.Name = favorite.Name;
                         foundFavorite.IsAutoConnect = favorite.IsAutoConnect;
                         foundFavorite.Password = favorite.Password;
                     }

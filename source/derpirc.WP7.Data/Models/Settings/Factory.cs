@@ -13,7 +13,7 @@ namespace derpirc.Data.Models.Settings
             return result;
         }
 
-        public static List<Network> CreateNetworks()
+        private static List<Network> CreateNetworks()
         {
             var result = new List<Network>();
 
@@ -45,14 +45,23 @@ namespace derpirc.Data.Models.Settings
             result.Add(item1);
             var item2 = new Network()
             {
+                DisplayName = "Freenode",
+                Name = "Freenode",
+                HostName = "irc.freenode.net",
+                Ports = "6667",
+            };
+            item2.Favorites.Add(channel1);
+            result.Add(item2);
+            var item3 = new Network()
+            {
                 DisplayName = "PowerPrecision",
                 Name = "PowerPrecision",
                 HostName = "irc.node-3.net",
                 Ports = "6667",
             };
-            item2.Favorites.Add(channel2);
-            item2.Favorites.Add(channel3);
-            result.Add(item2);
+            item3.Favorites.Add(channel2);
+            item3.Favorites.Add(channel3);
+            result.Add(item3);
 
             return result;
         }

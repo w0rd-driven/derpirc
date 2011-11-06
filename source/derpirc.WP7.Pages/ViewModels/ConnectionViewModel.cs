@@ -289,28 +289,24 @@ namespace derpirc.ViewModels
                 // Code runs in Blend --> create design time data.
                 _connectionsList.Add(new ClientInfo()
                 {
-                    Id = 1,
                     NetworkName = "clefnet",
                     State = ClientState.Connected,
                     Error = new Exception("This is a test."),
                 });
                 _connectionsList.Add(new ClientInfo()
                 {
-                    Id = 2,
                     NetworkName = "peenode",
                     State = ClientState.Processed,
                     Error = new Exception("This is only a test."),
                 });
                 _connectionsList.Add(new ClientInfo()
                 {
-                    Id = 3,
                     NetworkName = "palnet",
                     State = ClientState.Disconnected,
                     Error = new Exception("If this were an actual emergency, you'd be given a bunch of instructions herpderp."),
                 });
                 _connectionsList.Add(new ClientInfo()
                 {
-                    Id = 4,
                     NetworkName = "urmom",
                     State = ClientState.Intervention,
                 });
@@ -431,7 +427,7 @@ namespace derpirc.ViewModels
 
         private void AddOrUpdate(ClientInfo client)
         {
-            var foundClient = _connectionsList.FirstOrDefault(x => x.Id == client.Id);
+            var foundClient = _connectionsList.FirstOrDefault(x => x.NetworkName == client.NetworkName);
             if (foundClient == null)
             {
                 // Wait for Collection/PropertyChanged event

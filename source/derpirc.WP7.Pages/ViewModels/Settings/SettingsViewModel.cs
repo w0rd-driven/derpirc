@@ -242,7 +242,7 @@ namespace derpirc.ViewModels
 
         private void Save()
         {
-            this.MessengerInstance.Send(new NotificationMessage<Network>(null, "save"), "Save");
+            this.MessengerInstance.Send(new NotificationMessage("save"), "Save");
         }
 
         private void Add()

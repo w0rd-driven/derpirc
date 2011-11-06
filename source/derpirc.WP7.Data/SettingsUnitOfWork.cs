@@ -33,7 +33,7 @@ namespace derpirc.Data
         private List<Network> _networks;
         public List<Network> Networks
         {
-            get { return _networks ?? (_networks = GetValueOrDefault<List<Network>>(_networksKeyName, Factory.CreateNetworks())); }
+            get { return _networks ?? (_networks = GetValueOrDefault<List<Network>>(_networksKeyName, Factory.CreateSession().Networks)); }
             set
             {
                 if (AddOrUpdateValue(_networksKeyName, value))

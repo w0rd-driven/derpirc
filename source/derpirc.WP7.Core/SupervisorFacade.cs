@@ -239,51 +239,57 @@ namespace derpirc.Core
 
         public IrcLocalUser GetLocalUserBySummary(IMessage summary)
         {
-            var result = (from client in this._clients
-                          where client.Info.Id == summary.NetworkId
-                          select client.Client.LocalUser).FirstOrDefault();
+            IrcLocalUser result = null;
+            result = (from client in this._clients
+                      where client.Info.NetworkName == summary.Network.Name
+                      select client.Client.LocalUser).FirstOrDefault();
             return result;
         }
 
         public IrcChannel GetIrcChannelBySummary(IMessage summary)
         {
-            var result = (from client in this._clients
-                          from channel in client.Client.Channels
-                          where client.Info.Id == summary.NetworkId
-                          where channel.Name == summary.Name
-                          select channel).FirstOrDefault();
+            IrcChannel result = null;
+            result = (from client in this._clients
+                      from channel in client.Client.Channels
+                      where client.Info.NetworkName == summary.Network.Name
+                      where channel.Name == summary.Name
+                      select channel).FirstOrDefault();
             return result;
         }
 
         public IrcClient GetIrcClientBySummary(IMessage summary)
         {
-            var result = (from client in this._clients
-                          where client.Info.Id == summary.NetworkId
-                          select client.Client).FirstOrDefault();
-            return result;
-        }
-
-        public ClientItem GetClientByClientInfo(ClientInfo summary)
-        {
-            var result = (from client in this._clients
-                          where client.Info.Id == summary.Id
-                          select client).FirstOrDefault();
-            return result;
-        }
-
-        public IrcClient GetIrcClientByClientInfo(ClientInfo summary)
-        {
-            var result = (from client in this._clients
-                          where client.Info.Id == summary.Id
-                          select client.Client).FirstOrDefault();
+            IrcClient result = null;
+            result = (from client in this._clients
+                      where client.Info.NetworkName == summary.Network.Name
+                      select client.Client).FirstOrDefault();
             return result;
         }
 
         public CtcpClient GetCtcpClientBySummary(IMessage summary)
         {
-            var result = (from client in this._clients
-                          where client.Info.Id == summary.NetworkId
-                          select client.CtcpClient).FirstOrDefault();
+            CtcpClient result = null;
+            result = (from client in this._clients
+                      where client.Info.NetworkName == summary.Network.Name
+                      select client.CtcpClient).FirstOrDefault();
+            return result;
+        }
+
+        public ClientItem GetClientByClientInfo(ClientInfo summary)
+        {
+            ClientItem result = null;
+            result = (from client in this._clients
+                      where client.Info.NetworkName == summary.NetworkName
+                      select client).FirstOrDefault();
+            return result;
+        }
+
+        public IrcClient GetIrcClientByClientInfo(ClientInfo summary)
+        {
+            IrcClient result = null;
+            result = (from client in this._clients
+                      where client.Info.NetworkName == summary.NetworkName
+                      select client.Client).FirstOrDefault();
             return result;
         }
 
@@ -294,9 +300,13 @@ namespace derpirc.Core
 
         public ClientItem GetClientByIrcClient(IrcClient client)
         {
-            var result = (from clientItem in this._clients
+            ClientItem result = null;
+            if (client != null)
+            {
+                result = (from clientItem in this._clients
                           where clientItem.Client == client
                           select clientItem).FirstOrDefault();
+            }
             return result;
         }
 
@@ -312,24 +322,6 @@ namespace derpirc.Core
                 this._luserSupervisor.ChannelItemReceived += this.OnChannelSupervisor_MessageReceived;
                 this._luserSupervisor.MentionItemReceived += this.OnChannelSupervisor_MentionReceived;
                 this._luserSupervisor.MessageItemReceived += this.OnMessageSupervisor_MessageReceived;
-            }
-        }
-
-        public void UpdateClient(ClientItem client, CtcpClient newClient)
-        {
-            var foundClient = this.Clients.Where(x => x.Info.Id == client.Info.Id).FirstOrDefault();
-            if (foundClient != null)
-            {
-                if (foundClient.Client != null)
-                {
-                    foundClient.Client.Dispose();
-                    foundClient.Client = null;
-                }
-                if (newClient != null)
-                {
-                    foundClient.CtcpClient = newClient;
-                    foundClient.Client = newClient.IrcClient;
-                }
             }
         }
 
