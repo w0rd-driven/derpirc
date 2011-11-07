@@ -283,6 +283,7 @@ namespace derpirc.ViewModels
         public ConnectionViewModel()
         {
             _connectionsList = new ObservableCollection<ClientInfo>();
+            Connections = new CollectionViewSource() { Source = _connectionsList };
 
             if (IsInDesignMode)
             {
@@ -322,8 +323,6 @@ namespace derpirc.ViewModels
 
                 DeferStartup(null);
             }
-
-            Connections = new CollectionViewSource() { Source = _connectionsList };
         }
 
         internal void DeferStartup(Action completed)
@@ -428,23 +427,28 @@ namespace derpirc.ViewModels
 
         private void AddOrUpdate(ClientInfo client)
         {
-            var foundClient = _connectionsList.FirstOrDefault(x => x.NetworkName == client.NetworkName);
-            if (foundClient == null)
+            DispatcherHelper.CheckBeginInvokeOnUI(() =>
             {
-                // Wait for Collection/PropertyChanged event
-                _connectionsList.Add(client);
-            }
-            else
-                foundClient = client;
-
-            DispatcherHelper.CheckBeginInvokeOnUI(() => Connections.View.Refresh());
+                var foundClient = _connectionsList.FirstOrDefault(x => x.NetworkName == client.NetworkName);
+                if (foundClient == null)
+                {
+                    // Wait for Collection/PropertyChanged event
+                    _connectionsList.Add(client);
+                }
+                else
+                    foundClient = client;
+                Connections.View.Refresh();
+            });
         }
 
         private void Remove(ClientInfo client)
         {
-            if (_connectionsList.Contains(client))
-                _connectionsList.Remove(client);
-            DispatcherHelper.CheckBeginInvokeOnUI(() => Connections.View.Refresh());
+            DispatcherHelper.CheckBeginInvokeOnUI(() =>
+            {
+                if (_connectionsList.Contains(client))
+                    _connectionsList.Remove(client);
+                Connections.View.Refresh();
+            });
         }
 
         private void OnNetworkStatusChanged(NetworkStatusEventArgs e)

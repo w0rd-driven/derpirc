@@ -19,10 +19,10 @@ namespace derpirc.Views
 
         AboutViewModel viewModel { get { return this.DataContext as AboutViewModel; } }
 
-        protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
+        protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            viewModel.NavigatedToCommand.Execute(NavigationContext.QueryString);
+            viewModel.NavigatedToCommand.Execute(e);
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)

@@ -42,6 +42,7 @@ namespace derpirc.Core
         public IrcClientSupervisor(DataUnitOfWork unitOfWork)
         {
             this._unitOfWork = unitOfWork;
+            NetworkDetector.Default.OnStatusChanged += this.Network_OnStatusChanged;
             ThreadPool.QueueUserWorkItem((object userState) =>
             {
                 Startup(userState);
@@ -52,16 +53,7 @@ namespace derpirc.Core
         {
             lock (this._threadLock)
             {
-                // Build Client list based on settings
                 NetworkDetector.Default.SetNetworkPolling();
-                NetworkDetector.Default.OnStatusChanged += this.Network_OnStatusChanged;
-                for (int index = 0; index < SettingsUnitOfWork.Default.Networks.Count; index++)
-                {
-                    var item = SettingsUnitOfWork.Default.Networks[index];
-                    var client = this.InitializeClientItem();
-                    client.Info.NetworkName = item.Name;
-                    SupervisorFacade.Default.Clients.Add(client);
-                }
             }
         }
 
@@ -79,6 +71,16 @@ namespace derpirc.Core
             {
                 // Do work
                 IsNetworkAvailable = true;
+                if (SupervisorFacade.Default.Clients.Count == 0)
+                {
+                    for (int index = 0; index < SettingsUnitOfWork.Default.Networks.Count; index++)
+                    {
+                        var item = SettingsUnitOfWork.Default.Networks[index];
+                        var client = this.InitializeClientItem();
+                        client.Info.NetworkName = item.Name;
+                        SupervisorFacade.Default.Clients.Add(client);
+                    }
+                }
                 var session = this.GetDefaultSession();
                 if (session != null)
                 {
@@ -93,6 +95,7 @@ namespace derpirc.Core
             {
                 // Do work
                 IsNetworkAvailable = false;
+                SupervisorFacade.Default.Clients.Clear();
             }
         }
 
