@@ -1,8 +1,8 @@
-﻿using Funq;
-using derpirc.ViewModels;
-using derpirc.Helpers;
-using System;
+﻿using System;
 using System.Windows;
+using derpirc.Helpers;
+using derpirc.ViewModels;
+using Funq;
 
 namespace derpirc
 {

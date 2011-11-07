@@ -11,6 +11,8 @@ namespace derpirc
     public partial class App : Application
     {
         private NetworkDetector _networkDetector;
+        private SupervisorFacade _supervisorFacade;
+
         /// <summary>
         /// Provides easy access to the root frame of the Phone Application.
         /// </summary>
@@ -59,6 +61,7 @@ namespace derpirc
             //Save the event type for later reference by the application.
             //ApplicationState.ApplicationStartup = AppOpenState.Launching;
             _networkDetector = NetworkDetector.Default;
+            _supervisorFacade = SupervisorFacade.Default;
         }
 
         // Code to execute when the application is activated (brought to foreground)
@@ -68,7 +71,12 @@ namespace derpirc
             //Save the event type for later reference by the application.
             //ApplicationState.ApplicationStartup = AppOpenState.Activated;
             // Ensure that application state is restored appropriately
+            if (e.IsApplicationInstancePreserved)
+            {
+                // No tombstonehomo
+            }
             _networkDetector = NetworkDetector.Default;
+            _supervisorFacade = SupervisorFacade.Default;
         }
 
         // Code to execute when the application is deactivated (sent to background)

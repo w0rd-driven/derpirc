@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Navigation;
+using derpirc.Core;
 using derpirc.Data;
 using derpirc.Data.Models;
 using derpirc.Helpers;
@@ -268,7 +269,7 @@ namespace derpirc.ViewModels
         private object _threadLock = new object();
         private DataUnitOfWork _unitOfWork;
         private BackgroundWorker _worker;
-        private Core.SupervisorFacade _supervisor;
+        private SupervisorFacade _supervisor;
 
         private DateTime _lastRefreshChannels;
         private DateTime _lastRefreshMentions;
@@ -284,6 +285,9 @@ namespace derpirc.ViewModels
             Channels = new CollectionViewSource() { Source = _channelsList };
             Mentions = new CollectionViewSource() { Source = _mentionsList };
             Messages = new CollectionViewSource() { Source = _messagesList };
+            _lastRefreshChannels = DateTime.MinValue;
+            _lastRefreshMentions = DateTime.MinValue;
+            _lastRefreshMessages = DateTime.MinValue;
 
             if (IsInDesignMode)
             {
@@ -326,31 +330,12 @@ namespace derpirc.ViewModels
                 //    ApplicationState.Favorites =
                 //        FavoriteCollection.LoadFromFile() ?? new FavoriteCollection();
 
-                _supervisor = Core.SupervisorFacade.Default;
-                _supervisor.ChannelJoined += new EventHandler<Core.ChannelStatusEventArgs>(_sessionSupervisor_ChannelJoined);
-                _supervisor.ChannelLeft += new EventHandler<Core.ChannelStatusEventArgs>(_sessionSupervisor_ChannelLeft);
-                _supervisor.ChannelItemReceived += new EventHandler<Core.MessageItemEventArgs>(_sessionSupervisor_ChannelItemReceived);
-                _supervisor.MentionItemReceived += new EventHandler<Core.MessageItemEventArgs>(_sessionSupervisor_MentionItemReceived);
-                _supervisor.MessageItemReceived += new EventHandler<Core.MessageItemEventArgs>(_sessionSupervisor_MessageItemReceived);
-
-                this.MessengerInstance.Register<GenericMessage<ChannelItem>>(this, message =>
-                {
-                    var target = message.Target as string;
-                    if (target == "out")
-                        Send(message.Content);
-                });
-                this.MessengerInstance.Register<GenericMessage<MentionItem>>(this, message =>
-                {
-                    var target = message.Target as string;
-                    if (target == "out")
-                        Send(message.Content);
-                });
-                this.MessengerInstance.Register<GenericMessage<MessageItem>>(this, message =>
-                {
-                    var target = message.Target as string;
-                    if (target == "out")
-                        Send(message.Content);
-                });
+                _supervisor = SupervisorFacade.Default;
+                _supervisor.ChannelJoined += this._sessionSupervisor_ChannelJoined;
+                _supervisor.ChannelLeft += this._sessionSupervisor_ChannelLeft;
+                _supervisor.ChannelItemReceived += this._sessionSupervisor_ChannelItemReceived;
+                _supervisor.MentionItemReceived += this._sessionSupervisor_MentionItemReceived;
+                _supervisor.MessageItemReceived += this._sessionSupervisor_MessageItemReceived;
 
                 LoadInitialView();
             }
@@ -408,17 +393,14 @@ namespace derpirc.ViewModels
                 {
                     // TODO: Handle Topic, UnreadCount, making subsequent LoadById's moot
                     foundItem.LoadById(e.SummaryId);
-                    var newMessage = DataUnitOfWork.Default.ChannelItems.FindById(e.MessageId);
+                    var newMessage = _unitOfWork.ChannelItems.FindById(e.MessageId);
                     if (newMessage != null)
-                    {
                         foundItem.LoadLastMessage(newMessage);
-                        this.MessengerInstance.Send(new GenericMessage<ChannelItem>(this, "in", newMessage));
-                    }
                 });
             }
         }
 
-        void _sessionSupervisor_MentionItemReceived(object sender, Core.MessageItemEventArgs e)
+        void _sessionSupervisor_MentionItemReceived(object sender, MessageItemEventArgs e)
         {
             var foundItem = _mentionsList.Where(x => x.RecordId == e.SummaryId).FirstOrDefault();
             if (foundItem == null)
@@ -437,17 +419,14 @@ namespace derpirc.ViewModels
                 {
                     // TODO: Handle Topic, UnreadCount, making subsequent LoadById's moot
                     foundItem.LoadById(e.SummaryId);
-                    var newMessage = DataUnitOfWork.Default.MentionItems.FindById(e.MessageId);
+                    var newMessage = _unitOfWork.MentionItems.FindById(e.MessageId);
                     if (newMessage != null)
-                    {
                         foundItem.LoadLastMessage(newMessage);
-                        this.MessengerInstance.Send(new GenericMessage<MentionItem>(this, "in", newMessage));
-                    }
                 });
             }
         }
 
-        void _sessionSupervisor_MessageItemReceived(object sender, Core.MessageItemEventArgs e)
+        void _sessionSupervisor_MessageItemReceived(object sender, MessageItemEventArgs e)
         {
             var foundItem = _messagesList.Where(x => x.RecordId == e.SummaryId).FirstOrDefault();
             if (foundItem == null)
@@ -466,12 +445,9 @@ namespace derpirc.ViewModels
                 {
                     // TODO: Handle Topic, UnreadCount, making subsequent LoadById's moot
                     foundItem.LoadById(e.SummaryId);
-                    var newMessage = DataUnitOfWork.Default.MessageItems.FindById(e.MessageId);
+                    var newMessage = _unitOfWork.MessageItems.FindById(e.MessageId);
                     if (newMessage != null)
-                    {
                         foundItem.LoadLastMessage(newMessage);
-                        this.MessengerInstance.Send(new GenericMessage<MessageItem>(this, "in", newMessage));
-                    }
                 });
             }
         }
@@ -483,40 +459,6 @@ namespace derpirc.ViewModels
             _unitOfWork = new DataUnitOfWork(new ContextConnectionString()
             {
                 FileMode = FileMode.ReadOnly,
-            });
-            //_unitOfWork = DataUnitOfWork.Default;
-
-            var channels = _unitOfWork.Channels.FindAll().ToList();
-            var mentions = _unitOfWork.Mentions.FindAll().ToList();
-            var messages = _unitOfWork.Messages.FindAll().ToList();
-
-            DispatcherHelper.CheckBeginInvokeOnUI(() =>
-            {
-                ProgressIndeterminate = true;
-                ProgressText = "Loading from database";
-                foreach (var item in channels)
-                {
-                    var itemSummary = new ChannelViewModel(item);
-                    _channelsList.Add(itemSummary);
-                }
-                _lastRefreshChannels = DateTime.Now;
-
-                foreach (var item in mentions)
-                {
-                    var itemSummary = new MentionViewModel(item);
-                    _mentionsList.Add(itemSummary);
-                }
-                _lastRefreshMentions = DateTime.Now;
-
-                foreach (var item in messages)
-                {
-                    var itemSummary = new MessageViewModel(item);
-                    _messagesList.Add(itemSummary);
-                }
-                _lastRefreshMessages = DateTime.Now;
-
-                ProgressIndeterminate = false;
-                ProgressText = string.Empty;
             });
         }
 
@@ -537,15 +479,54 @@ namespace derpirc.ViewModels
                 {
                     // channels
                     case 0:
-                        _lastRefreshChannels = DateTime.Now;
+                        if (_lastRefreshChannels == DateTime.MinValue)
+                        {
+                            var channels = _unitOfWork.Channels.FindAll().ToList();
+                            ProgressIndeterminate = true;
+                            ProgressText = "Loading channels...";
+                            foreach (var item in channels)
+                            {
+                                var itemSummary = new ChannelViewModel(item);
+                                _channelsList.Add(itemSummary);
+                            }
+                            _lastRefreshChannels = DateTime.Now;
+                            ProgressIndeterminate = false;
+                            ProgressText = string.Empty;
+                        }
                         break;
                     // mentions
                     case 1:
-                        _lastRefreshMentions = DateTime.Now;
+                        if (_lastRefreshMentions == DateTime.MinValue)
+                        {
+                            var mentions = _unitOfWork.Mentions.FindAll().ToList();
+                            ProgressIndeterminate = true;
+                            ProgressText = "Loading mentions...";
+                            foreach (var item in mentions)
+                            {
+                                var itemSummary = new MentionViewModel(item);
+                                _mentionsList.Add(itemSummary);
+                            }
+                            _lastRefreshMentions = DateTime.Now;
+                            ProgressIndeterminate = false;
+                            ProgressText = string.Empty;
+                        }
                         break;
                     // messages
                     case 2:
-                        _lastRefreshMessages = DateTime.Now;
+                        if (_lastRefreshMessages == DateTime.MinValue)
+                        {
+                            var messages = _unitOfWork.Messages.FindAll().ToList();
+                            ProgressIndeterminate = true;
+                            ProgressText = "Loading messages...";
+                            foreach (var item in messages)
+                            {
+                                var itemSummary = new MessageViewModel(item);
+                                _messagesList.Add(itemSummary);
+                            }
+                            _lastRefreshMessages = DateTime.Now;
+                            ProgressIndeterminate = false;
+                            ProgressText = string.Empty;
+                        }
                         break;
                 }
             }
@@ -602,6 +583,8 @@ namespace derpirc.ViewModels
             //Save required state in either the Phone Application service or Page Application service depending on the structure of your application.
             //Clear the flag indicating that the page constructor has been called.
         }
+
+        #region Child navigation
 
         private void ViewSettings()
         {
@@ -673,19 +656,6 @@ namespace derpirc.ViewModels
             SelectedMessage = null;
         }
 
-        public void Send(ChannelItem message)
-        {
-            _supervisor.SendMessage(message);
-        }
-
-        public void Send(MentionItem message)
-        {
-            _supervisor.SendMessage(message);
-        }
-
-        public void Send(MessageItem message)
-        {
-            _supervisor.SendMessage(message);
-        }
+        #endregion
     }
 }

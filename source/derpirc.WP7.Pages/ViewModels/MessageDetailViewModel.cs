@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Data;
+using derpirc.Core;
 using derpirc.Data;
 using derpirc.Data.Models;
 using GalaSoft.MvvmLight;
@@ -198,6 +199,7 @@ namespace derpirc.ViewModels
         public MessageDetailViewModel(Message model)
         {
             _messagesList = new ObservableCollection<MessageItem>();
+            Messages = new CollectionViewSource() { Source = _messagesList };
 
             if (IsInDesignMode)
             {
@@ -243,17 +245,28 @@ namespace derpirc.ViewModels
             else
             {
                 // Code runs "for real": Connect to service, etc...
-
-                // This listens to both the sending of this VM and Receiving from the MainVM
-                this.MessengerInstance.Register<GenericMessage<MessageItem>>(this, message =>
-                {
-                    var target = message.Target as string;
-                    if ((target == "in") && (message.Content != null))
-                        AddIncoming(message.Content);
-                });
+                SupervisorFacade.Default.MessageItemReceived += this.OnMessageItemReceived;
             }
+        }
 
-            Messages = new CollectionViewSource() { Source = _messagesList };
+        private void OnMessageItemReceived(object sender, MessageItemEventArgs e)
+        {
+            if (e.SummaryId == Model.Id)
+            {
+                var newMessage = DataUnitOfWork.Default.MessageItems.FindById(e.MessageId);
+                if (newMessage != null)
+                {
+                    // HACK: If Owner.Me, make sure it wasn't added by the UI. This could also serve as a MessageSent event
+                    if (newMessage.Owner == Owner.Me)
+                    {
+                        var foundItem = _messagesList.Where(x => x.Timestamp == newMessage.Timestamp);
+                        if (foundItem != null)
+                            return;
+                    }
+                    _messagesList.Add(newMessage);
+                    Messages.View.MoveCurrentToLast();
+                }
+            }
         }
 
         private void CheckCanSend()
@@ -277,7 +290,7 @@ namespace derpirc.ViewModels
                 newMessage.Timestamp = DateTime.Now;
                 newMessage.IsRead = true;
                 newMessage.Text = SendMessage;
-                this.MessengerInstance.Send(new GenericMessage<MessageItem>(this, "out", newMessage));
+                Send(newMessage);
                 // Steps: Place item in List. Detect send callback. Use a resend hyperlink if necessary
 
                 _messagesList.Add(newMessage);
@@ -285,6 +298,11 @@ namespace derpirc.ViewModels
 
                 SendMessage = string.Empty;
             }
+        }
+
+        public void Send(MessageItem message)
+        {
+            SupervisorFacade.Default.SendMessage(message);
         }
 
         public void Switch()
@@ -336,25 +354,6 @@ namespace derpirc.ViewModels
                 var foundMessage = messages.Where(x => x.Id.Equals(record.Id)).FirstOrDefault();
                 if (foundMessage == null)
                     _messagesList.RemoveAt(index);
-            }
-        }
-
-        private void AddIncoming(MessageItem record)
-        {
-            if (record.SummaryId == Model.Id)
-            {
-                DispatcherHelper.CheckBeginInvokeOnUI(() =>
-                {
-                    // HACK: If Owner.Me, make sure it wasn't added by the UI. This could also serve as a MessageSent event
-                    if (record.Owner == Owner.Me)
-                    {
-                        var foundItem = _messagesList.Where(x => x.Timestamp == record.Timestamp);
-                        if (foundItem != null)
-                            return;
-                    }
-                    _messagesList.Add(record);
-                    Messages.View.MoveCurrentToLast();
-                });
             }
         }
 
