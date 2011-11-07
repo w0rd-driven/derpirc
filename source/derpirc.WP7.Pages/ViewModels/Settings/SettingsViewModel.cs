@@ -6,6 +6,7 @@ using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
 using GalaSoft.MvvmLight.Threading;
 using Microsoft.Phone.Controls;
+using derpirc.Core;
 
 namespace derpirc.ViewModels
 {
@@ -203,6 +204,7 @@ namespace derpirc.ViewModels
             {
                 // Resuming...
                 // TODO: Restart sockets automatically
+                SupervisorFacade.Default.Reconnect(null, true);
             }
         }
 

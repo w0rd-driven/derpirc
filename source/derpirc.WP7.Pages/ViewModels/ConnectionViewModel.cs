@@ -347,10 +347,11 @@ namespace derpirc.ViewModels
 
         private void OnNavigatedTo(NavigationEventArgs eventArgs)
         {
-            if (eventArgs.NavigationMode == NavigationMode.Back)
+            if (!eventArgs.IsNavigationInitiator)
             {
-                // Resuming from a task...
+                // Resuming...
                 // TODO: Restart sockets automatically
+                SupervisorFacade.Default.Reconnect(null, true);
             }
         }
 
@@ -448,8 +449,11 @@ namespace derpirc.ViewModels
 
         private void OnNetworkStatusChanged(NetworkStatusEventArgs e)
         {
-            NetworkType = e.Type;
-            IsNetworkAvailable = e.IsAvailable;
+            DispatcherHelper.CheckBeginInvokeOnUI(() =>
+            {
+                NetworkType = e.Type;
+                IsNetworkAvailable = e.IsAvailable;
+            });
         }
 
         private void CheckCanConnect(bool isNetworkAvailable)

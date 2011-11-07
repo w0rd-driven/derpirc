@@ -163,13 +163,16 @@ namespace derpirc.Core
 
         public void Reconnect(bool force = false)
         {
-            var clients = SupervisorFacade.Default.Clients.AsEnumerable();
-            if (!force)
-                clients = clients.Where(x => !x.Client.IsConnected);
-
-            foreach (var item in clients)
+            if (IsNetworkAvailable)
             {
-                Reconnect(item);
+                var clients = SupervisorFacade.Default.Clients.AsEnumerable();
+                if (!force)
+                    clients = clients.Where(x => !x.Client.IsConnected);
+
+                foreach (var item in clients)
+                {
+                    Reconnect(item);
+                }
             }
         }
 

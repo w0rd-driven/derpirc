@@ -3,6 +3,7 @@ using System.Windows.Navigation;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Microsoft.Phone.Tasks;
+using derpirc.Core;
 
 namespace derpirc.ViewModels
 {
@@ -111,10 +112,11 @@ namespace derpirc.ViewModels
 
         private void OnNavigatedTo(NavigationEventArgs eventArgs)
         {
-            if (eventArgs.NavigationMode == NavigationMode.Back)
+            if (!eventArgs.IsNavigationInitiator)
             {
-                // Resuming from a task...
+                // Resuming...
                 // TODO: Restart sockets automatically
+                SupervisorFacade.Default.Reconnect(null, true);
             }
         }
 
