@@ -7,11 +7,9 @@ using System.Windows.Data;
 using System.Windows.Navigation;
 using derpirc.Core;
 using derpirc.Data;
-using derpirc.Data.Models;
 using derpirc.Helpers;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using GalaSoft.MvvmLight.Messaging;
 using GalaSoft.MvvmLight.Threading;
 using Microsoft.Phone.Controls;
 
@@ -23,13 +21,13 @@ namespace derpirc.ViewModels
     {
         #region Commands
 
-        RelayCommand _navigatedToCommand;
-        public RelayCommand NavigatedToCommand
+        RelayCommand<NavigationEventArgs> _navigatedToCommand;
+        public RelayCommand<NavigationEventArgs> NavigatedToCommand
         {
             get
             {
                 return _navigatedToCommand ?? (_navigatedToCommand =
-                    new RelayCommand(() => this.OnNavigatedTo()));
+                    new RelayCommand<NavigationEventArgs>(eventArgs => this.OnNavigatedTo(eventArgs)));
             }
         }
 
@@ -302,8 +300,6 @@ namespace derpirc.ViewModels
             else
             {
                 // Code runs "for real": Connect to service, etc...
-
-                // TODO: For demo purposes, place initialization of everything here and in design mode. Otherwise, use state to determine what to construct.
                 // HACK: Execution order: 1
                 _navigationService = navigationService;
 
@@ -324,12 +320,6 @@ namespace derpirc.ViewModels
             Action completed = e.Argument as Action;
             lock (_threadLock)
             {
-                //    ApplicationState.AppLaunchInitialization();
-
-                //    this.SetDefaultCategoryAndUnits();
-                //    ApplicationState.Favorites =
-                //        FavoriteCollection.LoadFromFile() ?? new FavoriteCollection();
-
                 _supervisor = SupervisorFacade.Default;
                 _supervisor.ChannelJoined += this._sessionSupervisor_ChannelJoined;
                 _supervisor.ChannelLeft += this._sessionSupervisor_ChannelLeft;
@@ -337,7 +327,10 @@ namespace derpirc.ViewModels
                 _supervisor.MentionItemReceived += this._sessionSupervisor_MentionItemReceived;
                 _supervisor.MessageItemReceived += this._sessionSupervisor_MessageItemReceived;
 
-                LoadInitialView();
+                _unitOfWork = new DataUnitOfWork(new ContextConnectionString()
+                {
+                    FileMode = FileMode.ReadOnly,
+                });
             }
 
             if (completed != null)
@@ -454,14 +447,6 @@ namespace derpirc.ViewModels
 
         #endregion
 
-        private void LoadInitialView()
-        {
-            _unitOfWork = new DataUnitOfWork(new ContextConnectionString()
-            {
-                FileMode = FileMode.ReadOnly,
-            });
-        }
-
         private void RootLoaded(FrameworkElement sender)
         {
             // HACK: Execution order: 2
@@ -471,7 +456,8 @@ namespace derpirc.ViewModels
         private void PivotItemLoaded(PivotItemEventArgs eventArgs)
         {
             // HACK: Execution order: 3
-            // You can use PivotItemLoaded or SelectedItem/Index binding. This gets called every time the PivotItem shows so you need to track an IsVMLoaded
+            // You can use PivotItemLoaded or SelectedItem/Index binding.
+            // This gets called every time the PivotItem shows so you need to track an IsVMLoaded.
             var pivotControl = eventArgs.Item.Parent as Pivot;
             if (pivotControl != null)
             {
@@ -532,56 +518,19 @@ namespace derpirc.ViewModels
             }
          }
 
-        private void OnNavigatedTo()
+        private void OnNavigatedTo(NavigationEventArgs eventArgs)
         {
-            //Application launch
-            //Application Activation when the app was tombstoned.
-            //  Retrieve the application state from either the PhoneApplicationService or PageApplicationService objects.
-            //Application Activation when the app was not tombstoned.
-            //  This case is essentially a No Op.
-            //Application Activation when the application state was not fully saved before exiting. 
-            //  This can occur if the user presses the Start button before you application completes its first time initialization.
-            //Special cases
-            //  The application is tombstoned before it fully initializes on Launch
-            //  The application is activated but the application was not tombstoned
-
-            //if (ApplicationState.ApplicationStartup == AppOpenState.Launching)
-            //{
-            //    // Initial application startup.
-            //    this.AllowNavigation = false;
-            //    this.SetDefaults();
-            //    // Initialization of the app deferred until the page has rendered. See
-            //    // the MainPage_LayoutUpdated handler.
-            //    return;
-            //}
-            //if (ApplicationState.ApplicationStartup == AppOpenState.Activated &&
-            //     !isPageActivated)
-            //{
-            //    // We are returning to the application, but we were not tombstoned.
-            //    ApplicationState.ApplicationStartup = AppOpenState.None;
-            //    return;
-            //}
-            //if (ApplicationState.RetrieveAppObjects(false))
-            //{
-            //    this.RefreshStateFromAppState();
-            //    this.AllowNavigation = true;
-            //}
-            //else
-            //{
-            //    this.AllowNavigation = false;
-            //    // Slight possibility that we did not complete 1st time init because of 
-            //    // of a app deactivate immediately after start. Protect against this and
-            //    // perform application 1st time startup sequence.
-            //    this.SetDefaults();
-            //    this.DeferStartup(notifyOfLoadCompleted);
-            //}
-            //ApplicationState.ApplicationStartup = AppOpenState.None;
+            if (eventArgs.NavigationMode == NavigationMode.Back && eventArgs.IsNavigationInitiator)
+                UnselectItem();
+            if (!eventArgs.IsNavigationInitiator)
+            {
+                // This gets called wether resuming or first starting. Tread lightly
+                SupervisorFacade.Default.Reconnect(null, true);
+            }
         }
 
         private void OnNavigatedFrom(NavigationEventArgs eventArgs)
         {
-            //Save required state in either the Phone Application service or Page Application service depending on the structure of your application.
-            //Clear the flag indicating that the page constructor has been called.
         }
 
         #region Child navigation

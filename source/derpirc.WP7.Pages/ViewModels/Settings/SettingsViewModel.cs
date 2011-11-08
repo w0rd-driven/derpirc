@@ -54,16 +54,6 @@ namespace derpirc.ViewModels
             }
         }
 
-        RelayCommand _saveCommand;
-        public RelayCommand SaveCommand
-        {
-            get
-            {
-                return _saveCommand ?? (_saveCommand =
-                    new RelayCommand(() => this.Save()));
-            }
-        }
-
         private bool _canAdd;
         public bool CanAdd
         {
@@ -203,7 +193,6 @@ namespace derpirc.ViewModels
             if (!eventArgs.IsNavigationInitiator)
             {
                 // Resuming...
-                // TODO: Restart sockets automatically
                 SupervisorFacade.Default.Reconnect(null, true);
             }
         }
@@ -212,9 +201,12 @@ namespace derpirc.ViewModels
         {
             if (eventArgs.NavigationMode == NavigationMode.Back)
             {
+                // HACK: Turn this off now as re-entry will display it for a split second
                 IsAppBarVisible = false;
-                Save();
+                Save(true);
             }
+            if (!eventArgs.IsNavigationInitiator)
+                Save(false);
         }
 
         private void PivotItemLoaded(PivotItemEventArgs eventArgs)
@@ -242,9 +234,9 @@ namespace derpirc.ViewModels
             this.MessengerInstance.Send(new NotificationMessage<Network>(null, "unselect"), "Network");
         }
 
-        private void Save()
+        private void Save(bool commit)
         {
-            this.MessengerInstance.Send(new NotificationMessage("save"), "Save");
+            this.MessengerInstance.Send(new NotificationMessage<bool>(commit, "save"), "Save");
         }
 
         private void Add()

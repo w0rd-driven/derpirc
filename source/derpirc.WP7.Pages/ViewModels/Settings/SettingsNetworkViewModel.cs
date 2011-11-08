@@ -117,10 +117,10 @@ namespace derpirc.ViewModels
                     }
                 });
 
-                this.MessengerInstance.Register<NotificationMessage>(this, "Save", message =>
+                this.MessengerInstance.Register<NotificationMessage<bool>>(this, "Save", message =>
                 {
                     var target = message.Target as string;
-                    this.Save(true);
+                    this.Save(message.Content);
                 });
 
                 Load();

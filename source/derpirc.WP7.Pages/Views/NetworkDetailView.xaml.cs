@@ -1,4 +1,5 @@
-﻿using derpirc.ViewModels;
+﻿using System.Windows.Navigation;
+using derpirc.ViewModels;
 using Microsoft.Phone.Controls;
 
 namespace derpirc.Views
@@ -16,35 +17,18 @@ namespace derpirc.Views
             InitializeComponent();
         }
 
-        NetworkDetailViewModel viewModel
-        {
-            get { return this.DataContext as NetworkDetailViewModel; }
-        }
+        NetworkDetailViewModel viewModel { get { return this.DataContext as NetworkDetailViewModel; } }
 
-        protected override void OnNavigatedFrom(System.Windows.Navigation.NavigationEventArgs e)
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);
-            viewModel.NavigatedFromCommand.Execute(null);
+            viewModel.NavigatedFromCommand.Execute(e);
         }
 
-        protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
+        protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            viewModel.NavigatedToCommand.Execute(NavigationContext.QueryString);
-        }
-
-        private void Pivot_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
-        {
-            var pivot = sender as Pivot;
-            switch (pivot.SelectedIndex)
-            {
-                case 0:
-                    break;
-                case 1:
-                    break;
-                default:
-                    break;
-            }
+            viewModel.NavigatedToCommand.Execute(e);
         }
     }
 }

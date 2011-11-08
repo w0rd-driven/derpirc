@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Data;
+using System.Windows.Navigation;
+using derpirc.Core;
 using derpirc.Data;
 using derpirc.Data.Models.Settings;
+using derpirc.Helpers;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Threading;
@@ -16,23 +18,23 @@ namespace derpirc.ViewModels
     {
         #region Commands
 
-        RelayCommand<IDictionary<string, string>> _navigatedToCommand;
-        public RelayCommand<IDictionary<string, string>> NavigatedToCommand
+        RelayCommand<NavigationEventArgs> _navigatedToCommand;
+        public RelayCommand<NavigationEventArgs> NavigatedToCommand
         {
             get
             {
                 return _navigatedToCommand ?? (_navigatedToCommand =
-                    new RelayCommand<IDictionary<string, string>>(item => this.OnNavigatedTo(item)));
+                    new RelayCommand<NavigationEventArgs>(eventArgs => this.OnNavigatedTo(eventArgs)));
             }
         }
 
-        RelayCommand _navigatedFromCommand;
-        public RelayCommand NavigatedFromCommand
+        RelayCommand<NavigationEventArgs> _navigatedFromCommand;
+        public RelayCommand<NavigationEventArgs> NavigatedFromCommand
         {
             get
             {
                 return _navigatedFromCommand ?? (_navigatedFromCommand =
-                    new RelayCommand(() => this.OnNavigatedFrom()));
+                    new RelayCommand<NavigationEventArgs>(eventArgs => this.OnNavigatedFrom(eventArgs)));
             }
         }
 
@@ -300,8 +302,10 @@ namespace derpirc.ViewModels
         /// </summary>
         public NetworkDetailViewModel()
         {
-            CanAdd = true;
             _favoritesList = new ObservableCollection<Favorite>();
+            Favorites = new CollectionViewSource() { Source = _favoritesList };
+
+            CanAdd = true;
 
             if (IsInDesignMode)
             {
@@ -312,22 +316,26 @@ namespace derpirc.ViewModels
                 Ports = "6667";
                 Password = string.Empty;
 
-                //_favoritesList.Add(new Favorite()
-                //{
-                //    Name
-                //});
+                _favoritesList.Add(new Favorite()
+                {
+                    Name = "#xna",
+                    IsAutoConnect = true,
+                });
+                _favoritesList.Add(new Favorite()
+                {
+                    Name = "#wp7",
+                    IsAutoConnect = true,
+                });
             }
             else
             {
                 // Code runs "for real": Connect to service, etc...
             }
-
-            Favorites = new CollectionViewSource() { Source = _favoritesList };
         }
 
-        private void OnNavigatedTo(IDictionary<string, string> queryString)
+        private void OnNavigatedTo(NavigationEventArgs eventArgs)
         {
-            //TODO: Link Model and VM via Events
+            var queryString = eventArgs.Uri.ParseQueryString();
             var id = string.Empty;
             queryString.TryGetValue("id", out id);
             var integerId = -1;
@@ -335,9 +343,11 @@ namespace derpirc.ViewModels
             var model = SettingsUnitOfWork.Default.Networks.Where(x => x.Id == integerId).FirstOrDefault();
             if (model != null)
                 Model = model;
+            if (!eventArgs.IsNavigationInitiator)
+                SupervisorFacade.Default.Reconnect(null, true);
         }
 
-        private void OnNavigatedFrom()
+        private void OnNavigatedFrom(NavigationEventArgs eventArgs)
         {
             this.IsAppBarVisible = false;
             Save(Model);

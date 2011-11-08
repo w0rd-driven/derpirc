@@ -84,6 +84,7 @@
     </Compile>
     <Compile Include="Helpers\DataTemplateSelector.cs" />
     <Compile Include="Helpers\MessageTemplateSelector.cs" />
+    <Compile Include="Helpers\UriExtensions.cs" />
     <Compile Include="ViewModels\AboutViewModel.cs" />
     <Compile Include="ViewModels\ConnectionViewModel.cs" />
     <Compile Include="ViewModels\NetworkDetailViewModel.cs" />

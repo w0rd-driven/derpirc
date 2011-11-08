@@ -1,4 +1,6 @@
 ﻿using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Navigation;
 using derpirc.ViewModels;
 using Microsoft.Phone.Controls;
 
@@ -17,29 +19,24 @@ namespace derpirc.Views
             InitializeComponent();
         }
 
-        MessageDetailViewModel viewModel
-        {
-            get
-            {
-                return this.DataContext as MessageDetailViewModel;
-            }
-        }
+        MessageDetailViewModel viewModel { get { return this.DataContext as MessageDetailViewModel; } }
 
-        protected override void OnNavigatedFrom(System.Windows.Navigation.NavigationEventArgs e)
-        {
-            base.OnNavigatedFrom(e);
-        }
-
-        protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
+        protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            viewModel.NavigatedToCommand.Execute(NavigationContext.QueryString);
+            viewModel.NavigatedToCommand.Execute(e);
         }
 
-        private void Send_KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            base.OnNavigatedFrom(e);
+            viewModel.NavigatedFromCommand.Execute(e);
+        }
+
+        private void Send_KeyUp(object sender, KeyEventArgs e)
         {
             var control = sender as TextBox;
-            if (e.Key == System.Windows.Input.Key.Enter && !string.IsNullOrEmpty(control.Text))
+            if (e.Key == Key.Enter && !string.IsNullOrEmpty(control.Text))
                 viewModel.Send();
         }
     }

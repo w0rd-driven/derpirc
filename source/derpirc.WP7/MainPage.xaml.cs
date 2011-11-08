@@ -17,9 +17,7 @@ namespace derpirc
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            viewModel.NavigatedToCommand.Execute(NavigationContext.QueryString);
-            if (e.NavigationMode == NavigationMode.Back)
-                viewModel.UnselectItemCommand.Execute(null);
+            viewModel.NavigatedToCommand.Execute(e);
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)

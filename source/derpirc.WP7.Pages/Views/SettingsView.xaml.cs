@@ -18,7 +18,6 @@ namespace derpirc.Views
         public SettingsView()
         {
             InitializeComponent();
-            TiltEffect.TiltableItems.Add(typeof(MenuItem)); 
         }
 
         SettingsViewModel viewModel { get { return this.DataContext as SettingsViewModel; } }

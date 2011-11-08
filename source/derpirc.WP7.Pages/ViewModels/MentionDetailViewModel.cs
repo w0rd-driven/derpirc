@@ -4,12 +4,13 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Data;
+using System.Windows.Navigation;
 using derpirc.Core;
 using derpirc.Data;
 using derpirc.Data.Models;
+using derpirc.Helpers;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using GalaSoft.MvvmLight.Messaging;
 using GalaSoft.MvvmLight.Threading;
 
 namespace derpirc.ViewModels
@@ -19,6 +20,26 @@ namespace derpirc.ViewModels
     public class MentionDetailViewModel : ViewModelBase
     {
         #region Commands
+
+        RelayCommand<NavigationEventArgs> _navigatedToCommand;
+        public RelayCommand<NavigationEventArgs> NavigatedToCommand
+        {
+            get
+            {
+                return _navigatedToCommand ?? (_navigatedToCommand =
+                    new RelayCommand<NavigationEventArgs>(eventArgs => this.OnNavigatedTo(eventArgs)));
+            }
+        }
+
+        RelayCommand<NavigationEventArgs> _navigatedFromCommand;
+        public RelayCommand<NavigationEventArgs> NavigatedFromCommand
+        {
+            get
+            {
+                return _navigatedFromCommand ?? (_navigatedFromCommand =
+                    new RelayCommand<NavigationEventArgs>(eventArgs => this.OnNavigatedFrom(eventArgs)));
+            }
+        }
 
         RelayCommand<FrameworkElement> _layoutRootCommand;
         public RelayCommand<FrameworkElement> LayoutRootCommand
@@ -40,8 +61,8 @@ namespace derpirc.ViewModels
                     return;
 
                 _canSend = value;
+                DispatcherHelper.CheckBeginInvokeOnUI(() => SendCommand.RaiseCanExecuteChanged());
                 RaisePropertyChanged(() => CanSend);
-                SendCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -65,8 +86,8 @@ namespace derpirc.ViewModels
                     return;
 
                 _canSwitch = value;
+                DispatcherHelper.CheckBeginInvokeOnUI(() => SwitchCommand.RaiseCanExecuteChanged());
                 RaisePropertyChanged(() => CanSwitch);
-                SwitchCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -77,16 +98,6 @@ namespace derpirc.ViewModels
             {
                 return _switchCommand ?? (_switchCommand =
                     new RelayCommand(() => this.Switch(), () => this.CanSwitch));
-            }
-        }
-
-        RelayCommand<IDictionary<string, string>> _navigatedToCommand;
-        public RelayCommand<IDictionary<string, string>> NavigatedToCommand
-        {
-            get
-            {
-                return _navigatedToCommand ?? (_navigatedToCommand =
-                    new RelayCommand<IDictionary<string, string>>(item => this.OnNavigatedTo(item)));
             }
         }
 
@@ -334,9 +345,9 @@ namespace derpirc.ViewModels
             SendWatermark = string.Format("chat on {0}", PageSubTitle);
         }
 
-        private void OnNavigatedTo(IDictionary<string, string> queryString)
+        private void OnNavigatedTo(NavigationEventArgs eventArgs)
         {
-            //TODO: Link Model and VM via Events
+            var queryString = eventArgs.Uri.ParseQueryString();
             var id = string.Empty;
             queryString.TryGetValue("id", out id);
             var integerId = -1;
@@ -344,6 +355,12 @@ namespace derpirc.ViewModels
             var model = DataUnitOfWork.Default.Mentions.FindById(integerId);
             if (model != null)
                 Model = model;
+            if (!eventArgs.IsNavigationInitiator)
+                SupervisorFacade.Default.Reconnect(null, true);
+        }
+
+        private void OnNavigatedFrom(NavigationEventArgs eventArgs)
+        {
         }
 
         private void UpdateViewModel(Mention model)
