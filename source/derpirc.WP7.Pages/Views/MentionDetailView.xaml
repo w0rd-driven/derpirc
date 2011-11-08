@@ -7,8 +7,8 @@
                             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                             xmlns:blend="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
                             xmlns:command="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Extras.WP71"
-                            xmlns:helpers="clr-namespace:derpirc.Helpers;assembly=derpirc.UICore"
                             xmlns:appbarutils="clr-namespace:AppBarUtils;assembly=AppBarUtils" 
+                            xmlns:helpers="clr-namespace:derpirc.Helpers;assembly=derpirc.UICore"
                             mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="696"
                             FontFamily="{StaticResource PhoneFontFamilyNormal}"
                             FontSize="{StaticResource PhoneFontSizeNormal}"
@@ -57,7 +57,8 @@
                      ItemTemplate="{StaticResource TemplateDetailMessageSelector}" />
 
             <Grid Grid.Row="2" Style="{StaticResource GridDetailMyMessage}">
-                <TextBox Name="Send" Text="{Binding SendMessage, Mode=TwoWay}" Style="{StaticResource TextBoxTickStyle}" KeyUp="Send_KeyUp">
+                <TextBox x:Name="Send" Text="{Binding SendMessage, Mode=TwoWay}"
+                                       Style="{StaticResource TextBoxTickStyle}" KeyUp="Send_KeyUp">
                     <TextBox.InputScope>
                         <InputScope>
                             <InputScopeName NameValue="Chat" />
@@ -76,7 +77,6 @@
         <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True">
             <shell:ApplicationBar.Buttons>
                 <shell:ApplicationBarIconButton IconUri="/Icons/appbar.message.send.png" Text="send" />
-                <shell:ApplicationBarIconButton IconUri="/Icons/appbar.shuffle.png" Text="switch" />
             </shell:ApplicationBar.Buttons>
             <shell:ApplicationBar.MenuItems>
             </shell:ApplicationBar.MenuItems>
@@ -84,6 +84,8 @@
     </phone:PhoneApplicationPage.ApplicationBar>
     <blend:Interaction.Behaviors>
         <appbarutils:AppBarItemCommand Type="Button" Id="send" Command="{Binding SendCommand}" />
-        <appbarutils:AppBarItemCommand Type="Button" Id="switch" Command="{Binding SwitchCommand}" />
     </blend:Interaction.Behaviors>
+    <blend:Interaction.Triggers>
+        <appbarutils:AppBarItemTrigger Type="Button" Id="send" Text="send" IsEnabled="{Binding CanSend}" />
+    </blend:Interaction.Triggers>
 </phone:PhoneApplicationPage>

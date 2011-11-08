@@ -8,6 +8,7 @@
                     xmlns:controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls"
                     xmlns:primitives="clr-namespace:Microsoft.Phone.Controls.Primitives;assembly=Microsoft.Phone.Controls"
                     xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
+                    xmlns:vsm="clr-namespace:System.Windows;assembly=System.Windows"
                     xmlns:sys="clr-namespace:System;assembly=mscorlib"
                     xmlns:helpers="clr-namespace:derpirc.Helpers"
                     mc:Ignorable="d">
@@ -37,7 +38,7 @@
                                 <VisualState x:Name="Disabled">
                                     <Storyboard>
                                         <ColorAnimation Duration="0" To="{StaticResource PhoneDisabledColor}" 
-                                			Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)" Storyboard.TargetName="PathTickRight" d:IsOptimized="True" />
+                                            Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)" Storyboard.TargetName="PathTickRight" d:IsOptimized="True" />
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Visibility" Storyboard.TargetName="EnabledBorder">
                                             <DiscreteObjectKeyFrame KeyTime="0">
                                                 <DiscreteObjectKeyFrame.Value>
@@ -138,7 +139,7 @@
                 </Border>
                 <Path x:Name="PathTick"
                       Data="m 0,0 l 16,0 l 0,16 l -16,-16"
-           	          Fill="{Binding Background, ElementName=MessageContainer}"
+                      Fill="{Binding Background, ElementName=MessageContainer}"
                       Height="12"
                       Width="20"
                       Stretch="Fill"

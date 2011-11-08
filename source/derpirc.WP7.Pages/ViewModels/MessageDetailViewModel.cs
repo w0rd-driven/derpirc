@@ -247,11 +247,6 @@ namespace derpirc.ViewModels
                     Timestamp = DateTime.Now,
                     Owner = Owner.Me,
                 });
-
-                PageTitle = model.Name;
-                if (model.Network != null)
-                    PageSubTitle = model.Network.Name;
-                SendWatermark = string.Format("chat on {0}", PageSubTitle);
             }
             else
             {
