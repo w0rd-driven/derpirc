@@ -216,12 +216,15 @@ namespace derpirc.ViewModels
             {
                 switch (pivotControl.SelectedIndex)
                 {
+                    // User
                     case 0:
                         IsAppBarVisible = false;
                         break;
+                    // Network
                     case 1:
                         IsAppBarVisible = true;
                         break;
+                    // Storage
                     case 2:
                         IsAppBarVisible = false;
                         break;

@@ -127,6 +127,7 @@ namespace derpirc.Core
             e.Channel.NoticeReceived += this.Channel_NoticeReceived;
             e.Channel.TopicChanged += this.Channel_TopicChanged;
             e.Channel.ModesChanged += this.Channel_ModesChanged;
+            e.Channel.UserKicked += this.Channel_UserKicked;
             this.JoinChannel(e.Channel);
         }
 
@@ -137,16 +138,15 @@ namespace derpirc.Core
             e.Channel.NoticeReceived -= this.Channel_NoticeReceived;
             e.Channel.TopicChanged -= this.Channel_TopicChanged;
             e.Channel.ModesChanged -= this.Channel_ModesChanged;
+            e.Channel.UserKicked -= this.Channel_UserKicked;
             this.LeaveChannel(e.Channel);
         }
 
         private void LocalUser_InviteReceived(object sender, IrcChannelInvitationEventArgs e)
         {
-            // TODO: UI setting for join on invite. Default to true
             var localUser = sender as IrcLocalUser;
-            var isJoinOnInvite = true;
-            // TODO: JoinOnInvite creates orphan records because no favorites are added
-            if (isJoinOnInvite)
+            // TODO: IsJoinOnInvite creates orphan records because no favorites are added
+            if (SettingsUnitOfWork.Default.Client.IsJoinOnInvite)
                 localUser.Client.Channels.Join(e.Channel.Name);
         }
 
@@ -179,6 +179,20 @@ namespace derpirc.Core
         private void Channel_ModesChanged(object sender, IrcUserEventArgs e)
         {
             var channel = sender as IrcChannel;
+        }
+
+        private void Channel_UserKicked(object sender, IrcChannelUserEventArgs e)
+        {
+            var channel = sender as IrcChannel;
+            if (SettingsUnitOfWork.Default.Client.IsRejoinOnKick)
+            {
+                var client = channel.Client;
+                var user = e.ChannelUser.User;
+                if (client.LocalUser.Equals(user))
+                {
+                    client.Channels.Join(channel.Name);
+                }
+            }
         }
 
         private void LocalUser_MessageReceived(object sender, IrcMessageEventArgs e)

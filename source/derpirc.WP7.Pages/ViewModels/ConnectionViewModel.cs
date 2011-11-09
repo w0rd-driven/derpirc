@@ -349,7 +349,6 @@ namespace derpirc.ViewModels
             if (!eventArgs.IsNavigationInitiator)
             {
                 // Resuming...
-                // TODO: Restart sockets automatically
                 SupervisorFacade.Default.Reconnect(null, true);
             }
         }

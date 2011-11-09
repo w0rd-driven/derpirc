@@ -123,12 +123,12 @@ namespace derpirc.ViewModels
             if (IsInDesignMode)
             {
                 // Code runs in Blend --> create design time data.
-                NickName = "derpirc";
-                NickNameAlt = "durpirc";
-                FullName = "derpirc WP7 IRC Client";
-                Username = "derpirc";
-                IsInvisible = true;
-                QuitMessage = "I am a pretty pretty butterfly.";
+                this.NickName = "derpirc";
+                this.NickNameAlt = "durpirc";
+                this.FullName = "derpirc WP7 IRC Client";
+                this.Username = "derpirc";
+                this.IsInvisible = true;
+                this.QuitMessage = "I am a pretty pretty butterfly.";
             }
             else
             {
@@ -139,7 +139,7 @@ namespace derpirc.ViewModels
                     this.Save();
                 });
 
-                Load();
+                this.Load();
             }
         }
 
@@ -147,17 +147,17 @@ namespace derpirc.ViewModels
         {
             var model = SettingsUnitOfWork.Default.User;
             if (model != null)
-                Model = model;
+                this.Model = model;
         }
 
         private void UpdateViewModel(User model)
         {
-            NickName = model.NickName;
-            NickNameAlt = model.NickNameAlternate;
-            FullName = model.FullName;
-            Username = model.Username;
-            IsInvisible = model.IsInvisible;
-            QuitMessage = model.QuitMessage;
+            this.NickName = model.NickName;
+            this.NickNameAlt = model.NickNameAlternate;
+            this.FullName = model.FullName;
+            this.Username = model.Username;
+            this.IsInvisible = model.IsInvisible;
+            this.QuitMessage = model.QuitMessage;
         }
 
         private void Save()

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO.IsolatedStorage;
 using derpirc.Data.Models.Settings;
 
@@ -7,11 +8,6 @@ namespace derpirc.Data
 {
     public class SettingsUnitOfWork
     {
-        const string _userKeyName = "user";
-        const string _networksKeyName = "networks";
-
-        private IsolatedStorageSettings _settings;
-
         #region Properties
 
         public bool IsFactoryDefault { get; set; }
@@ -44,6 +40,34 @@ namespace derpirc.Data
             }
         }
 
+        private Storage _storage;
+        public Storage Storage
+        {
+            get { return _storage ?? (_storage = GetValueOrDefault<Storage>(_storageKeyName, Factory.CreateStorage())); }
+            set
+            {
+                if (AddOrUpdateValue(_storageKeyName, value))
+                {
+                    _storage = value;
+                    Save();
+                }
+            }
+        }
+
+        private Client _client;
+        public Client Client
+        {
+            get { return _client ?? (_client = GetValueOrDefault<Client>(_clientKeyName, Factory.CreateClient())); }
+            set
+            {
+                if (AddOrUpdateValue(_clientKeyName, value))
+                {
+                    _client = value;
+                    Save();
+                }
+            }
+        }
+
         #endregion
 
         #region Singleton Impl
@@ -65,7 +89,16 @@ namespace derpirc.Data
 
         #endregion
 
-        public SettingsUnitOfWork() : this(false)
+        const string _userKeyName = "user";
+        const string _networksKeyName = "networks";
+        const string _storageKeyName = "storage";
+        const string _clientKeyName = "client";
+
+        private object _threadLock = new object();
+        private IsolatedStorageSettings _settings;
+
+        public SettingsUnitOfWork()
+            : this(false)
         {
         }
 
@@ -80,9 +113,12 @@ namespace derpirc.Data
 
         public void WipeDatabase()
         {
-            _settings.Clear();
-            if (_settings.Count == 0)
-                IsFactoryDefault = true;
+            lock (_threadLock)
+            {
+                _settings.Clear();
+                if (_settings.Count == 0)
+                    IsFactoryDefault = true;
+            }
         }
 
         /// <summary>
@@ -94,22 +130,25 @@ namespace derpirc.Data
         /// <returns></returns>
         public bool AddOrUpdateValue(string key, object value)
         {
-            bool valueChanged = false;
-
-            if (_settings.Contains(key))
+            lock (_threadLock)
             {
-                if (_settings[key] != value)
+                bool valueChanged = false;
+
+                if (_settings.Contains(key))
                 {
-                    _settings[key] = value;
+                    if (_settings[key] != value)
+                    {
+                        _settings[key] = value;
+                        valueChanged = true;
+                    }
+                }
+                else
+                {
+                    _settings.Add(key, value);
                     valueChanged = true;
                 }
+                return valueChanged;
             }
-            else
-            {
-                _settings.Add(key, value);
-                valueChanged = true;
-            }
-            return valueChanged;
         }
 
         /// <summary>
@@ -122,21 +161,24 @@ namespace derpirc.Data
         /// <returns></returns>
         public T GetValueOrDefault<T>(string key, T defaultValue)
         {
-            T value;
+            lock (_threadLock)
+            {
+                T value;
 
-            // If the key exists, retrieve the value.
-            if (_settings.Contains(key))
-            {
-                value = (T)_settings[key];
-                IsFactoryDefault = false;
+                // If the key exists, retrieve the value.
+                if (_settings.Contains(key))
+                {
+                    value = (T)_settings[key];
+                    IsFactoryDefault = false;
+                }
+                // Otherwise, use the default value.
+                else
+                {
+                    value = defaultValue;
+                    IsFactoryDefault = true;
+                }
+                return value;
             }
-            // Otherwise, use the default value.
-            else
-            {
-                value = defaultValue;
-                IsFactoryDefault = true;
-            }
-            return value;
         }
 
         /// <summary>
@@ -146,11 +188,14 @@ namespace derpirc.Data
         {
             try
             {
-                _settings.Save();
+                lock (_threadLock)
+                {
+                    _settings.Save();
+                }
             }
             catch (Exception exception)
             {
-                throw;
+                Debug.WriteLine("Error saving settings: " + exception);
             }
         }
     }

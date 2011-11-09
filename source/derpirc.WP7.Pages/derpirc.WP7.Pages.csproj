@@ -88,7 +88,9 @@
     <Compile Include="ViewModels\AboutViewModel.cs" />
     <Compile Include="ViewModels\ConnectionViewModel.cs" />
     <Compile Include="ViewModels\NetworkDetailViewModel.cs" />
+    <Compile Include="ViewModels\Settings\SettingsClientViewModel.cs" />
     <Compile Include="ViewModels\Settings\SettingsNetworkViewModel.cs" />
+    <Compile Include="ViewModels\Settings\SettingsStorageViewModel.cs" />
     <Compile Include="ViewModels\Settings\SettingsViewModel.cs" />
     <Compile Include="ViewModels\Settings\SettingsUserViewModel.cs" />
     <Compile Include="Views\AboutView.xaml.cs">

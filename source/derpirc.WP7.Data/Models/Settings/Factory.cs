@@ -6,10 +6,12 @@ namespace derpirc.Data.Models.Settings
     {
         public static Client CreateClient()
         {
-            var result = new Client()
-            {
-                //Name = "default",
-            };
+            var result = new Client();
+            result.IsReconnectOnDisconnect = true;
+            result.IsJoinOnInvite = true;
+            result.IsRejoinOnKick = true;
+            result.DisconnectRetries = 5;
+            result.DisconnectRetryWait = 5;
             return result;
         }
 
@@ -73,6 +75,16 @@ namespace derpirc.Data.Models.Settings
             var networks = CreateNetworks();
             result.Networks.AddRange(networks);
             CleanNetworks(result);
+            return result;
+        }
+
+        public static Storage CreateStorage()
+        {
+            var result = new Storage();
+            result.StoreMaxMessageDays = 7;
+            result.StoreMaxMessages = 1000;
+            result.ShowMaxMessages = 50;
+            result.IsSyncRequired = true;
             return result;
         }
 
