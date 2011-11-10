@@ -286,7 +286,6 @@ namespace derpirc.Core
         {
             var client = sender as IrcClient;
             UpdateState(client, ClientState.Disconnected, null);
-            UpdateConnectionStatus(client, false);
             // Connect(client);
         }
 

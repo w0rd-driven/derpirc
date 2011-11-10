@@ -211,6 +211,20 @@ namespace derpirc.ViewModels
             }
         }
 
+        private bool _isConnected;
+        public bool IsConnected
+        {
+            get { return _isConnected; }
+            private set
+            {
+                if (_isConnected == value)
+                    return;
+
+                _isConnected = value;
+                RaisePropertyChanged(() => IsConnected);
+            }
+        }
+
         #endregion
 
         /// <summary>
@@ -267,17 +281,7 @@ namespace derpirc.ViewModels
             {
                 // Code runs "for real": Connect to service, etc...
                 SupervisorFacade.Default.ChannelItemReceived += this.OnChannelItemReceived;
-                SupervisorFacade.Default.ChannelJoined += this.OnChannelJoined;
-                SupervisorFacade.Default.ChannelLeft += this.OnChannelLeft;
             }
-        }
-
-        private void OnChannelJoined(object sender, ChannelStatusEventArgs e)
-        {
-        }
-
-        private void OnChannelLeft(object sender, ChannelStatusEventArgs e)
-        {
         }
 
         private void OnChannelItemReceived(object sender, MessageItemEventArgs e)
@@ -308,13 +312,13 @@ namespace derpirc.ViewModels
             var result = false;
             if (!string.IsNullOrEmpty(SendMessage))
             {
-                if (SendMessage != SendWatermark)
+                if (SendMessage != SendWatermark && IsConnected)
                     result = true;
             }
             CanSend = result;
         }
 
-        public void Send()
+        private void Send()
         {
             if (!string.IsNullOrEmpty(SendMessage) && (SendMessage != SendWatermark))
             {
@@ -334,12 +338,12 @@ namespace derpirc.ViewModels
             }
         }
 
-        public void Send(ChannelItem message)
+        private void Send(ChannelItem message)
         {
             SupervisorFacade.Default.SendMessage(message);
         }
 
-        public void Switch()
+        private void Switch()
         {
             // TODO: Wire in UI to choose where to send messages
             SendWatermark = string.Format("chat on {0}", PageSubTitle);
@@ -369,6 +373,7 @@ namespace derpirc.ViewModels
             ChannelTopic = model.Topic;
             if (model.Network != null)
                 PageSubTitle = model.Network.Name;
+            IsConnected = model.IsConnected;
             SendMessage = string.Empty;
             SendWatermark = string.Format("chat on {0}", PageSubTitle);
             var messages = DataUnitOfWork.Default.ChannelItems.FindBy(x => x.SummaryId == model.Id);
