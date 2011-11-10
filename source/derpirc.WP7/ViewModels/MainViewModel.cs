@@ -341,107 +341,119 @@ namespace derpirc.ViewModels
 
         #region Events
 
-        void _sessionSupervisor_ChannelJoined(object sender, Core.ChannelStatusEventArgs e)
+        private void _sessionSupervisor_ChannelJoined(object sender, Core.ChannelStatusEventArgs e)
         {
-            var foundItem = _channelsList.Where(x => x.RecordId == e.SummaryId).FirstOrDefault();
-            if (foundItem == null)
+            if (_lastRefreshChannels > DateTime.MinValue)
             {
-                DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                var foundItem = _channelsList.Where(x => x.RecordId == e.SummaryId).FirstOrDefault();
+                if (foundItem == null)
                 {
-                    var summary = new ChannelViewModel();
-                    var isLoaded = summary.LoadById(e.SummaryId);
-                    if (isLoaded)
-                        _channelsList.Add(summary);
-                });
-            }
-            else
-            {
-                DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                    DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                    {
+                        var summary = new ChannelViewModel();
+                        var isLoaded = summary.LoadById(e.SummaryId);
+                        if (isLoaded)
+                            _channelsList.Add(summary);
+                    });
+                }
+                else
                 {
-                    foundItem.LoadById(e.SummaryId);
-                });
+                    DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                    {
+                        foundItem.LoadById(e.SummaryId);
+                    });
+                }
             }
         }
 
-        void _sessionSupervisor_ChannelLeft(object sender, Core.ChannelStatusEventArgs e)
+        private void _sessionSupervisor_ChannelLeft(object sender, Core.ChannelStatusEventArgs e)
         {
         }
 
-        void _sessionSupervisor_ChannelItemReceived(object sender, Core.MessageItemEventArgs e)
+        private void _sessionSupervisor_ChannelItemReceived(object sender, Core.MessageItemEventArgs e)
         {
-            var foundItem = _channelsList.Where(x => x.RecordId == e.SummaryId).FirstOrDefault();
-            if (foundItem == null)
+            if (_lastRefreshChannels > DateTime.MinValue)
             {
-                DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                var foundItem = _channelsList.Where(x => x.RecordId == e.SummaryId).FirstOrDefault();
+                if (foundItem == null)
                 {
-                    var summary = new ChannelViewModel();
-                    var isLoaded = summary.LoadById(e.SummaryId);
-                    if (isLoaded)
-                        _channelsList.Add(summary);
-                });
-            }
-            else
-            {
-                DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                    DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                    {
+                        var summary = new ChannelViewModel();
+                        var isLoaded = summary.LoadById(e.SummaryId);
+                        if (isLoaded)
+                            _channelsList.Add(summary);
+                    });
+                }
+                else
                 {
-                    // TODO: Handle Topic, UnreadCount, making subsequent LoadById's moot
-                    foundItem.LoadById(e.SummaryId);
-                    var newMessage = _unitOfWork.ChannelItems.FindById(e.MessageId);
-                    if (newMessage != null)
-                        foundItem.LoadLastMessage(newMessage);
-                });
+                    DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                    {
+                        // TODO: Handle Topic, UnreadCount, making subsequent LoadById's moot
+                        foundItem.LoadById(e.SummaryId);
+                        var newMessage = _unitOfWork.ChannelItems.FindById(e.MessageId);
+                        if (newMessage != null)
+                            foundItem.LoadLastMessage(newMessage);
+                    });
+                }
             }
         }
 
-        void _sessionSupervisor_MentionItemReceived(object sender, MessageItemEventArgs e)
+        private void _sessionSupervisor_MentionItemReceived(object sender, MessageItemEventArgs e)
         {
-            var foundItem = _mentionsList.Where(x => x.RecordId == e.SummaryId).FirstOrDefault();
-            if (foundItem == null)
+            if (_lastRefreshMentions > DateTime.MinValue)
             {
-                DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                var foundItem = _mentionsList.Where(x => x.RecordId == e.SummaryId).FirstOrDefault();
+                if (foundItem == null)
                 {
-                    var summary = new MentionViewModel();
-                    var isLoaded = summary.LoadById(e.SummaryId);
-                    if (isLoaded)
-                        _mentionsList.Add(summary);
-                });
-            }
-            else
-            {
-                DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                    DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                    {
+                        var summary = new MentionViewModel();
+                        var isLoaded = summary.LoadById(e.SummaryId);
+                        if (isLoaded)
+                            _mentionsList.Add(summary);
+                    });
+                }
+                else
                 {
-                    // TODO: Handle Topic, UnreadCount, making subsequent LoadById's moot
-                    foundItem.LoadById(e.SummaryId);
-                    var newMessage = _unitOfWork.MentionItems.FindById(e.MessageId);
-                    if (newMessage != null)
-                        foundItem.LoadLastMessage(newMessage);
-                });
+                    DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                    {
+                        // TODO: Handle Topic, UnreadCount, making subsequent LoadById's moot
+                        foundItem.LoadById(e.SummaryId);
+                        var newMessage = _unitOfWork.MentionItems.FindById(e.MessageId);
+                        if (newMessage != null)
+                            foundItem.LoadLastMessage(newMessage);
+                    });
+                }
             }
         }
 
-        void _sessionSupervisor_MessageItemReceived(object sender, MessageItemEventArgs e)
+        private void _sessionSupervisor_MessageItemReceived(object sender, MessageItemEventArgs e)
         {
-            var foundItem = _messagesList.Where(x => x.RecordId == e.SummaryId).FirstOrDefault();
-            if (foundItem == null)
+            if (_lastRefreshMessages > DateTime.MinValue)
             {
-                DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                var foundItem = _messagesList.Where(x => x.RecordId == e.SummaryId).FirstOrDefault();
+                if (foundItem == null)
                 {
-                    var summary = new MessageViewModel();
-                    var isLoaded = summary.LoadById(e.SummaryId);
-                    if (isLoaded)
-                        _messagesList.Add(summary);
-                });
-            }
-            else
-            {
-                DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                    DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                    {
+                        var summary = new MessageViewModel();
+                        var isLoaded = summary.LoadById(e.SummaryId);
+                        if (isLoaded)
+                            _messagesList.Add(summary);
+                    });
+                }
+                else
                 {
-                    // TODO: Handle Topic, UnreadCount, making subsequent LoadById's moot
-                    foundItem.LoadById(e.SummaryId);
-                    var newMessage = _unitOfWork.MessageItems.FindById(e.MessageId);
-                    if (newMessage != null)
-                        foundItem.LoadLastMessage(newMessage);
-                });
+                    DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                    {
+                        // TODO: Handle Topic, UnreadCount, making subsequent LoadById's moot
+                        foundItem.LoadById(e.SummaryId);
+                        var newMessage = _unitOfWork.MessageItems.FindById(e.MessageId);
+                        if (newMessage != null)
+                            foundItem.LoadLastMessage(newMessage);
+                    });
+                }
             }
         }
 
