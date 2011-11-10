@@ -37,7 +37,8 @@ namespace derpirc.Views
         {
             var control = sender as TextBox;
             if (e.Key == Key.Enter && !string.IsNullOrEmpty(control.Text))
-                viewModel.Send();
+                if (viewModel.SendCommand.CanExecute(null))
+                    viewModel.SendCommand.Execute(null);
         }
     }
 }
