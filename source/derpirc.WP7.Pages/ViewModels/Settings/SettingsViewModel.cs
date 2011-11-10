@@ -161,22 +161,16 @@ namespace derpirc.ViewModels
             {
                 // Code runs "for real": Connect to service, etc...
 
-                this.MessengerInstance.Register<NotificationMessage<bool>>(this, message =>
+                this.MessengerInstance.Register<NotificationMessage<bool>>(this, "action", message =>
                 {
-                    var target = message.Target as string;
-                    if (target == "action")
+                    switch (message.Notification)
                     {
-                        switch (message.Notification)
-                        {
-                            case "add":
-                                CanAdd = message.Content;
-                                break;
-                            case "clear":
-                                CanClear = message.Content;
-                                break;
-                            default:
-                                break;
-                        }
+                        case "add":
+                            CanAdd = message.Content;
+                            break;
+                        case "clear":
+                            CanClear = message.Content;
+                            break;
                     }
                 });
             }

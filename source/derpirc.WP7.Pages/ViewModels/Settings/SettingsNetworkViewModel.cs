@@ -28,7 +28,8 @@ namespace derpirc.ViewModels
 
                 _canAdd = value;
                 RaisePropertyChanged(() => CanAdd);
-                this.MessengerInstance.Send<NotificationMessage<bool>>(new NotificationMessage<bool>(this, "action", _canAdd, "add"));
+                this.MessengerInstance.Send<NotificationMessage<bool>>
+                    (new NotificationMessage<bool>(this, _canAdd, "add"), "action");
             }
         }
 
@@ -43,7 +44,8 @@ namespace derpirc.ViewModels
 
                 _canClear = value;
                 RaisePropertyChanged(() => CanClear);
-                this.MessengerInstance.Send<NotificationMessage<bool>>(new NotificationMessage<bool>(this, "action", _canClear, "clear"));
+                this.MessengerInstance.Send<NotificationMessage<bool>>
+                    (new NotificationMessage<bool>(this, _canClear, "clear"), "action");
             }
         }
 
@@ -99,7 +101,6 @@ namespace derpirc.ViewModels
 
                 this.MessengerInstance.Register<NotificationMessage<Network>>(this, "Network", message =>
                 {
-                    var target = message.Target as string;
                     switch (message.Notification)
                     {
                         case "unselect":
@@ -119,7 +120,6 @@ namespace derpirc.ViewModels
 
                 this.MessengerInstance.Register<NotificationMessage<bool>>(this, "Save", message =>
                 {
-                    var target = message.Target as string;
                     this.Save(message.Content);
                 });
 

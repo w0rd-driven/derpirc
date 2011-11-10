@@ -135,7 +135,6 @@ namespace derpirc.ViewModels
                 // Code runs "for real": Connect to service, etc...
                 this.MessengerInstance.Register<NotificationMessage>(this, "Save", message =>
                 {
-                    var target = message.Target as string;
                     this.Save();
                 });
 
