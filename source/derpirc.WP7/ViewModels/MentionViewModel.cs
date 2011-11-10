@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using derpirc.Core;
 using derpirc.Data;
 using derpirc.Data.Models;
 using GalaSoft.MvvmLight;
@@ -125,6 +126,20 @@ namespace derpirc.ViewModels
 
                 _unreadCount = value;
                 RaisePropertyChanged(() => UnreadCount);
+            }
+        }
+
+        private bool _isConnected;
+        public bool IsConnected
+        {
+            get { return _isConnected; }
+            set
+            {
+                if (_isConnected == value)
+                    return;
+
+                _isConnected = value;
+                RaisePropertyChanged(() => IsConnected);
             }
         }
 

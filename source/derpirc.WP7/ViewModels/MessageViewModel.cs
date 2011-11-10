@@ -128,6 +128,20 @@ namespace derpirc.ViewModels
             }
         }
 
+        private bool _isConnected;
+        public bool IsConnected
+        {
+            get { return _isConnected; }
+            set
+            {
+                if (_isConnected == value)
+                    return;
+
+                _isConnected = value;
+                RaisePropertyChanged(() => IsConnected);
+            }
+        }
+
         #endregion
 
         /// <summary>

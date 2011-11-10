@@ -280,8 +280,29 @@ namespace derpirc.ViewModels
             else
             {
                 // Code runs "for real": Connect to service, etc...
+                SupervisorFacade.Default.StateChanged += this.OnStateChanged;
+                SupervisorFacade.Default.ChannelJoined += this.OnChannelJoined;
+                SupervisorFacade.Default.ChannelLeft += this.OnChannelLeft;
                 SupervisorFacade.Default.ChannelItemReceived += this.OnChannelItemReceived;
             }
+        }
+
+        private void OnStateChanged(object sender, ClientStatusEventArgs e)
+        {
+            if (e.Info.NetworkName.Equals(this.Model.Network.Name, StringComparison.OrdinalIgnoreCase))
+                this.IsConnected = e.Info.State == ClientState.Processed ? true : false;
+        }
+
+        private void OnChannelJoined(object sender, ChannelStatusEventArgs e)
+        {
+            if (e.SummaryId == this.Model.Id)
+                this.IsConnected = true;
+        }
+
+        private void OnChannelLeft(object sender, ChannelStatusEventArgs e)
+        {
+            if (e.SummaryId == this.Model.Id)
+                this.IsConnected = false;
         }
 
         private void OnChannelItemReceived(object sender, MessageItemEventArgs e)

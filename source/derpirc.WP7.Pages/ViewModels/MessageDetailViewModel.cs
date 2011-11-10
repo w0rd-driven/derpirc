@@ -265,27 +265,37 @@ namespace derpirc.ViewModels
             else
             {
                 // Code runs "for real": Connect to service, etc...
+                SupervisorFacade.Default.StateChanged += this.OnStateChanged;
                 SupervisorFacade.Default.MessageItemReceived += this.OnMessageItemReceived;
             }
+        }
+
+        private void OnStateChanged(object sender, ClientStatusEventArgs e)
+        {
+            if (e.Info.NetworkName.Equals(this.Model.Network.Name, StringComparison.OrdinalIgnoreCase))
+                this.IsConnected = e.Info.State == ClientState.Processed ? true : false;
         }
 
         private void OnMessageItemReceived(object sender, MessageItemEventArgs e)
         {
             if (e.SummaryId == Model.Id)
             {
-                var newMessage = DataUnitOfWork.Default.MessageItems.FindById(e.MessageId);
-                if (newMessage != null)
+                DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
-                    // HACK: If Owner.Me, make sure it wasn't added by the UI. This could also serve as a MessageSent event
-                    if (newMessage.Owner == Owner.Me)
+                    var newMessage = DataUnitOfWork.Default.MessageItems.FindById(e.MessageId);
+                    if (newMessage != null)
                     {
-                        var foundItem = _messagesList.Where(x => x.Timestamp == newMessage.Timestamp);
-                        if (foundItem != null)
-                            return;
+                        // HACK: If Owner.Me, make sure it wasn't added by the UI. This could also serve as a MessageSent event
+                        if (newMessage.Owner == Owner.Me)
+                        {
+                            var foundItem = _messagesList.Where(x => x.Timestamp == newMessage.Timestamp);
+                            if (foundItem != null)
+                                return;
+                        }
+                        _messagesList.Add(newMessage);
+                        Messages.View.MoveCurrentToLast();
                     }
-                    _messagesList.Add(newMessage);
-                    Messages.View.MoveCurrentToLast();
-                }
+                });
             }
         }
 

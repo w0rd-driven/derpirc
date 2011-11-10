@@ -321,11 +321,12 @@ namespace derpirc.ViewModels
             lock (_threadLock)
             {
                 _supervisor = SupervisorFacade.Default;
-                _supervisor.ChannelJoined += this._sessionSupervisor_ChannelJoined;
-                _supervisor.ChannelLeft += this._sessionSupervisor_ChannelLeft;
-                _supervisor.ChannelItemReceived += this._sessionSupervisor_ChannelItemReceived;
-                _supervisor.MentionItemReceived += this._sessionSupervisor_MentionItemReceived;
-                _supervisor.MessageItemReceived += this._sessionSupervisor_MessageItemReceived;
+                _supervisor.StateChanged += this._supervisor_StateChanged;
+                _supervisor.ChannelJoined += this._supervisor_ChannelJoined;
+                _supervisor.ChannelLeft += this._supervisor_ChannelLeft;
+                _supervisor.ChannelItemReceived += this._supervisor_ChannelItemReceived;
+                _supervisor.MentionItemReceived += this._supervisor_MentionItemReceived;
+                _supervisor.MessageItemReceived += this._supervisor_MessageItemReceived;
 
                 _unitOfWork = new DataUnitOfWork(new ContextConnectionString()
                 {
@@ -341,12 +342,50 @@ namespace derpirc.ViewModels
 
         #region Events
 
-        private void _sessionSupervisor_ChannelJoined(object sender, Core.ChannelStatusEventArgs e)
+        private void _supervisor_StateChanged(object sender, ClientStatusEventArgs e)
         {
-            if (_lastRefreshChannels > DateTime.MinValue)
+            if (e.Info.State == ClientState.Processed)
             {
-                var foundItem = _channelsList.Where(x => x.RecordId == e.SummaryId).FirstOrDefault();
-                if (foundItem == null)
+                var foundChannels = _channelsList.Where(x => x.NetworkName.Equals(e.Info.NetworkName,
+                    StringComparison.OrdinalIgnoreCase));
+                foreach (var item in foundChannels)
+                    item.IsConnected = true;
+
+                var foundMentions = _mentionsList.Where(x => x.NetworkName.Equals(e.Info.NetworkName,
+                    StringComparison.OrdinalIgnoreCase));
+                foreach (var item in foundMentions)
+                    item.IsConnected = true;
+
+                var foundMessages = _messagesList.Where(x => x.NetworkName.Equals(e.Info.NetworkName,
+                    StringComparison.OrdinalIgnoreCase));
+                foreach (var item in foundMessages)
+                    item.IsConnected = true;
+            }
+            else
+            {
+                var foundChannels = _channelsList.Where(x => x.NetworkName.Equals(e.Info.NetworkName,
+                    StringComparison.OrdinalIgnoreCase));
+                foreach (var item in foundChannels)
+                    item.IsConnected = false;
+
+                var foundMentions = _mentionsList.Where(x => x.NetworkName.Equals(e.Info.NetworkName,
+                    StringComparison.OrdinalIgnoreCase));
+                foreach (var item in foundMentions)
+                    item.IsConnected = false;
+
+                var foundMessages = _messagesList.Where(x => x.NetworkName.Equals(e.Info.NetworkName,
+                    StringComparison.OrdinalIgnoreCase));
+                foreach (var item in foundMessages)
+                    item.IsConnected = false;
+            }
+        }
+
+        private void _supervisor_ChannelJoined(object sender, Core.ChannelStatusEventArgs e)
+        {
+            var foundChannel = _channelsList.Where(x => x.RecordId == e.SummaryId).FirstOrDefault();
+            if (foundChannel == null)
+            {
+                if (_lastRefreshChannels > DateTime.MinValue)
                 {
                     DispatcherHelper.CheckBeginInvokeOnUI(() =>
                     {
@@ -356,26 +395,55 @@ namespace derpirc.ViewModels
                             _channelsList.Add(summary);
                     });
                 }
-                else
+            }
+            else
+            {
+                DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
-                    DispatcherHelper.CheckBeginInvokeOnUI(() =>
-                    {
-                        foundItem.LoadById(e.SummaryId);
-                    });
-                }
+                    foundChannel.LoadById(e.SummaryId);
+                    foundChannel.IsConnected = true;
+                });
+            }
+
+            var foundMention = _mentionsList.Where(x => x.RecordId == e.SummaryId).FirstOrDefault();
+            if (foundMention != null)
+            {
+                DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                {
+                    foundMention.LoadById(e.SummaryId);
+                    foundMention.IsConnected = true;
+                });
             }
         }
 
-        private void _sessionSupervisor_ChannelLeft(object sender, Core.ChannelStatusEventArgs e)
+        private void _supervisor_ChannelLeft(object sender, Core.ChannelStatusEventArgs e)
         {
+            var foundChannel = _channelsList.Where(x => x.RecordId == e.SummaryId).FirstOrDefault();
+            if (foundChannel != null)
+            {
+                DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                {
+                    foundChannel.LoadById(e.SummaryId);
+                    foundChannel.IsConnected = false;
+                });
+            }
+            var foundMention = _mentionsList.Where(x => x.RecordId == e.SummaryId).FirstOrDefault();
+            if (foundMention != null)
+            {
+                DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                {
+                    foundMention.LoadById(e.SummaryId);
+                    foundMention.IsConnected = false;
+                });
+            }
         }
 
-        private void _sessionSupervisor_ChannelItemReceived(object sender, Core.MessageItemEventArgs e)
+        private void _supervisor_ChannelItemReceived(object sender, Core.MessageItemEventArgs e)
         {
-            if (_lastRefreshChannels > DateTime.MinValue)
+            var foundItem = _channelsList.Where(x => x.RecordId == e.SummaryId).FirstOrDefault();
+            if (foundItem == null)
             {
-                var foundItem = _channelsList.Where(x => x.RecordId == e.SummaryId).FirstOrDefault();
-                if (foundItem == null)
+                if (_lastRefreshChannels > DateTime.MinValue)
                 {
                     DispatcherHelper.CheckBeginInvokeOnUI(() =>
                     {
@@ -385,26 +453,26 @@ namespace derpirc.ViewModels
                             _channelsList.Add(summary);
                     });
                 }
-                else
+            }
+            else
+            {
+                DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
-                    DispatcherHelper.CheckBeginInvokeOnUI(() =>
-                    {
-                        // TODO: Handle Topic, UnreadCount, making subsequent LoadById's moot
-                        foundItem.LoadById(e.SummaryId);
-                        var newMessage = _unitOfWork.ChannelItems.FindById(e.MessageId);
-                        if (newMessage != null)
-                            foundItem.LoadLastMessage(newMessage);
-                    });
-                }
+                    // TODO: Handle Topic, UnreadCount, making subsequent LoadById's moot
+                    foundItem.LoadById(e.SummaryId);
+                    var newMessage = _unitOfWork.ChannelItems.FindById(e.MessageId);
+                    if (newMessage != null)
+                        foundItem.LoadLastMessage(newMessage);
+                });
             }
         }
 
-        private void _sessionSupervisor_MentionItemReceived(object sender, MessageItemEventArgs e)
+        private void _supervisor_MentionItemReceived(object sender, MessageItemEventArgs e)
         {
-            if (_lastRefreshMentions > DateTime.MinValue)
+            var foundItem = _mentionsList.Where(x => x.RecordId == e.SummaryId).FirstOrDefault();
+            if (foundItem == null)
             {
-                var foundItem = _mentionsList.Where(x => x.RecordId == e.SummaryId).FirstOrDefault();
-                if (foundItem == null)
+                if (_lastRefreshMentions > DateTime.MinValue)
                 {
                     DispatcherHelper.CheckBeginInvokeOnUI(() =>
                     {
@@ -414,26 +482,26 @@ namespace derpirc.ViewModels
                             _mentionsList.Add(summary);
                     });
                 }
-                else
+            }
+            else
+            {
+                DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
-                    DispatcherHelper.CheckBeginInvokeOnUI(() =>
-                    {
-                        // TODO: Handle Topic, UnreadCount, making subsequent LoadById's moot
-                        foundItem.LoadById(e.SummaryId);
-                        var newMessage = _unitOfWork.MentionItems.FindById(e.MessageId);
-                        if (newMessage != null)
-                            foundItem.LoadLastMessage(newMessage);
-                    });
-                }
+                    // TODO: Handle Topic, UnreadCount, making subsequent LoadById's moot
+                    foundItem.LoadById(e.SummaryId);
+                    var newMessage = _unitOfWork.MentionItems.FindById(e.MessageId);
+                    if (newMessage != null)
+                        foundItem.LoadLastMessage(newMessage);
+                });
             }
         }
 
-        private void _sessionSupervisor_MessageItemReceived(object sender, MessageItemEventArgs e)
+        private void _supervisor_MessageItemReceived(object sender, MessageItemEventArgs e)
         {
-            if (_lastRefreshMessages > DateTime.MinValue)
+            var foundItem = _messagesList.Where(x => x.RecordId == e.SummaryId).FirstOrDefault();
+            if (foundItem == null)
             {
-                var foundItem = _messagesList.Where(x => x.RecordId == e.SummaryId).FirstOrDefault();
-                if (foundItem == null)
+                if (_lastRefreshMessages > DateTime.MinValue)
                 {
                     DispatcherHelper.CheckBeginInvokeOnUI(() =>
                     {
@@ -443,17 +511,17 @@ namespace derpirc.ViewModels
                             _messagesList.Add(summary);
                     });
                 }
-                else
+            }
+            else
+            {
+                DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
-                    DispatcherHelper.CheckBeginInvokeOnUI(() =>
-                    {
-                        // TODO: Handle Topic, UnreadCount, making subsequent LoadById's moot
-                        foundItem.LoadById(e.SummaryId);
-                        var newMessage = _unitOfWork.MessageItems.FindById(e.MessageId);
-                        if (newMessage != null)
-                            foundItem.LoadLastMessage(newMessage);
-                    });
-                }
+                    // TODO: Handle Topic, UnreadCount, making subsequent LoadById's moot
+                    foundItem.LoadById(e.SummaryId);
+                    var newMessage = _unitOfWork.MessageItems.FindById(e.MessageId);
+                    if (newMessage != null)
+                        foundItem.LoadLastMessage(newMessage);
+                });
             }
         }
 
