@@ -39,6 +39,8 @@ namespace derpirc.Data.Models
 
         private string _Password;
 
+        private bool _IsConnected;
+
         private EntitySet<Channel> _Channels;
 
         private EntitySet<Mention> _Mentions;
@@ -71,6 +73,8 @@ namespace derpirc.Data.Models
         partial void OnPortsChanged();
         partial void OnPasswordChanging(string value);
         partial void OnPasswordChanged();
+        partial void OnIsConnectedChanging(bool value);
+        partial void OnIsConnectedChanged();
         #endregion
 
         public Network()
@@ -248,6 +252,26 @@ namespace derpirc.Data.Models
                     this._Password = value;
                     this.SendPropertyChanged("Password");
                     this.OnPasswordChanged();
+                }
+            }
+        }
+
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_IsConnected", DbType = "Bit NOT NULL", CanBeNull = false)]
+        public bool IsConnected
+        {
+            get
+            {
+                return this._IsConnected;
+            }
+            set
+            {
+                if ((this._IsConnected != value))
+                {
+                    this.OnIsConnectedChanging(value);
+                    this.SendPropertyChanging();
+                    this._IsConnected = value;
+                    this.SendPropertyChanged("IsConnected");
+                    this.OnIsConnectedChanged();
                 }
             }
         }

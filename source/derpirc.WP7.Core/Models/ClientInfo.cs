@@ -13,7 +13,6 @@ namespace derpirc.Core
 
         public ClientInfo()
         {
-            State = ClientState.Inconceivable;
         }
     }
 }

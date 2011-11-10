@@ -245,6 +245,8 @@ namespace derpirc.Core
             var summary = this.GetChannel(channel.Client, channel.Name);
             if (summary != null)
             {
+                summary.IsConnected = true;
+                _unitOfWork.Commit();
                 var eventArgs = new ChannelStatusEventArgs()
                 {
                     SummaryId = summary.Id,
@@ -259,6 +261,8 @@ namespace derpirc.Core
             var summary = this.GetChannel(channel.Client, channel.Name);
             if (summary != null)
             {
+                summary.IsConnected = false;
+                _unitOfWork.Commit();
                 var eventArgs = new ChannelStatusEventArgs()
                 {
                     SummaryId = summary.Id,
@@ -378,7 +382,7 @@ namespace derpirc.Core
                     result = network.Channels.FirstOrDefault(x => x.Name == channelName.ToLower());
                     if (result == null)
                     {
-                        result = new Channel() { Name = channelName };
+                        result = new Channel() { Name = channelName, IsConnected = false };
                         network.Channels.Add(result);
                         this._unitOfWork.Commit();
                     }
@@ -398,7 +402,7 @@ namespace derpirc.Core
                     result = network.Mentions.FirstOrDefault(x => x.Name == nickName.ToLower());
                     if (result == null)
                     {
-                        result = new Mention() { Name = nickName, ChannelName = channelName };
+                        result = new Mention() { Name = nickName, ChannelName = channelName, IsConnected = false };
                         network.Mentions.Add(result);
                         this._unitOfWork.Commit();
                     }

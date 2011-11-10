@@ -3,7 +3,7 @@ namespace derpirc.Core
 {
     public enum ClientState
     {
-        Inconceivable = 0,
+        Uninitialized = 0,
         Connected = 1,
         Registered = 2,
         Processed = 3,

@@ -31,6 +31,8 @@ namespace derpirc.Data.Models
 
         private string _Topic;
 
+        private bool _IsConnected;
+
         private EntitySet<ChannelItem> _Messages;
 
         private EntityRef<Network> _Network;
@@ -47,6 +49,8 @@ namespace derpirc.Data.Models
         partial void OnNameChanged();
         partial void OnTopicChanging(string value);
         partial void OnTopicChanged();
+        partial void OnIsConnectedChanging(bool value);
+        partial void OnIsConnectedChanged();
         #endregion
 
         public Channel()
@@ -136,6 +140,26 @@ namespace derpirc.Data.Models
                     this._Topic = value;
                     this.SendPropertyChanged("Topic");
                     this.OnTopicChanged();
+                }
+            }
+        }
+
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_IsConnected", DbType = "Bit NOT NULL", CanBeNull = false)]
+        public bool IsConnected
+        {
+            get
+            {
+                return this._IsConnected;
+            }
+            set
+            {
+                if ((this._IsConnected != value))
+                {
+                    this.OnIsConnectedChanging(value);
+                    this.SendPropertyChanging();
+                    this._IsConnected = value;
+                    this.SendPropertyChanged("IsConnected");
+                    this.OnIsConnectedChanged();
                 }
             }
         }

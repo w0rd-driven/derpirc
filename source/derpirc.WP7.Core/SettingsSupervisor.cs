@@ -136,6 +136,7 @@ namespace derpirc.Core
             result.ConnectedHostName = setting.HostName;
             result.Ports = setting.Ports;
             result.Password = setting.Password;
+            result.IsConnected = false;
             foreach (var favorite in setting.Favorites)
             {
                 CreateFavorite(result, favorite);

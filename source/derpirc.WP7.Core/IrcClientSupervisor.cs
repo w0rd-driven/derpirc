@@ -286,6 +286,7 @@ namespace derpirc.Core
         {
             var client = sender as IrcClient;
             UpdateState(client, ClientState.Disconnected, null);
+            UpdateConnectionStatus(client, false);
             // Connect(client);
         }
 
@@ -293,6 +294,7 @@ namespace derpirc.Core
         {
             var client = sender as IrcClient;
             UpdateState(client, ClientState.Connected, null);
+            UpdateConnectionStatus(client, false);
         }
 
         private void Client_Disconnected(object sender, EventArgs e)
@@ -416,6 +418,7 @@ namespace derpirc.Core
                 if (matchedNetwork == null)
                     matchedNetwork = this.GetNetworkByClient(client);
                 this.JoinSession(matchedNetwork, client);
+                UpdateConnectionStatus(client, true);
 
                 // Change local servername to match for easy reconnects
                 //var matchedServer = GetServer(client, client.ServerName);
@@ -476,6 +479,26 @@ namespace derpirc.Core
                     Info = foundClient.Info,
                 };
                 OnStateChanged(eventArgs);
+            }
+        }
+
+        private void UpdateConnectionStatus(IrcClient client, bool value)
+        {
+            if (client != null)
+            {
+                var network = this.GetNetworkByClient(client);
+                if (network != null)
+                {
+                    network.IsConnected = value;
+                    if (!value)
+                    {
+                        foreach (var item in network.Channels)
+                            item.IsConnected = value;
+                        foreach (var item in network.Mentions)
+                            item.IsConnected = value;
+                    }
+                    _unitOfWork.Commit();
+                }
             }
         }
 
