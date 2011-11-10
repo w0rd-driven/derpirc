@@ -12,7 +12,28 @@
                     xmlns:sys="clr-namespace:System;assembly=mscorlib"
                     xmlns:helpers="clr-namespace:derpirc.Helpers"
                     mc:Ignorable="d">
-    
+
+    <Style x:Key="DetailMessageStyle" TargetType="TextBlock" BasedOn="{StaticResource TextBlockBase}">
+        <Setter Property="Margin" Value="12,8,0,4" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+        <Setter Property="TextTrimming" Value="WordEllipsis" />
+    </Style>
+    <Style x:Key="DetailTimeStampStyle" TargetType="TextBlock" BasedOn="{StaticResource TextBlockBase}">
+        <Setter Property="FontSize" Value="{StaticResource PhoneFontSizeSmall}" />
+        <Setter Property="Foreground" Value="{StaticResource PhoneSubtleBrush}" />
+        <Setter Property="HorizontalAlignment" Value="Right" />
+        <Setter Property="Margin" Value="0,4,12,8" />
+    </Style>
+    <Style x:Key="DetailSourceStyle" TargetType="TextBlock" BasedOn="{StaticResource TextBlockBase}">
+        <Setter Property="FontSize" Value="{StaticResource PhoneFontSizeSmall}" />
+        <Setter Property="Margin" Value="8,-12,8,0" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+    <Style x:Key="DetailStatusStyle" TargetType="TextBlock" BasedOn="{StaticResource TextBlockBase}">
+        <Setter Property="FontSize" Value="{StaticResource PhoneFontSizeSmall}" />
+        <Setter Property="Margin" Value="8,0,8,-12" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
     <ControlTemplate x:Key="PhoneDisabledTextBoxTemplate" TargetType="TextBox">
         <ContentControl x:Name="ContentElement" BorderThickness="0" HorizontalContentAlignment="Stretch" Margin="{StaticResource PhoneTextBoxInnerMargin}" Padding="{TemplateBinding Padding}" VerticalContentAlignment="Stretch"/>
     </ControlTemplate>
@@ -25,8 +46,8 @@
         <Setter Property="SelectionBackground" Value="{StaticResource PhoneAccentBrush}"/>
         <Setter Property="SelectionForeground" Value="{StaticResource PhoneTextBoxSelectionForegroundBrush}"/>
         <Setter Property="BorderThickness" Value="{StaticResource PhoneBorderThickness}"/>
-        <Setter Property="Margin" Value="-12"/>
-        <Setter Property="Padding" Value="2"/>
+        <Setter Property="Margin" Value="-12" />
+        <Setter Property="Padding" Value="2" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="TextBox">
@@ -37,8 +58,9 @@
                                 <VisualState x:Name="MouseOver"/>
                                 <VisualState x:Name="Disabled">
                                     <Storyboard>
-                                        <ColorAnimation Duration="0" To="{StaticResource PhoneDisabledColor}" 
-                                            Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)" Storyboard.TargetName="PathTickRight" d:IsOptimized="True" />
+                                        <ColorAnimation Duration="0" To="{StaticResource PhoneDisabledColor}"
+                                                        Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)"
+                                                        Storyboard.TargetName="PathTickRight" d:IsOptimized="True" />
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Visibility" Storyboard.TargetName="EnabledBorder">
                                             <DiscreteObjectKeyFrame KeyTime="0">
                                                 <DiscreteObjectKeyFrame.Value>
@@ -195,6 +217,8 @@
         </Grid>
     </DataTemplate>
     <DataTemplate x:Key="TemplateDetailMessageSelector">
-        <helpers:MessageTemplateSelector Content="{Binding}" TemplateMyMessage="{StaticResource TemplateDetailMyMessage}" TemplateTheirMessage="{StaticResource TemplateDetailTheirMessage}" />
+        <helpers:MessageTemplateSelector Content="{Binding}"
+                                         TemplateMyMessage="{StaticResource TemplateDetailMyMessage}"
+                                         TemplateTheirMessage="{StaticResource TemplateDetailTheirMessage}" />
     </DataTemplate>
 </ResourceDictionary>
