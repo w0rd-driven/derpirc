@@ -141,7 +141,7 @@ namespace derpirc.ViewModels
 
         private void Add()
         {
-            var count = SettingsUnitOfWork.Default.Networks.Count;
+            var count = SettingsUnitOfWork.Default.Networks.Last().Id;
             // We're playing throw the record. THROW
             _addingRecord = new Network();
             _addingRecord.Id = count + 1;

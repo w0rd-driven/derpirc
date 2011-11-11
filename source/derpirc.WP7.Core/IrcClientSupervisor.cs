@@ -13,27 +13,17 @@ namespace derpirc.Core
 {
     public class IrcClientSupervisor : IDisposable
     {
-        #region Properties
-
-        private bool _isNetworkAvailable;
-        public bool IsNetworkAvailable
-        {
-            get { return _isNetworkAvailable; }
-            set { _isNetworkAvailable = value; }
-        }
-
-        #endregion
-
         public event EventHandler<ClientStatusEventArgs> StateChanged;
-
-        private bool _isDisposed;
-
-        private int _quitTimeout = 1000;
-        private int _defaultServerPort = 6667;
 
         private DataUnitOfWork _unitOfWork;
 
+        private bool _isNetworkAvailable;
+        private int _quitTimeout = 1000;
+        private int _defaultServerPort = 6667;
+
         private object _threadLock = new object();
+
+        private bool _isDisposed;
 
         // EFNet: Welcome to the $server Internet Relay Chat Network $nick
         // PowerPrecision: Welcome to the $server IRC Network $nick!$email@$host
@@ -43,18 +33,7 @@ namespace derpirc.Core
         {
             this._unitOfWork = unitOfWork;
             NetworkDetector.Default.OnStatusChanged += this.Network_OnStatusChanged;
-            ThreadPool.QueueUserWorkItem((object userState) =>
-            {
-                Startup(userState);
-            });
-        }
-
-        private void Startup(object userState)
-        {
-            lock (this._threadLock)
-            {
-                NetworkDetector.Default.SetNetworkPolling();
-            }
+            NetworkDetector.Default.SetNetworkPolling();
         }
 
         private void Network_OnStatusChanged(object sender, NetworkStatusEventArgs e)
@@ -67,10 +46,9 @@ namespace derpirc.Core
 
         private void NetworkUp()
         {
-            if (!IsNetworkAvailable)
+            if (!_isNetworkAvailable)
             {
-                // Do work
-                IsNetworkAvailable = true;
+                _isNetworkAvailable = true;
                 if (SupervisorFacade.Default.Clients.Count == 0)
                 {
                     for (int index = 0; index < SettingsUnitOfWork.Default.Networks.Count; index++)
@@ -91,11 +69,49 @@ namespace derpirc.Core
 
         private void NetworkDown()
         {
-            if (IsNetworkAvailable)
+            if (_isNetworkAvailable)
             {
-                // Do work
-                IsNetworkAvailable = false;
-                SupervisorFacade.Default.Clients.Clear();
+                _isNetworkAvailable = false;
+                this.Disconnect();
+            }
+        }
+
+        public void ReinitializeClients(SettingsSync settingsToSync)
+        {
+            if (SupervisorFacade.Default.Clients.Count == 0)
+            {
+                for (int index = 0; index < SettingsUnitOfWork.Default.Networks.Count; index++)
+                {
+                    var item = SettingsUnitOfWork.Default.Networks[index];
+                    var client = this.InitializeClientItem();
+                    client.Info.NetworkName = item.Name;
+                    SupervisorFacade.Default.Clients.Add(client);
+                }
+            }
+            else
+            {
+                foreach (var networkName in settingsToSync.OldItems)
+                {
+                    var foundClient = SupervisorFacade.Default.Clients.FirstOrDefault(x => x.Info.NetworkName == networkName);
+                    if (foundClient != null)
+                        this.Disconnect(foundClient);
+                    SupervisorFacade.Default.Clients.Remove(foundClient);
+                }
+                foreach (var networkName in settingsToSync.NewItems)
+                {
+                    var foundClient = SupervisorFacade.Default.Clients.FirstOrDefault(x => x.Info.NetworkName == networkName);
+                    if (foundClient == null)
+                    {
+                        var client = this.InitializeClientItem();
+                        client.Info.NetworkName = networkName;
+                        SupervisorFacade.Default.Clients.Add(client);
+                    }
+                }
+            }
+            var session = this.GetDefaultSession();
+            if (session != null)
+            {
+                this.Reconnect();
             }
         }
 
@@ -166,11 +182,11 @@ namespace derpirc.Core
 
         public void Reconnect(bool force = false)
         {
-            if (IsNetworkAvailable)
+            if (_isNetworkAvailable)
             {
                 var clients = SupervisorFacade.Default.Clients.AsEnumerable();
                 if (!force)
-                    clients = clients.Where(x => !x.Client.IsConnected);
+                    clients = clients.Where(x => x.Client == null || !x.Client.IsConnected);
 
                 foreach (var item in clients)
                 {
@@ -241,24 +257,24 @@ namespace derpirc.Core
 
         private IrcClient InitializeIrcClient()
         {
-            if (IsNetworkAvailable)
+            if (_isNetworkAvailable)
             {
                 var result = new IrcClient();
                 result.FloodPreventer = new IrcStandardFloodPreventer(4, 2000);
                 // Connection events
-                result.Connected += new EventHandler<EventArgs>(Client_Connected);
-                result.Disconnected += new EventHandler<EventArgs>(Client_Disconnected);
-                result.ServerBounce += new EventHandler<IrcServerInfoEventArgs>(Client_Bounce);
+                result.Connected += this.Client_Connected;
+                result.Disconnected += this.Client_Disconnected;
+                result.ServerBounce += this.Client_Bounce;
 
                 // Failure events
-                result.ConnectFailed += new EventHandler<IrcErrorEventArgs>(Client_ConnectFailed);
-                result.ProtocolError += new EventHandler<IrcProtocolErrorEventArgs>(Client_ProtocolError);
-                result.Error += new EventHandler<IrcErrorEventArgs>(Client_Error);
-                result.ErrorMessageReceived += new EventHandler<IrcErrorMessageEventArgs>(Client_ErrorMessageReceived);
+                result.ConnectFailed += this.Client_ConnectFailed;
+                result.ProtocolError += this.Client_ProtocolError;
+                result.Error += this.Client_Error;
+                result.ErrorMessageReceived += this.Client_ErrorMessageReceived;
 
                 // Detection events
-                result.Registered += new EventHandler<EventArgs>(Client_Registered);
-                result.NetworkInformationReceived += new EventHandler<EventArgs>(Client_NetworkInformationReceived);
+                result.Registered += this.Client_Registered;
+                result.NetworkInformationReceived += this.Client_NetworkInformationReceived;
                 return result;
             }
             else
@@ -267,7 +283,7 @@ namespace derpirc.Core
 
         private CtcpClient InitializeCtcpClient(IrcClient client)
         {
-            if (IsNetworkAvailable && client != null)
+            if (_isNetworkAvailable && client != null)
             {
                 var result = new CtcpClient(client);
                 result.Error += new EventHandler<IrcErrorEventArgs>(CtcpClient_Error);

@@ -72,6 +72,7 @@
     <Compile Include="LocalUserSupervisor.cs" />
     <Compile Include="Models\NetworkTypeEnum.cs" />
     <Compile Include="Models\NetworkTypeRequestStatusEnum.cs" />
+    <Compile Include="Models\SettingsSync.cs" />
     <Compile Include="NetworkAvailableEventArgs.cs" />
     <Compile Include="NetworkDetector.cs" />
     <Compile Include="NetworkStatusEventArgs.cs" />

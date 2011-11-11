@@ -32,12 +32,13 @@ namespace derpirc.Core
         private LocalUserSupervisor _luserSupervisor;
 
         // HACK: UI facing
+        public event EventHandler<ClientStatusEventArgs> StateChanged;
+
         public event EventHandler<ChannelStatusEventArgs> ChannelJoined;
         public event EventHandler<ChannelStatusEventArgs> ChannelLeft;
         public event EventHandler<MessageItemEventArgs> ChannelItemReceived;
         public event EventHandler<MessageItemEventArgs> MentionItemReceived;
         public event EventHandler<MessageItemEventArgs> MessageItemReceived;
-        public event EventHandler<ClientStatusEventArgs> StateChanged;
 
         #region Singleton Impl
 
@@ -111,7 +112,10 @@ namespace derpirc.Core
         {
             var settingsSupervisorReference = new WeakReference(new SettingsSupervisor(_unitOfWork));
             var settingsSupervisor = settingsSupervisorReference.Target as SettingsSupervisor;
-            settingsSupervisor.Commit();
+            settingsSupervisor.Commit(settingsToSync =>
+            {
+                this._clientSupervisor.ReinitializeClients(settingsToSync);
+            });
         }
 
         // ConnectionView

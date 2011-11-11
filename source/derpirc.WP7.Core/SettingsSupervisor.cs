@@ -11,17 +11,16 @@ namespace derpirc.Core
     /// </summary>
     public class SettingsSupervisor : IDisposable
     {
-        #region Properties
-
-        #endregion
-
         private bool _isDisposed;
 
         private DataUnitOfWork _unitOfWork;
+        private SettingsSync _settingsToSync;
+        private Action<SettingsSync> _completedAction;
 
         public SettingsSupervisor(DataUnitOfWork unitOfWork)
         {
             this._unitOfWork = unitOfWork;
+            this._settingsToSync = new SettingsSync();
         }
 
         /// <summary>
@@ -72,49 +71,70 @@ namespace derpirc.Core
         private void PurgeOrphans()
         {
             var isPurged = false;
-            List<int> networksToSmash = new List<int>();
-            List<int> favoritesToSmash = new List<int>();
+            List<string> favoritesToRemove = new List<string>();
 
             var defaultSession = _unitOfWork.Sessions.FindBy(x => x.Name == "default").FirstOrDefault();
             var configNetworks = SettingsUnitOfWork.Default.Networks;
-            for (int index = 0; index <= defaultSession.Networks.Count - 1; index++)
+            foreach (var network in defaultSession.Networks)
             {
-                var record = defaultSession.Networks[index];
-                var configNetwork = configNetworks.Where(x => x.Name == record.Name).FirstOrDefault();
+                var configNetwork = configNetworks.Where(x => x.Name == network.Name).FirstOrDefault();
                 if (configNetwork == null)
-                    networksToSmash.Add(index);
+                    _settingsToSync.OldItems.Add(network.Name);
                 else
                 {
-                    for (int indexFavorite = 0; indexFavorite <= record.Favorites.Count - 1; indexFavorite++)
+                    foreach (var favorite in network.Favorites)
                     {
-                        var recordFavorite = record.Favorites[indexFavorite];
-                        var configFavorite = configNetwork.Favorites.Where(x => x.Name == recordFavorite.Name).FirstOrDefault();
+                        var configFavorite = configNetwork.Favorites.FirstOrDefault(x => x.Name == favorite.Name);
                         if (configFavorite == null)
-                            favoritesToSmash.Add(indexFavorite);
+                            favoritesToRemove.Add(favorite.Name);
                     }
                 }
-                if (favoritesToSmash.Count > 0)
+                if (favoritesToRemove.Count > 0)
                 {
-                    for (int item = favoritesToSmash.Count - 1; item >= 0; --item)
+                    foreach (var favorite in favoritesToRemove)
                     {
-                        var recordFavorite = record.Favorites[item];
-                        _unitOfWork.Favorites.Remove(recordFavorite);
+                        var favoritesToDelete = network.Favorites.Where(x => x.Name == favorite);
+                        foreach (var item in favoritesToDelete)
+                        {
+                            _unitOfWork.Favorites.Remove(item);
+                        }
+                        // TODO: Bubble up to UI somehow...
+                        var channelsToDelete = network.Channels.Where(x => x.Name == favorite);
+                        foreach (var item in channelsToDelete)
+                        {
+                            _unitOfWork.Channels.Remove(item);
+                        }
+                        var mentionsToDelete = network.Mentions.Where(x => x.ChannelName == favorite);
+                        foreach (var item in mentionsToDelete)
+                        {
+                            _unitOfWork.Mentions.Remove(item);
+                        }
                         isPurged = true;
                     }
                 }
-                favoritesToSmash.Clear();
+                favoritesToRemove.Clear();
             }
-            if (networksToSmash.Count > 0)
+
+            if (_settingsToSync.OldItems.Count > 0)
             {
-                for (int item = networksToSmash.Count - 1; item >= 0; --item)
+                foreach (var network in _settingsToSync.OldItems)
                 {
-                    var record = defaultSession.Networks[item];
-                    _unitOfWork.Networks.Remove(record);
+                    // TODO: Bubble up to UI somehow...
+                    var recordsToDelete = defaultSession.Networks.Where(x => x.Name == network);
+                    foreach (var item in recordsToDelete)
+                    {
+                        _unitOfWork.Networks.Remove(item);
+                    }
                     isPurged = true;
                 }
             }
             if (isPurged)
                 _unitOfWork.Commit();
+            if (_completedAction != null)
+            {
+                _completedAction(_settingsToSync);
+                _completedAction = null;
+            }
         }
 
         #region Factory methods
@@ -142,6 +162,9 @@ namespace derpirc.Core
                 CreateFavorite(result, favorite);
             }
             parentRecord.Networks.Add(result);
+
+            _settingsToSync.NewItems.Add(setting.Name);
+
             return result;
         }
 
@@ -159,8 +182,9 @@ namespace derpirc.Core
         /// <summary>
         /// Calls private ConfigureRunningState() and PurgeOrphans() methods
         /// </summary>
-        public void Commit()
+        public void Commit(Action<SettingsSync> completedAction)
         {
+            this._completedAction = completedAction;
             ConfigureRunningState();
         }
 
