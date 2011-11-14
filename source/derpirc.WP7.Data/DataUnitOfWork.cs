@@ -167,10 +167,16 @@ namespace derpirc.Data
 
         protected StreamWriter GetLog(string filename, IsolatedStorageFile isoStore = null)
         {
+            IsolatedStorageFileStream isoStream = null;
+            StreamWriter result = null;
             if (isoStore == null)
-                return new StreamWriter(IsolatedStorageFile.GetUserStoreForApplication().OpenFile(filename, System.IO.FileMode.OpenOrCreate));
+                isoStream = IsolatedStorageFile.GetUserStoreForApplication()
+                    .OpenFile(filename, System.IO.FileMode.OpenOrCreate);
             else
-                return new StreamWriter(isoStore.OpenFile(filename, System.IO.FileMode.OpenOrCreate));
+                isoStream = isoStore.OpenFile(filename, System.IO.FileMode.OpenOrCreate);
+            if (isoStream != null)
+                result = new StreamWriter(isoStream);
+            return result;
         }
 
         private void GenerateSystemData()
