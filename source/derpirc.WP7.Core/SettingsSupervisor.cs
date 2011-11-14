@@ -71,7 +71,6 @@ namespace derpirc.Core
         private void PurgeOrphans()
         {
             var isPurged = false;
-            List<string> favoritesToRemove = new List<string>();
 
             var defaultSession = _unitOfWork.Sessions.FindBy(x => x.Name == "default").FirstOrDefault();
             var configNetworks = SettingsUnitOfWork.Default.Networks;
@@ -79,32 +78,31 @@ namespace derpirc.Core
             {
                 var configNetwork = configNetworks.Where(x => x.Name == network.Name).FirstOrDefault();
                 if (configNetwork == null)
-                    _settingsToSync.OldItems.Add(network.Name);
+                    _settingsToSync.OldNetworks.Add(network.Name);
                 else
                 {
                     foreach (var favorite in network.Favorites)
                     {
                         var configFavorite = configNetwork.Favorites.FirstOrDefault(x => x.Name == favorite.Name);
                         if (configFavorite == null)
-                            favoritesToRemove.Add(favorite.Name);
+                            _settingsToSync.OldFavorites.Add(new Tuple<string, string>(network.Name, favorite.Name));
                     }
                 }
-                if (favoritesToRemove.Count > 0)
+                if (_settingsToSync.OldFavorites.Count > 0)
                 {
-                    foreach (var favorite in favoritesToRemove)
+                    foreach (var favorite in _settingsToSync.OldFavorites)
                     {
-                        var favoritesToDelete = network.Favorites.Where(x => x.Name == favorite);
+                        var favoritesToDelete = network.Favorites.Where(x => x.Name == favorite.Item2);
                         foreach (var item in favoritesToDelete)
                         {
                             _unitOfWork.Favorites.Remove(item);
                         }
-                        // TODO: Bubble up to UI somehow...
-                        var channelsToDelete = network.Channels.Where(x => x.Name == favorite);
+                        var channelsToDelete = network.Channels.Where(x => x.Name == favorite.Item2);
                         foreach (var item in channelsToDelete)
                         {
                             _unitOfWork.Channels.Remove(item);
                         }
-                        var mentionsToDelete = network.Mentions.Where(x => x.ChannelName == favorite);
+                        var mentionsToDelete = network.Mentions.Where(x => x.ChannelName == favorite.Item2);
                         foreach (var item in mentionsToDelete)
                         {
                             _unitOfWork.Mentions.Remove(item);
@@ -112,14 +110,12 @@ namespace derpirc.Core
                         isPurged = true;
                     }
                 }
-                favoritesToRemove.Clear();
             }
 
-            if (_settingsToSync.OldItems.Count > 0)
+            if (_settingsToSync.OldNetworks.Count > 0)
             {
-                foreach (var network in _settingsToSync.OldItems)
+                foreach (var network in _settingsToSync.OldNetworks)
                 {
-                    // TODO: Bubble up to UI somehow...
                     var recordsToDelete = defaultSession.Networks.Where(x => x.Name == network);
                     foreach (var item in recordsToDelete)
                     {
@@ -163,7 +159,7 @@ namespace derpirc.Core
             }
             parentRecord.Networks.Add(result);
 
-            _settingsToSync.NewItems.Add(setting.Name);
+            _settingsToSync.NewNetworks.Add(setting.Name);
 
             return result;
         }

@@ -6,7 +6,6 @@ using derpirc.Data;
 using derpirc.Data.Models;
 using IrcDotNet;
 using IrcDotNet.Ctcp;
-using Microsoft.Phone.Reactive;
 
 namespace derpirc.Core
 {
@@ -32,6 +31,7 @@ namespace derpirc.Core
         private LocalUserSupervisor _luserSupervisor;
 
         // HACK: UI facing
+        public event EventHandler<MessageRemovedEventArgs> MessageRemoved;
         public event EventHandler<ClientStatusEventArgs> StateChanged;
 
         public event EventHandler<ChannelStatusEventArgs> ChannelJoined;
@@ -76,11 +76,12 @@ namespace derpirc.Core
                 this._unitOfWork = new DataUnitOfWork();
 
                 this._clientSupervisor = new IrcClientSupervisor(_unitOfWork);
-                this._clientSupervisor.StateChanged += this._sessionSupervisor_StateChanged;
+                this._clientSupervisor.StateChanged += this._clientSupervisor_StateChanged;
+                this._clientSupervisor.MessageRemoved += this._clientSupervisor_MessageRemoved;
             }
         }
 
-        void _sessionSupervisor_StateChanged(object sender, ClientStatusEventArgs e)
+        void _clientSupervisor_StateChanged(object sender, ClientStatusEventArgs e)
         {
             switch (e.Info.State)
             {
@@ -97,6 +98,11 @@ namespace derpirc.Core
                     break;
             }
             this.OnClientStatusChanged(e);
+        }
+
+        void _clientSupervisor_MessageRemoved(object sender, MessageRemovedEventArgs e)
+        {
+            this.OnMessageRemoved(e);
         }
 
         private void Shutdown()
@@ -231,6 +237,15 @@ namespace derpirc.Core
         void OnClientStatusChanged(ClientStatusEventArgs eventArgs)
         {
             var handler = this.StateChanged;
+            if (handler != null)
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+
+        void OnMessageRemoved(MessageRemovedEventArgs eventArgs)
+        {
+            var handler = this.MessageRemoved;
             if (handler != null)
             {
                 handler.Invoke(this, eventArgs);

@@ -45,6 +45,20 @@ namespace derpirc.ViewModels
             }
         }
 
+        private string _channelName;
+        public string ChannelName
+        {
+            get { return _channelName; }
+            set
+            {
+                if (_channelName == value)
+                    return;
+
+                _channelName = value;
+                RaisePropertyChanged(() => ChannelName);
+            }
+        }
+
         private string _networkName;
         public string NetworkName
         {
@@ -158,7 +172,8 @@ namespace derpirc.ViewModels
             if (IsInDesignMode)
             {
                 // code runs in blend --> create design time data.
-                NickName = "#test";
+                ChannelName = "#test";
+                NickName = "w0rd-driven";
                 NetworkName = "clefnet";
                 UnreadCount = 4;
 
@@ -201,6 +216,7 @@ namespace derpirc.ViewModels
         private void UpdateViewModel(Mention model)
         {
             RecordId = model.Id;
+            ChannelName = model.ChannelName;
             NickName = model.Name;
             if (model.Network != null)
                 NetworkName = model.Network.Name;

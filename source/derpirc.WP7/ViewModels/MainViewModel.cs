@@ -322,6 +322,7 @@ namespace derpirc.ViewModels
             {
                 _supervisor = SupervisorFacade.Default;
                 _supervisor.StateChanged += this._supervisor_StateChanged;
+                _supervisor.MessageRemoved += this._supervisor_MessageRemoved;
                 _supervisor.ChannelJoined += this._supervisor_ChannelJoined;
                 _supervisor.ChannelLeft += this._supervisor_ChannelLeft;
                 _supervisor.ChannelItemReceived += this._supervisor_ChannelItemReceived;
@@ -377,6 +378,66 @@ namespace derpirc.ViewModels
                     StringComparison.OrdinalIgnoreCase));
                 foreach (var item in foundMessages)
                     item.IsConnected = false;
+            }
+        }
+
+        private void _supervisor_MessageRemoved(object sender, MessageRemovedEventArgs e)
+        {
+            if (!string.IsNullOrEmpty(e.FavoriteName))
+            {
+                var favoriteChannels = _channelsList.Where(x => x.NetworkName == e.NetworkName && x.ChannelName == e.FavoriteName);
+                if (favoriteChannels.Any())
+                {
+                    for (int index = 0; index < _channelsList.Count; index++)
+                    {
+                        var record = _channelsList[index];
+                        if (favoriteChannels.Contains(record))
+                            _channelsList.Remove(record);
+                    }
+                }
+                var favoriteMentions = _mentionsList.Where(x => x.NetworkName == e.NetworkName && x.ChannelName == e.FavoriteName);
+                if (favoriteMentions.Any())
+                {
+                    for (int index = 0; index < _mentionsList.Count; index++)
+                    {
+                        var record = _mentionsList[index];
+                        if (favoriteMentions.Contains(record))
+                            _mentionsList.Remove(record);
+                    }
+                }
+            }
+            else
+            {
+                var foundChannels = _channelsList.Where(x => x.NetworkName == e.NetworkName);
+                if (foundChannels.Any())
+                {
+                    for (int index = 0; index < _channelsList.Count; index++)
+                    {
+                        var record = _channelsList[index];
+                        if (foundChannels.Contains(record))
+                            _channelsList.Remove(record);
+                    }
+                }
+                var foundMentions = _mentionsList.Where(x => x.NetworkName == e.NetworkName);
+                if (foundMentions.Any())
+                {
+                    for (int index = 0; index < _mentionsList.Count; index++)
+                    {
+                        var record = _mentionsList[index];
+                        if (foundMentions.Contains(record))
+                            _mentionsList.Remove(record);
+                    }
+                }
+                var foundMessages = _messagesList.Where(x => x.NetworkName == e.NetworkName);
+                if (foundMessages.Any())
+                {
+                    for (int index = 0; index < _messagesList.Count; index++)
+                    {
+                        var record = _messagesList[index];
+                        if (foundMessages.Contains(record))
+                            _messagesList.Remove(record);
+                    }
+                }
             }
         }
 

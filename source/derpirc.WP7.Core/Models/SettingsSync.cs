@@ -1,16 +1,20 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace derpirc.Core
 {
     public class SettingsSync
     {
-        public List<string> OldItems { get; set; }
-        public List<string> NewItems { get; set; }
+        public List<string> OldNetworks { get; set; }
+        public List<string> NewNetworks { get; set; }
+
+        public List<Tuple<string, string>> OldFavorites { get; set; }
 
         public SettingsSync()
         {
-            OldItems = new List<string>();
-            NewItems = new List<string>();
+            OldNetworks = new List<string>();
+            NewNetworks = new List<string>();
+            OldFavorites = new List<Tuple<string, string>>();
         }
     }
 }

@@ -13,6 +13,7 @@ namespace derpirc.Core
 {
     public class IrcClientSupervisor : IDisposable
     {
+        public event EventHandler<MessageRemovedEventArgs> MessageRemoved;
         public event EventHandler<ClientStatusEventArgs> StateChanged;
 
         private DataUnitOfWork _unitOfWork;
@@ -90,14 +91,28 @@ namespace derpirc.Core
             }
             else
             {
-                foreach (var networkName in settingsToSync.OldItems)
+                foreach (var favorite in settingsToSync.OldFavorites)
+                {
+                    this.OnMessageRemoved(new MessageRemovedEventArgs()
+                    {
+                        NetworkName = favorite.Item1,
+                        FavoriteName = favorite.Item2,
+                    });
+                }
+                foreach (var networkName in settingsToSync.OldNetworks)
                 {
                     var foundClient = SupervisorFacade.Default.Clients.FirstOrDefault(x => x.Info.NetworkName == networkName);
                     if (foundClient != null)
+                    {
                         this.Disconnect(foundClient);
-                    SupervisorFacade.Default.Clients.Remove(foundClient);
+                        SupervisorFacade.Default.Clients.Remove(foundClient);
+                        this.OnMessageRemoved(new MessageRemovedEventArgs()
+                        {
+                            NetworkName = networkName,
+                        });
+                    }
                 }
-                foreach (var networkName in settingsToSync.NewItems)
+                foreach (var networkName in settingsToSync.NewNetworks)
                 {
                     var foundClient = SupervisorFacade.Default.Clients.FirstOrDefault(x => x.Info.NetworkName == networkName);
                     if (foundClient == null)
@@ -518,6 +533,13 @@ namespace derpirc.Core
         }
 
         #region Events
+
+        void OnMessageRemoved(MessageRemovedEventArgs eventArgs)
+        {
+            var handler = this.MessageRemoved;
+            if (handler != null)
+                handler.Invoke(this, eventArgs);
+        }
 
         void OnStateChanged(ClientStatusEventArgs eventArgs)
         {
