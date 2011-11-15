@@ -242,7 +242,7 @@ namespace derpirc.Core
 
         private void JoinChannel(IrcChannel channel)
         {
-            var summary = this.GetChannel(channel.Client, channel.Name, true);
+            var summary = this.GetChannel(channel.Client, channel.Name);
             if (summary != null)
             {
                 var eventArgs = new ChannelStatusEventArgs()
@@ -276,7 +276,7 @@ namespace derpirc.Core
                 if (text.Contains(client.LocalUser.NickName) || text.Contains(nickName))
                 {
                     // Mention
-                    var summary = this.GetMention(client, channelName, nickName, true);
+                    var summary = this.GetMention(client, channelName, nickName);
                     if (summary != null)
                     {
                         var message = new MentionItem()
@@ -302,7 +302,7 @@ namespace derpirc.Core
                 else
                 {
                     // Channel
-                    var summary = this.GetChannel(client, channelName, true);
+                    var summary = this.GetChannel(client, channelName);
                     if (summary != null)
                     {
                         var message = new ChannelItem()
@@ -366,7 +366,7 @@ namespace derpirc.Core
 
         #region Lookup methods
 
-        private Channel GetChannel(IrcClient client, string channelName, bool isConnected = false)
+        private Channel GetChannel(IrcClient client, string channelName)
         {
             Channel result = null;
             // If _clientSupervisor is ever null we have huge problems but check anyway
@@ -378,13 +378,8 @@ namespace derpirc.Core
                     result = network.Channels.FirstOrDefault(x => x.Name == channelName.ToLower());
                     if (result == null)
                     {
-                        result = new Channel() { Name = channelName, IsConnected = isConnected };
+                        result = new Channel() { Name = channelName };
                         network.Channels.Add(result);
-                        this._unitOfWork.Commit();
-                    }
-                    else
-                    {
-                        result.IsConnected = isConnected;
                         this._unitOfWork.Commit();
                     }
                 }
@@ -392,7 +387,7 @@ namespace derpirc.Core
             return result;
         }
 
-        private Mention GetMention(IrcClient client, string channelName, string nickName, bool isConnected = false)
+        private Mention GetMention(IrcClient client, string channelName, string nickName)
         {
             Mention result = null;
             if (_clientSupervisor != null)
@@ -403,13 +398,8 @@ namespace derpirc.Core
                     result = network.Mentions.FirstOrDefault(x => x.Name == nickName.ToLower());
                     if (result == null)
                     {
-                        result = new Mention() { Name = nickName, ChannelName = channelName, IsConnected = isConnected };
+                        result = new Mention() { Name = nickName, ChannelName = channelName };
                         network.Mentions.Add(result);
-                        this._unitOfWork.Commit();
-                    }
-                    else
-                    {
-                        result.IsConnected = isConnected;
                         this._unitOfWork.Commit();
                     }
                 }

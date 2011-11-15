@@ -379,7 +379,6 @@ namespace derpirc.ViewModels
             PageTitle = model.Name;
             if (model.Network != null)
                 PageSubTitle = model.Network.Name;
-            IsConnected = model.IsConnected;
             SendMessage = string.Empty;
             SendWatermark = string.Format("chat on {0}", PageSubTitle);
             var messages = DataUnitOfWork.Default.MentionItems.FindBy(x => x.SummaryId == model.Id);
