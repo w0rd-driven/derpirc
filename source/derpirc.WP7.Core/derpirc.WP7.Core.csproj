@@ -71,6 +71,7 @@
     <Compile Include="ClientStatusEventArgs.cs" />
     <Compile Include="MessageItemEventArgs.cs" />
     <Compile Include="LocalUserSupervisor.cs" />
+    <Compile Include="Models\ConnectionInfo.cs" />
     <Compile Include="Models\NetworkTypeEnum.cs" />
     <Compile Include="Models\NetworkTypeRequestStatusEnum.cs" />
     <Compile Include="Models\SettingsSync.cs" />

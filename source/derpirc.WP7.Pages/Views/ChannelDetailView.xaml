@@ -33,11 +33,11 @@
 
         <StackPanel x:Name="TitlePanel" Margin="24,24,0,12">
             <TextBlock x:Name="PageTitle"
-                       Text="{Binding PageTitle}"
+                       Text="{Binding ChannelName}"
                        Margin="-2,-10,0,0"
                        Style="{StaticResource PhoneTextTitle1Style}" />
             <TextBlock x:Name="PageSubTitle"
-                       Text="{Binding PageSubTitle}"
+                       Text="{Binding NetworkName}"
                        Margin="-2,-6,0,0"
                        Style="{StaticResource TextBlockBase}" />
         </StackPanel>

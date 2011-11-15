@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
@@ -18,6 +19,13 @@ namespace derpirc.Core
         {
             get { return _clients; }
             set { _clients = value; }
+        }
+
+        private List<ConnectionInfo> _connections;
+        public List<ConnectionInfo> Connections
+        {
+            get { return _connections; }
+            set { _connections = value; }
         }
 
         #endregion
@@ -62,6 +70,7 @@ namespace derpirc.Core
         public SupervisorFacade()
         {
             this._clients = new ObservableCollection<ClientItem>();
+            this._connections = new List<ConnectionInfo>();
 
             ThreadPool.QueueUserWorkItem((object userState) =>
             {
@@ -81,7 +90,7 @@ namespace derpirc.Core
             }
         }
 
-        void _clientSupervisor_StateChanged(object sender, ClientStatusEventArgs e)
+        private void _clientSupervisor_StateChanged(object sender, ClientStatusEventArgs e)
         {
             switch (e.Info.State)
             {
@@ -89,18 +98,20 @@ namespace derpirc.Core
                     var attachClient = GetIrcClientByClientInfo(e.Info);
                     this.AttachLocalUser(attachClient.LocalUser);
                     break;
+                case ClientState.Processed:
+                    this.AddOrUpdateConnection(e.Info.NetworkName, true);
+                    break;
                 case ClientState.Disconnected:
                     var detachClient = GetClientByClientInfo(e.Info);
                     this.DetachLocalUser(detachClient.Client.LocalUser);
                     this._clientSupervisor.Disconnect(detachClient);
-                    break;
-                default:
+                    this.AddOrUpdateConnection(e.Info.NetworkName, false);
                     break;
             }
             this.OnClientStatusChanged(e);
         }
 
-        void _clientSupervisor_MessageRemoved(object sender, MessageRemovedEventArgs e)
+        private void _clientSupervisor_MessageRemoved(object sender, MessageRemovedEventArgs e)
         {
             this.OnMessageRemoved(e);
         }
@@ -109,6 +120,43 @@ namespace derpirc.Core
         {
             this._clientSupervisor = null;
             this._luserSupervisor = null;
+        }
+
+        private void AddOrUpdateConnection(string networkName, bool isConnected, string channelName = null)
+        {
+            if (!string.IsNullOrEmpty(networkName))
+            {
+                var foundConnection = this.Connections.FirstOrDefault(x => x.NetworkName == networkName);
+                if (foundConnection != null)
+                {
+                    foundConnection.IsConnected = isConnected;
+                    if (!string.IsNullOrEmpty(channelName))
+                        foundConnection.AddOrUpdateChannel(channelName, isConnected);
+                }
+                else
+                {
+                    this.Connections.Add(new ConnectionInfo()
+                    {
+                        NetworkName = networkName,
+                        IsConnected = isConnected,
+                    });
+                }
+            }
+        }
+
+        private void RemoveConnection(string networkName, bool isConnected, string channelName = null)
+        {
+            if (!string.IsNullOrEmpty(networkName))
+            {
+                var foundConnection = this.Connections.FirstOrDefault(x => x.NetworkName == networkName);
+                if (foundConnection != null)
+                {
+                    if (string.IsNullOrEmpty(channelName))
+                        foundConnection.RemoveChannel(channelName);
+                    else
+                        this.Connections.Remove(foundConnection);
+                }
+            }
         }
 
         #region UI-facing methods
@@ -189,52 +237,7 @@ namespace derpirc.Core
 
         #region Events
 
-        void OnChannelSupervisor_ChannelJoined(object sender, ChannelStatusEventArgs e)
-        {
-            var handler = this.ChannelJoined;
-            if (handler != null)
-            {
-                handler.Invoke(sender, e);
-            }
-        }
-
-        void OnChannelSupervisor_ChannelLeft(object sender, ChannelStatusEventArgs e)
-        {
-            var handler = this.ChannelLeft;
-            if (handler != null)
-            {
-                handler.Invoke(sender, e);
-            }
-        }
-
-        void OnChannelSupervisor_MessageReceived(object sender, MessageItemEventArgs e)
-        {
-            var handler = this.ChannelItemReceived;
-            if (handler != null)
-            {
-                handler.Invoke(sender, e);
-            }
-        }
-
-        void OnChannelSupervisor_MentionReceived(object sender, MessageItemEventArgs e)
-        {
-            var handler = this.MentionItemReceived;
-            if (handler != null)
-            {
-                handler.Invoke(sender, e);
-            }
-        }
-
-        void OnMessageSupervisor_MessageReceived(object sender, MessageItemEventArgs e)
-        {
-            var handler = this.MessageItemReceived;
-            if (handler != null)
-            {
-                handler.Invoke(sender, e);
-            }
-        }
-
-        void OnClientStatusChanged(ClientStatusEventArgs eventArgs)
+        private void OnClientStatusChanged(ClientStatusEventArgs eventArgs)
         {
             var handler = this.StateChanged;
             if (handler != null)
@@ -243,12 +246,60 @@ namespace derpirc.Core
             }
         }
 
-        void OnMessageRemoved(MessageRemovedEventArgs eventArgs)
+        private void OnMessageRemoved(MessageRemovedEventArgs eventArgs)
         {
+            this.AddOrUpdateConnection(eventArgs.NetworkName, false, eventArgs.FavoriteName);
             var handler = this.MessageRemoved;
             if (handler != null)
             {
                 handler.Invoke(this, eventArgs);
+            }
+        }
+
+        private void OnChannelSupervisor_ChannelJoined(object sender, ChannelStatusEventArgs eventArgs)
+        {
+            this.AddOrUpdateConnection(eventArgs.NetworkName, true, eventArgs.ChannelName);
+            var handler = this.ChannelJoined;
+            if (handler != null)
+            {
+                handler.Invoke(sender, eventArgs);
+            }
+        }
+
+        private void OnChannelSupervisor_ChannelLeft(object sender, ChannelStatusEventArgs eventArgs)
+        {
+            this.AddOrUpdateConnection(eventArgs.NetworkName, false, eventArgs.ChannelName);
+            var handler = this.ChannelLeft;
+            if (handler != null)
+            {
+                handler.Invoke(sender, eventArgs);
+            }
+        }
+
+        private void OnChannelSupervisor_MessageReceived(object sender, MessageItemEventArgs eventArgs)
+        {
+            var handler = this.ChannelItemReceived;
+            if (handler != null)
+            {
+                handler.Invoke(sender, eventArgs);
+            }
+        }
+
+        private void OnChannelSupervisor_MentionReceived(object sender, MessageItemEventArgs eventArgs)
+        {
+            var handler = this.MentionItemReceived;
+            if (handler != null)
+            {
+                handler.Invoke(sender, eventArgs);
+            }
+        }
+
+        private void OnMessageSupervisor_MessageReceived(object sender, MessageItemEventArgs eventArgs)
+        {
+            var handler = this.MessageItemReceived;
+            if (handler != null)
+            {
+                handler.Invoke(sender, eventArgs);
             }
         }
 

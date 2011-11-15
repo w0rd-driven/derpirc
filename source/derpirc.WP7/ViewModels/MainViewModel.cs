@@ -441,7 +441,7 @@ namespace derpirc.ViewModels
             }
         }
 
-        private void _supervisor_ChannelJoined(object sender, Core.ChannelStatusEventArgs e)
+        private void _supervisor_ChannelJoined(object sender, ChannelStatusEventArgs e)
         {
             var foundChannel = _channelsList.Where(x => x.RecordId == e.SummaryId).FirstOrDefault();
             if (foundChannel == null)
@@ -466,40 +466,25 @@ namespace derpirc.ViewModels
                 });
             }
 
-            var foundMention = _mentionsList.Where(x => x.RecordId == e.SummaryId).FirstOrDefault();
+            var foundMention = _mentionsList.Where(x => x.NetworkName == e.NetworkName &&
+                x.ChannelName == e.ChannelName).FirstOrDefault();
             if (foundMention != null)
-            {
-                DispatcherHelper.CheckBeginInvokeOnUI(() =>
-                {
-                    foundMention.LoadById(e.SummaryId);
-                    foundMention.IsConnected = true;
-                });
-            }
+                foundMention.IsConnected = true;
         }
 
-        private void _supervisor_ChannelLeft(object sender, Core.ChannelStatusEventArgs e)
+        private void _supervisor_ChannelLeft(object sender, ChannelStatusEventArgs e)
         {
             var foundChannel = _channelsList.Where(x => x.RecordId == e.SummaryId).FirstOrDefault();
             if (foundChannel != null)
-            {
-                DispatcherHelper.CheckBeginInvokeOnUI(() =>
-                {
-                    foundChannel.LoadById(e.SummaryId);
-                    foundChannel.IsConnected = false;
-                });
-            }
-            var foundMention = _mentionsList.Where(x => x.RecordId == e.SummaryId).FirstOrDefault();
+                foundChannel.IsConnected = false;
+
+            var foundMention = _mentionsList.Where(x => x.NetworkName == e.NetworkName &&
+                x.ChannelName == e.ChannelName).FirstOrDefault();
             if (foundMention != null)
-            {
-                DispatcherHelper.CheckBeginInvokeOnUI(() =>
-                {
-                    foundMention.LoadById(e.SummaryId);
-                    foundMention.IsConnected = false;
-                });
-            }
+                foundMention.IsConnected = true;
         }
 
-        private void _supervisor_ChannelItemReceived(object sender, Core.MessageItemEventArgs e)
+        private void _supervisor_ChannelItemReceived(object sender, MessageItemEventArgs e)
         {
             var foundItem = _channelsList.Where(x => x.RecordId == e.SummaryId).FirstOrDefault();
             if (foundItem == null)

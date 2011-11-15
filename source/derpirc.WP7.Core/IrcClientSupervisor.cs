@@ -440,13 +440,14 @@ namespace derpirc.Core
             var foundClient = SupervisorFacade.Default.GetClientByIrcClient(client);
             if (foundClient.Info.State == ClientState.Registered)
             {
-                UpdateState(client, ClientState.Processed, null);
                 var networkName = this.ParseNetworkName(client.WelcomeMessage);
                 var matchedNetwork = this.GetNetworkByName(networkName);
                 // Contingency to brute force join whatever channels are defined for this network
                 if (matchedNetwork == null)
                     matchedNetwork = this.GetNetworkByClient(client);
                 this.JoinSession(matchedNetwork, client);
+                if (matchedNetwork != null)
+                    UpdateState(client, ClientState.Processed, null);
 
                 // Change local servername to match for easy reconnects
                 //var matchedServer = GetServer(client, client.ServerName);
@@ -548,17 +549,6 @@ namespace derpirc.Core
             int result = _defaultServerPort;
             if (network != null)
                 int.TryParse(network.Ports, out result);
-            return result;
-        }
-
-        public List<Network> GetNetworks()
-        {
-            List<Network> result = null;
-            var session = GetDefaultSession();
-            if (session != null)
-                result = session.Networks.ToList();
-            else
-                result = null;
             return result;
         }
 

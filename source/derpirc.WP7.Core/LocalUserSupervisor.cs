@@ -248,6 +248,8 @@ namespace derpirc.Core
                 var eventArgs = new ChannelStatusEventArgs()
                 {
                     SummaryId = summary.Id,
+                    NetworkName = summary.Network.Name,
+                    ChannelName = summary.Name,
                     Status = ChannelStatus.Join,
                 };
                 this.OnChannelJoined(eventArgs);
@@ -262,6 +264,8 @@ namespace derpirc.Core
                 var eventArgs = new ChannelStatusEventArgs()
                 {
                     SummaryId = summary.Id,
+                    NetworkName = summary.Network.Name,
+                    ChannelName = summary.Name,
                     Status = ChannelStatus.Leave,
                 };
                 this.OnChannelLeft(eventArgs);

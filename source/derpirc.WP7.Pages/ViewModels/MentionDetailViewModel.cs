@@ -105,31 +105,45 @@ namespace derpirc.ViewModels
 
         #region Properties
 
-        private string _pageTitle;
-        public string PageTitle
+        private string _nickName;
+        public string NickName
         {
-            get { return _pageTitle; }
+            get { return _nickName; }
             set
             {
-                if (_pageTitle == value)
+                if (_nickName == value)
                     return;
 
-                _pageTitle = value;
-                RaisePropertyChanged(() => PageTitle);
+                _nickName = value;
+                RaisePropertyChanged(() => NickName);
             }
         }
 
-        private string _pageSubTitle;
-        public string PageSubTitle
+        private string _channelName;
+        public string ChannelName
         {
-            get { return _pageSubTitle; }
+            get { return _channelName; }
             set
             {
-                if (_pageSubTitle == value)
+                if (_channelName == value)
                     return;
 
-                _pageSubTitle = value;
-                RaisePropertyChanged(() => PageSubTitle);
+                _channelName = value;
+                RaisePropertyChanged(() => ChannelName);
+            }
+        }
+
+        private string _networkName;
+        public string NetworkName
+        {
+            get { return _networkName; }
+            set
+            {
+                if (_networkName == value)
+                    return;
+
+                _networkName = value;
+                RaisePropertyChanged(() => NetworkName);
             }
         }
 
@@ -230,9 +244,10 @@ namespace derpirc.ViewModels
             if (IsInDesignMode)
             {
                 // Code runs in Blend --> create design time data.
-                PageTitle = "w0rd-driven";
-                PageSubTitle = "clefnet";
-                SendWatermark = string.Format("chat on {0}", PageSubTitle);
+                NickName = "w0rd-driven";
+                ChannelName = "#test";
+                NetworkName = "clefnet";
+                SendWatermark = string.Format("chat on {0}", NetworkName);
 
                 _messagesList.Add(new MentionItem()
                 {
@@ -281,6 +296,8 @@ namespace derpirc.ViewModels
             {
                 // Code runs "for real": Connect to service, etc...
                 SupervisorFacade.Default.StateChanged += this.OnStateChanged;
+                SupervisorFacade.Default.ChannelJoined += this.OnChannelJoined;
+                SupervisorFacade.Default.ChannelLeft += this.OnChannelLeft;
                 SupervisorFacade.Default.MentionItemReceived += this.OnMentionItemReceived;
             }
         }
@@ -288,7 +305,22 @@ namespace derpirc.ViewModels
         private void OnStateChanged(object sender, ClientStatusEventArgs e)
         {
             if (e.Info.NetworkName.Equals(this.Model.Network.Name, StringComparison.OrdinalIgnoreCase))
-                this.IsConnected = e.Info.State == ClientState.Processed ? true : false;
+                if (e.Info.State != ClientState.Processed)
+                    this.IsConnected = false;
+        }
+
+        private void OnChannelJoined(object sender, ChannelStatusEventArgs e)
+        {
+            if (e.NetworkName.Equals(this.Model.Network.Name, StringComparison.OrdinalIgnoreCase) &&
+                e.ChannelName.Equals(this.Model.Name, StringComparison.OrdinalIgnoreCase))
+                this.IsConnected = true;
+        }
+
+        private void OnChannelLeft(object sender, ChannelStatusEventArgs e)
+        {
+            if (e.NetworkName.Equals(this.Model.Network.Name, StringComparison.OrdinalIgnoreCase) &&
+                e.ChannelName.Equals(this.Model.Name, StringComparison.OrdinalIgnoreCase))
+                this.IsConnected = false;
         }
 
         private void OnMentionItemReceived(object sender, MessageItemEventArgs e)
@@ -353,7 +385,7 @@ namespace derpirc.ViewModels
         private void Switch()
         {
             // TODO: Wire in UI to choose where to send messages
-            SendWatermark = string.Format("chat on {0}", PageSubTitle);
+            SendWatermark = string.Format("chat on {0}", NetworkName);
         }
 
         private void OnNavigatedTo(NavigationEventArgs eventArgs)
@@ -376,11 +408,13 @@ namespace derpirc.ViewModels
 
         private void UpdateViewModel(Mention model)
         {
-            PageTitle = model.Name;
+            NickName = model.Name;
+            ChannelName = model.ChannelName;
             if (model.Network != null)
-                PageSubTitle = model.Network.Name;
+                NetworkName = model.Network.Name;
+            IsConnected = CheckConnection();
             SendMessage = string.Empty;
-            SendWatermark = string.Format("chat on {0}", PageSubTitle);
+            SendWatermark = string.Format("chat on {0}", NetworkName);
             var messages = DataUnitOfWork.Default.MentionItems.FindBy(x => x.SummaryId == model.Id);
             DispatcherHelper.CheckBeginInvokeOnUI(() =>
             {
@@ -406,6 +440,15 @@ namespace derpirc.ViewModels
                 if (foundMessage == null)
                     _messagesList.RemoveAt(index);
             }
+        }
+
+        private bool CheckConnection()
+        {
+            var result = false;
+            var foundConnection = SupervisorFacade.Default.Connections.FirstOrDefault(x => x.NetworkName == NetworkName && x.Channels.ContainsKey(ChannelName));
+            if (foundConnection != null && foundConnection.Channels[ChannelName])
+                result = true;
+            return result;
         }
 
         public override void Cleanup()
