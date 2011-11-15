@@ -65,8 +65,7 @@
                         </InputScope>
                     </TextBox.InputScope>
                     <blend:Interaction.Behaviors>
-                        <helpers:WatermarkBehavior Watermark="{Binding SendWatermark}"
-                                                   Foreground="{StaticResource PhoneTextBoxReadOnlyBrush}" />
+                        <helpers:UpdateOnTextChangedBehavior />
                     </blend:Interaction.Behaviors>
                 </TextBox>
             </Grid>
