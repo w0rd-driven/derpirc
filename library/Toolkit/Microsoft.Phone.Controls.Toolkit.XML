@@ -6017,6 +6017,61 @@
             NonExpandable visual state value.
             </summary>
         </member>
+        <member name="T:Microsoft.Phone.Controls.LongListSelectorItem">
+            <summary>
+            Holds information about an item for use in the LongListSelector.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Phone.Controls.LongListSelectorItem.ItemType">
+            <summary>
+            Gets or sets the item type.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Phone.Controls.LongListSelectorItem.Group">
+            <summary>
+            Gets or sets the associated group for the item.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Phone.Controls.LongListSelectorItem.Item">
+            <summary>
+            Gets or sets the underlying item instance.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Phone.Controls.LongListSelectorItemType">
+            <summary>
+            Describes different items.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.LongListSelectorItemType.Unknown">
+            <summary>
+            Indicates an unknown item type.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.LongListSelectorItemType.Item">
+            <summary>
+            Represents a standard list item.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.LongListSelectorItemType.GroupHeader">
+            <summary>
+            Represents a group header.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.LongListSelectorItemType.GroupFooter">
+            <summary>
+            Represents a group footer.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.LongListSelectorItemType.ListHeader">
+            <summary>
+            Represents a list header.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.LongListSelectorItemType.ListFooter">
+            <summary>
+            Represents a list footer.
+            </summary>
+        </member>
         <member name="T:Microsoft.Phone.Controls.PhoneTextBox">
             <summary>
             An extended TextBox for Windows Phone which implements hint text, an action icon, and a 
@@ -7393,6 +7448,16 @@
             The absense of vertical compression state name.
             </summary>
         </member>
+        <member name="F:Microsoft.Phone.Controls.LongListSelector.VerticalCompressionStateName">
+            <summary>
+            The vertical compression state name.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.LongListSelector.ScrollStatesGroupName">
+            <summary>
+            The name of the scroll states visual state group.
+            </summary>
+        </member>
         <member name="M:Microsoft.Phone.Controls.LongListSelector.ClosePopup(System.Object,System.Boolean)">
             <summary>
             Closes the group popup.
@@ -7573,7 +7638,7 @@
             Loads ItemsSource into the hosted list box.
             </summary>
         </member>
-        <member name="M:Microsoft.Phone.Controls.LongListSelector.AddListHeader(System.Collections.Generic.IList{Microsoft.Phone.Controls.LongListSelector.LongListSelectorItem})">
+        <member name="M:Microsoft.Phone.Controls.LongListSelector.AddListHeader(System.Collections.Generic.IList{Microsoft.Phone.Controls.LongListSelectorItem})">
             <summary>
             Adds a list header to the given list.
             </summary>
@@ -7583,7 +7648,7 @@
             Adds a list header to the listbox.
             </summary>
         </member>
-        <member name="M:Microsoft.Phone.Controls.LongListSelector.RemoveListHeader(System.Collections.Generic.IList{Microsoft.Phone.Controls.LongListSelector.LongListSelectorItem})">
+        <member name="M:Microsoft.Phone.Controls.LongListSelector.RemoveListHeader(System.Collections.Generic.IList{Microsoft.Phone.Controls.LongListSelectorItem})">
             <summary>
             Removes the list header from the given list.
             </summary>
@@ -7593,7 +7658,7 @@
             Removes the list header from the listbox.
             </summary>
         </member>
-        <member name="M:Microsoft.Phone.Controls.LongListSelector.AddListFooter(System.Collections.Generic.IList{Microsoft.Phone.Controls.LongListSelector.LongListSelectorItem})">
+        <member name="M:Microsoft.Phone.Controls.LongListSelector.AddListFooter(System.Collections.Generic.IList{Microsoft.Phone.Controls.LongListSelectorItem})">
             <summary>
             Adds a list footer to the given list.
             </summary>
@@ -7603,7 +7668,7 @@
             Adds a list footer to the listbox.
             </summary>
         </member>
-        <member name="M:Microsoft.Phone.Controls.LongListSelector.RemoveListFooter(System.Collections.Generic.IList{Microsoft.Phone.Controls.LongListSelector.LongListSelectorItem})">
+        <member name="M:Microsoft.Phone.Controls.LongListSelector.RemoveListFooter(System.Collections.Generic.IList{Microsoft.Phone.Controls.LongListSelectorItem})">
             <summary>
             Removes the list footer from the given list.
             </summary>
@@ -7651,7 +7716,7 @@
             <param name="removeHeaders">Specifies whether or not to remove group headers.</param>
             <param name="removeFooters">Specifies whether or not to remove group footers.</param>
         </member>
-        <member name="M:Microsoft.Phone.Controls.LongListSelector.UnsubscribleFromAllCollections">
+        <member name="M:Microsoft.Phone.Controls.LongListSelector.UnsubscribeFromAllCollections">
             <summary>
             Unsubscrives from every collection in ItemsSource.
             </summary>
@@ -7700,14 +7765,14 @@
             <param name="groups">List of groups from which to retrieve the items count.</param>
             <returns>Returns the number of items in a list of groups.</returns>
         </member>
-        <member name="M:Microsoft.Phone.Controls.LongListSelector.GetItemsCountFromGroup(System.Collections.IEnumerable)">
+        <member name="M:Microsoft.Phone.Controls.LongListSelector.GetHeadersAndItemsCountFromGroup(System.Collections.IEnumerable)">
             <summary>
             Returns the number of items in a group including the group header.
             </summary>
             <param name="group">Group from which to retrieve the items count.</param>
             <returns>Returns the number of items in a group including the group header.</returns>
         </member>
-        <member name="M:Microsoft.Phone.Controls.LongListSelector.UpdateItemsTemplate(Microsoft.Phone.Controls.LongListSelector.LongListSelectorItemType,System.Windows.DataTemplate)">
+        <member name="M:Microsoft.Phone.Controls.LongListSelector.UpdateItemsTemplate(Microsoft.Phone.Controls.LongListSelectorItemType,System.Windows.DataTemplate)">
             <summary>
             Updates the templates for a given item type in the list box.
             </summary>
@@ -7913,16 +7978,6 @@
         <member name="E:Microsoft.Phone.Controls.LongListSelector.StretchingTop">
             <summary>
             Occurs when the user has dragged the items down from the top as far as they can go.  
-            </summary>
-        </member>
-        <member name="T:Microsoft.Phone.Controls.LongListSelector.LongListSelectorItemType">
-            <summary>
-            Describes different items.
-            </summary>
-        </member>
-        <member name="T:Microsoft.Phone.Controls.LongListSelector.LongListSelectorItem">
-            <summary>
-            Holds information about an item.
             </summary>
         </member>
         <member name="T:Microsoft.Phone.Controls.ListPickerItem">
@@ -8526,6 +8581,140 @@
             Gets or sets the item container style.
             </summary>
         </member>
+        <member name="T:Microsoft.Phone.Controls.Primitives.HorizontalLoopingSelector">
+            <summary>
+            An infinitely scrolling, UI- and data-virtualizing selection control.
+            </summary>
+            <QualityBand>Preview</QualityBand>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.Primitives.HorizontalLoopingSelector.DataSourceProperty">
+            <summary>
+            The DataSource DependencyProperty
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.Primitives.HorizontalLoopingSelector.ItemTemplateProperty">
+            <summary>
+            The ItemTemplate DependencyProperty
+            </summary>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.Primitives.HorizontalLoopingSelector.#ctor">
+            <summary>
+            Creates a new HorizontalLoopingSelector.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.Primitives.HorizontalLoopingSelector.IsExpandedProperty">
+            <summary>
+            The IsExpanded DependencyProperty.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.Primitives.HorizontalLoopingSelector.OnApplyTemplate">
+            <summary>
+            When overridden in a derived class, is invoked whenever application code or internal processes (such as a rebuilding layout pass) call <see cref="M:FrameworkElement.ApplyTemplate()"/>.
+            In simplest terms, this means the method is called just before a UI element displays in an application.
+            For more information, see Remarks.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.Primitives.HorizontalLoopingSelector.Balance">
+            <summary>
+            Balances the items.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.Primitives.HorizontalLoopingSelector.ItemStyleProperty">
+            <summary>
+            DependencyProperty for ItemStyle
+            </summary>
+        </member>
+        <member name="P:Microsoft.Phone.Controls.Primitives.HorizontalLoopingSelector.DataSource">
+            <summary>
+            The data source that the this control is the view for.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Phone.Controls.Primitives.HorizontalLoopingSelector.ItemTemplate">
+            <summary>
+            The ItemTemplate property
+            </summary>
+        </member>
+        <member name="P:Microsoft.Phone.Controls.Primitives.HorizontalLoopingSelector.ItemSize">
+            <summary>
+            The size of the items, excluding the ItemMargin.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Phone.Controls.Primitives.HorizontalLoopingSelector.ItemMargin">
+            <summary>
+            The margin around the items, to be a part of the touchable area.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Phone.Controls.Primitives.HorizontalLoopingSelector.IsExpanded">
+            <summary>
+            The IsExpanded property controls the expanded state of this control.
+            </summary>
+        </member>
+        <member name="E:Microsoft.Phone.Controls.Primitives.HorizontalLoopingSelector.IsExpandedChanged">
+            <summary>
+            The IsExpandedChanged event will be raised whenever the IsExpanded state changes.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Phone.Controls.Primitives.HorizontalLoopingSelector.ItemStyle">
+            <summary>
+            Style property for an item in a Looping Selector
+            </summary>
+        </member>
+        <member name="T:Microsoft.Phone.Controls.Primitives.HorizontalLoopingSelectorItem">
+            <summary>
+            The items that will be contained in the LoopingSelector.
+            </summary>
+            <QualityBand>Preview</QualityBand>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.Primitives.HorizontalLoopingSelectorItem.#ctor">
+            <summary>
+            Create a new LoopingSelectorItem.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.Primitives.HorizontalLoopingSelectorItem.SetState(Microsoft.Phone.Controls.Primitives.HorizontalLoopingSelectorItem.State,System.Boolean)">
+            <summary>
+            Put this item into a new state.
+            </summary>
+            <param name="newState">The new state.</param>
+            <param name="useTransitions">Flag indicating that transitions should be used when going to the new state.</param>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.Primitives.HorizontalLoopingSelectorItem.GetState">
+            <summary>
+            Returns the current state.
+            </summary>
+            <returns>The current state.</returns>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.Primitives.HorizontalLoopingSelectorItem.OnApplyTemplate">
+            <summary>
+            Override of OnApplyTemplate
+            </summary>
+        </member>
+        <member name="E:Microsoft.Phone.Controls.Primitives.HorizontalLoopingSelectorItem.Click">
+            <summary>
+            The Click event. This is needed because there is no gesture for touch-down, pause 
+            longer than the Hold time, and touch-up. Tap will not be raise, and Hold is not 
+            adequate.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Phone.Controls.Primitives.HorizontalLoopingSelectorItem.State">
+            <summary>
+            The states that this can be in.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.Primitives.HorizontalLoopingSelectorItem.State.Normal">
+            <summary>
+            Not visible
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.Primitives.HorizontalLoopingSelectorItem.State.Expanded">
+            <summary>
+            Visible
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.Primitives.HorizontalLoopingSelectorItem.State.Selected">
+            <summary>
+            Selected
+            </summary>
+        </member>
         <member name="T:Microsoft.Phone.Controls.Primitives.LoopingSelector">
             <summary>
             An infinitely scrolling, UI- and data-virtualizing selection control.
@@ -8800,6 +8989,12 @@
             </summary>
             <param name="sender">The event sender.</param>
             <param name="e">The event information.</param>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.Primitives.ToggleSwitchButton.OnMouseLeave(System.Windows.Input.MouseEventArgs)">
+            <summary>
+            Handles the mouse leave event.
+            </summary>
+            <param name="e">The event arguments.</param>
         </member>
         <member name="M:Microsoft.Phone.Controls.Primitives.ToggleSwitchButton.OnSizeChanged(System.Object,System.Windows.SizeChangedEventArgs)">
             <summary>
