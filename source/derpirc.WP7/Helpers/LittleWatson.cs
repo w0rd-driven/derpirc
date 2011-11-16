@@ -8,12 +8,11 @@ using System.Windows;
 using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
 
-namespace derpirc.Core
+namespace derpirc.Helpers
 {
     // CrashReporter
     // Matt Isenhower, Komodex Systems LLC
     // http://blog.ike.to/2011/02/02/wp7-application-crash-reporter/
-
     public static class LittleWatson
     {
         // Error Report URL parameters
@@ -155,7 +154,7 @@ namespace derpirc.Core
                     if (ErrorLogContent == null)
                         return;
 
-                    string url = ErrorReportURL + "?p=" + ProductName + "&v="; // + Utility.ApplicationVersion;
+                    string url = ErrorReportURL + "?p=" + ProductName;// + "&v=" + Utility.ApplicationVersion;
 #if DEBUG
                     url += "&d=1";
 #endif

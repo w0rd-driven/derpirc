@@ -167,7 +167,7 @@ namespace derpirc.Core
             var text = e.Text;
             var owner = Owner.Them;
 
-            AddMessage(channel.Client, channel.Name, ircUser.NickName, text, owner);
+            //AddMessage(channel.Client, channel.Name, ircUser.NickName, text, owner);
         }
 
         private void Channel_TopicChanged(object sender, IrcUserEventArgs e)

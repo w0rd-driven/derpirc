@@ -38,7 +38,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 
-namespace derpirc.Controls
+namespace derpirc
 {
 	public static class VisualTree
 	{

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE dotfuscator SYSTEM "http://www.preemptive.com/dotfuscator/dtd/dotfuscator_v2.3.dtd">
+<dotfuscator version="2.3">
+  <!--This is application generated code. Do not edit manually.-->
+  <input>
+    <loadpaths>
+      <option>prepend</option>
+      <file dir="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\Silverlight\v4.0\Profile\WindowsPhone71" />
+    </loadpaths>
+    <asmlist>
+      <package refid="a501f880-9a3e-411d-a1b2-a25586f1a9b4">
+        <file dir="${configdir}\..\..\source\derpirc.WP7\Bin\Debug" name="derpirc.xap" />
+        <asmlist>
+          <inputassembly refid="c52b17a9-8fe5-4802-8206-247745d29c85">
+            <option>honoroas</option>
+            <option>stripoa</option>
+            <option>library</option>
+            <option>artifact</option>
+            <option>transformxaml</option>
+            <file dir="" name="AppBarUtils.dll" />
+          </inputassembly>
+          <inputassembly refid="9847f825-2e2c-4bdd-a6e9-c00a604d7382">
+            <option>honoroas</option>
+            <option>stripoa</option>
+            <option>library</option>
+            <file dir="" name="derpirc.Core.dll" />
+          </inputassembly>
+          <inputassembly refid="6ebcef2f-88a0-43da-ab15-81c0a80ae4d7">
+            <option>honoroas</option>
+            <option>stripoa</option>
+            <option>library</option>
+            <file dir="" name="derpirc.Data.dll" />
+          </inputassembly>
+          <inputassembly refid="4cebfa5b-b94c-41e5-95d7-5e74c67c1472">
+            <option>honoroas</option>
+            <option>stripoa</option>
+            <option>library</option>
+            <file dir="" name="derpirc.dll" />
+          </inputassembly>
+          <inputassembly refid="a6a87d83-0292-42db-9c30-1d017247ace2">
+            <option>honoroas</option>
+            <option>stripoa</option>
+            <option>library</option>
+            <file dir="" name="derpirc.Pages.dll" />
+          </inputassembly>
+          <inputassembly refid="b4ab075b-cd5d-4049-b623-2bfc0c7b2f3d">
+            <option>honoroas</option>
+            <option>stripoa</option>
+            <option>library</option>
+            <file dir="" name="derpirc.UICore.dll" />
+          </inputassembly>
+          <inputassembly refid="32bfcb77-4e0d-48da-9b5d-16552972a5c7">
+            <option>honoroas</option>
+            <option>stripoa</option>
+            <option>library</option>
+            <option>artifact</option>
+            <option>transformxaml</option>
+            <file dir="" name="Funq.dll" />
+          </inputassembly>
+          <inputassembly refid="605166a0-8624-4171-ab30-5a4c2a2b997d">
+            <option>honoroas</option>
+            <option>stripoa</option>
+            <option>library</option>
+            <option>artifact</option>
+            <option>transformxaml</option>
+            <file dir="" name="GalaSoft.MvvmLight.Extras.WP71.dll" />
+          </inputassembly>
+          <inputassembly refid="eacaba67-cd35-47d2-9a32-a267463fadc7">
+            <option>honoroas</option>
+            <option>stripoa</option>
+            <option>library</option>
+            <option>artifact</option>
+            <option>transformxaml</option>
+            <file dir="" name="GalaSoft.MvvmLight.WP71.dll" />
+          </inputassembly>
+          <inputassembly refid="f9ae2b1a-ab5b-4889-b4b8-7a27f84baaa1">
+            <option>honoroas</option>
+            <option>stripoa</option>
+            <option>library</option>
+            <option>artifact</option>
+            <option>transformxaml</option>
+            <file dir="" name="IrcDotNet.dll" />
+          </inputassembly>
+          <inputassembly refid="c9b92df1-5776-4241-8d92-079581bb4b40">
+            <option>honoroas</option>
+            <option>stripoa</option>
+            <option>library</option>
+            <option>artifact</option>
+            <option>transformxaml</option>
+            <file dir="" name="Microsoft.Practices.ServiceLocation.dll" />
+          </inputassembly>
+        </asmlist>
+      </package>
+    </asmlist>
+  </input>
+  <output>
+    <file dir="${configdir}\Dotfuscated" />
+  </output>
+  <renaming>
+    <option>xmlserialization</option>
+    <mapping>
+      <mapoutput overwrite="true">
+        <file dir="${configdir}\Dotfuscated" name="Map.xml" />
+        <transform />
+      </mapoutput>
+    </mapping>
+    <referencerulelist>
+      <referencerule rulekey="{6655B10A-FD58-462d-8D4F-5B1316DFF0FF}" />
+      <referencerule rulekey="{229FD6F8-5BCC-427b-8F72-A7A413ECDF1A}" />
+      <referencerule rulekey="{2B7E7C8C-A39A-4db8-9DFC-6AFD38509061}" />
+      <referencerule rulekey="{494EA3BA-B947-44B5-BEE8-A11CC85AAF9B}" />
+      <referencerule rulekey="{89769974-93E9-4e71-8D92-BE70E855ACFC}" />
+      <referencerule rulekey="{7D9C8B02-2383-420f-8740-A9760394C2C1}" />
+    </referencerulelist>
+  </renaming>
+  <controlflow level="high" />
+  <sos mergeruntime="false">
+    <option>disable</option>
+    <option>dontsendtamper</option>
+  </sos>
+  <smartobfuscation>
+    <smartobfuscationreport verbosity="all" overwrite="true">
+      <file dir="${configdir}\Dotfuscated" name="SmartMap.xml" />
+    </smartobfuscationreport>
+  </smartobfuscation>
+</dotfuscator>
