@@ -168,17 +168,17 @@ namespace derpirc.ViewModels
             }
         }
 
-        private string _sendMessage;
-        public string SendMessage
+        private string _sendText;
+        public string SendText
         {
-            get { return _sendMessage; }
+            get { return _sendText; }
             set
             {
-                if (_sendMessage == value)
+                if (_sendText == value)
                     return;
 
-                _sendMessage = value;
-                RaisePropertyChanged(() => SendMessage);
+                _sendText = value;
+                RaisePropertyChanged(() => SendText);
                 CheckCanSend();
             }
         }
@@ -302,9 +302,9 @@ namespace derpirc.ViewModels
         private void CheckCanSend()
         {
             var result = false;
-            if (!string.IsNullOrEmpty(SendMessage))
+            if (!string.IsNullOrEmpty(SendText))
             {
-                if (SendMessage != SendWatermark && IsConnected)
+                if (SendText != SendWatermark && IsConnected)
                     result = true;
             }
             CanSend = result;
@@ -312,21 +312,21 @@ namespace derpirc.ViewModels
 
         private void Send()
         {
-            if (!string.IsNullOrEmpty(SendMessage) && (SendMessage != SendWatermark))
+            if (!string.IsNullOrEmpty(SendText) && (SendText != SendWatermark))
             {
                 var newMessage = new MessageItem();
                 newMessage.Summary = Model;
                 newMessage.Owner = Owner.Me;
                 newMessage.Timestamp = DateTime.Now;
                 newMessage.IsRead = true;
-                newMessage.Text = SendMessage;
+                newMessage.Text = SendText;
                 Send(newMessage);
                 // Steps: Place item in List. Detect send callback. Use a resend hyperlink if necessary
 
                 _messagesList.Add(newMessage);
                 Messages.View.MoveCurrentToLast();
 
-                SendMessage = string.Empty;
+                SendText = string.Empty;
             }
         }
 
@@ -365,7 +365,7 @@ namespace derpirc.ViewModels
             if (model.Network != null)
                 NetworkName = model.Network.Name;
             IsConnected = CheckConnection();
-            SendMessage = string.Empty;
+            SendText = string.Empty;
             SendWatermark = string.Format("chat on {0}", NetworkName);
             var messages = DataUnitOfWork.Default.MessageItems.FindBy(x => x.SummaryId == model.Id);
             DispatcherHelper.CheckBeginInvokeOnUI(() =>
