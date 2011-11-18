@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Data.Linq;
 using System.Linq;
 using System.Windows;
 using System.Windows.Data;
@@ -327,9 +328,10 @@ namespace derpirc.ViewModels
         {
             if (e.SummaryId == Model.Id)
             {
-                DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                MentionItem newMessage = null;
+                using (var unitOfWork = new DataUnitOfWork(new ContextConnectionString() { FileMode = FileMode.ReadOnly }))
                 {
-                    var newMessage = DataUnitOfWork.Default.MentionItems.FindById(e.MessageId);
+                    newMessage = unitOfWork.MentionItems.FindById(e.MessageId);
                     if (newMessage != null)
                     {
                         // HACK: If Owner.Me, make sure it wasn't added by the UI. This could also serve as a MessageSent event
@@ -339,10 +341,14 @@ namespace derpirc.ViewModels
                             if (foundItem != null)
                                 return;
                         }
+                    }
+                }
+                if (newMessage != null)
+                    DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                    {
                         _messagesList.Add(newMessage);
                         Messages.View.MoveCurrentToLast();
-                    }
-                });
+                    });
             }
         }
 
@@ -395,9 +401,14 @@ namespace derpirc.ViewModels
             queryString.TryGetValue("id", out id);
             var integerId = -1;
             int.TryParse(id, out integerId);
-            var model = DataUnitOfWork.Default.Mentions.FindById(integerId);
-            if (model != null)
-                Model = model;
+
+            Mention model = null;
+            using (var unitOfWork = new DataUnitOfWork(new ContextConnectionString() { FileMode = FileMode.ReadOnly }))
+            {
+                model = unitOfWork.Mentions.FindById(integerId);
+                if (model != null)
+                    Model = model;
+            }
             if (!eventArgs.IsNavigationInitiator)
                 SupervisorFacade.Default.Reconnect(null, true);
         }
@@ -415,20 +426,19 @@ namespace derpirc.ViewModels
             IsConnected = CheckConnection();
             SendText = string.Empty;
             SendWatermark = string.Format("chat on {0}", NetworkName);
-            var messages = DataUnitOfWork.Default.MentionItems.FindBy(x => x.SummaryId == model.Id);
             DispatcherHelper.CheckBeginInvokeOnUI(() =>
             {
-                foreach (var item in messages)
+                foreach (var item in model.Messages)
                 {
                     if (!_messagesList.Contains(item))
                         _messagesList.Add(item);
                 }
-                PurgeOrphans(messages);
+                PurgeOrphans(model.Messages);
                 Messages.View.MoveCurrentToLast();
             });
         }
 
-        private void PurgeOrphans(IQueryable<MentionItem> messages)
+        private void PurgeOrphans(EntitySet<MentionItem> messages)
         {
             List<int> messagesToSmash = new List<int>();
             var startingPos = _messagesList.Count - 1;

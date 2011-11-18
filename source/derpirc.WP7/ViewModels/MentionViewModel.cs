@@ -193,11 +193,15 @@ namespace derpirc.ViewModels
         public bool LoadById(int summaryId)
         {
             var result = false;
-            var model = DataUnitOfWork.Default.Mentions.FindById(summaryId);
-            if (model != null)
+            Mention model = null;
+            using (var unitOfWork = new DataUnitOfWork(new ContextConnectionString() { FileMode = FileMode.ReadOnly }))
             {
-                result = true;
-                UpdateViewModel(model);
+                model = unitOfWork.Mentions.FindById(summaryId);
+                if (model != null)
+                {
+                    result = true;
+                    UpdateViewModel(model);
+                }
             }
             return result;
         }
@@ -222,7 +226,7 @@ namespace derpirc.ViewModels
                 NetworkName = model.Network.Name;
             MessageSource = NetworkName;
             MessageTimestamp = DateTime.Now;
-            UnreadCount = DataUnitOfWork.Default.MentionItems.Count(x => x.SummaryId == model.Id && x.IsRead == false);
+            //UnreadCount = DataUnitOfWork.Default.MentionItems.Count(x => x.SummaryId == model.Id && x.IsRead == false);
             // NOTE: Lookups on EntitySets only matter during initial load. They do not detect new children for some reason.
             var lastMessage = model.Messages.Count > 0 ? model.Messages.Last() : null;
             LoadLastMessage(lastMessage);

@@ -76,25 +76,6 @@ namespace derpirc.Data
 
         private DataContext _context;
 
-        #region Singleton Impl
-
-        // Modified for http://www.yoda.arachsys.com/csharp/singleton.html #4. (Jon Skeet is a code machine)
-        private static readonly DataUnitOfWork defaultInstance = new DataUnitOfWork();
-
-        public static DataUnitOfWork Default
-        {
-            get
-            {
-                return defaultInstance;
-            }
-        }
-
-        static DataUnitOfWork()
-        {
-        }
-
-        #endregion
-
         public DataUnitOfWork()
             : this(new ContextConnectionString())
         {
