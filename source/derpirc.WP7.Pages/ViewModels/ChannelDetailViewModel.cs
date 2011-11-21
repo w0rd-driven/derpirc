@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Data.Linq;
 using System.Linq;
+using System.Threading;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Navigation;
@@ -156,8 +156,6 @@ namespace derpirc.ViewModels
             get { return _model; }
             set
             {
-                if (value != null)
-                    UpdateViewModel(value);
                 if (_model == value)
                     return;
 
@@ -290,49 +288,53 @@ namespace derpirc.ViewModels
 
         private void OnStateChanged(object sender, ClientStatusEventArgs e)
         {
-            if (e.Info.NetworkName.Equals(this.Model.Network.Name, StringComparison.OrdinalIgnoreCase))
-                if (e.Info.State != ClientState.Processed)
-                    this.IsConnected = false;
+            if (this.Model != null)
+                if (e.Info.NetworkName.Equals(this.Model.Network.Name, StringComparison.OrdinalIgnoreCase))
+                    if (e.Info.State != ClientState.Processed)
+                        this.IsConnected = false;
         }
 
         private void OnChannelJoined(object sender, ChannelStatusEventArgs e)
         {
-            if (e.SummaryId == this.Model.Id)
+            if (this.Model != null)
+                if (e.SummaryId == this.Model.Id)
                 this.IsConnected = true;
         }
 
         private void OnChannelLeft(object sender, ChannelStatusEventArgs e)
         {
-            if (e.SummaryId == this.Model.Id)
+            if (this.Model != null)
+                if (e.SummaryId == this.Model.Id)
                 this.IsConnected = false;
         }
 
         private void OnChannelItemReceived(object sender, MessageItemEventArgs e)
         {
-            if (e.SummaryId == Model.Id)
-            {
-                ChannelItem newMessage = null;
-                using (var unitOfWork = new DataUnitOfWork(new ContextConnectionString() { FileMode = FileMode.ReadOnly }))
+            if (this.Model != null)
+                if (e.SummaryId == this.Model.Id)
                 {
-                    newMessage = unitOfWork.ChannelItems.FindById(e.MessageId);
-                    if (newMessage != null)
+                    ChannelItem newMessage = null;
+                    using (var unitOfWork = new DataUnitOfWork(new ContextConnectionString() { DatabaseMode = DatabaseMode.ReadOnly }))
                     {
-                        // HACK: If Owner.Me, make sure it wasn't added by the UI. This could also serve as a MessageSent event
-                        if (newMessage.Owner == Owner.Me)
+                        newMessage = unitOfWork.ChannelItems.FindById(e.MessageId);
+                        if (newMessage != null)
                         {
-                            var foundItem = _messagesList.Where(x => x.Timestamp == newMessage.Timestamp);
-                            if (foundItem != null)
-                                return;
+                            // HACK: If Owner.Me, make sure it wasn't added by the UI. This could also serve as a MessageSent event
+                            if (newMessage.Owner == Owner.Me)
+                            {
+                                var foundItem = _messagesList.Where(x => x.Timestamp == newMessage.Timestamp);
+                                if (foundItem != null)
+                                    return;
+                            }
                         }
                     }
+                    if (newMessage != null)
+                        DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                        {
+                            _messagesList.Add(newMessage);
+                            Messages.View.MoveCurrentToLast();
+                        });
                 }
-                if (newMessage != null)
-                    DispatcherHelper.CheckBeginInvokeOnUI(() =>
-                    {
-                        _messagesList.Add(newMessage);
-                        Messages.View.MoveCurrentToLast();
-                    });
-            }
         }
 
         private void CheckCanSend()
@@ -385,13 +387,39 @@ namespace derpirc.ViewModels
             var integerId = -1;
             int.TryParse(id, out integerId);
 
-            Channel model = null;
-            using (var unitOfWork = new DataUnitOfWork(new ContextConnectionString() { FileMode = FileMode.ReadOnly }))
+            ThreadPool.QueueUserWorkItem((object userState) =>
             {
-                model = unitOfWork.Channels.FindById(integerId);
-                if (model != null)
-                    Model = model;
-            }
+                Channel model = null;
+                var networkName = string.Empty;
+                var messages = new List<ChannelItem>();
+                using (var unitOfWork = new DataUnitOfWork(new ContextConnectionString() { DatabaseMode = DatabaseMode.ReadOnly }))
+                {
+                    model = unitOfWork.Channels.FindById(integerId);
+                    if (model.Network != null)
+                        networkName = model.Network.Name;
+                    messages = model.Messages.ToList();
+                    if (model != null)
+                    {
+                        DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                        {
+                            ChannelName = model.Name;
+                            ChannelTopic = model.Topic;
+                            if (model.Network != null)
+                                NetworkName = networkName;
+                            IsConnected = CheckConnection();
+                            SendText = string.Empty;
+                            SendWatermark = string.Format("chat on {0}", NetworkName);
+                            foreach (var item in messages)
+                            {
+                                if (!_messagesList.Any(x => x.Id == item.Id))
+                                    _messagesList.Add(item);
+                            }
+                            PurgeOrphans(messages);
+                            Messages.View.MoveCurrentToLast();
+                        });
+                    }
+                }
+            });
             if (!eventArgs.IsNavigationInitiator)
                 SupervisorFacade.Default.Reconnect(null, true);
         }
@@ -400,28 +428,7 @@ namespace derpirc.ViewModels
         {
         }
 
-        private void UpdateViewModel(Channel model)
-        {
-            ChannelName = model.Name;
-            ChannelTopic = model.Topic;
-            if (model.Network != null)
-                NetworkName = model.Network.Name;
-            IsConnected = CheckConnection();
-            SendText = string.Empty;
-            SendWatermark = string.Format("chat on {0}", NetworkName);
-            DispatcherHelper.CheckBeginInvokeOnUI(() =>
-            {
-                foreach (var item in model.Messages)
-                {
-                    if (!_messagesList.Contains(item))
-                        _messagesList.Add(item);
-                }
-                PurgeOrphans(model.Messages);
-                Messages.View.MoveCurrentToLast();
-            });
-        }
-
-        private void PurgeOrphans(EntitySet<ChannelItem> messages)
+        private void PurgeOrphans(List<ChannelItem> messages)
         {
             List<int> messagesToSmash = new List<int>();
             var startingPos = _messagesList.Count - 1;

@@ -1,14 +1,4 @@
-﻿using System;
-using System.Net;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Ink;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
-
+﻿
 namespace derpirc.Data
 {
     public class ContextConnectionString
@@ -20,7 +10,7 @@ namespace derpirc.Data
         public string Password { get; set; }
         public int? MaxDatabaseSize { get; set; }
         public int? MaxBufferSize { get; set; }
-        public FileMode FileMode { get; set; }
+        public DatabaseMode DatabaseMode { get; set; }
         public bool? CaseSensitive { get; set; }
 
         #endregion
@@ -28,7 +18,7 @@ namespace derpirc.Data
         public ContextConnectionString()
         {
             DataSource = "isostore:/IRC.sdf";
-            FileMode = FileMode.Default;
+            DatabaseMode = DatabaseMode.Default;
         }
 
         public new string ToString()
@@ -58,18 +48,18 @@ namespace derpirc.Data
             if (MaxBufferSize.HasValue)
                 maxBufferSize = string.Format("Max Buffer Size={0};", MaxBufferSize);
 
-            switch (FileMode)
+            switch (DatabaseMode)
             {
-                case FileMode.ReadWrite:
+                case DatabaseMode.ReadWrite:
                     fileMode = "File Mode=read write;";
                     break;
-                case FileMode.ReadOnly:
+                case DatabaseMode.ReadOnly:
                     fileMode = "File Mode=read only;";
                     break;
-                case FileMode.Exclusive:
+                case DatabaseMode.Exclusive:
                     fileMode = "File Mode=exclusive;";
                     break;
-                case FileMode.SharedRead:
+                case DatabaseMode.SharedRead:
                     fileMode = "File Mode=shared read;";
                     break;
             }

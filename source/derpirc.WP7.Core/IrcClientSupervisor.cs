@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -16,8 +15,6 @@ namespace derpirc.Core
         public event EventHandler<MessageRemovedEventArgs> MessageRemoved;
         public event EventHandler<ClientStatusEventArgs> StateChanged;
 
-        private DataUnitOfWork _unitOfWork;
-
         private bool _isNetworkAvailable;
         private int _quitTimeout = 1000;
         private int _defaultServerPort = 6667;
@@ -30,9 +27,8 @@ namespace derpirc.Core
         // PowerPrecision: Welcome to the $server IRC Network $nick!$email@$host
         private static readonly Regex _welcomeRegex = new Regex("^.*?Welcome to the (.*?) (IRC|Internet Relay Chat) Network (.*)", RegexOptions.Compiled);
 
-        public IrcClientSupervisor(DataUnitOfWork unitOfWork)
+        public IrcClientSupervisor()
         {
-            this._unitOfWork = unitOfWork;
             NetworkDetector.Default.OnStatusChanged += this.Network_OnStatusChanged;
             NetworkDetector.Default.SetNetworkPolling();
         }
@@ -441,14 +437,7 @@ namespace derpirc.Core
             if (foundClient.Info.State == ClientState.Registered)
             {
                 var networkName = this.ParseNetworkName(client.WelcomeMessage);
-                var matchedNetwork = this.GetNetworkByName(networkName);
-                // Contingency to brute force join whatever channels are defined for this network
-                if (matchedNetwork == null)
-                    matchedNetwork = this.GetNetworkByClient(client);
-                this.JoinSession(matchedNetwork, client);
-                if (matchedNetwork != null)
-                    UpdateState(client, ClientState.Processed, null);
-
+                this.JoinSession(networkName, client);
                 // Change local servername to match for easy reconnects
                 //var matchedServer = GetServer(client, client.ServerName);
             }
@@ -467,14 +456,28 @@ namespace derpirc.Core
             return result;
         }
 
-        private void JoinSession(Network network, IrcClient client)
+        private void JoinSession(string networkName, IrcClient client)
         {
-            if (network != null)
+            Network network = null;
+            using (var unitOfWork = new DataUnitOfWork(new ContextConnectionString()))
             {
-                var channels = network.Favorites.Where(x => x.IsAutoConnect == true)
-                    .Select(x => new Tuple<string, string>(x.Name, x.Password)).AsEnumerable();
-                if (channels.Any())
-                    client.Channels.Join(channels);
+                var session = unitOfWork.Sessions.FindBy(x => x.Name == "default").FirstOrDefault();
+                if (session != null)
+                    network = session.Networks.FirstOrDefault(x => x.Name == networkName.ToLower());
+                if (network == null)
+                {
+                    var foundClient = SupervisorFacade.Default.GetClientByIrcClient(client);
+                    if (session != null && foundClient != null)
+                        network = session.Networks.FirstOrDefault(x => x.Name == foundClient.Info.NetworkName);
+                }
+                if (network != null)
+                {
+                    var channels = network.Favorites.Where(x => x.IsAutoConnect == true)
+                        .Select(x => new Tuple<string, string>(x.Name, x.Password)).AsEnumerable();
+                    if (channels.Any())
+                        client.Channels.Join(channels);
+                    UpdateState(client, ClientState.Processed, null);
+                }
             }
         }
 
@@ -531,20 +534,17 @@ namespace derpirc.Core
 
         #region Lookup methods
 
-        public Session GetDefaultSession()
+        private Session GetDefaultSession()
         {
             Session result = null;
-            try
+            using (var unitOfWork = new DataUnitOfWork(new ContextConnectionString()))
             {
-                result = this._unitOfWork.Sessions.FindBy(x => x.Name == "default").FirstOrDefault();
-            }
-            catch (Exception exception)
-            {
+                result = unitOfWork.Sessions.FindBy(x => x.Name == "default").FirstOrDefault();
             }
             return result;
         }
 
-        public int GetServerPort(Network network)
+        private int GetServerPort(Network network)
         {
             int result = _defaultServerPort;
             if (network != null)
@@ -552,22 +552,16 @@ namespace derpirc.Core
             return result;
         }
 
-        public Network GetNetworkByName(string networkName)
+        private Network GetNetworkByClient(IrcClient client)
         {
             Network result = null;
-            var session = GetDefaultSession();
-            if (session != null)
-                result = session.Networks.FirstOrDefault(x => x.Name == networkName.ToLower());
-            return result;
-        }
-
-        public Network GetNetworkByClient(IrcClient client)
-        {
-            Network result = null;
-            var session = GetDefaultSession();
-            var foundClient = SupervisorFacade.Default.GetClientByIrcClient(client);
-            if (session != null && foundClient != null)
-                result = session.Networks.FirstOrDefault(x => x.Name == foundClient.Info.NetworkName);
+            using (var unitOfWork = new DataUnitOfWork(new ContextConnectionString()))
+            {
+                var session = unitOfWork.Sessions.FindBy(x => x.Name == "default").FirstOrDefault();
+                var foundClient = SupervisorFacade.Default.GetClientByIrcClient(client);
+                if (session != null && foundClient != null)
+                    result = session.Networks.FirstOrDefault(x => x.Name == foundClient.Info.NetworkName);
+            }
             return result;
         }
 

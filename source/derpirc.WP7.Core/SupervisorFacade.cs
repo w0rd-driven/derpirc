@@ -82,9 +82,7 @@ namespace derpirc.Core
         {
             lock (_threadLock)
             {
-                this._unitOfWork = new DataUnitOfWork();
-
-                this._clientSupervisor = new IrcClientSupervisor(_unitOfWork);
+                this._clientSupervisor = new IrcClientSupervisor();
                 this._clientSupervisor.StateChanged += this._clientSupervisor_StateChanged;
                 this._clientSupervisor.MessageRemoved += this._clientSupervisor_MessageRemoved;
             }
@@ -164,73 +162,85 @@ namespace derpirc.Core
         // SettingsView
         public void CommitSettings()
         {
-            var settingsSupervisorReference = new WeakReference(new SettingsSupervisor(_unitOfWork));
-            var settingsSupervisor = settingsSupervisorReference.Target as SettingsSupervisor;
-            settingsSupervisor.Commit(settingsToSync =>
+            ThreadPool.QueueUserWorkItem((object userState) =>
             {
-                this._clientSupervisor.ReinitializeClients(settingsToSync);
+                var settingsSupervisorReference = new WeakReference(new SettingsSupervisor());
+                var settingsSupervisor = settingsSupervisorReference.Target as SettingsSupervisor;
+                settingsSupervisor.Commit(settingsToSync =>
+                {
+                    this._clientSupervisor.ReinitializeClients(settingsToSync);
+                });
             });
         }
 
         // ConnectionView
         public void Disconnect(ObservableCollection<ClientInfo> clients)
         {
-            if (clients != null)
-                for (int index = 0; index < clients.Count; index++)
-                {
-                    var client = GetClientByClientInfo(clients[index]);
-                    this._clientSupervisor.Disconnect(client);
-                }
-            else
-                this._clientSupervisor.Disconnect();
+            if (_clientSupervisor != null)
+                if (clients != null)
+                    for (int index = 0; index < clients.Count; index++)
+                    {
+                        var client = GetClientByClientInfo(clients[index]);
+                        this._clientSupervisor.Disconnect(client);
+                    }
+                else
+                    this._clientSupervisor.Disconnect();
         }
 
         public void Reconnect(ObservableCollection<ClientInfo> clients, bool force = false)
         {
-            if (clients != null)
-                for (int index = 0; index < clients.Count; index++)
-                {
-                    var client = GetClientByClientInfo(clients[index]);
-                    this._clientSupervisor.Reconnect(client);
-                }
-            else
-                this._clientSupervisor.Reconnect(force);
+            if (_clientSupervisor != null)
+                if (clients != null)
+                    for (int index = 0; index < clients.Count; index++)
+                    {
+                        var client = GetClientByClientInfo(clients[index]);
+                        this._clientSupervisor.Reconnect(client);
+                    }
+                else
+                    this._clientSupervisor.Reconnect(force);
         }
 
         // *DetailsView
         public void SendMessage(ChannelItem message)
         {
-            this._luserSupervisor.SendMessage(message.Summary, message.Text);
+            if (_luserSupervisor != null)
+                this._luserSupervisor.SendMessage(message.Summary, message.Text);
         }
 
         public void SendMessage(MentionItem message)
         {
-            this._luserSupervisor.SendMessage(message.Summary, message.Text);
+            if (_luserSupervisor != null)
+                this._luserSupervisor.SendMessage(message.Summary, message.Text);
         }
 
         public void SendMessage(MessageItem message)
         {
-            this._luserSupervisor.SendMessage(message.Summary, message.Text);
+            if (_luserSupervisor != null)
+                this._luserSupervisor.SendMessage(message.Summary, message.Text);
         }
 
         public void SetNickName(IMessage target, string nickName)
         {
-            this._clientSupervisor.SetNickName(target, nickName);
+            if (_clientSupervisor != null)
+                this._clientSupervisor.SetNickName(target, nickName);
         }
 
         public void SendAction(IMessage target, string message)
         {
-            this._clientSupervisor.SendAction(target, message);
+            if (_clientSupervisor != null)
+                this._clientSupervisor.SendAction(target, message);
         }
 
         public void SetTopic(IMessage target, string topic)
         {
-            this._luserSupervisor.SetTopic(target, topic);
+            if (_luserSupervisor != null)
+                this._luserSupervisor.SetTopic(target, topic);
         }
 
         public void SetModes(IMessage target, string modes)
         {
-            this._luserSupervisor.SetModes(target, modes);
+            if (_luserSupervisor != null)
+                this._luserSupervisor.SetModes(target, modes);
         }
 
         #endregion
@@ -381,7 +391,7 @@ namespace derpirc.Core
         {
             if (this._luserSupervisor == null)
             {
-                this._luserSupervisor = new LocalUserSupervisor(_clientSupervisor, _unitOfWork);
+                this._luserSupervisor = new LocalUserSupervisor();
                 this._luserSupervisor.ChannelJoined += this.OnChannelSupervisor_ChannelJoined;
                 this._luserSupervisor.ChannelLeft += this.OnChannelSupervisor_ChannelLeft;
                 this._luserSupervisor.ChannelItemReceived += this.OnChannelSupervisor_MessageReceived;

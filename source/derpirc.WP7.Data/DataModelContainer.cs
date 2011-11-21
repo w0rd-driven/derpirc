@@ -214,6 +214,7 @@ namespace derpirc.Data
             {
                 // Generate the database (with structure) from the code-based data context
                 base.CreateDatabase();
+                base.SubmitChanges();
             }
             catch (Exception ex)
             {

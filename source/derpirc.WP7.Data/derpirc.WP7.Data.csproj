@@ -71,11 +71,10 @@
     <Compile Include="Models\Session.cs" />
     <Compile Include="Models\Settings\Network.cs" />
     <Compile Include="Models\Settings\Session.cs" />
-    <Compile Include="CommitType.cs" />
     <Compile Include="Models\Settings\Storage.cs" />
     <Compile Include="SettingsUnitOfWork.cs" />
     <Compile Include="Models\Factory.cs" />
-    <Compile Include="FileModeEnum.cs" />
+    <Compile Include="DatabaseModeEnum.cs" />
     <Compile Include="DataUnitOfWork.cs" />
     <Compile Include="IRepository.cs" />
     <Compile Include="IUnitOfWork.cs" />

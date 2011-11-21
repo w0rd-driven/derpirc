@@ -178,7 +178,7 @@ namespace derpirc.ViewModels
         {
             var result = false;
             Message model = null;
-            using (var unitOfWork = new DataUnitOfWork(new ContextConnectionString() { FileMode = FileMode.ReadOnly }))
+            using (var unitOfWork = new DataUnitOfWork(new ContextConnectionString() { DatabaseMode = DatabaseMode.ReadOnly }))
             {
                 model = unitOfWork.Messages.FindById(summaryId);
                 if (model != null)
@@ -188,6 +188,15 @@ namespace derpirc.ViewModels
                 }
             }
             return result;
+        }
+
+        public void LoadLastMessage(int id)
+        {
+            using (var unitOfWork = new DataUnitOfWork(new ContextConnectionString() { DatabaseMode = DatabaseMode.ReadOnly }))
+            {
+                var newMessage = unitOfWork.MessageItems.FindById(id);
+                LoadLastMessage(newMessage);
+            }
         }
 
         public void LoadLastMessage(MessageItem message)

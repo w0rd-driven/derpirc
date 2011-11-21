@@ -1,7 +1,7 @@
 ﻿
 namespace derpirc.Data
 {
-    public enum FileMode
+    public enum DatabaseMode
     {
         Default = 0,
         ReadWrite = 1,

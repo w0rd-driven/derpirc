@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using derpirc.Data;
 using derpirc.Data.Models;
@@ -13,13 +12,11 @@ namespace derpirc.Core
     {
         private bool _isDisposed;
 
-        private DataUnitOfWork _unitOfWork;
         private SettingsSync _settingsToSync;
         private Action<SettingsSync> _completedAction;
 
-        public SettingsSupervisor(DataUnitOfWork unitOfWork)
+        public SettingsSupervisor()
         {
-            this._unitOfWork = unitOfWork;
             this._settingsToSync = new SettingsSync();
         }
 
@@ -29,39 +26,42 @@ namespace derpirc.Core
         private void ConfigureRunningState()
         {
             Session newSession = null;
-            var defaultSession = _unitOfWork.Sessions.FindBy(x => x.Name == "default").FirstOrDefault();
-            var configNetworks = SettingsUnitOfWork.Default.Networks;
-            if (defaultSession == null)
+            using (var unitOfWork = new DataUnitOfWork(new ContextConnectionString()))
             {
-                defaultSession = CreateSession();
-                newSession = defaultSession;
-            }
-            foreach (var network in configNetworks)
-            {
-                var foundNetwork = defaultSession.Networks.Where(x => x.Name == network.Name).FirstOrDefault();
-                if (foundNetwork == null)
-                    foundNetwork = CreateNetwork(defaultSession, network);
-                else
+                var defaultSession = unitOfWork.Sessions.FindBy(x => x.Name == "default").FirstOrDefault();
+                var configNetworks = SettingsUnitOfWork.Default.Networks;
+                if (defaultSession == null)
                 {
-                    foundNetwork.HostName = network.HostName;
-                    foundNetwork.Ports = network.Ports;
-                    foundNetwork.Password = network.Password;
+                    defaultSession = CreateSession();
+                    newSession = defaultSession;
                 }
-                foreach (var favorite in network.Favorites)
+                foreach (var network in configNetworks)
                 {
-                    var foundFavorite = foundNetwork.Favorites.Where(x => x.Name == favorite.Name).FirstOrDefault();
+                    var foundNetwork = defaultSession.Networks.Where(x => x.Name == network.Name).FirstOrDefault();
                     if (foundNetwork == null)
-                        CreateFavorite(foundNetwork, favorite);
+                        foundNetwork = CreateNetwork(defaultSession, network);
                     else
                     {
-                        foundFavorite.IsAutoConnect = favorite.IsAutoConnect;
-                        foundFavorite.Password = favorite.Password;
+                        foundNetwork.HostName = network.HostName;
+                        foundNetwork.Ports = network.Ports;
+                        foundNetwork.Password = network.Password;
+                    }
+                    foreach (var favorite in network.Favorites)
+                    {
+                        var foundFavorite = foundNetwork.Favorites.Where(x => x.Name == favorite.Name).FirstOrDefault();
+                        if (foundNetwork == null)
+                            CreateFavorite(foundNetwork, favorite);
+                        else
+                        {
+                            foundFavorite.IsAutoConnect = favorite.IsAutoConnect;
+                            foundFavorite.Password = favorite.Password;
+                        }
                     }
                 }
+                if (newSession != null)
+                    unitOfWork.Sessions.Add(defaultSession);
+                unitOfWork.Commit();
             }
-            if (newSession != null)
-                _unitOfWork.Sessions.Add(defaultSession);
-            _unitOfWork.Commit();
             PurgeOrphans();
         }
 
@@ -72,60 +72,63 @@ namespace derpirc.Core
         {
             var isPurged = false;
 
-            var defaultSession = _unitOfWork.Sessions.FindBy(x => x.Name == "default").FirstOrDefault();
-            var configNetworks = SettingsUnitOfWork.Default.Networks;
-            foreach (var network in defaultSession.Networks)
+            using (var unitOfWork = new DataUnitOfWork(new ContextConnectionString()))
             {
-                var configNetwork = configNetworks.Where(x => x.Name == network.Name).FirstOrDefault();
-                if (configNetwork == null)
-                    _settingsToSync.OldNetworks.Add(network.Name);
-                else
+                var defaultSession = unitOfWork.Sessions.FindBy(x => x.Name == "default").FirstOrDefault();
+                var configNetworks = SettingsUnitOfWork.Default.Networks;
+                foreach (var network in defaultSession.Networks)
                 {
-                    foreach (var favorite in network.Favorites)
+                    var configNetwork = configNetworks.Where(x => x.Name == network.Name).FirstOrDefault();
+                    if (configNetwork == null)
+                        _settingsToSync.OldNetworks.Add(network.Name);
+                    else
                     {
-                        var configFavorite = configNetwork.Favorites.FirstOrDefault(x => x.Name == favorite.Name);
-                        if (configFavorite == null)
-                            _settingsToSync.OldFavorites.Add(new Tuple<string, string>(network.Name, favorite.Name));
+                        foreach (var favorite in network.Favorites)
+                        {
+                            var configFavorite = configNetwork.Favorites.FirstOrDefault(x => x.Name == favorite.Name);
+                            if (configFavorite == null)
+                                _settingsToSync.OldFavorites.Add(new Tuple<string, string>(network.Name, favorite.Name));
+                        }
+                    }
+                    if (_settingsToSync.OldFavorites.Count > 0)
+                    {
+                        foreach (var favorite in _settingsToSync.OldFavorites)
+                        {
+                            var favoritesToDelete = network.Favorites.Where(x => x.Name == favorite.Item2);
+                            foreach (var item in favoritesToDelete)
+                            {
+                                unitOfWork.Favorites.Remove(item);
+                            }
+                            var channelsToDelete = network.Channels.Where(x => x.Name == favorite.Item2);
+                            foreach (var item in channelsToDelete)
+                            {
+                                unitOfWork.Channels.Remove(item);
+                            }
+                            var mentionsToDelete = network.Mentions.Where(x => x.ChannelName == favorite.Item2);
+                            foreach (var item in mentionsToDelete)
+                            {
+                                unitOfWork.Mentions.Remove(item);
+                            }
+                            isPurged = true;
+                        }
                     }
                 }
-                if (_settingsToSync.OldFavorites.Count > 0)
+
+                if (_settingsToSync.OldNetworks.Count > 0)
                 {
-                    foreach (var favorite in _settingsToSync.OldFavorites)
+                    foreach (var network in _settingsToSync.OldNetworks)
                     {
-                        var favoritesToDelete = network.Favorites.Where(x => x.Name == favorite.Item2);
-                        foreach (var item in favoritesToDelete)
+                        var recordsToDelete = defaultSession.Networks.Where(x => x.Name == network);
+                        foreach (var item in recordsToDelete)
                         {
-                            _unitOfWork.Favorites.Remove(item);
-                        }
-                        var channelsToDelete = network.Channels.Where(x => x.Name == favorite.Item2);
-                        foreach (var item in channelsToDelete)
-                        {
-                            _unitOfWork.Channels.Remove(item);
-                        }
-                        var mentionsToDelete = network.Mentions.Where(x => x.ChannelName == favorite.Item2);
-                        foreach (var item in mentionsToDelete)
-                        {
-                            _unitOfWork.Mentions.Remove(item);
+                            unitOfWork.Networks.Remove(item);
                         }
                         isPurged = true;
                     }
                 }
+                if (isPurged)
+                    unitOfWork.Commit();
             }
-
-            if (_settingsToSync.OldNetworks.Count > 0)
-            {
-                foreach (var network in _settingsToSync.OldNetworks)
-                {
-                    var recordsToDelete = defaultSession.Networks.Where(x => x.Name == network);
-                    foreach (var item in recordsToDelete)
-                    {
-                        _unitOfWork.Networks.Remove(item);
-                    }
-                    isPurged = true;
-                }
-            }
-            if (isPurged)
-                _unitOfWork.Commit();
             if (_completedAction != null)
             {
                 _completedAction(_settingsToSync);

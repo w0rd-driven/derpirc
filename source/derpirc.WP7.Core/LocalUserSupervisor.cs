@@ -10,19 +10,14 @@ namespace derpirc.Core
     {
         private bool _isDisposed;
 
-        private IrcClientSupervisor _clientSupervisor;
-        private DataUnitOfWork _unitOfWork;
-
         public event EventHandler<ChannelStatusEventArgs> ChannelJoined;
         public event EventHandler<ChannelStatusEventArgs> ChannelLeft;
         public event EventHandler<MessageItemEventArgs> ChannelItemReceived;
         public event EventHandler<MessageItemEventArgs> MentionItemReceived;
         public event EventHandler<MessageItemEventArgs> MessageItemReceived;
 
-        public LocalUserSupervisor(IrcClientSupervisor clientSupervisor, DataUnitOfWork unitOfWork)
+        public LocalUserSupervisor()
         {
-            this._clientSupervisor = clientSupervisor;
-            this._unitOfWork = unitOfWork;
         }
 
         public void AttachLocalUser(IrcLocalUser localUser)
@@ -242,33 +237,63 @@ namespace derpirc.Core
 
         private void JoinChannel(IrcChannel channel)
         {
-            var summary = this.GetChannel(channel.Client, channel.Name);
-            if (summary != null)
+            using (var unitOfWork = new DataUnitOfWork(new ContextConnectionString()))
             {
-                var eventArgs = new ChannelStatusEventArgs()
+                var session = unitOfWork.Sessions.FindBy(x => x.Name == "default").FirstOrDefault();
+                var foundClient = SupervisorFacade.Default.GetClientByIrcClient(channel.Client);
+                if (session != null && foundClient != null)
                 {
-                    SummaryId = summary.Id,
-                    NetworkName = summary.Network.Name,
-                    ChannelName = summary.Name,
-                    Status = ChannelStatus.Join,
-                };
-                this.OnChannelJoined(eventArgs);
+                    var network = session.Networks.FirstOrDefault(x => x.Name == foundClient.Info.NetworkName);
+                    if (network != null)
+                    {
+                        var summary = network.Channels.FirstOrDefault(x => x.Name == channel.Name.ToLower());
+                        if (summary == null)
+                        {
+                            summary = new Channel() { Name = channel.Name };
+                            network.Channels.Add(summary);
+                            unitOfWork.Commit();
+                        }
+                        if (summary != null)
+                        {
+                            var eventArgs = new ChannelStatusEventArgs()
+                            {
+                                SummaryId = summary.Id,
+                                NetworkName = summary.Network.Name,
+                                ChannelName = summary.Name,
+                                Status = ChannelStatus.Join,
+                            };
+                            this.OnChannelJoined(eventArgs);
+                        }
+                    }
+                }
             }
         }
 
         private void LeaveChannel(IrcChannel channel)
         {
-            var summary = this.GetChannel(channel.Client, channel.Name);
-            if (summary != null)
+            using (var unitOfWork = new DataUnitOfWork(new ContextConnectionString()))
             {
-                var eventArgs = new ChannelStatusEventArgs()
+                var session = unitOfWork.Sessions.FindBy(x => x.Name == "default").FirstOrDefault();
+                var foundClient = SupervisorFacade.Default.GetClientByIrcClient(channel.Client);
+                if (session != null && foundClient != null)
                 {
-                    SummaryId = summary.Id,
-                    NetworkName = summary.Network.Name,
-                    ChannelName = summary.Name,
-                    Status = ChannelStatus.Leave,
-                };
-                this.OnChannelLeft(eventArgs);
+                    var network = session.Networks.FirstOrDefault(x => x.Name == foundClient.Info.NetworkName);
+                    if (network != null)
+                    {
+                        var summary = network.Channels.FirstOrDefault(x => x.Name == channel.Name.ToLower());
+                        if (summary != null)
+                        {
+                            var eventArgs = new ChannelStatusEventArgs()
+                            {
+                                SummaryId = summary.Id,
+                                NetworkName = summary.Network.Name,
+                                ChannelName = summary.Name,
+                                Status = ChannelStatus.Leave,
+                            };
+                            this.OnChannelLeft(eventArgs);
+                        }
+                    }
+                }
             }
         }
 
@@ -280,151 +305,175 @@ namespace derpirc.Core
                 if (text.Contains(client.LocalUser.NickName) || text.Contains(nickName))
                 {
                     // Mention
-                    var summary = this.GetMention(client, channelName, nickName);
-                    if (summary != null)
+                    using (var unitOfWork = new DataUnitOfWork(new ContextConnectionString()))
                     {
-                        var message = new MentionItem()
+                        var session = unitOfWork.Sessions.FindBy(x => x.Name == "default").FirstOrDefault();
+                        var foundClient = SupervisorFacade.Default.GetClientByIrcClient(client);
+                        if (session != null && foundClient != null)
                         {
-                            Source = channelName,
-                            Text = text,
-                            Owner = owner,
-                            Timestamp = DateTime.UtcNow,
-                            IsRead = isRead,
-                        };
-                        summary.Messages.Add(message);
-                        this._unitOfWork.Commit();
-
-                        var eventArgs = new MessageItemEventArgs()
-                        {
-                            NetworkId = summary.NetworkId,
-                            SummaryId = summary.Id,
-                            MessageId = message.Id,
-                        };
-                        this.OnMentionItemReceived(eventArgs);
+                            var network = session.Networks.FirstOrDefault(x => x.Name == foundClient.Info.NetworkName);
+                            if (network != null)
+                            {
+                                var summary = network.Mentions.FirstOrDefault(x => x.Name == nickName.ToLower());
+                                if (summary == null)
+                                {
+                                    summary = new Mention() { Name = nickName, ChannelName = channelName };
+                                    network.Mentions.Add(summary);
+                                    unitOfWork.Commit();
+                                }
+                                var message = new MentionItem()
+                                {
+                                    Source = channelName,
+                                    Text = text,
+                                    Owner = owner,
+                                    Timestamp = DateTime.UtcNow,
+                                    IsRead = isRead,
+                                };
+                                summary.Messages.Add(message);
+                                unitOfWork.Commit();
+                                var eventArgs = new MessageItemEventArgs()
+                                {
+                                    NetworkId = summary.NetworkId,
+                                    SummaryId = summary.Id,
+                                    MessageId = message.Id,
+                                };
+                                this.OnMentionItemReceived(eventArgs);
+                            }
+                        }
                     }
                 }
                 else
                 {
                     // Channel
-                    var summary = this.GetChannel(client, channelName);
-                    if (summary != null)
+                    using (var unitOfWork = new DataUnitOfWork(new ContextConnectionString()))
                     {
-                        var message = new ChannelItem()
+                        var session = unitOfWork.Sessions.FindBy(x => x.Name == "default").FirstOrDefault();
+                        var foundClient = SupervisorFacade.Default.GetClientByIrcClient(client);
+                        if (session != null && foundClient != null)
                         {
-                            Source = nickName,
-                            Text = text,
-                            Owner = owner,
-                            Timestamp = DateTime.UtcNow,
-                            IsRead = isRead,
-                        };
-                        summary.Messages.Add(message);
-                        this._unitOfWork.Commit();
-
-                        var eventArgs = new MessageItemEventArgs()
-                        {
-                            NetworkId = summary.NetworkId,
-                            SummaryId = summary.Id,
-                            MessageId = message.Id,
-                        };
-                        this.OnChannelItemReceived(eventArgs);
+                            var network = session.Networks.FirstOrDefault(x => x.Name == foundClient.Info.NetworkName);
+                            if (network != null)
+                            {
+                                var summary = network.Channels.FirstOrDefault(x => x.Name == channelName.ToLower());
+                                if (summary == null)
+                                {
+                                    summary = new Channel() { Name = channelName };
+                                    network.Channels.Add(summary);
+                                    unitOfWork.Commit();
+                                }
+                                var message = new ChannelItem()
+                                {
+                                    Source = nickName,
+                                    Text = text,
+                                    Owner = owner,
+                                    Timestamp = DateTime.UtcNow,
+                                    IsRead = isRead,
+                                };
+                                summary.Messages.Add(message);
+                                unitOfWork.Commit();
+                                var eventArgs = new MessageItemEventArgs()
+                                {
+                                    NetworkId = summary.NetworkId,
+                                    SummaryId = summary.Id,
+                                    MessageId = message.Id,
+                                };
+                                this.OnChannelItemReceived(eventArgs);
+                            }
+                        }
                     }
                 }
             }
             else
             {
                 // Message
-                var summary = this.GetMessage(client, nickName);
-                if (summary != null)
+                using (var unitOfWork = new DataUnitOfWork(new ContextConnectionString()))
                 {
-                    var message = new MessageItem()
+                    var session = unitOfWork.Sessions.FindBy(x => x.Name == "default").FirstOrDefault();
+                    var foundClient = SupervisorFacade.Default.GetClientByIrcClient(client);
+                    if (session != null && foundClient != null)
                     {
-                        Source = nickName,
-                        Text = text,
-                        Owner = owner,
-                        Timestamp = DateTime.UtcNow,
-                        IsRead = isRead,
-                    };
-                    summary.Messages.Add(message);
-                    this._unitOfWork.Commit();
-
-                    var eventArgs = new MessageItemEventArgs()
-                    {
-                        NetworkId = summary.NetworkId,
-                        SummaryId = summary.Id,
-                        MessageId = message.Id,
-                    };
-                    this.OnMessageItemReceived(eventArgs);
+                        var network = session.Networks.FirstOrDefault(x => x.Name == foundClient.Info.NetworkName);
+                        if (network != null)
+                        {
+                            var summary = network.Messages.FirstOrDefault(x => x.Name == nickName.ToLower());
+                            if (summary == null)
+                            {
+                                summary = new Message() { Name = nickName };
+                                network.Messages.Add(summary);
+                                unitOfWork.Commit();
+                            }
+                            var message = new MessageItem()
+                            {
+                                Source = nickName,
+                                Text = text,
+                                Owner = owner,
+                                Timestamp = DateTime.UtcNow,
+                                IsRead = isRead,
+                            };
+                            summary.Messages.Add(message);
+                            unitOfWork.Commit();
+                            var eventArgs = new MessageItemEventArgs()
+                            {
+                                NetworkId = summary.NetworkId,
+                                SummaryId = summary.Id,
+                                MessageId = message.Id,
+                            };
+                            this.OnMessageItemReceived(eventArgs);
+                        }
+                    }
                 }
             }
         }
 
         private void UpdateTopic(IrcChannel channel)
         {
-            var summary = this.GetChannel(channel.Client, channel.Name);
-            if (summary != null)
+            using (var unitOfWork = new DataUnitOfWork(new ContextConnectionString()))
             {
-                summary.Topic = channel.Topic;
-                _unitOfWork.Commit();
+                var session = unitOfWork.Sessions.FindBy(x => x.Name == "default").FirstOrDefault();
+                var foundClient = SupervisorFacade.Default.GetClientByIrcClient(channel.Client);
+                if (session != null && foundClient != null)
+                {
+                    var network = session.Networks.FirstOrDefault(x => x.Name == foundClient.Info.NetworkName);
+                    if (network != null)
+                    {
+                        var summary = network.Channels.FirstOrDefault(x => x.Name == channel.Name.ToLower());
+                        if (summary == null)
+                        {
+                            summary = new Channel() { Name = channel.Name };
+                            network.Channels.Add(summary);
+                            unitOfWork.Commit();
+                        }
+                        if (summary != null)
+                        {
+                            summary.Topic = channel.Topic;
+                            unitOfWork.Commit();
+                        }
+                    }
+                }
             }
         }
 
         #region Lookup methods
 
-        private Channel GetChannel(IrcClient client, string channelName)
-        {
-            Channel result = null;
-            // If _clientSupervisor is ever null we have huge problems but check anyway
-            if (_clientSupervisor != null)
-            {
-                var network = _clientSupervisor.GetNetworkByClient(client);
-                if (network != null)
-                {
-                    result = network.Channels.FirstOrDefault(x => x.Name == channelName.ToLower());
-                    if (result == null)
-                    {
-                        result = new Channel() { Name = channelName };
-                        network.Channels.Add(result);
-                        this._unitOfWork.Commit();
-                    }
-                }
-            }
-            return result;
-        }
-
         private Mention GetMention(IrcClient client, string channelName, string nickName)
         {
             Mention result = null;
-            if (_clientSupervisor != null)
+            using (var unitOfWork = new DataUnitOfWork(new ContextConnectionString()))
             {
-                var network = _clientSupervisor.GetNetworkByClient(client);
-                if (network != null)
+                var session = unitOfWork.Sessions.FindBy(x => x.Name == "default").FirstOrDefault();
+                var foundClient = SupervisorFacade.Default.GetClientByIrcClient(client);
+                if (session != null && foundClient != null)
                 {
-                    result = network.Mentions.FirstOrDefault(x => x.Name == nickName.ToLower());
-                    if (result == null)
+                    var network = session.Networks.FirstOrDefault(x => x.Name == foundClient.Info.NetworkName);
+                    if (network != null)
                     {
-                        result = new Mention() { Name = nickName, ChannelName = channelName };
-                        network.Mentions.Add(result);
-                        this._unitOfWork.Commit();
-                    }
-                }
-            }
-            return result;
-        }
-
-        private Message GetMessage(IrcClient client, string nickName)
-        {
-            Message result = null;
-            if (_clientSupervisor != null)
-            {
-                var network = _clientSupervisor.GetNetworkByClient(client);
-                if (network != null)
-                {
-                    result = network.Messages.FirstOrDefault(x => x.Name == nickName.ToLower());
-                    if (result == null)
-                    {
-                        result = new Message() { Name = nickName };
-                        network.Messages.Add(result);
-                        this._unitOfWork.Commit();
+                        result = network.Mentions.FirstOrDefault(x => x.Name == nickName.ToLower());
+                        if (result == null)
+                        {
+                            result = new Mention() { Name = nickName, ChannelName = channelName };
+                            network.Mentions.Add(result);
+                            unitOfWork.Commit();
+                        }
                     }
                 }
             }

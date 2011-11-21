@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using derpirc.Core;
 using derpirc.Data;
 using derpirc.Data.Models;
 using GalaSoft.MvvmLight;
@@ -194,7 +193,7 @@ namespace derpirc.ViewModels
         {
             var result = false;
             Mention model = null;
-            using (var unitOfWork = new DataUnitOfWork(new ContextConnectionString() { FileMode = FileMode.ReadOnly }))
+            using (var unitOfWork = new DataUnitOfWork(new ContextConnectionString() { DatabaseMode = DatabaseMode.ReadOnly }))
             {
                 model = unitOfWork.Mentions.FindById(summaryId);
                 if (model != null)
@@ -204,6 +203,15 @@ namespace derpirc.ViewModels
                 }
             }
             return result;
+        }
+
+        public void LoadLastMessage(int id)
+        {
+            using (var unitOfWork = new DataUnitOfWork(new ContextConnectionString() { DatabaseMode = DatabaseMode.ReadOnly }))
+            {
+                var newMessage = unitOfWork.MentionItems.FindById(id);
+                LoadLastMessage(newMessage);
+            }
         }
 
         public void LoadLastMessage(MentionItem message)

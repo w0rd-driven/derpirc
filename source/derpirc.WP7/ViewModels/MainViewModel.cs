@@ -265,7 +265,6 @@ namespace derpirc.ViewModels
         #endregion
 
         private object _threadLock = new object();
-        private DataUnitOfWork _unitOfWork;
         private BackgroundWorker _worker;
         private SupervisorFacade _supervisor;
 
@@ -328,11 +327,6 @@ namespace derpirc.ViewModels
                 _supervisor.ChannelItemReceived += this._supervisor_ChannelItemReceived;
                 _supervisor.MentionItemReceived += this._supervisor_MentionItemReceived;
                 _supervisor.MessageItemReceived += this._supervisor_MessageItemReceived;
-
-                _unitOfWork = new DataUnitOfWork(new ContextConnectionString()
-                {
-                    FileMode = FileMode.ReadOnly,
-                });
             }
 
             if (completed != null)
@@ -506,9 +500,7 @@ namespace derpirc.ViewModels
                 {
                     // TODO: Handle Topic, UnreadCount, making subsequent LoadById's moot
                     foundItem.LoadById(e.SummaryId);
-                    var newMessage = _unitOfWork.ChannelItems.FindById(e.MessageId);
-                    if (newMessage != null)
-                        foundItem.LoadLastMessage(newMessage);
+                    foundItem.LoadLastMessage(e.MessageId);
                 });
             }
         }
@@ -535,9 +527,7 @@ namespace derpirc.ViewModels
                 {
                     // TODO: Handle Topic, UnreadCount, making subsequent LoadById's moot
                     foundItem.LoadById(e.SummaryId);
-                    var newMessage = _unitOfWork.MentionItems.FindById(e.MessageId);
-                    if (newMessage != null)
-                        foundItem.LoadLastMessage(newMessage);
+                    foundItem.LoadLastMessage(e.MessageId);
                 });
             }
         }
@@ -564,9 +554,7 @@ namespace derpirc.ViewModels
                 {
                     // TODO: Handle Topic, UnreadCount, making subsequent LoadById's moot
                     foundItem.LoadById(e.SummaryId);
-                    var newMessage = _unitOfWork.MessageItems.FindById(e.MessageId);
-                    if (newMessage != null)
-                        foundItem.LoadLastMessage(newMessage);
+                    foundItem.LoadLastMessage(e.MessageId);
                 });
             }
         }
@@ -593,13 +581,16 @@ namespace derpirc.ViewModels
                     case 0:
                         if (_lastRefreshChannels == DateTime.MinValue)
                         {
-                            var channels = _unitOfWork.Channels.FindAll().ToList();
                             ProgressIndeterminate = true;
                             ProgressText = "Loading channels...";
-                            foreach (var item in channels)
+                            using (var unitOfWork = new DataUnitOfWork(new ContextConnectionString()))
                             {
-                                var itemSummary = new ChannelViewModel(item);
-                                _channelsList.Add(itemSummary);
+                                var channels = unitOfWork.Channels.FindAll().ToList();
+                                foreach (var item in channels)
+                                {
+                                    var itemSummary = new ChannelViewModel(item);
+                                    _channelsList.Add(itemSummary);
+                                }
                             }
                             _lastRefreshChannels = DateTime.Now;
                             ProgressIndeterminate = false;
@@ -610,13 +601,16 @@ namespace derpirc.ViewModels
                     case 1:
                         if (_lastRefreshMentions == DateTime.MinValue)
                         {
-                            var mentions = _unitOfWork.Mentions.FindAll().ToList();
                             ProgressIndeterminate = true;
                             ProgressText = "Loading mentions...";
-                            foreach (var item in mentions)
+                            using (var unitOfWork = new DataUnitOfWork(new ContextConnectionString()))
                             {
-                                var itemSummary = new MentionViewModel(item);
-                                _mentionsList.Add(itemSummary);
+                                var mentions = unitOfWork.Mentions.FindAll().ToList();
+                                foreach (var item in mentions)
+                                {
+                                    var itemSummary = new MentionViewModel(item);
+                                    _mentionsList.Add(itemSummary);
+                                }
                             }
                             _lastRefreshMentions = DateTime.Now;
                             ProgressIndeterminate = false;
@@ -627,13 +621,16 @@ namespace derpirc.ViewModels
                     case 2:
                         if (_lastRefreshMessages == DateTime.MinValue)
                         {
-                            var messages = _unitOfWork.Messages.FindAll().ToList();
-                            ProgressIndeterminate = true;
-                            ProgressText = "Loading messages...";
-                            foreach (var item in messages)
+                            using (var unitOfWork = new DataUnitOfWork(new ContextConnectionString()))
                             {
-                                var itemSummary = new MessageViewModel(item);
-                                _messagesList.Add(itemSummary);
+                                var messages = unitOfWork.Messages.FindAll().ToList();
+                                ProgressIndeterminate = true;
+                                ProgressText = "Loading messages...";
+                                foreach (var item in messages)
+                                {
+                                    var itemSummary = new MessageViewModel(item);
+                                    _messagesList.Add(itemSummary);
+                                }
                             }
                             _lastRefreshMessages = DateTime.Now;
                             ProgressIndeterminate = false;
