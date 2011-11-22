@@ -28,6 +28,10 @@
                 <command:EventToCommand Command="{Binding LayoutRootCommand}" CommandParameter="{Binding ElementName=LayoutRoot}" PassEventArgsToCommand="True"/>
             </blend:EventTrigger>
         </blend:Interaction.Triggers>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
 
         <local:ProgressIndicatorProxy IsIndeterminate="{Binding ProgressIndeterminate}" Text="{Binding ProgressText}" />
         
@@ -215,6 +219,17 @@
                 </ListBox>
             </controls:PivotItem>
         </controls:Pivot>
+        
+        <adRotator:AdRotatorControl x:Name="AdRotatorControl"
+                                    xmlns:adRotator="clr-namespace:AdRotator;assembly=AdRotator"
+                                    Grid.Row="1"
+                                    IsEnabled="False"
+                                    DefaultSettingsFileUri="/derpirc;component/AdRotator.xml"
+                                    SettingsUrl="http://braytonium.com/derpirc/AdRotator.xml"
+                                    DefaultAdType="PubCenter"
+                                    PubCenterAdUnitId="99999"
+                                    PubCenterAppId="xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+                                    AdDuplexAppId="9999" />
     </Grid>
  
     <phone:PhoneApplicationPage.ApplicationBar>

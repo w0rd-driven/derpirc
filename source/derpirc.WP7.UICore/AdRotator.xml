@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<AdSettings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <CultureDescriptors>
+    <AdCultureDescriptor CultureName="en-US">
+      <Probabilities Probability="80" AdType="PubCenter" />
+      <Probabilities Probability="10" AdType="AdDuplex" />
+    </AdCultureDescriptor>
+    <AdCultureDescriptor CultureName="en-GB">
+      <Probabilities Probability="80" AdType="PubCenter" />
+      <Probabilities Probability="10" AdType="AdDuplex" />
+    </AdCultureDescriptor>
+    <AdCultureDescriptor CultureName="de-DE">
+      <Probabilities Probability="15" AdType="PubCenter" />
+      <Probabilities Probability="20" AdType="AdDuplex" />
+      <Probabilities Probability="50" AdType="None" />
+    </AdCultureDescriptor>
+    <AdCultureDescriptor CultureName="default">
+      <Probabilities Probability="33" AdType="PubCenter" />
+      <Probabilities Probability="33" AdType="AdDuplex" />
+      <Probabilities Probability="0" AdType="None" />
+    </AdCultureDescriptor>
+  </CultureDescriptors>
+</AdSettings>

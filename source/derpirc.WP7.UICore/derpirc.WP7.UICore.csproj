@@ -78,6 +78,7 @@
     <Compile Include="ViewModels\ViewModelFactory.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="AdRotator.xml" />
     <Content Include="Icons\appbar.clear.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
