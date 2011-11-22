@@ -9,8 +9,6 @@
                     xmlns:primitives="clr-namespace:Microsoft.Phone.Controls.Primitives;assembly=Microsoft.Phone.Controls"
                     xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
                     xmlns:vsm="clr-namespace:System.Windows;assembly=System.Windows"
-                    xmlns:sys="clr-namespace:System;assembly=mscorlib"
-                    xmlns:helpers="clr-namespace:derpirc.Helpers"
                     mc:Ignorable="d">
 
     <Style x:Key="DetailMessageStyle" TargetType="TextBlock" BasedOn="{StaticResource TextBlockBase}">
@@ -136,89 +134,4 @@
             </Setter.Value>
         </Setter>
     </Style>
-    <!-- DataTemplates -->
-    <DataTemplate x:Key="TemplateDetailMyMessage">
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-            <Grid Style="{StaticResource GridDetailMyMessage}">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-                <Border x:Name="MessageContainer" Background="{StaticResource PhoneAccentBrush}">
-                    <StackPanel>
-                        <TextBlock x:Name="MessageText"
-                                   Text="{Binding Text}"
-                                   Style="{StaticResource DetailMessageStyle}" />
-                        <TextBlock x:Name="MessageTimestamp"
-                                   Text="{Binding Timestamp, Converter={StaticResource ListViewDateTimeConverter}}"
-                                   Style="{StaticResource DetailTimeStampStyle}" />
-                    </StackPanel>
-                </Border>
-                <Path x:Name="PathTick"
-                      Data="m 0,0 l 16,0 l 0,16 l -16,-16"
-                      Fill="{Binding Background, ElementName=MessageContainer}"
-                      Height="12"
-                      Width="20"
-                      Stretch="Fill"
-                      HorizontalAlignment="Right"
-                      Margin="0,0,10,0"
-                      Grid.Row="1" />
-            </Grid>
-            <TextBlock x:Name="MessageStatus"
-                       Text="{Binding Status}"
-                       Style="{StaticResource DetailStatusStyle}"
-                       Grid.Row="1" />
-        </Grid>
-    </DataTemplate>
-    <DataTemplate x:Key="TemplateDetailTheirMessage">
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-            <Grid Style="{StaticResource GridDetailTheirMessage}">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-                <TextBlock x:Name="MessageSource"
-                           Text="{Binding Source}"
-                           Style="{StaticResource DetailSourceStyle}" />
-                <Path x:Name="PathTick"
-                      Data="m 0,0 l 0,16 l 16,0 l -16,-16"
-                      Fill="{Binding Background, ElementName=MessageContainer}"
-                      Height="12"
-                      Width="20"
-                      Stretch="Fill"
-                      HorizontalAlignment="Left"
-                      Margin="10,0,0,0"
-                      Grid.Row="1" />
-                <Border x:Name="MessageContainer" Grid.Row="2" Background="{StaticResource PhoneAccentBrush}">
-                    <StackPanel>
-                        <TextBlock x:Name="MessageText"
-                                   Text="{Binding Text}"
-                                   Style="{StaticResource DetailMessageStyle}" />
-                        <TextBlock x:Name="MessageTimestamp"
-                                   Text="{Binding Timestamp, Converter={StaticResource ListViewDateTimeConverter}}"
-                                   Style="{StaticResource DetailTimeStampStyle}" />
-                    </StackPanel>
-                </Border>
-            </Grid>
-            <TextBlock x:Name="MessageStatus"
-                       Text="{Binding Status}"
-                       Style="{StaticResource DetailStatusStyle}"
-                       Grid.Row="1" />
-        </Grid>
-    </DataTemplate>
-    <DataTemplate x:Key="TemplateDetailMessageSelector">
-        <helpers:MessageTemplateSelector Content="{Binding}"
-                                         TemplateMyMessage="{StaticResource TemplateDetailMyMessage}"
-                                         TemplateTheirMessage="{StaticResource TemplateDetailTheirMessage}" />
-    </DataTemplate>
 </ResourceDictionary>
