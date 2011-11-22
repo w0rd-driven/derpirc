@@ -224,6 +224,20 @@ namespace derpirc.ViewModels
             }
         }
 
+        private string _status;
+        public string Status
+        {
+            get { return _status; }
+            private set
+            {
+                if (_status == value)
+                    return;
+
+                _status = value;
+                RaisePropertyChanged(() => Status);
+            }
+        }
+
         #endregion
 
         /// <summary>
@@ -291,21 +305,39 @@ namespace derpirc.ViewModels
             if (this.Model != null)
                 if (e.Info.NetworkName.Equals(this.Model.Network.Name, StringComparison.OrdinalIgnoreCase))
                     if (e.Info.State != ClientState.Processed)
-                        this.IsConnected = false;
+                    {
+                        DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                        {
+                            this.IsConnected = false;
+                            this.Status = "Network disconnected";
+                        });
+                    }
         }
 
         private void OnChannelJoined(object sender, ChannelStatusEventArgs e)
         {
             if (this.Model != null)
                 if (e.SummaryId == this.Model.Id)
-                this.IsConnected = true;
+                {
+                    DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                    {
+                        this.IsConnected = true;
+                        this.Status = "Joined";
+                    });
+                }
         }
 
         private void OnChannelLeft(object sender, ChannelStatusEventArgs e)
         {
             if (this.Model != null)
                 if (e.SummaryId == this.Model.Id)
-                this.IsConnected = false;
+                {
+                    DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                     {
+                         this.IsConnected = false;
+                         this.Status = "Parted";
+                     });
+                }
         }
 
         private void OnChannelItemReceived(object sender, MessageItemEventArgs e)
@@ -400,22 +432,23 @@ namespace derpirc.ViewModels
                     messages = model.Messages.ToList();
                     if (model != null)
                     {
+                        Model = model;
                         DispatcherHelper.CheckBeginInvokeOnUI(() =>
                         {
-                            ChannelName = model.Name;
-                            ChannelTopic = model.Topic;
+                            this.ChannelName = model.Name;
+                            this.ChannelTopic = model.Topic;
                             if (model.Network != null)
-                                NetworkName = networkName;
-                            IsConnected = CheckConnection();
-                            SendText = string.Empty;
-                            SendWatermark = string.Format("chat on {0}", NetworkName);
+                                this.NetworkName = networkName;
+                            this.CheckConnection();
+                            this.SendText = string.Empty;
+                            this.SendWatermark = string.Format("chat on {0}", NetworkName);
                             foreach (var item in messages)
                             {
                                 if (!_messagesList.Any(x => x.Id == item.Id))
                                     _messagesList.Add(item);
                             }
-                            PurgeOrphans(messages);
-                            Messages.View.MoveCurrentToLast();
+                            this.PurgeOrphans(messages);
+                            this.Messages.View.MoveCurrentToLast();
                         });
                     }
                 }
@@ -442,13 +475,19 @@ namespace derpirc.ViewModels
             }
         }
 
-        private bool CheckConnection()
+        private void CheckConnection()
         {
-            var result = false;
             var foundConnection = SupervisorFacade.Default.Connections.FirstOrDefault(x => x.NetworkName == NetworkName && x.Channels.ContainsKey(ChannelName));
-            if (foundConnection != null && foundConnection.Channels[ChannelName])
-                result = true;
-            return result;
+            if (foundConnection != null && foundConnection.IsConnected && foundConnection.Channels[ChannelName])
+            {
+                this.IsConnected = true;
+                this.Status = "Joined";
+            }
+            else
+            {
+                this.IsConnected = false;
+                this.Status = "Network disconnected";
+            }
         }
 
         public override void Cleanup()
