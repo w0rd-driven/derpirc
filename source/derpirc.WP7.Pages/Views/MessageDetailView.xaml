@@ -107,9 +107,6 @@
                                                 <RowDefinition Height="Auto" />
                                                 <RowDefinition Height="Auto" />
                                             </Grid.RowDefinitions>
-                                            <TextBlock x:Name="MessageSource" 
-                                                       Text="{Binding Source}"
-                                                       Style="{StaticResource DetailSourceStyle}" />
                                             <Path x:Name="PathTick"
                                                   Data="m 0,0 l 0,16 l 16,0 l -16,-16"
                                                   Fill="{Binding Background, ElementName=MessageContainer}"
