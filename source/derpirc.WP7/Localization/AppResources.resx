@@ -119,10 +119,10 @@
   </resheader>
   <data name="About" xml:space="preserve">
     <value>about</value>
-    <comment>AboutView About Pivot Title</comment>
+    <comment>AboutView Title</comment>
   </data>
   <data name="ApplicationName" xml:space="preserve">
-    <value>derpirc</value>
+    <value>durpirc</value>
     <comment>Application Name</comment>
   </data>
   <data name="Connections" xml:space="preserve">
@@ -170,7 +170,7 @@
     <comment>SettingsView Client Pivot Title</comment>
   </data>
   <data name="ApplicationTitle" xml:space="preserve">
-    <value>DERPIRC</value>
+    <value>DURPIRC</value>
     <comment>Application Title</comment>
   </data>
 </root>

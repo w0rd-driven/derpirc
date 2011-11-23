@@ -51,21 +51,32 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
-                    <TextBlock Text="Application Title" Style="{StaticResource TextBlockBase}" FontSize="{StaticResource PhoneFontSizeExtraLarge}" />
-                    <TextBlock Text="forged in the bowels of insanity by" Style="{StaticResource TextBlockBase}" FontSize="{StaticResource PhoneFontSizeMedium}"
-                       Grid.Row="1" />
-                    <TextBlock Text="Braytonium Software" Style="{StaticResource TextBlockBase}" FontSize="{StaticResource PhoneFontSizeMedium}"
-                       Grid.Row="2" />
-                    <HyperlinkButton Content="braytonium.com/applicationtitle" Command="{Binding WebsiteCommand}" HorizontalAlignment="Left"
-                             Grid.Row="3" />
-                    <TextBlock Text="Stroke my ego, plz:" Style="{StaticResource TextBlockBase}" FontSize="{StaticResource PhoneFontSizeMedium}"
-                       Grid.Row="5" />
-                    <HyperlinkButton Content="Review this (cr)app" Command="{Binding ReviewCommand}" HorizontalAlignment="Left"
-                             Grid.Row="6" />
-                    <TextBlock Text="Feedback or pony requests:" Style="{StaticResource TextBlockBase}" FontSize="{StaticResource PhoneFontSizeMedium}"
-                       Grid.Row="8" />
-                    <HyperlinkButton Content="applicationtitle@braytonium.com" Command="{Binding FeedbackCommand}" HorizontalAlignment="Left"
-                             Grid.Row="9" />
+                    <TextBlock Text="{Binding LocalizedResources.ApplicationName, Source={StaticResource LocalizedStrings}}"
+                               Style="{StaticResource TextBlockBase}" FontSize="{StaticResource PhoneFontSizeExtraLarge}" />
+                    <TextBlock Text="forged in the bowels of insanity by"
+                               Style="{StaticResource TextBlockBase}" FontSize="{StaticResource PhoneFontSizeMedium}"
+                               Grid.Row="1" />
+                    <TextBlock Text="Braytonium Software"
+                               Style="{StaticResource TextBlockBase}" FontSize="{StaticResource PhoneFontSizeMedium}"
+                               Grid.Row="2" />
+                    <HyperlinkButton Content="{Binding Url}"
+                                     Command="{Binding WebsiteCommand}"
+                                     HorizontalAlignment="Left"
+                                     Grid.Row="3" />
+                    <TextBlock Text="Stroke my ego, plz:"
+                               Style="{StaticResource TextBlockBase}" FontSize="{StaticResource PhoneFontSizeMedium}"
+                               Grid.Row="5" />
+                    <HyperlinkButton Content="Review this (cr)app"
+                                     Command="{Binding ReviewCommand}"
+                                     HorizontalAlignment="Left"
+                                     Grid.Row="6" />
+                    <TextBlock Text="Feedback or pony requests:"
+                               Style="{StaticResource TextBlockBase}" FontSize="{StaticResource PhoneFontSizeMedium}"
+                               Grid.Row="8" />
+                    <HyperlinkButton Content="{Binding FeedbackUrl}"
+                                     Command="{Binding FeedbackCommand}"
+                                     HorizontalAlignment="Left"
+                                     Grid.Row="9" />
                 </Grid>
             </ScrollViewer>
         </Grid>

@@ -70,7 +70,7 @@ namespace derpirc.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to derpirc.
+        ///   Looks up a localized string similar to durpirc.
         /// </summary>
         public static string ApplicationName {
             get {
@@ -79,7 +79,7 @@ namespace derpirc.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to DERPIRC.
+        ///   Looks up a localized string similar to DURPIRC.
         /// </summary>
         public static string ApplicationTitle {
             get {
