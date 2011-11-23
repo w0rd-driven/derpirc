@@ -1,0 +1,6 @@
+Large Mobile Tile -> 173x140
+Large PC Tile -> 200x162
+ApplicationIcon -> 62x51
+Small Mobile -> 99x82
+
+The ratio is roughly 80% + 2 + nearest even pixel
