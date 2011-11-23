@@ -142,8 +142,8 @@ namespace derpirc.ViewModels
         /// </summary>
         public AboutViewModel()
         {
-            Url = "braytonium.com/durpirc";
-            FeedbackUrl = "durpirc@braytonium.com";
+            Url = "braytonium.com/derpirc";
+            FeedbackUrl = "derpirc@braytonium.com";
 
             if (IsInDesignMode)
             {
@@ -157,11 +157,8 @@ namespace derpirc.ViewModels
 
         private void OnNavigatedTo(NavigationEventArgs eventArgs)
         {
-            if (!eventArgs.IsNavigationInitiator)
-            {
-                // Resuming...
+            if (!eventArgs.IsNavigationInitiator && eventArgs.NavigationMode == NavigationMode.Back)
                 SupervisorFacade.Default.Reconnect(null, true);
-            }
         }
 
         private void OnNavigatedFrom(NavigationEventArgs eventArgs)

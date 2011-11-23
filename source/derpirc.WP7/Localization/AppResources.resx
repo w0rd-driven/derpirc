@@ -122,7 +122,7 @@
     <comment>AboutView Title</comment>
   </data>
   <data name="ApplicationName" xml:space="preserve">
-    <value>durpirc</value>
+    <value>derpirc</value>
     <comment>Application Name</comment>
   </data>
   <data name="Connections" xml:space="preserve">
@@ -168,9 +168,5 @@
   <data name="SettingsClient" xml:space="preserve">
     <value>client</value>
     <comment>SettingsView Client Pivot Title</comment>
-  </data>
-  <data name="ApplicationTitle" xml:space="preserve">
-    <value>DURPIRC</value>
-    <comment>Application Title</comment>
   </data>
 </root>
