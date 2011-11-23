@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Windows;
 using derpirc.Helpers;
 using derpirc.ViewModels;
@@ -78,36 +79,39 @@ namespace derpirc
         private void Initialize()
         {
             // Initialize the ViewModelFactory with the Funq ViewModelResolver.
-            ViewModelFactory.InitializeResolver(new FunqViewModelResolver(Container));
+            ThreadPool.QueueUserWorkItem((objectState) =>
+            {
+                ViewModelFactory.InitializeResolver(new FunqViewModelResolver(Container));
 
-            //Container.Register<IEventAggregator>(new EventAggregator());
-            //Container.Register<IDatabase>(new Database());
+                //Container.Register<IEventAggregator>(new EventAggregator());
+                //Container.Register<IDatabase>(new Database());
 
-            Container.Register<INavigationService>(
-                c => new ApplicationFrameNavigationService(((App)Application.Current).RootFrame));
+                Container.Register<INavigationService>(
+                    c => new ApplicationFrameNavigationService(((App)Application.Current).RootFrame));
 
-            // ViewModel
-            Container.Register<MainViewModel>(c => new MainViewModel(c.Resolve<INavigationService>()));
-            Container.Register<ChannelViewModel>(c => new ChannelViewModel());
-            Container.Register<MentionViewModel>(c => new MentionViewModel());
-            Container.Register<MessageViewModel>(c => new MessageViewModel());
+                // ViewModel
+                Container.Register<MainViewModel>(c => new MainViewModel(c.Resolve<INavigationService>()));
+                Container.Register<ChannelViewModel>(c => new ChannelViewModel());
+                Container.Register<MentionViewModel>(c => new MentionViewModel());
+                Container.Register<MessageViewModel>(c => new MessageViewModel());
 
-            // ViewModel Pages
-            Container.Register<ChannelDetailViewModel>(c => new ChannelDetailViewModel());
-            Container.Register<MentionDetailViewModel>(c => new MentionDetailViewModel());
-            Container.Register<MessageDetailViewModel>(c => new MessageDetailViewModel());
+                // ViewModel Pages
+                Container.Register<ChannelDetailViewModel>(c => new ChannelDetailViewModel());
+                Container.Register<MentionDetailViewModel>(c => new MentionDetailViewModel());
+                Container.Register<MessageDetailViewModel>(c => new MessageDetailViewModel());
 
-            Container.Register<AboutViewModel>(c => new AboutViewModel());
-            Container.Register<ConnectionViewModel>(c => new ConnectionViewModel());
+                Container.Register<AboutViewModel>(c => new AboutViewModel());
+                Container.Register<ConnectionViewModel>(c => new ConnectionViewModel());
 
-            Container.Register<SettingsViewModel>(c => new SettingsViewModel());
-            Container.Register<SettingsUserViewModel>(c => new SettingsUserViewModel());
-            Container.Register<SettingsNetworkViewModel>(c => new SettingsNetworkViewModel(c.Resolve<INavigationService>()));
-            Container.Register<SettingsClientViewModel>(c => new SettingsClientViewModel());
-            Container.Register<SettingsStorageViewModel>(c => new SettingsStorageViewModel());
-            Container.Register<NetworkDetailViewModel>(c => new NetworkDetailViewModel());
+                Container.Register<SettingsViewModel>(c => new SettingsViewModel());
+                Container.Register<SettingsUserViewModel>(c => new SettingsUserViewModel());
+                Container.Register<SettingsNetworkViewModel>(c => new SettingsNetworkViewModel(c.Resolve<INavigationService>()));
+                Container.Register<SettingsClientViewModel>(c => new SettingsClientViewModel());
+                Container.Register<SettingsStorageViewModel>(c => new SettingsStorageViewModel());
+                Container.Register<NetworkDetailViewModel>(c => new NetworkDetailViewModel());
 
-            // Model dependencies
+                // Model dependencies
+            });
         }
 
         #endregion

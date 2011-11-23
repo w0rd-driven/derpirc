@@ -45,7 +45,6 @@ namespace derpirc.Core
         {
             if (!_isNetworkAvailable)
             {
-                _isNetworkAvailable = true;
                 if (SupervisorFacade.Default.Clients.Count == 0)
                 {
                     for (int index = 0; index < SettingsUnitOfWork.Default.Networks.Count; index++)
@@ -56,6 +55,7 @@ namespace derpirc.Core
                         SupervisorFacade.Default.Clients.Add(client);
                     }
                 }
+                _isNetworkAvailable = true;
                 var session = this.GetDefaultSession();
                 if (session != null)
                 {
