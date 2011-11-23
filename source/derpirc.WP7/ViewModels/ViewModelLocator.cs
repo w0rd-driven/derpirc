@@ -506,6 +506,106 @@ namespace derpirc.ViewModels
 
         #endregion
 
+        #region SettingsClientViewModel
+
+        private static SettingsClientViewModel _settingsClientViewModel;
+
+        /// <summary>
+        /// Gets the SettingsClientViewModel property.
+        /// </summary>
+        public static SettingsClientViewModel SettingsClientStatic
+        {
+            get
+            {
+                if (_settingsClientViewModel == null)
+                    CreateSettingsClient();
+
+                return _settingsClientViewModel;
+            }
+        }
+
+        /// <summary>
+        /// Gets the SettingsClientViewModel property.
+        /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance",
+            "CA1822:MarkMembersAsStatic",
+            Justification = "This non-static member is needed for data binding purposes.")]
+        public SettingsClientViewModel SettingsClientViewModel
+        {
+            get { return SettingsClientStatic; }
+        }
+
+        /// <summary>
+        /// Provides a deterministic way to delete the SettingsClientViewModel property.
+        /// </summary>
+        public static void ClearSettingsClient()
+        {
+            if (_settingsClientViewModel != null)
+                _settingsClientViewModel.Cleanup();
+            _settingsClientViewModel = null;
+        }
+
+        /// <summary>
+        /// Provides a deterministic way to create the SettingsClientViewModel property.
+        /// </summary>
+        public static void CreateSettingsClient()
+        {
+            if (_settingsClientViewModel == null)
+                _settingsClientViewModel = new SettingsClientViewModelFactory().ViewModel;
+        }
+
+        #endregion
+
+        #region SettingsStorageViewModel
+
+        private static SettingsStorageViewModel _settingsStorageViewModel;
+
+        /// <summary>
+        /// Gets the SettingsStorageViewModel property.
+        /// </summary>
+        public static SettingsStorageViewModel SettingsStorageStatic
+        {
+            get
+            {
+                if (_settingsStorageViewModel == null)
+                    CreateSettingsStorage();
+
+                return _settingsStorageViewModel;
+            }
+        }
+
+        /// <summary>
+        /// Gets the SettingsStorageViewModel property.
+        /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance",
+            "CA1822:MarkMembersAsStatic",
+            Justification = "This non-static member is needed for data binding purposes.")]
+        public SettingsStorageViewModel SettingsStorageViewModel
+        {
+            get { return SettingsStorageStatic; }
+        }
+
+        /// <summary>
+        /// Provides a deterministic way to delete the SettingsStorageViewModel property.
+        /// </summary>
+        public static void ClearSettingsStorage()
+        {
+            if (_settingsStorageViewModel != null)
+                _settingsStorageViewModel.Cleanup();
+            _settingsStorageViewModel = null;
+        }
+
+        /// <summary>
+        /// Provides a deterministic way to create the SettingsStorageViewModel property.
+        /// </summary>
+        public static void CreateSettingsStorage()
+        {
+            if (_settingsStorageViewModel == null)
+                _settingsStorageViewModel = new SettingsStorageViewModelFactory().ViewModel;
+        }
+
+        #endregion
+
         #region NetworkDetailViewModel
 
         private static NetworkDetailViewModel _networkDetailViewModel;
@@ -691,6 +791,8 @@ namespace derpirc.ViewModels
             ClearSettings();
             ClearSettingsUser();
             ClearSettingsNetwork();
+            ClearSettingsClient();
+            ClearSettingsStorage();
             ClearNetworkDetail();
             ClearConnection();
             ClearAbout();

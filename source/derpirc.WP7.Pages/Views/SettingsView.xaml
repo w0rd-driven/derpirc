@@ -11,6 +11,7 @@
                             xmlns:command="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Extras.WP71"
                             xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
                             xmlns:appbarutils="clr-namespace:AppBarUtils;assembly=AppBarUtils"
+                            xmlns:behaviors="clr-namespace:derpirc.Helpers;assembly=derpirc.UICore"
                             FontFamily="{StaticResource PhoneFontFamilyNormal}"
                             FontSize="{StaticResource PhoneFontSizeNormal}"
                             Foreground="{StaticResource PhoneForegroundBrush}"
@@ -50,17 +51,69 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-                        <TextBlock Name="NickNameLabel" Text="NickName" VerticalAlignment="Center" FontSize="{StaticResource PhoneFontSizeMedium}" />
-                        <TextBox Name="NickNameTextBox"  VerticalAlignment="Center" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding NickName, Mode=TwoWay}" />
-                        <TextBlock Name="NickNameAltLabel" Text="Alternate" VerticalAlignment="Center" FontSize="{StaticResource PhoneFontSizeMedium}" Grid.Row="1" />
-                        <TextBox Name="NickNameAltTextBox" VerticalAlignment="Center" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding NickNameAlt, Mode=TwoWay}" />
-                        <TextBlock Name="FullNameLabel" Text="Full Name" VerticalAlignment="Center" FontSize="{StaticResource PhoneFontSizeMedium}" Grid.Row="2" />
-                        <TextBox Name="FullNameTextBox" VerticalAlignment="Center" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding FullName, Mode=TwoWay}" />
-                        <TextBlock Name="UserNameLabel" Text="Username" VerticalAlignment="Center" FontSize="{StaticResource PhoneFontSizeMedium}" Grid.Row="3" />
-                        <TextBox Name="UserNameTextBox" VerticalAlignment="Center" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Username, Mode=TwoWay}" />
-                        <toolkit:ToggleSwitch Name="InvisibleToggleSwitch" Header="Invisible" Grid.Row="4" Grid.ColumnSpan="2" IsChecked="{Binding IsInvisible, Mode=TwoWay}" />
-                        <TextBlock Name="QuitMessageLabel" Text="Quit Msg" VerticalAlignment="Center" FontSize="{StaticResource PhoneFontSizeMedium}" Grid.Row="5" />
-                        <TextBox Name="QuitMessageTextBox" VerticalAlignment="Center" Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding QuitMessage, Mode=TwoWay}" />
+                        <TextBlock Name="NickNameLabel"
+                                   Text="NickName"
+                                   VerticalAlignment="Center" FontSize="{StaticResource PhoneFontSizeMedium}" />
+                        <TextBox Name="NickNameTextBox"
+                                 Text="{Binding NickName, Mode=TwoWay}"
+                                 VerticalAlignment="Center"
+                                 Grid.Column="1" Grid.ColumnSpan="2">
+                            <blend:Interaction.Behaviors>
+                                <behaviors:UpdateOnTextChangedBehavior />
+                            </blend:Interaction.Behaviors>
+                        </TextBox>
+                        <TextBlock Name="NickNameAltLabel"
+                                   Text="Alternate"
+                                   VerticalAlignment="Center" FontSize="{StaticResource PhoneFontSizeMedium}"
+                                   Grid.Row="1" />
+                        <TextBox Name="NickNameAltTextBox"
+                                 Text="{Binding NickNameAlt, Mode=TwoWay}"
+                                 VerticalAlignment="Center"
+                                 Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2">
+                            <blend:Interaction.Behaviors>
+                                <behaviors:UpdateOnTextChangedBehavior />
+                            </blend:Interaction.Behaviors>
+                        </TextBox>
+                        <TextBlock Name="FullNameLabel"
+                                   Text="Full Name"
+                                   VerticalAlignment="Center" FontSize="{StaticResource PhoneFontSizeMedium}"
+                                   Grid.Row="2" />
+                        <TextBox Name="FullNameTextBox"
+                                 Text="{Binding FullName, Mode=TwoWay}"
+                                 VerticalAlignment="Center"
+                                 Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2">
+                            <blend:Interaction.Behaviors>
+                                <behaviors:UpdateOnTextChangedBehavior />
+                            </blend:Interaction.Behaviors>
+                        </TextBox>
+                        <TextBlock Name="UserNameLabel"
+                                   Text="Username"
+                                   VerticalAlignment="Center" FontSize="{StaticResource PhoneFontSizeMedium}"
+                                   Grid.Row="3" />
+                        <TextBox Name="UserNameTextBox"
+                                 Text="{Binding Username, Mode=TwoWay}"
+                                 VerticalAlignment="Center"
+                                 Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2">
+                            <blend:Interaction.Behaviors>
+                                <behaviors:UpdateOnTextChangedBehavior />
+                            </blend:Interaction.Behaviors>
+                        </TextBox>
+                        <toolkit:ToggleSwitch Name="InvisibleToggleSwitch"
+                                              Header="Invisible"
+                                              IsChecked="{Binding IsInvisible, Mode=TwoWay}"
+                                              Grid.Row="4" Grid.ColumnSpan="2" />
+                        <TextBlock Name="QuitMessageLabel"
+                                   Text="Quit Message"
+                                   VerticalAlignment="Center" FontSize="{StaticResource PhoneFontSizeMedium}"
+                                   Grid.Row="5" />
+                        <TextBox Name="QuitMessageTextBox"
+                                 Text="{Binding QuitMessage, Mode=TwoWay}"
+                                 VerticalAlignment="Center"
+                                 Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2">
+                            <blend:Interaction.Behaviors>
+                                <behaviors:UpdateOnTextChangedBehavior />
+                            </blend:Interaction.Behaviors>
+                        </TextBox>
                     </Grid>
                 </ScrollViewer>
             </controls:PivotItem>
@@ -86,8 +139,77 @@
                 </ListBox>
             </controls:PivotItem>
 
+            <controls:PivotItem Header="{Binding LocalizedResources.SettingsClient, Source={StaticResource LocalizedStrings}}"
+                                Style="{StaticResource SmallPivotItemStyle}" DataContext="{Binding SettingsClientViewModel, Source={StaticResource Locator}}">
+                <ScrollViewer>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="250" />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <toolkit:ToggleSwitch Name="ReconnectOnDisconnectToggleSwitch"
+                                              Header="Reconnect on Disconnect"
+                                              IsChecked="{Binding IsReconnectOnDisconnect, Mode=TwoWay}"
+                                              Grid.ColumnSpan="3" />
+                        <toolkit:ToggleSwitch Name="RejoinOnKickToggleSwitch"
+                                              Header="Rejoin on Kick"
+                                              IsChecked="{Binding IsRejoinOnKick, Mode=TwoWay}"
+                                              Grid.Row="1" Grid.ColumnSpan="3" />
+                        <toolkit:ToggleSwitch Name="JoinOnInviteToggleSwitch"
+                                              Header="Join on Invite"
+                                              IsChecked="{Binding IsJoinOnInvite, Mode=TwoWay}"
+                                              Grid.Row="2" Grid.ColumnSpan="3" />
+                        <TextBlock Name="DisconnectRetriesLabel"
+                                   Text="Retry disconnects"
+                                   TextWrapping="Wrap"
+                                   VerticalAlignment="Center" FontSize="{StaticResource PhoneFontSizeMedium}"
+                                   Grid.Row="3" />
+                        <TextBox Name="DisconnectRetriesTextBox"
+                                 Text="{Binding DisconnectRetries, Mode=TwoWay}"
+                                 VerticalAlignment="Center"
+                                 Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2">
+                            <TextBox.InputScope>
+                                <InputScope>
+                                    <InputScopeName NameValue="Number" />
+                                </InputScope>
+                            </TextBox.InputScope>
+                            <blend:Interaction.Behaviors>
+                                <behaviors:UpdateOnTextChangedBehavior />
+                            </blend:Interaction.Behaviors>
+                        </TextBox>
+                        <TextBlock Name="DisconnectRetriesWaitLabel"
+                                   Text="Retry waiting period (seconds)"
+                                   TextWrapping="Wrap"
+                                   VerticalAlignment="Center" FontSize="{StaticResource PhoneFontSizeMedium}"
+                                   Grid.Row="4" />
+                        <TextBox Name="DisconnectRetriesWaitTextBox"
+                                 Text="{Binding DisconnectRetryWait, Mode=TwoWay}"
+                                 VerticalAlignment="Center"
+                                 Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2">
+                            <TextBox.InputScope>
+                                <InputScope>
+                                    <InputScopeName NameValue="Number" />
+                                </InputScope>
+                            </TextBox.InputScope>
+                            <blend:Interaction.Behaviors>
+                                <behaviors:UpdateOnTextChangedBehavior />
+                            </blend:Interaction.Behaviors>
+                        </TextBox>
+                    </Grid>
+                </ScrollViewer>
+            </controls:PivotItem>
+
             <controls:PivotItem Header="{Binding LocalizedResources.SettingsStorage, Source={StaticResource LocalizedStrings}}"
-                                Style="{StaticResource SmallPivotItemStyle}">
+                                Style="{StaticResource SmallPivotItemStyle}" DataContext="{Binding SettingsStorageViewModel, Source={StaticResource Locator}}">
             </controls:PivotItem>
         </controls:Pivot>
     </Grid>

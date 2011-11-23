@@ -119,15 +119,7 @@
   </resheader>
   <data name="About" xml:space="preserve">
     <value>about</value>
-    <comment>AboutView About PivotTitle</comment>
-  </data>
-  <data name="AboutHistory" xml:space="preserve">
-    <value>history</value>
-    <comment>AboutView History PivotTitle</comment>
-  </data>
-  <data name="AboutLegal" xml:space="preserve">
-    <value>legal</value>
-    <comment>AboutView Legal PivotTitle</comment>
+    <comment>AboutView About Pivot Title</comment>
   </data>
   <data name="ApplicationName" xml:space="preserve">
     <value>derpirc</value>
@@ -139,31 +131,31 @@
   </data>
   <data name="MainChannels" xml:space="preserve">
     <value>channels</value>
-    <comment>MainView Channels PivotTitle</comment>
+    <comment>MainView Channels Pivot Title</comment>
   </data>
   <data name="MainMentions" xml:space="preserve">
     <value>mentions</value>
-    <comment>MainView Mentions PivotTitle</comment>
+    <comment>MainView Mentions Pivot Title</comment>
   </data>
   <data name="MainMessages" xml:space="preserve">
     <value>messages</value>
-    <comment>MainView Messages PivotTitle</comment>
+    <comment>MainView Messages Pivot Title</comment>
   </data>
   <data name="Settings" xml:space="preserve">
     <value>settings</value>
-    <comment>SettingsView Settings PivotTitle</comment>
+    <comment>SettingsView Settings Pivot Title</comment>
   </data>
   <data name="SettingsFormatting" xml:space="preserve">
     <value>formatting</value>
-    <comment>SettingsView Formatting PivotTitle</comment>
+    <comment>SettingsView Formatting Pivot Title</comment>
   </data>
   <data name="SettingsNetworkDetail" xml:space="preserve">
     <value>network</value>
-    <comment>SettingsNetworkView Network PivotTitle</comment>
+    <comment>SettingsNetworkView Network Pivot Title</comment>
   </data>
   <data name="SettingsNetworks" xml:space="preserve">
     <value>networks</value>
-    <comment>SettingsView Networks PivotTitle</comment>
+    <comment>SettingsView Networks Pivot Title</comment>
   </data>
   <data name="SettingsNetworkServerInfo" xml:space="preserve">
     <value>server information</value>
@@ -171,6 +163,14 @@
   </data>
   <data name="SettingsStorage" xml:space="preserve">
     <value>storage</value>
-    <comment>SettingsView Storage PivotTitle</comment>
+    <comment>SettingsView Storage Pivot Title</comment>
+  </data>
+  <data name="SettingsClient" xml:space="preserve">
+    <value>client</value>
+    <comment>SettingsView Client Pivot Title</comment>
+  </data>
+  <data name="ApplicationTitle" xml:space="preserve">
+    <value>DERPIRC</value>
+    <comment>Application Title</comment>
   </data>
 </root>

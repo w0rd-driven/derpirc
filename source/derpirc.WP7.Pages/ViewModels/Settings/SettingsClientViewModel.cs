@@ -3,8 +3,10 @@ using derpirc.Data.Models.Settings;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Messaging;
 
-namespace derpirc.ViewModels.Settings
+namespace derpirc.ViewModels
 {
+    public class SettingsClientViewModelFactory : ViewModelFactory<SettingsClientViewModel, SettingsClientViewModel> { }
+
     public class SettingsClientViewModel : ViewModelBase
     {
         #region Commands

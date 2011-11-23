@@ -4,8 +4,10 @@ using derpirc.Data.Models.Settings;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Messaging;
 
-namespace derpirc.ViewModels.Settings
+namespace derpirc.ViewModels
 {
+    public class SettingsStorageViewModelFactory : ViewModelFactory<SettingsStorageViewModel, SettingsStorageViewModel> { }
+
     public class SettingsStorageViewModel : ViewModelBase
     {
         #region Commands

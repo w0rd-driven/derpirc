@@ -79,6 +79,15 @@ namespace derpirc.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to DERPIRC.
+        /// </summary>
+        public static string ApplicationTitle {
+            get {
+                return ResourceManager.GetString("ApplicationTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to connections.
         /// </summary>
         public static string Connections {
@@ -120,6 +129,15 @@ namespace derpirc.Localization {
         public static string Settings {
             get {
                 return ResourceManager.GetString("Settings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to client.
+        /// </summary>
+        public static string SettingsClient {
+            get {
+                return ResourceManager.GetString("SettingsClient", resourceCulture);
             }
         }
         
