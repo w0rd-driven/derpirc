@@ -139,10 +139,14 @@
                 </ListBox.ItemTemplate>
             </ListBox>
 
-            <TextBlock Grid.Row="1" Text="{Binding Status}" Padding="0,8" HorizontalAlignment="Right" />
+            <TextBlock x:Name="StatusLabel"
+                       Text="{Binding Status}"
+                       Padding="0,8" HorizontalAlignment="Right"
+                       Grid.Row="1" />
 
             <Grid Grid.Row="2" Style="{StaticResource GridDetailMyMessage}">
-                <TextBox x:Name="Send" Text="{Binding SendText, Mode=TwoWay}"
+                <TextBox x:Name="Send"
+                         Text="{Binding SendText, Mode=TwoWay}"
                          Style="{StaticResource TextBoxTickStyle}" KeyUp="Send_KeyUp">
                     <TextBox.InputScope>
                         <InputScope>

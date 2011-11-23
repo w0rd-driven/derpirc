@@ -34,8 +34,8 @@
         </Grid.RowDefinitions>
 
         <local:ProgressIndicatorProxy IsIndeterminate="{Binding ProgressIndeterminate}" Text="{Binding ProgressText}" />
-        
-        <controls:Pivot Style="{StaticResource SmallPivotStyle}" Margin="-2,0,2,0">
+
+        <controls:Pivot Style="{StaticResource SmallPivotStyle}" Margin="-2,0,2,0" Title="{Binding LocalizedResources.ApplicationTitle, Source={StaticResource LocalizedStrings}}">
             <blend:Interaction.Triggers>
                 <blend:EventTrigger EventName="LoadedPivotItem">
                     <command:EventToCommand Command="{Binding PivotItemLoadedCommand}" PassEventArgsToCommand="True"/>
@@ -120,10 +120,10 @@
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Text="{Binding NickName}" VerticalAlignment="Center" Style="{StaticResource PhoneTextLargeStyle}" TextWrapping="Wrap" />
                                 <TextBlock x:Name="textBlockMessageTimestamp"
-                                               Text="{Binding MessageTimestamp, Converter={StaticResource ListViewDateTimeConverter}}"
-                                               Style="{StaticResource SummaryTimeStampStyle}"
-                                               VerticalAlignment="Bottom"
-                                               Grid.Column="2" />                     
+                                           Text="{Binding MessageTimestamp, Converter={StaticResource ListViewDateTimeConverter}}"
+                                           Style="{StaticResource SummaryTimeStampStyle}"
+                                           VerticalAlignment="Bottom"
+                                           Grid.Column="2" />                     
                                 <Button Content="X" Grid.Column="2" x:Name="buttonRemove" Visibility="Collapsed" />
                                 <Grid Grid.ColumnSpan="3" Grid.Row="2">
                                     <Grid.RowDefinitions>
@@ -179,10 +179,10 @@
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Text="{Binding NickName}" VerticalAlignment="Center" Style="{StaticResource PhoneTextLargeStyle}" TextWrapping="Wrap" />
                                 <TextBlock x:Name="textBlockMessageTimestamp"
-                                               Text="{Binding MessageTimestamp, Converter={StaticResource ListViewDateTimeConverter}}"
-                                               Style="{StaticResource SummaryTimeStampStyle}"
-                                               VerticalAlignment="Bottom"
-                                               Grid.Column="2" />                     
+                                           Text="{Binding MessageTimestamp, Converter={StaticResource ListViewDateTimeConverter}}"
+                                           Style="{StaticResource SummaryTimeStampStyle}"
+                                           VerticalAlignment="Bottom"
+                                           Grid.Column="2" />                     
                                 <Button Content="X" Grid.Column="2" x:Name="buttonRemove" Visibility="Collapsed" />
                                 <Grid Grid.ColumnSpan="3" Grid.Row="2">
                                     <Grid.RowDefinitions>
