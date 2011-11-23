@@ -446,7 +446,7 @@ namespace derpirc.ViewModels
                     model = unitOfWork.Mentions.FindById(integerId);
                     if (model.Network != null)
                         networkName = model.Network.Name;
-                    messages = model.Messages.ToList();
+                    messages = model.Messages.Take(SettingsUnitOfWork.Default.Storage.ShowMaxMessages).ToList();
                     if (model != null)
                     {
                         Model = model;
