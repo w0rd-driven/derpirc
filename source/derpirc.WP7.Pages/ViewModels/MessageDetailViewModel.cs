@@ -384,6 +384,14 @@ namespace derpirc.ViewModels
             var integerId = -1;
             int.TryParse(id, out integerId);
 
+            LoadById(integerId);
+
+            if (!eventArgs.IsNavigationInitiator && eventArgs.NavigationMode == NavigationMode.Back)
+                SupervisorFacade.Default.Reconnect(null, true);
+        }
+
+        private void LoadById(int integerId)
+        {
             ThreadPool.QueueUserWorkItem((object userState) =>
             {
                 Message model = null;
@@ -417,8 +425,6 @@ namespace derpirc.ViewModels
                     }
                 }
             });
-            if (!eventArgs.IsNavigationInitiator)
-                SupervisorFacade.Default.Reconnect(null, true);
         }
 
         private void OnNavigatedFrom(NavigationEventArgs eventArgs)

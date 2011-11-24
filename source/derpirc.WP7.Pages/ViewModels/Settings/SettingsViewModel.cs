@@ -179,16 +179,13 @@ namespace derpirc.ViewModels
         private void OnNavigatedTo(NavigationEventArgs eventArgs)
         {
             // Resuming shows as a back mode so be careful it was navigation-driven. Could also inspect the Uri but ugh
-            if (eventArgs.NavigationMode == NavigationMode.Back && eventArgs.IsNavigationInitiator)
+            if (eventArgs.IsNavigationInitiator && eventArgs.NavigationMode == NavigationMode.Back)
             {
                 IsAppBarVisible = true;
                 UnselectItem();
             }
-            if (!eventArgs.IsNavigationInitiator)
-            {
-                // Resuming...
+            if (!eventArgs.IsNavigationInitiator && eventArgs.NavigationMode == NavigationMode.Back)
                 SupervisorFacade.Default.Reconnect(null, true);
-            }
         }
 
         private void OnNavigatedFrom(NavigationEventArgs eventArgs)

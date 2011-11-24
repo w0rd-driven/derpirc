@@ -340,10 +340,12 @@ namespace derpirc.ViewModels
             queryString.TryGetValue("id", out id);
             var integerId = -1;
             int.TryParse(id, out integerId);
+
             var model = SettingsUnitOfWork.Default.Networks.Where(x => x.Id == integerId).FirstOrDefault();
             if (model != null)
                 Model = model;
-            if (!eventArgs.IsNavigationInitiator)
+
+            if (!eventArgs.IsNavigationInitiator && eventArgs.NavigationMode == NavigationMode.Back)
                 SupervisorFacade.Default.Reconnect(null, true);
         }
 
