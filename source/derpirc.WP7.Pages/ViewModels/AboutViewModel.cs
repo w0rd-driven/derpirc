@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Windows.Navigation;
+using derpirc.Core;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Microsoft.Phone.Tasks;
-using derpirc.Core;
 
 namespace derpirc.ViewModels
 {

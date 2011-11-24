@@ -19,16 +19,6 @@ namespace derpirc.ViewModels
     {
         #region Commands
 
-        RelayCommand<FrameworkElement> _layoutRootCommand;
-        public RelayCommand<FrameworkElement> LayoutRootCommand
-        {
-            get
-            {
-                return _layoutRootCommand ?? (_layoutRootCommand =
-                    new RelayCommand<FrameworkElement>(sender => this.LayoutRoot = sender));
-            }
-        }
-
         RelayCommand<NavigationEventArgs> _navigatedToCommand;
         public RelayCommand<NavigationEventArgs> NavigatedToCommand
         {
@@ -46,6 +36,16 @@ namespace derpirc.ViewModels
             {
                 return _navigatedFromCommand ?? (_navigatedFromCommand =
                     new RelayCommand<NavigationEventArgs>(eventArgs => this.OnNavigatedFrom(eventArgs)));
+            }
+        }
+
+        RelayCommand<FrameworkElement> _layoutRootCommand;
+        public RelayCommand<FrameworkElement> LayoutRootCommand
+        {
+            get
+            {
+                return _layoutRootCommand ?? (_layoutRootCommand =
+                    new RelayCommand<FrameworkElement>(sender => this.RootLoaded(sender)));
             }
         }
 
@@ -276,6 +276,7 @@ namespace derpirc.ViewModels
 
         private object _threadLock = new object();
         private BackgroundWorker _worker;
+        private bool _isDataLoaded;
 
         /// <summary>
         /// Initializes a new instance of the ConnectionViewModel class.
@@ -284,6 +285,7 @@ namespace derpirc.ViewModels
         {
             _connectionsList = new ObservableCollection<ClientInfo>();
             Connections = new CollectionViewSource() { Source = _connectionsList };
+            _isDataLoaded = false;
 
             if (IsInDesignMode)
             {
@@ -318,10 +320,12 @@ namespace derpirc.ViewModels
             else
             {
                 // Code runs "for real": Connect to service, etc...
+                SupervisorFacade.Default.Clients.CollectionChanged += (s, e) => { OnCollectionChanged(e); };
+                SupervisorFacade.Default.StateChanged += (s, e) => { AddOrUpdate(e.Info); };
+                NetworkDetector.Default.OnStatusChanged += (s, e) => { OnNetworkStatusChanged(e); };
+
                 _worker = new BackgroundWorker();
                 _worker.DoWork += new DoWorkEventHandler(DeferStartupWork);
-
-                DeferStartup(null);
             }
         }
 
@@ -335,7 +339,8 @@ namespace derpirc.ViewModels
             Action completed = e.Argument as Action;
             lock (_threadLock)
             {
-                Load();
+                if (!_isDataLoaded)
+                    Load();
             }
 
             if (completed != null)
@@ -359,6 +364,13 @@ namespace derpirc.ViewModels
             }
         }
 
+        private void RootLoaded(FrameworkElement layoutRoot)
+        {
+            // HACK: Execution order: 2
+            LayoutRoot = layoutRoot;
+            DeferStartup(null);
+        }
+
         private void SelectionChanged(IList items)
         {
             // Set SelectedItems
@@ -380,18 +392,18 @@ namespace derpirc.ViewModels
 
         private void Load()
         {
-            NetworkType = NetworkDetector.Default.GetCurrentNetworkType();
-            IsNetworkAvailable = NetworkDetector.Default.IsNetworkAvailable;
-
-            _connectionsList.Clear();
-            foreach (var item in SupervisorFacade.Default.Clients)
+            DispatcherHelper.CheckBeginInvokeOnUI(() =>
             {
-                _connectionsList.Add(item.Info);
-            }
+                _connectionsList.Clear();
+                foreach (var item in SupervisorFacade.Default.Clients)
+                {
+                    _connectionsList.Add(item.Info);
+                }
+                _isDataLoaded = true;
 
-            SupervisorFacade.Default.Clients.CollectionChanged += (s, e) => { OnCollectionChanged(e); };
-            SupervisorFacade.Default.StateChanged += (s, e) => { AddOrUpdate(e.Info); };
-            NetworkDetector.Default.OnStatusChanged += (s, e) => { OnNetworkStatusChanged(e); };
+                NetworkType = NetworkDetector.Default.GetCurrentNetworkType();
+                IsNetworkAvailable = NetworkDetector.Default.IsNetworkAvailable;
+            });
         }
 
         private void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
@@ -503,7 +515,7 @@ namespace derpirc.ViewModels
         private void Reconnect(ObservableCollection<ClientInfo> clients)
         {
             CanReconnect = false;
-            SupervisorFacade.Default.Reconnect(clients, true);
+            SupervisorFacade.Default.Reconnect(clients, false, true);
             CanReconnect = true;
         }
 
