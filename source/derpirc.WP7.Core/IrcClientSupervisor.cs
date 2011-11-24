@@ -18,6 +18,7 @@ namespace derpirc.Core
         private NetworkDetector _networkDetector;
 
         private bool _isNetworkAvailable;
+        private bool _isClientsInitialized;
         private int _quitTimeout = 1000;
         private int _defaultServerPort = 6667;
 
@@ -36,10 +37,14 @@ namespace derpirc.Core
 
         private void Startup()
         {
-            this._networkDetector = NetworkDetector.Default;
-            this._networkDetector.OnStatusChanged += this.Network_OnStatusChanged;
+            if (this._networkDetector == null)
+            {
+                this._networkDetector = NetworkDetector.Default;
+                this._networkDetector.OnStatusChanged += this.Network_OnStatusChanged;
+                // Force the NetworkUp() method as the network has already been detected by now in most instances
+                this._networkDetector.OnAsyncGetNetworkTypeCompleted += this.Network_OnAsyncGetNetworkTypeCompleted;
+            }
             this._networkDetector.SetNetworkPolling();
-            // Force the NetworkUp() method as the network has already been detected by now in most instances
             this._networkDetector.AsyncGetNetworkType();
         }
 
@@ -51,12 +56,22 @@ namespace derpirc.Core
                 NetworkDown();
         }
 
+        private void Network_OnAsyncGetNetworkTypeCompleted(object sender, NetworkStatusEventArgs e)
+        {
+            if (e.IsAvailable)
+                NetworkUp();
+            else
+                NetworkDown();
+        }
+
         private void NetworkUp()
         {
             if (!_isNetworkAvailable)
             {
+                _isNetworkAvailable = true;
                 if (SupervisorFacade.Default.Clients.Count == 0)
                 {
+                    _isClientsInitialized = false;
                     for (int index = 0; index < SettingsUnitOfWork.Default.Networks.Count; index++)
                     {
                         var item = SettingsUnitOfWork.Default.Networks[index];
@@ -64,12 +79,12 @@ namespace derpirc.Core
                         client.Info.NetworkName = item.Name;
                         SupervisorFacade.Default.Clients.Add(client);
                     }
+                    _isClientsInitialized = true;
                 }
-                _isNetworkAvailable = true;
                 var session = this.GetDefaultSession();
                 if (session != null)
                 {
-                    this.Reconnect(true);
+                    this.Reconnect(false, true);
                 }
             }
         }
@@ -87,6 +102,7 @@ namespace derpirc.Core
         {
             if (SupervisorFacade.Default.Clients.Count == 0)
             {
+                _isClientsInitialized = false;
                 for (int index = 0; index < SettingsUnitOfWork.Default.Networks.Count; index++)
                 {
                     var item = SettingsUnitOfWork.Default.Networks[index];
@@ -94,6 +110,7 @@ namespace derpirc.Core
                     client.Info.NetworkName = item.Name;
                     SupervisorFacade.Default.Clients.Add(client);
                 }
+                _isClientsInitialized = true;
             }
             else
             {
@@ -201,9 +218,15 @@ namespace derpirc.Core
             }
         }
 
-        public void Reconnect(bool force = false)
+        public void Reconnect(bool queue = false, bool force = false)
         {
-            if (_isNetworkAvailable)
+            // HACK: Edge case where you absolutely need to detect the network upon returning from tombstone
+            if (queue)
+            {
+                _isNetworkAvailable = false;
+                this.Startup();
+            }
+            if (_isNetworkAvailable && _isClientsInitialized)
             {
                 var clients = SupervisorFacade.Default.Clients.AsEnumerable();
                 if (!force)

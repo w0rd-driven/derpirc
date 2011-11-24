@@ -35,7 +35,7 @@
 
         <local:ProgressIndicatorProxy IsIndeterminate="{Binding ProgressIndeterminate}" Text="{Binding ProgressText}" />
 
-        <controls:Pivot Style="{StaticResource SmallPivotStyle}" Margin="-2,0,2,0" Title="{Binding LocalizedResources.ApplicationTitle, Source={StaticResource LocalizedStrings}}">
+        <controls:Pivot Style="{StaticResource SmallPivotStyle}" Margin="-2,0,2,0" Title="{Binding LocalizedResources.ApplicationName, Source={StaticResource LocalizedStrings}}">
             <blend:Interaction.Triggers>
                 <blend:EventTrigger EventName="LoadedPivotItem">
                     <command:EventToCommand Command="{Binding PivotItemLoadedCommand}" PassEventArgsToCommand="True"/>

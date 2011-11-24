@@ -651,7 +651,7 @@ namespace derpirc.ViewModels
             {
                 // This gets called wether resuming or first starting. Tread lightly
                 if (_supervisor != null)
-                    _supervisor.Reconnect(null, true);
+                    _supervisor.Reconnect(null, true, true);
             }
         }
 

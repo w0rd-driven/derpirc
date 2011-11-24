@@ -387,7 +387,7 @@ namespace derpirc.ViewModels
             LoadById(integerId);
 
             if (!eventArgs.IsNavigationInitiator && eventArgs.NavigationMode == NavigationMode.Back)
-                SupervisorFacade.Default.Reconnect(null, true);
+                SupervisorFacade.Default.Reconnect(null, true, true);
         }
 
         private void LoadById(int integerId)

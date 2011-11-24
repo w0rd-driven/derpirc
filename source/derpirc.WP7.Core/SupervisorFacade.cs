@@ -33,8 +33,6 @@ namespace derpirc.Core
         private bool _isDisposed;
         private object _threadLock = new object();
 
-        private DataUnitOfWork _unitOfWork;
-
         private IrcClientSupervisor _clientSupervisor;
         private LocalUserSupervisor _luserSupervisor;
 
@@ -183,7 +181,7 @@ namespace derpirc.Core
                     this._clientSupervisor.Disconnect();
         }
 
-        public void Reconnect(ObservableCollection<ClientInfo> clients, bool force = false)
+        public void Reconnect(ObservableCollection<ClientInfo> clients, bool queue = false, bool force = false)
         {
             if (_clientSupervisor != null)
                 if (clients != null)
@@ -193,7 +191,7 @@ namespace derpirc.Core
                         this._clientSupervisor.Reconnect(client);
                     }
                 else
-                    this._clientSupervisor.Reconnect(force);
+                    this._clientSupervisor.Reconnect(queue, force);
         }
 
         // *DetailsView

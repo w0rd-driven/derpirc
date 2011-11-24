@@ -158,7 +158,7 @@ namespace derpirc.ViewModels
         private void OnNavigatedTo(NavigationEventArgs eventArgs)
         {
             if (!eventArgs.IsNavigationInitiator && eventArgs.NavigationMode == NavigationMode.Back)
-                SupervisorFacade.Default.Reconnect(null, true);
+                SupervisorFacade.Default.Reconnect(null, true, true);
         }
 
         private void OnNavigatedFrom(NavigationEventArgs eventArgs)
