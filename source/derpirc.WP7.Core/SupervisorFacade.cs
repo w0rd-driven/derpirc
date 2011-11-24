@@ -67,18 +67,14 @@ namespace derpirc.Core
 
         #endregion
 
-        public SupervisorFacade()
+        private SupervisorFacade()
         {
             this._clients = new ObservableCollection<ClientItem>();
             this._connections = new List<ConnectionInfo>();
-
-            ThreadPool.QueueUserWorkItem((object userState) =>
-            {
-                Startup(userState);
-            });
+            this.Startup();
         }
 
-        private void Startup(object userState)
+        private void Startup()
         {
             lock (_threadLock)
             {

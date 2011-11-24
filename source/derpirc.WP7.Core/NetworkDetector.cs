@@ -248,6 +248,7 @@ namespace derpirc.Core
             }));
             // Now add a network change event handler to indicate network availability
             EnqueueRequest();
+            // This needs to always be synced with the UI thread for some stupid reason...
             System.Net.NetworkInformation.NetworkChange.NetworkAddressChanged += new System.Net.NetworkInformation.NetworkAddressChangedEventHandler(NetworkChange_NetworkAddressChanged);
         }
 

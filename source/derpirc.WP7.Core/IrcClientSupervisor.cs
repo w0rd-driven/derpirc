@@ -15,6 +15,8 @@ namespace derpirc.Core
         public event EventHandler<MessageRemovedEventArgs> MessageRemoved;
         public event EventHandler<ClientStatusEventArgs> StateChanged;
 
+        private NetworkDetector _networkDetector;
+
         private bool _isNetworkAvailable;
         private int _quitTimeout = 1000;
         private int _defaultServerPort = 6667;
@@ -29,8 +31,16 @@ namespace derpirc.Core
 
         public IrcClientSupervisor()
         {
-            NetworkDetector.Default.OnStatusChanged += this.Network_OnStatusChanged;
-            NetworkDetector.Default.SetNetworkPolling();
+            this.Startup();
+        }
+
+        private void Startup()
+        {
+            this._networkDetector = NetworkDetector.Default;
+            this._networkDetector.OnStatusChanged += this.Network_OnStatusChanged;
+            this._networkDetector.SetNetworkPolling();
+            // Force the NetworkUp() method as the network has already been detected by now in most instances
+            this._networkDetector.AsyncGetNetworkType();
         }
 
         private void Network_OnStatusChanged(object sender, NetworkStatusEventArgs e)
