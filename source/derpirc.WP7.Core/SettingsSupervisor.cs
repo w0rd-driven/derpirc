@@ -49,7 +49,7 @@ namespace derpirc.Core
                     foreach (var favorite in network.Favorites)
                     {
                         var foundFavorite = foundNetwork.Favorites.Where(x => x.Name == favorite.Name).FirstOrDefault();
-                        if (foundNetwork == null)
+                        if (foundFavorite == null)
                             CreateFavorite(foundNetwork, favorite);
                         else
                         {

@@ -312,7 +312,7 @@ namespace derpirc.ViewModels
                 // Code runs in Blend --> create design time data.
                 DisplayName = "clefnet 1";
                 Name = "clefnet";
-                HostName = "irc.efnet.org";
+                HostName = "irc.clefnet.org";
                 Ports = "6667";
                 Password = string.Empty;
 

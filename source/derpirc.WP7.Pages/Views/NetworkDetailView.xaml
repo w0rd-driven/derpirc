@@ -82,7 +82,7 @@
                                         <RowDefinition Height="Auto" />
                                         <RowDefinition Height="Auto" />
                                     </Grid.RowDefinitions>
-                                    <TextBox Text="{Binding Name}" />
+                                    <TextBox Text="{Binding Name, Mode=TwoWay}" />
                                     <toolkit:ToggleSwitch Header="Join" IsChecked="{Binding IsAutoConnect, Mode=TwoWay}"
                                                           Grid.Row="1" />
                                 </Grid>

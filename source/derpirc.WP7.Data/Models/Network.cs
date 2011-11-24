@@ -193,7 +193,7 @@ namespace derpirc.Data.Models
             }
         }
 
-        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_HostName", DbType = "NVarChar(128) NOT NULL", CanBeNull = false)]
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_ConnectedHostName", DbType = "NVarChar(128) NOT NULL", CanBeNull = false)]
         public string ConnectedHostName
         {
             get
