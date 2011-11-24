@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Navigation;
 using derpirc.Core;
+using derpirc.Helpers;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Microsoft.Phone.Tasks;
@@ -135,6 +136,20 @@ namespace derpirc.ViewModels
             }
         }
 
+        private string _version;
+        public string Version
+        {
+            get { return _version; }
+            set
+            {
+                if (_version == value)
+                    return;
+
+                _version = value;
+                RaisePropertyChanged(() => Version);
+            }
+        }
+
         #endregion
 
         /// <summary>
@@ -144,6 +159,8 @@ namespace derpirc.ViewModels
         {
             Url = "braytonium.com/derpirc";
             FeedbackUrl = "derpirc@braytonium.com";
+            //var manifestInfo = new ManifestAppInfo();
+            //Version = manifestInfo.Version;
 
             if (IsInDesignMode)
             {

@@ -58,6 +58,7 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Net" />
     <Reference Include="mscorlib.extensions" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\SharedAssemblyInfo.cs">
@@ -70,6 +71,7 @@
     <Compile Include="Controls\ProgressIndicatorProxy.cs" />
     <Compile Include="Controls\VisualTree.cs" />
     <Compile Include="Helpers\ApplicationFrameNavigationService.cs" />
+    <Compile Include="Helpers\ManifestAppInfo.cs" />
     <Compile Include="Helpers\UpdateOnTextChangedBehavior.cs" />
     <Compile Include="Helpers\INavigationService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
