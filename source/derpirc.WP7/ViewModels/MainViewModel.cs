@@ -47,7 +47,7 @@ namespace derpirc.ViewModels
             get
             {
                 return _layoutRootCommand ?? (_layoutRootCommand =
-                    new RelayCommand<FrameworkElement>(sender => this.LayoutRoot = sender));
+                    new RelayCommand<FrameworkElement>(sender => this.RootLoaded(sender)));
             }
         }
 
@@ -304,8 +304,6 @@ namespace derpirc.ViewModels
 
                 _worker = new BackgroundWorker();
                 _worker.DoWork += new DoWorkEventHandler(DeferStartupWork);
-
-                DeferStartup(null);
             }
         }
 
@@ -319,14 +317,17 @@ namespace derpirc.ViewModels
             Action completed = e.Argument as Action;
             lock (_threadLock)
             {
-                _supervisor = SupervisorFacade.Default;
-                _supervisor.StateChanged += this._supervisor_StateChanged;
-                _supervisor.MessageRemoved += this._supervisor_MessageRemoved;
-                _supervisor.ChannelJoined += this._supervisor_ChannelJoined;
-                _supervisor.ChannelLeft += this._supervisor_ChannelLeft;
-                _supervisor.ChannelItemReceived += this._supervisor_ChannelItemReceived;
-                _supervisor.MentionItemReceived += this._supervisor_MentionItemReceived;
-                _supervisor.MessageItemReceived += this._supervisor_MessageItemReceived;
+                if (_supervisor == null)
+                {
+                    _supervisor = SupervisorFacade.Default;
+                    _supervisor.StateChanged += this._supervisor_StateChanged;
+                    _supervisor.MessageRemoved += this._supervisor_MessageRemoved;
+                    _supervisor.ChannelJoined += this._supervisor_ChannelJoined;
+                    _supervisor.ChannelLeft += this._supervisor_ChannelLeft;
+                    _supervisor.ChannelItemReceived += this._supervisor_ChannelItemReceived;
+                    _supervisor.MentionItemReceived += this._supervisor_MentionItemReceived;
+                    _supervisor.MessageItemReceived += this._supervisor_MessageItemReceived;
+                }
             }
 
             if (completed != null)
@@ -561,10 +562,11 @@ namespace derpirc.ViewModels
 
         #endregion
 
-        private void RootLoaded(FrameworkElement sender)
+        private void RootLoaded(FrameworkElement layoutRoot)
         {
             // HACK: Execution order: 2
-            LayoutRoot = sender;
+            LayoutRoot = layoutRoot;
+            DeferStartup(null);
         }
 
         private void PivotItemLoaded(PivotItemEventArgs eventArgs)
@@ -643,12 +645,13 @@ namespace derpirc.ViewModels
 
         private void OnNavigatedTo(NavigationEventArgs eventArgs)
         {
-            if (eventArgs.NavigationMode == NavigationMode.Back && eventArgs.IsNavigationInitiator)
+            if (eventArgs.IsNavigationInitiator && eventArgs.NavigationMode == NavigationMode.Back)
                 UnselectItem();
-            if (!eventArgs.IsNavigationInitiator)
+            if (!eventArgs.IsNavigationInitiator && eventArgs.NavigationMode == NavigationMode.Back)
             {
                 // This gets called wether resuming or first starting. Tread lightly
-                SupervisorFacade.Default.Reconnect(null, true);
+                if (_supervisor != null)
+                    _supervisor.Reconnect(null, true);
             }
         }
 
