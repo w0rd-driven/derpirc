@@ -133,7 +133,7 @@ namespace derpirc.ViewModels
             else
             {
                 // Code runs "for real": Connect to service, etc...
-                this.MessengerInstance.Register<NotificationMessage>(this, "Save", message =>
+                this.MessengerInstance.Register<NotificationMessage<bool>>(this, "Save", message =>
                 {
                     this.Save();
                 });
