@@ -42,9 +42,27 @@ namespace derpirc.Core
                         foundNetwork = CreateNetwork(defaultSession, network);
                     else
                     {
-                        foundNetwork.HostName = network.HostName;
-                        foundNetwork.Ports = network.Ports;
-                        foundNetwork.Password = network.Password;
+                        var isUpdated = false;
+                        if (foundNetwork.HostName != null &&
+                            !foundNetwork.HostName.Equals(network.HostName, StringComparison.OrdinalIgnoreCase))
+                        {
+                            foundNetwork.HostName = network.HostName;
+                            isUpdated = true;
+                        }
+                        if (foundNetwork.Ports != null &&
+                            !foundNetwork.Ports.Equals(network.Ports, StringComparison.OrdinalIgnoreCase))
+                        {
+                            foundNetwork.Ports = network.Ports;
+                            isUpdated = true;
+                        }
+                        if (foundNetwork.Password != null &&
+                            !foundNetwork.Password.Equals(network.Password, StringComparison.OrdinalIgnoreCase))
+                        {
+                            foundNetwork.Password = network.Password;
+                            isUpdated = true;
+                        }
+                        if (isUpdated)
+                            _settingsToSync.Networks.Add(new Tuple<Network, ChangeType>(foundNetwork, ChangeType.Update));
                     }
                     foreach (var favorite in network.Favorites)
                     {
@@ -53,8 +71,20 @@ namespace derpirc.Core
                             CreateFavorite(foundNetwork, favorite);
                         else
                         {
-                            foundFavorite.IsAutoConnect = favorite.IsAutoConnect;
-                            foundFavorite.Password = favorite.Password;
+                            var isUpdated = false;
+                            if (foundFavorite.IsAutoConnect != favorite.IsAutoConnect)
+                            {
+                                foundFavorite.IsAutoConnect = favorite.IsAutoConnect;
+                                isUpdated = true;
+                            }
+                            if (foundFavorite.Password != null &&
+                                !foundFavorite.Password.Equals(favorite.Password, StringComparison.OrdinalIgnoreCase))
+                            {
+                                foundFavorite.Password = favorite.Password;
+                                isUpdated = true;
+                            }
+                            if (isUpdated)
+                                _settingsToSync.Favorites.Add(new Tuple<Favorite, ChangeType>(foundFavorite, ChangeType.Update));
                         }
                     }
                 }
@@ -80,50 +110,55 @@ namespace derpirc.Core
                 {
                     var configNetwork = configNetworks.Where(x => x.Name == network.Name).FirstOrDefault();
                     if (configNetwork == null)
-                        _settingsToSync.OldNetworks.Add(network.Name);
+                        _settingsToSync.Networks.Add(new Tuple<Network, ChangeType>(network, ChangeType.Delete));
                     else
                     {
                         foreach (var favorite in network.Favorites)
                         {
                             var configFavorite = configNetwork.Favorites.FirstOrDefault(x => x.Name == favorite.Name);
                             if (configFavorite == null)
-                                _settingsToSync.OldFavorites.Add(new Tuple<string, string>(network.Name, favorite.Name));
+                                _settingsToSync.Favorites.Add(new Tuple<Favorite, ChangeType>(favorite, ChangeType.Delete));
                         }
                     }
-                    if (_settingsToSync.OldFavorites.Count > 0)
+                    if (_settingsToSync.Favorites.Count(x => x.Item2 == ChangeType.Delete) > 0)
                     {
-                        foreach (var favorite in _settingsToSync.OldFavorites)
+                        foreach (var favorite in _settingsToSync.Favorites)
                         {
-                            var favoritesToDelete = network.Favorites.Where(x => x.Name == favorite.Item2);
+                            // Remove Favorites
+                            var favoritesToDelete = network.Favorites.Where(x => x.Name == favorite.Item1.Name);
                             foreach (var item in favoritesToDelete)
                             {
                                 unitOfWork.Favorites.Remove(item);
+                                isPurged = true;
                             }
-                            var channelsToDelete = network.Channels.Where(x => x.Name == favorite.Item2);
+                            // Remove Channels
+                            var channelsToDelete = network.Channels.Where(x => x.Name == favorite.Item1.Name);
                             foreach (var item in channelsToDelete)
                             {
                                 unitOfWork.Channels.Remove(item);
+                                isPurged = true;
                             }
-                            var mentionsToDelete = network.Mentions.Where(x => x.ChannelName == favorite.Item2);
+                            // Remove Mentions
+                            var mentionsToDelete = network.Mentions.Where(x => x.ChannelName == favorite.Item1.Name);
                             foreach (var item in mentionsToDelete)
                             {
                                 unitOfWork.Mentions.Remove(item);
+                                isPurged = true;
                             }
-                            isPurged = true;
                         }
                     }
                 }
 
-                if (_settingsToSync.OldNetworks.Count > 0)
+                if (_settingsToSync.Networks.Count(x => x.Item2 == ChangeType.Delete) > 0)
                 {
-                    foreach (var network in _settingsToSync.OldNetworks)
+                    foreach (var network in _settingsToSync.Networks)
                     {
-                        var recordsToDelete = defaultSession.Networks.Where(x => x.Name == network);
+                        var recordsToDelete = defaultSession.Networks.Where(x => x.Name == network.Item1.Name);
                         foreach (var item in recordsToDelete)
                         {
                             unitOfWork.Networks.Remove(item);
+                            isPurged = true;
                         }
-                        isPurged = true;
                     }
                 }
                 if (isPurged)
@@ -161,18 +196,21 @@ namespace derpirc.Core
             }
             parentRecord.Networks.Add(result);
 
-            _settingsToSync.NewNetworks.Add(setting.Name);
+            _settingsToSync.Networks.Add(new Tuple<Network, ChangeType>(result, ChangeType.Insert));
 
             return result;
         }
 
         private void CreateFavorite(Network parentRecord, Data.Models.Settings.Favorite setting)
         {
-            var newRecord = new Favorite();
-            newRecord.Name = setting.Name;
-            newRecord.IsAutoConnect = setting.IsAutoConnect;
-            newRecord.Password = setting.Password;
-            parentRecord.Favorites.Add(newRecord);
+            var result = new Favorite();
+            result.Name = setting.Name;
+            result.IsAutoConnect = setting.IsAutoConnect;
+            result.Password = setting.Password;
+            parentRecord.Favorites.Add(result);
+
+            // We don'e actually care for Favorite inserts. They get handled by new networks/updates
+            _settingsToSync.Favorites.Add(new Tuple<Favorite, ChangeType>(result, ChangeType.Insert));
         }
 
         #endregion

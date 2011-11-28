@@ -64,6 +64,7 @@
     </Compile>
     <Compile Include="ChannelStatusEventArgs.cs" />
     <Compile Include="MessageRemovedEventArgs.cs" />
+    <Compile Include="Models\ChangeType.cs" />
     <Compile Include="Models\ChannelStatusEnum.cs" />
     <Compile Include="Models\ClientInfo.cs" />
     <Compile Include="Models\ClientItem.cs" />

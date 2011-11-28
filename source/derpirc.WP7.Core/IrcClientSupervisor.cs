@@ -114,37 +114,42 @@ namespace derpirc.Core
             }
             else
             {
-                foreach (var favorite in settingsToSync.OldFavorites)
+                // Deletes
+                foreach (var network in settingsToSync.Networks.Where(x => x.Item2 == ChangeType.Delete))
                 {
-                    this.OnMessageRemoved(new MessageRemovedEventArgs()
-                    {
-                        NetworkName = favorite.Item1,
-                        FavoriteName = favorite.Item2,
-                    });
-                }
-                foreach (var networkName in settingsToSync.OldNetworks)
-                {
-                    var foundClient = SupervisorFacade.Default.Clients.FirstOrDefault(x => x.Info.NetworkName == networkName);
+                    var foundClient = SupervisorFacade.Default.Clients
+                        .FirstOrDefault(x => x.Info.NetworkName == network.Item1.Name);
                     if (foundClient != null)
                     {
                         this.Disconnect(foundClient);
                         SupervisorFacade.Default.Clients.Remove(foundClient);
                         this.OnMessageRemoved(new MessageRemovedEventArgs()
                         {
-                            NetworkName = networkName,
+                            NetworkName = network.Item1.Name,
                         });
                     }
                 }
-                foreach (var networkName in settingsToSync.NewNetworks)
+                foreach (var favorite in settingsToSync.Favorites.Where(x => x.Item2 == ChangeType.Delete))
                 {
-                    var foundClient = SupervisorFacade.Default.Clients.FirstOrDefault(x => x.Info.NetworkName == networkName);
+                    this.OnMessageRemoved(new MessageRemovedEventArgs()
+                    {
+                        NetworkName = favorite.Item1.Network.Name,
+                        FavoriteName = favorite.Item1.Name,
+                    });
+                }
+                // Inserts
+                foreach (var network in settingsToSync.Networks.Where(x => x.Item2 == ChangeType.Insert))
+                {
+                    var foundClient = SupervisorFacade.Default.Clients
+                        .FirstOrDefault(x => x.Info.NetworkName == network.Item1.Name);
                     if (foundClient == null)
                     {
                         var client = this.InitializeClientItem();
-                        client.Info.NetworkName = networkName;
+                        client.Info.NetworkName = network.Item1.Name;
                         SupervisorFacade.Default.Clients.Add(client);
                     }
                 }
+                // Updates
             }
             var session = this.GetDefaultSession();
             if (session != null)
