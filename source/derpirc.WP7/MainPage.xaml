@@ -11,7 +11,7 @@
                             xmlns:blend="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
                             xmlns:command="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Extras.WP71"
                             xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
-                            xmlns:local="clr-namespace:derpirc.Controls;assembly=derpirc.UICore"
+                            xmlns:progressIndicator="clr-namespace:DanielVaughan.Windows;assembly=derpirc.UICore"
                             xmlns:appbarutils="clr-namespace:AppBarUtils;assembly=AppBarUtils" 
                             mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="696" 
                             FontFamily="{StaticResource PhoneFontFamilyNormal}"
@@ -33,9 +33,14 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <local:ProgressIndicatorProxy IsIndeterminate="{Binding ProgressIndeterminate}" Text="{Binding ProgressText}" />
+        <progressIndicator:ProgressIndicatorProxy
+            IsIndeterminate="{Binding ProgressIndeterminate}"
+            Text="{Binding ProgressText}" />
 
-        <controls:Pivot Style="{StaticResource SmallPivotStyle}" Margin="-2,0,2,0" Title="{Binding LocalizedResources.ApplicationName, Source={StaticResource LocalizedStrings}}">
+        <controls:Pivot
+            Title="{Binding LocalizedResources.ApplicationName, Source={StaticResource LocalizedStrings}}"
+            Style="{StaticResource SmallPivotStyle}"
+            Margin="-2,0,2,0">
             <blend:Interaction.Triggers>
                 <blend:EventTrigger EventName="LoadedPivotItem">
                     <command:EventToCommand Command="{Binding PivotItemLoadedCommand}" PassEventArgsToCommand="True"/>
@@ -43,7 +48,8 @@
             </blend:Interaction.Triggers>
             <controls:PivotItem Header="{Binding LocalizedResources.MainChannels, Source={StaticResource LocalizedStrings}}"
                                 Style="{StaticResource SmallPivotItemStyle}">
-                <ListBox x:Name="ChannelListBox" ItemsSource="{Binding Channels.View}" SelectedItem="{Binding SelectedChannel, Mode=TwoWay}"
+                <ListBox x:Name="ChannelListBox"
+                         ItemsSource="{Binding Channels.View}" SelectedItem="{Binding SelectedChannel, Mode=TwoWay}"
                          Margin="0,0,-12,0"
                          ItemContainerStyle="{StaticResource SmallPivotListBoxStyle}">
                     <ListBox.ItemTemplate>
@@ -58,13 +64,13 @@
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Text="{Binding ChannelName}" VerticalAlignment="Center" Style="{StaticResource PhoneTextLargeStyle}" TextWrapping="Wrap" />
+                                <TextBlock Text="{Binding ChannelName}"
+                                           Style="{StaticResource PhoneTextLargeStyle}"
+                                           VerticalAlignment="Center" TextWrapping="Wrap" />
                                 <TextBlock x:Name="textBlockMessageTimestamp"
-                                               Text="{Binding MessageTimestamp, Converter={StaticResource ListViewDateTimeConverter}}"
-                                               Style="{StaticResource SummaryTimeStampStyle}"
-                                               VerticalAlignment="Bottom"
-                                               Grid.Column="2" />                     
-                                <Button Content="X" Grid.Column="2" x:Name="buttonRemove" Visibility="Collapsed" />
+                                           Text="{Binding MessageTimestamp, Converter={StaticResource ListViewDateTimeConverter}}"
+                                           Style="{StaticResource SummaryTimeStampStyle}"
+                                           VerticalAlignment="Bottom" Grid.Column="2" />
                                 <Grid Grid.ColumnSpan="3" Grid.Row="2">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto" />
@@ -86,8 +92,7 @@
                                     <TextBlock x:Name="textBlockMessageSource"
                                                Text="{Binding MessageSource}"
                                                Style="{StaticResource SummarySourceStyle}"
-                                               Grid.ColumnSpan="2"
-                                               Grid.Row="2" />
+                                               Grid.ColumnSpan="2" Grid.Row="2" />
                                 </Grid>
                                 <toolkit:ContextMenuService.ContextMenu>
                                     <toolkit:ContextMenu x:Name="ChannelsContextMenu">
@@ -103,7 +108,8 @@
 
             <controls:PivotItem Header="{Binding LocalizedResources.MainMentions, Source={StaticResource LocalizedStrings}}"
                                 Style="{StaticResource SmallPivotItemStyle}">
-                <ListBox x:Name="MentionListBox" ItemsSource="{Binding Mentions.View}" SelectedItem="{Binding SelectedMention, Mode=TwoWay}"
+                <ListBox x:Name="MentionListBox"
+                         ItemsSource="{Binding Mentions.View}" SelectedItem="{Binding SelectedMention, Mode=TwoWay}"
                          Margin="0,0,-12,0"
                          ItemContainerStyle="{StaticResource SmallPivotListBoxStyle}">
                     <ListBox.ItemTemplate>
@@ -118,13 +124,13 @@
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Text="{Binding NickName}" VerticalAlignment="Center" Style="{StaticResource PhoneTextLargeStyle}" TextWrapping="Wrap" />
+                                <TextBlock Text="{Binding NickName}"
+                                           Style="{StaticResource PhoneTextLargeStyle}"
+                                           VerticalAlignment="Center" TextWrapping="Wrap" />
                                 <TextBlock x:Name="textBlockMessageTimestamp"
                                            Text="{Binding MessageTimestamp, Converter={StaticResource ListViewDateTimeConverter}}"
                                            Style="{StaticResource SummaryTimeStampStyle}"
-                                           VerticalAlignment="Bottom"
-                                           Grid.Column="2" />                     
-                                <Button Content="X" Grid.Column="2" x:Name="buttonRemove" Visibility="Collapsed" />
+                                           VerticalAlignment="Bottom" Grid.Column="2" />
                                 <Grid Grid.ColumnSpan="3" Grid.Row="2">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto" />
@@ -146,8 +152,7 @@
                                     <TextBlock x:Name="textBlockMessageSource"
                                                Text="{Binding MessageSource}"
                                                Style="{StaticResource SummarySourceStyle}"
-                                               Grid.ColumnSpan="2"
-                                               Grid.Row="2" />
+                                               Grid.ColumnSpan="2" Grid.Row="2" />
                                 </Grid>
                                 <toolkit:ContextMenuService.ContextMenu>
                                     <toolkit:ContextMenu x:Name="MentionsContextMenu">
@@ -162,7 +167,8 @@
 
             <controls:PivotItem Header="{Binding LocalizedResources.MainMessages, Source={StaticResource LocalizedStrings}}"
                                 Style="{StaticResource SmallPivotItemStyle}">
-                <ListBox x:Name="MessageListBox" ItemsSource="{Binding Messages.View}" SelectedItem="{Binding SelectedMessage, Mode=TwoWay}"
+                <ListBox x:Name="MessageListBox"
+                         ItemsSource="{Binding Messages.View}" SelectedItem="{Binding SelectedMessage, Mode=TwoWay}"
                          Margin="0,0,-12,0"
                          ItemContainerStyle="{StaticResource SmallPivotListBoxStyle}">
                     <ListBox.ItemTemplate>
@@ -177,13 +183,13 @@
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Text="{Binding NickName}" VerticalAlignment="Center" Style="{StaticResource PhoneTextLargeStyle}" TextWrapping="Wrap" />
+                                <TextBlock Text="{Binding NickName}"
+                                           Style="{StaticResource PhoneTextLargeStyle}"
+                                           VerticalAlignment="Center" TextWrapping="Wrap" />
                                 <TextBlock x:Name="textBlockMessageTimestamp"
                                            Text="{Binding MessageTimestamp, Converter={StaticResource ListViewDateTimeConverter}}"
                                            Style="{StaticResource SummaryTimeStampStyle}"
-                                           VerticalAlignment="Bottom"
-                                           Grid.Column="2" />                     
-                                <Button Content="X" Grid.Column="2" x:Name="buttonRemove" Visibility="Collapsed" />
+                                           VerticalAlignment="Bottom" Grid.Column="2" />
                                 <Grid Grid.ColumnSpan="3" Grid.Row="2">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto" />
@@ -205,8 +211,7 @@
                                     <TextBlock x:Name="textBlockMessageSource"
                                                Text="{Binding MessageSource}"
                                                Style="{StaticResource SummarySourceStyle}"
-                                               Grid.ColumnSpan="2"
-                                               Grid.Row="2" />
+                                               Grid.ColumnSpan="2" Grid.Row="2" />
                                 </Grid>
                                 <toolkit:ContextMenuService.ContextMenu>
                                     <toolkit:ContextMenu x:Name="MessagesContextMenu">
@@ -222,14 +227,14 @@
         
         <adRotator:AdRotatorControl x:Name="AdRotatorControl"
                                     xmlns:adRotator="clr-namespace:AdRotator;assembly=AdRotator"
-                                    Grid.Row="1"
                                     IsEnabled="False"
                                     DefaultSettingsFileUri="/derpirc;component/AdRotator.xml"
                                     SettingsUrl="http://braytonium.com/derpirc/AdRotator.xml"
                                     DefaultAdType="PubCenter"
                                     PubCenterAdUnitId="99999"
                                     PubCenterAppId="xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-                                    AdDuplexAppId="9999" />
+                                    AdDuplexAppId="9999"
+                                    Grid.Row="1" />
     </Grid>
  
     <phone:PhoneApplicationPage.ApplicationBar>

@@ -38,7 +38,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 
-namespace derpirc
+namespace DanielVaughan.Windows
 {
 	public static class VisualTree
 	{

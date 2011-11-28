@@ -33,7 +33,7 @@
 
 using System;
 
-namespace derpirc
+namespace DanielVaughan
 {
 	/// <summary>
 	/// Utility class for validating method parameters.

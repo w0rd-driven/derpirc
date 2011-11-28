@@ -67,9 +67,9 @@
     <Compile Include="..\VersionAssemblyInfo.cs">
       <Link>Properties\VersionAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Controls\ArgumentValidator.cs" />
-    <Compile Include="Controls\ProgressIndicatorProxy.cs" />
-    <Compile Include="Controls\VisualTree.cs" />
+    <Compile Include="Controls\ProgressIndicator\ArgumentValidator.cs" />
+    <Compile Include="Controls\ProgressIndicator\ProgressIndicatorProxy.cs" />
+    <Compile Include="Controls\ProgressIndicator\VisualTree.cs" />
     <Compile Include="Helpers\ApplicationFrameNavigationService.cs" />
     <Compile Include="Helpers\ManifestAppInfo.cs" />
     <Compile Include="Helpers\UpdateOnTextChangedBehavior.cs" />
