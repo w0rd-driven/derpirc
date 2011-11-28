@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
 using System.Windows.Data;
 using derpirc.Core;
 using derpirc.Data;
@@ -123,7 +124,10 @@ namespace derpirc.ViewModels
                     this.Save(message.Content);
                 });
 
-                Load();
+                ThreadPool.QueueUserWorkItem((object userState) =>
+                {
+                    this.Load();
+                });
             }
         }
 

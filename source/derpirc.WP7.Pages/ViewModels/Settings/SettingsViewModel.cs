@@ -64,8 +64,11 @@ namespace derpirc.ViewModels
                     return;
 
                 _canAdd = value;
-                DispatcherHelper.CheckBeginInvokeOnUI(() => AddCommand.RaiseCanExecuteChanged());
-                RaisePropertyChanged(() => CanAdd);
+                DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                {
+                    AddCommand.RaiseCanExecuteChanged();
+                    RaisePropertyChanged(() => CanAdd);
+                });
             }
         }
 
@@ -99,8 +102,11 @@ namespace derpirc.ViewModels
                     return;
 
                 _canClear = value;
-                DispatcherHelper.CheckBeginInvokeOnUI(() => ClearCommand.RaiseCanExecuteChanged());
-                RaisePropertyChanged(() => CanClear);
+                DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                {
+                    ClearCommand.RaiseCanExecuteChanged();
+                    RaisePropertyChanged(() => CanClear);
+                });
             }
         }
 
