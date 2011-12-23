@@ -27,7 +27,7 @@
 
         <StackPanel x:Name="TitlePanel" Margin="24,24,0,12">
             <TextBlock x:Name="PageTitle"
-                       Text="{Binding LocalizedResources.About, Source={StaticResource LocalizedStrings}}"
+                       Text="{Binding Resources.About}"
                        Margin="-2,-10,0,0"
                        Style="{StaticResource PhoneTextTitle1Style}" />
             <TextBlock x:Name="PageSubTitle"
@@ -43,7 +43,6 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
                         <RowDefinition Height="60" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
@@ -51,32 +50,30 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
-                    <TextBlock Text="{Binding LocalizedResources.ApplicationName, Source={StaticResource LocalizedStrings}}"
+                    <TextBlock Text="{Binding Resources.ApplicationName}"
                                Style="{StaticResource TextBlockBase}" FontSize="{StaticResource PhoneFontSizeExtraLarge}" />
-                    <TextBlock Text="forged in the bowels of insanity by"
+                    <TextBlock Text="{Binding Resources.AboutWebsiteDescription}"
                                Style="{StaticResource TextBlockBase}" FontSize="{StaticResource PhoneFontSizeMedium}"
+                               TextWrapping="Wrap"
                                Grid.Row="1" />
-                    <TextBlock Text="Braytonium Software"
-                               Style="{StaticResource TextBlockBase}" FontSize="{StaticResource PhoneFontSizeMedium}"
-                               Grid.Row="2" />
-                    <HyperlinkButton Content="{Binding Url}"
+                    <HyperlinkButton Content="{Binding Resources.AboutWebsiteURLText}"
                                      Command="{Binding WebsiteCommand}"
                                      HorizontalAlignment="Left"
-                                     Grid.Row="3" />
-                    <TextBlock Text="Stroke my ego, plz:"
+                                     Grid.Row="2" />
+                    <TextBlock Text="{Binding Resources.AboutReviewDescription}"
                                Style="{StaticResource TextBlockBase}" FontSize="{StaticResource PhoneFontSizeMedium}"
-                               Grid.Row="5" />
-                    <HyperlinkButton Content="Review this (cr)app"
+                               Grid.Row="4" />
+                    <HyperlinkButton Content="{Binding Resources.AboutReviewURLText}"
                                      Command="{Binding ReviewCommand}"
                                      HorizontalAlignment="Left"
-                                     Grid.Row="6" />
-                    <TextBlock Text="Feedback or pony requests:"
+                                     Grid.Row="5" />
+                    <TextBlock Text="{Binding Resources.AboutFeedbackDescription}"
                                Style="{StaticResource TextBlockBase}" FontSize="{StaticResource PhoneFontSizeMedium}"
-                               Grid.Row="8" />
-                    <HyperlinkButton Content="{Binding FeedbackUrl}"
+                               Grid.Row="7" />
+                    <HyperlinkButton Content="{Binding Resources.AboutFeedbackEmail}"
                                      Command="{Binding FeedbackCommand}"
                                      HorizontalAlignment="Left"
-                                     Grid.Row="9" />
+                                     Grid.Row="8" />
                 </Grid>
             </ScrollViewer>
         </Grid>

@@ -149,17 +149,17 @@
     <value>formatting</value>
     <comment>SettingsView Formatting Pivot Title</comment>
   </data>
-  <data name="SettingsNetworkDetail" xml:space="preserve">
+  <data name="NetworkDetail" xml:space="preserve">
     <value>network</value>
-    <comment>SettingsNetworkView Network Pivot Title</comment>
+    <comment>NetworkDetailView Network Pivot Title</comment>
   </data>
   <data name="SettingsNetworks" xml:space="preserve">
     <value>networks</value>
     <comment>SettingsView Networks Pivot Title</comment>
   </data>
-  <data name="SettingsNetworkServerInfo" xml:space="preserve">
+  <data name="NetworkDetailServerInfo" xml:space="preserve">
     <value>server information</value>
-    <comment>SettingsNetworkView ServerInformation</comment>
+    <comment>NetworkDetailView ServerInformation Text</comment>
   </data>
   <data name="SettingsStorage" xml:space="preserve">
     <value>storage</value>
@@ -168,5 +168,164 @@
   <data name="SettingsClient" xml:space="preserve">
     <value>client</value>
     <comment>SettingsView Client Pivot Title</comment>
+  </data>
+  <data name="AboutFeedbackDescription" xml:space="preserve">
+    <value>Feedback or pony requests: </value>
+    <comment>AboutView Feedback Description Text</comment>
+  </data>
+  <data name="AboutFeedbackEmail" xml:space="preserve">
+    <value>derpirc-feedback@braytonium.com</value>
+    <comment>AboutView Feedback Email</comment>
+  </data>
+  <data name="AboutReviewDescription" xml:space="preserve">
+    <value>Stroke my ego, plz: </value>
+    <comment>AboutView Review Description Text</comment>
+  </data>
+  <data name="AboutReviewURLText" xml:space="preserve">
+    <value>Review this (cr)app</value>
+    <comment>AboutView Review URL Text</comment>
+  </data>
+  <data name="AboutSupport" xml:space="preserve">
+    <value>Support:</value>
+    <comment>AboutView Support Description Text</comment>
+  </data>
+  <data name="AboutSupportEmail" xml:space="preserve">
+    <value>derpirc-support@braytonium.com</value>
+    <comment>AboutView Support Email</comment>
+  </data>
+  <data name="AboutSupportSubject" xml:space="preserve">
+    <value>WP7</value>
+    <comment>AboutView Support Email Subject</comment>
+  </data>
+  <data name="AboutWebsiteDescription" xml:space="preserve">
+    <value>Forged in the bowels of insanity by Braytonium Software</value>
+    <comment>AboutView Website Description Text</comment>
+  </data>
+  <data name="AboutWebsiteURLText" xml:space="preserve">
+    <value>braytonium.com/derpirc/</value>
+    <comment>AboutView Website URL Text</comment>
+  </data>
+  <data name="ConnectionsAppBarCellularSettings" xml:space="preserve">
+    <value>cellular settings</value>
+    <comment>SettingsView ApplicationBar MenuItem Text</comment>
+  </data>
+  <data name="ConnectionsAppBarConnect" xml:space="preserve">
+    <value>connect</value>
+    <comment>SettingsView ApplicationBar MenuItem Text</comment>
+  </data>
+  <data name="ConnectionsAppBarDisconnect" xml:space="preserve">
+    <value>disconnect</value>
+    <comment>SettingsView ApplicationBar Button Text</comment>
+  </data>
+  <data name="ConnectionsAppBarReconnect" xml:space="preserve">
+    <value>reconnect</value>
+    <comment>SettingsView ApplicationBar Button Text</comment>
+  </data>
+  <data name="ConnectionsAppBarSelect" xml:space="preserve">
+    <value>select</value>
+    <comment>SettingsView ApplicationBar Button Text</comment>
+  </data>
+  <data name="ConnectionsAppBarWifiSettings" xml:space="preserve">
+    <value>wifi settings</value>
+    <comment>SettingsView ApplicationBar MenuItem Text</comment>
+  </data>
+  <data name="ConnectionsStatus" xml:space="preserve">
+    <value>Connected via: </value>
+  </data>
+  <data name="NetworkDetailHostName" xml:space="preserve">
+    <value>Host Name</value>
+    <comment>NetworkDetailView HostName Text</comment>
+  </data>
+  <data name="NetworkDetailName" xml:space="preserve">
+    <value>Name</value>
+    <comment>NetworkDetailView Name Text</comment>
+  </data>
+  <data name="NetworkDetailPassword" xml:space="preserve">
+    <value>Password</value>
+    <comment>NetworkDetailView Password Text</comment>
+  </data>
+  <data name="NetworkDetailPort" xml:space="preserve">
+    <value>Port</value>
+    <comment>NetworkDetailView Port Text</comment>
+  </data>
+  <data name="NetworkTypeData" xml:space="preserve">
+    <value>Data</value>
+  </data>
+  <data name="NetworkTypeEthernet" xml:space="preserve">
+    <value>Ethernet</value>
+  </data>
+  <data name="NetworkTypeNone" xml:space="preserve">
+    <value>None</value>
+  </data>
+  <data name="NetworkTypeUnknown" xml:space="preserve">
+    <value>Unknown</value>
+  </data>
+  <data name="NetworkTypeWireless" xml:space="preserve">
+    <value>Wireless</value>
+  </data>
+  <data name="SettingsAppBarAdd" xml:space="preserve">
+    <value>add</value>
+    <comment>SettingsView ApplicationBar Button Text</comment>
+  </data>
+  <data name="SettingsAppBarClear" xml:space="preserve">
+    <value>clear</value>
+    <comment>SettingsView ApplicationBar MenuItem Text</comment>
+  </data>
+  <data name="NetworkDetailAppBarDelete" xml:space="preserve">
+    <value>delete</value>
+    <comment>NetworkDetailView ApplicationBar Button Text</comment>
+  </data>
+  <data name="SettingsClientJoinOnInvite" xml:space="preserve">
+    <value>Join on Invite</value>
+    <comment>SettingsView Client JoinOnInvite Text</comment>
+  </data>
+  <data name="SettingsClientReconnectOnDisconnect" xml:space="preserve">
+    <value>Reconnect on Disconnect</value>
+    <comment>SettingsView Client ReconnectOnDisconnect Text</comment>
+  </data>
+  <data name="SettingsClientRejoinOnKick" xml:space="preserve">
+    <value>Rejoin on Kick</value>
+    <comment>SettingsView Client RejoinOnKick Text</comment>
+  </data>
+  <data name="SettingsClientDisconnectRetries" xml:space="preserve">
+    <value>Retry disconnects</value>
+    <comment>SettingsView Client RetryDisconnects Text</comment>
+  </data>
+  <data name="SettingsClientDisconnectRetriesWait" xml:space="preserve">
+    <value>Retry waiting period (seconds)</value>
+    <comment>SettingsView Client RetryWaitingPeriodInSeconds Text</comment>
+  </data>
+  <data name="SettingsUserAlternate" xml:space="preserve">
+    <value>Alternate</value>
+    <comment>SettingsView Settings Alternate Text</comment>
+  </data>
+  <data name="SettingsUserFullName" xml:space="preserve">
+    <value>Full Name</value>
+    <comment>SettingsView Settings Full Name Text</comment>
+  </data>
+  <data name="SettingsUserInvisible" xml:space="preserve">
+    <value>Invisible</value>
+    <comment>SettingsView Settings Invisible Text</comment>
+  </data>
+  <data name="SettingsUserNickName" xml:space="preserve">
+    <value>NickName</value>
+    <comment>SettingsView Settings NickName Text</comment>
+  </data>
+  <data name="SettingsUserQuitMessage" xml:space="preserve">
+    <value>Quit Message</value>
+    <comment>SettingsView Settings QuitMessage Text</comment>
+  </data>
+  <data name="SettingsUserUsername" xml:space="preserve">
+    <value>Username</value>
+    <comment>SettingsView Settings Username Text</comment>
+  </data>
+  <data name="AboutFeedbackEmailSubject" xml:space="preserve">
+    <value>I'm about to tell you how to make an app. Ready?</value>
+  </data>
+  <data name="AboutVersion" xml:space="preserve">
+    <value>Version: </value>
+  </data>
+  <data name="ProgressLoading" xml:space="preserve">
+    <value>Loading</value>
   </data>
 </root>

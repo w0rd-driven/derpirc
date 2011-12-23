@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Windows.Navigation;
 using derpirc.Core;
-using derpirc.Helpers;
-using GalaSoft.MvvmLight;
+using derpirc.Localization;
 using GalaSoft.MvvmLight.Command;
 using Microsoft.Phone.Tasks;
 
@@ -157,8 +156,6 @@ namespace derpirc.ViewModels
         /// </summary>
         public AboutViewModel()
         {
-            Url = "braytonium.com/derpirc";
-            FeedbackUrl = "derpirc@braytonium.com";
             //var manifestInfo = new ManifestAppInfo();
             //Version = manifestInfo.Version;
 
@@ -189,7 +186,7 @@ namespace derpirc.ViewModels
         private void Website()
         {
             var task = new WebBrowserTask();
-            task.Uri = new Uri("http://" + Url);
+            task.Uri = new Uri("http://" + AppResources.AboutWebsiteURLText);
             task.Show();
         }
 
@@ -202,9 +199,9 @@ namespace derpirc.ViewModels
         private void Feedback()
         {
             var task = new EmailComposeTask();
-            task.To = FeedbackUrl;
+            task.To = AppResources.AboutFeedbackEmail;
             task.Body = "";
-            task.Subject = "Feedback: ";
+            task.Subject = AppResources.AboutFeedbackEmailSubject;
             task.Show(); 
         }
 

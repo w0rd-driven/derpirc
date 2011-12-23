@@ -124,7 +124,7 @@ namespace derpirc.ViewModels
         private bool _canViewAbout;
         public bool CanViewAbout
         {
-            get { return _canViewConnections; }
+            get { return _canViewAbout; }
             set
             {
                 if (_canViewAbout == value)
@@ -285,6 +285,9 @@ namespace derpirc.ViewModels
             _lastRefreshChannels = DateTime.MinValue;
             _lastRefreshMentions = DateTime.MinValue;
             _lastRefreshMessages = DateTime.MinValue;
+            CanViewConnections = true;
+            CanViewSettings = true;
+            CanViewAbout = true;
 
             if (IsInDesignMode)
             {

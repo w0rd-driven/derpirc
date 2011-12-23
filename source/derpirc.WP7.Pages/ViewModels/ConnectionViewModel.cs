@@ -474,7 +474,7 @@ namespace derpirc.ViewModels
             {
                 if (SelectedItem != null)
                 {
-                   CanConnect = true;
+                    CanConnect = true;
                     CanReconnect = true;
                     CanDisconnect = true;
                 }

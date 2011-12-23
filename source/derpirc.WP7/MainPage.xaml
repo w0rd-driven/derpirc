@@ -38,7 +38,7 @@
             Text="{Binding ProgressText}" />
 
         <controls:Pivot
-            Title="{Binding LocalizedResources.ApplicationName, Source={StaticResource LocalizedStrings}}"
+            Title="{Binding Resources.ApplicationName}"
             Style="{StaticResource SmallPivotStyle}"
             Margin="-2,0,2,0">
             <blend:Interaction.Triggers>
@@ -46,7 +46,7 @@
                     <command:EventToCommand Command="{Binding PivotItemLoadedCommand}" PassEventArgsToCommand="True"/>
                 </blend:EventTrigger>
             </blend:Interaction.Triggers>
-            <controls:PivotItem Header="{Binding LocalizedResources.MainChannels, Source={StaticResource LocalizedStrings}}"
+            <controls:PivotItem Header="{Binding Resources.MainChannels}"
                                 Style="{StaticResource SmallPivotItemStyle}">
                 <ListBox x:Name="ChannelListBox"
                          ItemsSource="{Binding Channels.View}" SelectedItem="{Binding SelectedChannel, Mode=TwoWay}"
@@ -106,7 +106,7 @@
                 </ListBox>
             </controls:PivotItem>
 
-            <controls:PivotItem Header="{Binding LocalizedResources.MainMentions, Source={StaticResource LocalizedStrings}}"
+            <controls:PivotItem Header="{Binding Resources.MainMentions}"
                                 Style="{StaticResource SmallPivotItemStyle}">
                 <ListBox x:Name="MentionListBox"
                          ItemsSource="{Binding Mentions.View}" SelectedItem="{Binding SelectedMention, Mode=TwoWay}"
@@ -165,7 +165,7 @@
                 </ListBox>
             </controls:PivotItem>
 
-            <controls:PivotItem Header="{Binding LocalizedResources.MainMessages, Source={StaticResource LocalizedStrings}}"
+            <controls:PivotItem Header="{Binding Resources.MainMessages}"
                                 Style="{StaticResource SmallPivotItemStyle}">
                 <ListBox x:Name="MessageListBox"
                          ItemsSource="{Binding Messages.View}" SelectedItem="{Binding SelectedMessage, Mode=TwoWay}"
@@ -254,4 +254,17 @@
         <appbarutils:AppBarItemCommand Type="MenuItem" Id="settings" Command="{Binding ViewSettingsCommand}" />
         <appbarutils:AppBarItemCommand Type="MenuItem" Id="about" Command="{Binding ViewAboutCommand}" />
     </blend:Interaction.Behaviors>
+    <blend:Interaction.Triggers>
+        <appbarutils:AppBarItemTrigger Type="Button" Id="connections"
+                                       Text="{Binding Resources.Connections}"
+                                       IsEnabled="{Binding CanViewConnections}" />
+        <appbarutils:AppBarItemTrigger Type="Button" Id="settings"
+                                       Text="{Binding Resources.Settings}"
+                                       IsEnabled="{Binding CanViewSettings}" />
+        <appbarutils:AppBarItemTrigger Type="MenuItem" Id="about"
+                                       Text="{Binding Resources.About}"
+                                       IsEnabled="{Binding CanViewAbout}" />
+        <appbarutils:AppBarTrigger IsVisible="{Binding IsAppBarVisible}" />
+    </blend:Interaction.Triggers>
+
 </phone:PhoneApplicationPage>

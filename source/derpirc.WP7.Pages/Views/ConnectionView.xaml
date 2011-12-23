@@ -33,7 +33,7 @@
 
         <StackPanel x:Name="TitlePanel" Margin="24,24,0,12">
             <TextBlock x:Name="PageTitle"
-                       Text="{Binding LocalizedResources.Connections, Source={StaticResource LocalizedStrings}}"
+                       Text="{Binding Resources.Connections}"
                        Margin="-2,-10,0,0"
                        Style="{StaticResource PhoneTextTitle1Style}" />
             <TextBlock x:Name="PageSubTitle"
@@ -82,7 +82,7 @@
                 </toolkit:MultiselectList.ItemTemplate>
             </toolkit:MultiselectList>
             <StackPanel Orientation="Horizontal" Grid.Row="2">
-                <TextBlock Text="Connected via: " />
+                <TextBlock Text="{Binding Resources.ConnectionsStatus}" />
                 <TextBlock Text="{Binding NetworkType}" />
             </StackPanel>
         </Grid>
@@ -111,11 +111,17 @@
         <appbarutils:AppBarItemCommand Type="MenuItem" Id="cellular settings" Command="{Binding CellCommand}" />
     </blend:Interaction.Behaviors>
     <blend:Interaction.Triggers>
-        <appbarutils:AppBarItemTrigger Type="Button" Id="reconnect" Text="reconnect" IsEnabled="{Binding CanReconnect}" />
-        <appbarutils:AppBarItemTrigger Type="Button" Id="select" Text="select" />
-        <appbarutils:AppBarItemTrigger Type="Button" Id="disconnect" Text="disconnect" IsEnabled="{Binding CanDisconnect}" />
-        <appbarutils:AppBarItemTrigger Type="MenuItem" Id="connect" Text="connect" IsEnabled="{Binding CanConnect}" />
-        <appbarutils:AppBarItemTrigger Type="MenuItem" Id="wifi settings" Text="wifi settings" />
-        <appbarutils:AppBarItemTrigger Type="MenuItem" Id="cellular settings" Text="cellular settings" />
+        <appbarutils:AppBarItemTrigger Type="Button" Id="reconnect"
+                                       Text="{Binding Resources.ConnectionsAppBarReconnect}" IsEnabled="{Binding CanReconnect}" />
+        <appbarutils:AppBarItemTrigger Type="Button" Id="select"
+                                       Text="{Binding Resources.ConnectionsAppBarSelect}" />
+        <appbarutils:AppBarItemTrigger Type="Button" Id="disconnect"
+                                       Text="{Binding Resources.ConnectionsAppBarDisconnect}" IsEnabled="{Binding CanDisconnect}" />
+        <appbarutils:AppBarItemTrigger Type="MenuItem" Id="connect"
+                                       Text="{Binding Resources.ConnectionsAppBarConnect}" IsEnabled="{Binding CanConnect}" />
+        <appbarutils:AppBarItemTrigger Type="MenuItem" Id="wifi settings"
+                                       Text="{Binding Resources.ConnectionsAppBarWifiSettings}" />
+        <appbarutils:AppBarItemTrigger Type="MenuItem" Id="cellular settings"
+                                       Text="{Binding Resources.ConnectionsAppBarCellularSettings}" />
     </blend:Interaction.Triggers>
 </phone:PhoneApplicationPage>

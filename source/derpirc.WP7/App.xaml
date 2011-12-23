@@ -6,7 +6,6 @@
              xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
              xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
              xmlns:vm="clr-namespace:derpirc.ViewModels"
-             xmlns:localization="clr-namespace:derpirc.Localization"
              mc:Ignorable="d">
 
     <!--Application Resources-->
@@ -17,7 +16,6 @@
             </ResourceDictionary.MergedDictionaries>
             <vm:ViewModelLocator x:Key="Locator"
                                 d:IsDataSource="True" />
-            <localization:LocalizedStrings x:Key="LocalizedStrings" />
         </ResourceDictionary>
     </Application.Resources>
 
