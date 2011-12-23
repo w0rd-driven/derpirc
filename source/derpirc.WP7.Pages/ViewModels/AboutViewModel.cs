@@ -2,6 +2,7 @@
 using System.Windows.Navigation;
 using derpirc.Core;
 using derpirc.Localization;
+using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Microsoft.Phone.Tasks;
 

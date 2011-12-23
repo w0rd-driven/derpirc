@@ -3,16 +3,16 @@ namespace derpirc.Localization
 {
     public class LocalizedStrings
     {
-        private AppResources _localizedResources;
-        public AppResources LocalizedResources
+        private AppResources _resources;
+        public AppResources Resources
         {
-            get { return _localizedResources; }
+            get { return _resources; }
             private set { }
         }
 
         public LocalizedStrings()
         {
-            _localizedResources = new AppResources();
+            _resources = new AppResources();
         }
     }
 }

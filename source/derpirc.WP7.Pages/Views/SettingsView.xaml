@@ -34,7 +34,7 @@
                     <command:EventToCommand Command="{Binding PivotItemLoadedCommand}" PassEventArgsToCommand="True"/>
                 </blend:EventTrigger>
             </blend:Interaction.Triggers>
-            <controls:PivotItem Header="{Binding Resources.Settings}"
+            <controls:PivotItem Header="{Binding Resources.Settings, Source={StaticResource LocalizedStrings}}"
                                 Style="{StaticResource SmallPivotItemStyle}" DataContext="{Binding SettingsUserViewModel, Source={StaticResource Locator}}">
                 <ScrollViewer>
                     <Grid>
@@ -52,7 +52,7 @@
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
                         <TextBlock Name="NickNameLabel"
-                                   Text="{Binding Resources.SettingsUserNickName}"
+                                   Text="{Binding Resources.SettingsUserNickName, Source={StaticResource LocalizedStrings}}"
                                    VerticalAlignment="Center" FontSize="{StaticResource PhoneFontSizeMedium}" />
                         <TextBox Name="NickNameTextBox"
                                  Text="{Binding NickName, Mode=TwoWay}"
@@ -63,7 +63,7 @@
                             </blend:Interaction.Behaviors>
                         </TextBox>
                         <TextBlock Name="NickNameAltLabel"
-                                   Text="{Binding Resources.SettingsUserAlternate}"
+                                   Text="{Binding Resources.SettingsUserAlternate, Source={StaticResource LocalizedStrings}}"
                                    VerticalAlignment="Center" FontSize="{StaticResource PhoneFontSizeMedium}"
                                    Grid.Row="1" />
                         <TextBox Name="NickNameAltTextBox"
@@ -75,7 +75,7 @@
                             </blend:Interaction.Behaviors>
                         </TextBox>
                         <TextBlock Name="FullNameLabel"
-                                   Text="{Binding Resources.SettingsUserFullName}"
+                                   Text="{Binding Resources.SettingsUserFullName, Source={StaticResource LocalizedStrings}}"
                                    VerticalAlignment="Center" FontSize="{StaticResource PhoneFontSizeMedium}"
                                    Grid.Row="2" />
                         <TextBox Name="FullNameTextBox"
@@ -87,7 +87,7 @@
                             </blend:Interaction.Behaviors>
                         </TextBox>
                         <TextBlock Name="UserNameLabel"
-                                   Text="{Binding Resources.SettingsUserUsername}"
+                                   Text="{Binding Resources.SettingsUserUsername, Source={StaticResource LocalizedStrings}}"
                                    VerticalAlignment="Center" FontSize="{StaticResource PhoneFontSizeMedium}"
                                    Grid.Row="3" />
                         <TextBox Name="UserNameTextBox"
@@ -99,11 +99,11 @@
                             </blend:Interaction.Behaviors>
                         </TextBox>
                         <toolkit:ToggleSwitch Name="InvisibleToggleSwitch"
-                                              Header="{Binding Resources.SettingsUserInvisible}"
+                                              Header="{Binding Resources.SettingsUserInvisible, Source={StaticResource LocalizedStrings}}"
                                               IsChecked="{Binding IsInvisible, Mode=TwoWay}"
                                               Grid.Row="4" Grid.ColumnSpan="2" />
                         <TextBlock Name="QuitMessageLabel"
-                                   Text="{Binding Resources.SettingsUserQuitMessage}"
+                                   Text="{Binding Resources.SettingsUserQuitMessage, Source={StaticResource LocalizedStrings}}"
                                    VerticalAlignment="Center" FontSize="{StaticResource PhoneFontSizeMedium}"
                                    Grid.Row="5" />
                         <TextBox Name="QuitMessageTextBox"
@@ -118,7 +118,7 @@
                 </ScrollViewer>
             </controls:PivotItem>
 
-            <controls:PivotItem Header="{Binding Resources.SettingsNetworks}"
+            <controls:PivotItem Header="{Binding Resources.SettingsNetworks, Source={StaticResource LocalizedStrings}}"
                                 Style="{StaticResource SmallPivotItemStyle}" DataContext="{Binding SettingsNetworkViewModel, Source={StaticResource Locator}}">
                 <ListBox x:Name="NetworksList" 
                          ItemsSource="{Binding Networks.View}" SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
@@ -139,7 +139,7 @@
                 </ListBox>
             </controls:PivotItem>
 
-            <controls:PivotItem Header="{Binding Resources.SettingsClient}"
+            <controls:PivotItem Header="{Binding Resources.SettingsClient, Source={StaticResource LocalizedStrings}}"
                                 Style="{StaticResource SmallPivotItemStyle}" DataContext="{Binding SettingsClientViewModel, Source={StaticResource Locator}}">
                 <ScrollViewer>
                     <Grid>
@@ -157,19 +157,19 @@
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
                         <toolkit:ToggleSwitch Name="ReconnectOnDisconnectToggleSwitch"
-                                              Header="{Binding Resources.SettingsClientReconnectOnDisconnect}"
+                                              Header="{Binding Resources.SettingsClientReconnectOnDisconnect, Source={StaticResource LocalizedStrings}}"
                                               IsChecked="{Binding IsReconnectOnDisconnect, Mode=TwoWay}"
                                               Grid.ColumnSpan="3" />
                         <toolkit:ToggleSwitch Name="RejoinOnKickToggleSwitch"
-                                              Header="{Binding Resources.SettingsClientRejoinOnKick}"
+                                              Header="{Binding Resources.SettingsClientRejoinOnKick, Source={StaticResource LocalizedStrings}}"
                                               IsChecked="{Binding IsRejoinOnKick, Mode=TwoWay}"
                                               Grid.Row="1" Grid.ColumnSpan="3" />
                         <toolkit:ToggleSwitch Name="JoinOnInviteToggleSwitch"
-                                              Header="{Binding Resources.SettingsClientJoinOnInvite}"
+                                              Header="{Binding Resources.SettingsClientJoinOnInvite, Source={StaticResource LocalizedStrings}}"
                                               IsChecked="{Binding IsJoinOnInvite, Mode=TwoWay}"
                                               Grid.Row="2" Grid.ColumnSpan="3" />
                         <TextBlock Name="DisconnectRetriesLabel"
-                                   Text="{Binding Resources.SettingsClientDisconnectRetries}"
+                                   Text="{Binding Resources.SettingsClientDisconnectRetries, Source={StaticResource LocalizedStrings}}"
                                    TextWrapping="Wrap"
                                    VerticalAlignment="Center" FontSize="{StaticResource PhoneFontSizeMedium}"
                                    Grid.Row="3" />
@@ -187,7 +187,7 @@
                             </blend:Interaction.Behaviors>
                         </TextBox>
                         <TextBlock Name="DisconnectRetriesWaitLabel"
-                                   Text="{Binding Resources.SettingsClientDisconnectRetriesWait}"
+                                   Text="{Binding Resources.SettingsClientDisconnectRetriesWait, Source={StaticResource LocalizedStrings}}"
                                    TextWrapping="Wrap"
                                    VerticalAlignment="Center" FontSize="{StaticResource PhoneFontSizeMedium}"
                                    Grid.Row="4" />
@@ -208,7 +208,7 @@
                 </ScrollViewer>
             </controls:PivotItem>
 
-            <controls:PivotItem Header="{Binding Resources.SettingsStorage}"
+            <controls:PivotItem Header="{Binding Resources.SettingsStorage, Source={StaticResource LocalizedStrings}}"
                                 Style="{StaticResource SmallPivotItemStyle}" DataContext="{Binding SettingsStorageViewModel, Source={StaticResource Locator}}">
             </controls:PivotItem>
         </controls:Pivot>
@@ -230,9 +230,9 @@
     </blend:Interaction.Behaviors>
     <blend:Interaction.Triggers>
         <appbarutils:AppBarItemTrigger Type="Button" Id="add"
-                                       Text="{Binding Resources.SettingsAppBarAdd}" IsEnabled="{Binding CanAdd}" />
+                                       Text="{Binding Resources.SettingsAppBarAdd, Source={StaticResource LocalizedStrings}}" IsEnabled="{Binding CanAdd}" />
         <appbarutils:AppBarItemTrigger Type="MenuItem" Id="clear"
-                                       Text="{Binding Resources.SettingsAppBarClear}" IsEnabled="{Binding CanClear}" />
+                                       Text="{Binding Resources.SettingsAppBarClear, Source={StaticResource LocalizedStrings}}" IsEnabled="{Binding CanClear}" />
         <appbarutils:AppBarTrigger IsVisible="{Binding IsAppBarVisible}" />
     </blend:Interaction.Triggers>
 </phone:PhoneApplicationPage>

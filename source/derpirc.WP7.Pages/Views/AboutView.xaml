@@ -27,7 +27,7 @@
 
         <StackPanel x:Name="TitlePanel" Margin="24,24,0,12">
             <TextBlock x:Name="PageTitle"
-                       Text="{Binding Resources.About}"
+                       Text="{Binding Resources.About, Source={StaticResource LocalizedStrings}}"
                        Margin="-2,-10,0,0"
                        Style="{StaticResource PhoneTextTitle1Style}" />
             <TextBlock x:Name="PageSubTitle"
@@ -50,27 +50,27 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
-                    <TextBlock Text="{Binding Resources.ApplicationName}"
+                    <TextBlock Text="{Binding Resources.ApplicationName, Source={StaticResource LocalizedStrings}}"
                                Style="{StaticResource TextBlockBase}" FontSize="{StaticResource PhoneFontSizeExtraLarge}" />
-                    <TextBlock Text="{Binding Resources.AboutWebsiteDescription}"
+                    <TextBlock Text="{Binding Resources.AboutWebsiteDescription, Source={StaticResource LocalizedStrings}}"
                                Style="{StaticResource TextBlockBase}" FontSize="{StaticResource PhoneFontSizeMedium}"
                                TextWrapping="Wrap"
                                Grid.Row="1" />
-                    <HyperlinkButton Content="{Binding Resources.AboutWebsiteURLText}"
+                    <HyperlinkButton Content="{Binding Resources.AboutWebsiteURLText, Source={StaticResource LocalizedStrings}}"
                                      Command="{Binding WebsiteCommand}"
                                      HorizontalAlignment="Left"
                                      Grid.Row="2" />
-                    <TextBlock Text="{Binding Resources.AboutReviewDescription}"
+                    <TextBlock Text="{Binding Resources.AboutReviewDescription, Source={StaticResource LocalizedStrings}}"
                                Style="{StaticResource TextBlockBase}" FontSize="{StaticResource PhoneFontSizeMedium}"
                                Grid.Row="4" />
-                    <HyperlinkButton Content="{Binding Resources.AboutReviewURLText}"
+                    <HyperlinkButton Content="{Binding Resources.AboutReviewURLText, Source={StaticResource LocalizedStrings}}"
                                      Command="{Binding ReviewCommand}"
                                      HorizontalAlignment="Left"
                                      Grid.Row="5" />
-                    <TextBlock Text="{Binding Resources.AboutFeedbackDescription}"
+                    <TextBlock Text="{Binding Resources.AboutFeedbackDescription, Source={StaticResource LocalizedStrings}}"
                                Style="{StaticResource TextBlockBase}" FontSize="{StaticResource PhoneFontSizeMedium}"
                                Grid.Row="7" />
-                    <HyperlinkButton Content="{Binding Resources.AboutFeedbackEmail}"
+                    <HyperlinkButton Content="{Binding Resources.AboutFeedbackEmail, Source={StaticResource LocalizedStrings}}"
                                      Command="{Binding FeedbackCommand}"
                                      HorizontalAlignment="Left"
                                      Grid.Row="8" />

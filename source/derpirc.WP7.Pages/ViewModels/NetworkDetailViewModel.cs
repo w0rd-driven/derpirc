@@ -7,6 +7,7 @@ using derpirc.Core;
 using derpirc.Data;
 using derpirc.Data.Models.Settings;
 using derpirc.Helpers;
+using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Microsoft.Phone.Controls;
 

@@ -32,7 +32,7 @@
                     <command:EventToCommand Command="{Binding PivotItemLoadedCommand}" PassEventArgsToCommand="True"/>
                 </blend:EventTrigger>
             </blend:Interaction.Triggers>
-            <controls:PivotItem Header="{Binding Resources.NetworkDetail}"
+            <controls:PivotItem Header="{Binding Resources.NetworkDetail, Source={StaticResource LocalizedStrings}}"
                                 Style="{StaticResource SmallPivotItemStyle}">
                 <ScrollViewer>
                     <Grid>
@@ -48,24 +48,24 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-                        <TextBlock Name="NameLabel" Text="{Binding Resources.NetworkDetailName}"
+                        <TextBlock Name="NameLabel" Text="{Binding Resources.NetworkDetailName, Source={StaticResource LocalizedStrings}}"
                                    FontSize="{StaticResource PhoneFontSizeMedium}"
                                    VerticalAlignment="Center" />
                         <TextBox Name="NameTextBox" Text="{Binding Name, Mode=TwoWay}"
                                  VerticalAlignment="Center" Grid.Column="1" Grid.ColumnSpan="2" />
-                        <TextBlock Name="ServerInfoLabel" Text="{Binding Resources.NetworkDetailServerInfo}"
+                        <TextBlock Name="ServerInfoLabel" Text="{Binding Resources.NetworkDetailServerInfo, Source={StaticResource LocalizedStrings}}"
                                    FontSize="{StaticResource PhoneFontSizeMediumLarge}"
                                    VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Row="1" Grid.ColumnSpan="3" />
-                        <TextBlock Name="ServerHostNameLabel" Text="{Binding Resources.NetworkDetailHostName}"
+                        <TextBlock Name="ServerHostNameLabel" Text="{Binding Resources.NetworkDetailHostName, Source={StaticResource LocalizedStrings}}"
                                    FontSize="{StaticResource PhoneFontSizeMedium}"
                                    VerticalAlignment="Center" Grid.Row="2" />
                         <TextBox Name="ServerHostNameTextBox" Text="{Binding HostName, Mode=TwoWay}"
                                  VerticalAlignment="Center" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" />
-                        <TextBlock Name="ServerPortsLabel" Text="{Binding Resources.NetworkDetailPort}" FontSize="{StaticResource PhoneFontSizeMedium}"
+                        <TextBlock Name="ServerPortsLabel" Text="{Binding Resources.NetworkDetailPort, Source={StaticResource LocalizedStrings}}" FontSize="{StaticResource PhoneFontSizeMedium}"
                                    VerticalAlignment="Center" Grid.Row="3" />
                         <TextBox Name="ServerPortsTextBox" Text="{Binding Ports, Mode=TwoWay}"
                                  VerticalAlignment="Center" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" />
-                        <TextBlock Name="ServerPasswordLabel" Text="{Binding Resources.NetworkDetailPassword}" FontSize="{StaticResource PhoneFontSizeMedium}"
+                        <TextBlock Name="ServerPasswordLabel" Text="{Binding Resources.NetworkDetailPassword, Source={StaticResource LocalizedStrings}}" FontSize="{StaticResource PhoneFontSizeMedium}"
                                    VerticalAlignment="Center" Grid.Row="4" />
                         <TextBox Name="ServerPasswordTextBox" Text="{Binding Password, Mode=TwoWay}"
                                  VerticalAlignment="Center" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" />
@@ -73,7 +73,7 @@
                 </ScrollViewer>
             </controls:PivotItem>
 
-            <controls:PivotItem Header="{Binding Resources.MainChannels}"
+            <controls:PivotItem Header="{Binding Resources.MainChannels, Source={StaticResource LocalizedStrings}}"
                                 Style="{StaticResource SmallPivotItemStyle}">
                 <Grid>
                     <ListBox Name="ChannelsList" ItemsSource="{Binding Favorites.View}" SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
@@ -116,13 +116,13 @@
     </blend:Interaction.Behaviors>
     <blend:Interaction.Triggers>
         <appbarutils:AppBarItemTrigger Type="Button" Id="add"
-                                       Text="{Binding Resources.SettingsAppBarAdd}"
+                                       Text="{Binding Resources.SettingsAppBarAdd, Source={StaticResource LocalizedStrings}}"
                                        IsEnabled="{Binding CanAdd}" />
         <appbarutils:AppBarItemTrigger Type="Button" Id="delete"
-                                       Text="{Binding Resources.NetworkDetailAppBarDelete}"
+                                       Text="{Binding Resources.NetworkDetailAppBarDelete, Source={StaticResource LocalizedStrings}}"
                                        IsEnabled="{Binding CanDelete}" />
         <appbarutils:AppBarItemTrigger Type="MenuItem" Id="clear"
-                                       Text="{Binding Resources.SettingsAppBarClear}"
+                                       Text="{Binding Resources.SettingsAppBarClear, Source={StaticResource LocalizedStrings}}"
                                        IsEnabled="{Binding CanClear}" />
         <appbarutils:AppBarTrigger IsVisible="{Binding IsAppBarVisible}" />
     </blend:Interaction.Triggers>

@@ -2,6 +2,7 @@
 using System.Threading;
 using derpirc.Data;
 using derpirc.Data.Models.Settings;
+using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Messaging;
 
 namespace derpirc.ViewModels

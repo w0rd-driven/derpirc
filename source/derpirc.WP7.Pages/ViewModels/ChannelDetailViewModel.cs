@@ -10,6 +10,7 @@ using derpirc.Core;
 using derpirc.Data;
 using derpirc.Data.Models;
 using derpirc.Helpers;
+using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Threading;
 

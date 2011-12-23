@@ -33,7 +33,7 @@
 
         <StackPanel x:Name="TitlePanel" Margin="24,24,0,12">
             <TextBlock x:Name="PageTitle"
-                       Text="{Binding Resources.Connections}"
+                       Text="{Binding Resources.Connections, Source={StaticResource LocalizedStrings}}"
                        Margin="-2,-10,0,0"
                        Style="{StaticResource PhoneTextTitle1Style}" />
             <TextBlock x:Name="PageSubTitle"
@@ -82,7 +82,7 @@
                 </toolkit:MultiselectList.ItemTemplate>
             </toolkit:MultiselectList>
             <StackPanel Orientation="Horizontal" Grid.Row="2">
-                <TextBlock Text="{Binding Resources.ConnectionsStatus}" />
+                <TextBlock Text="{Binding Resources.ConnectionsStatus, Source={StaticResource LocalizedStrings}}" />
                 <TextBlock Text="{Binding NetworkType}" />
             </StackPanel>
         </Grid>
@@ -112,16 +112,19 @@
     </blend:Interaction.Behaviors>
     <blend:Interaction.Triggers>
         <appbarutils:AppBarItemTrigger Type="Button" Id="reconnect"
-                                       Text="{Binding Resources.ConnectionsAppBarReconnect}" IsEnabled="{Binding CanReconnect}" />
+                                       Text="{Binding Resources.ConnectionsAppBarReconnect, Source={StaticResource LocalizedStrings}}"
+                                       IsEnabled="{Binding CanReconnect}" />
         <appbarutils:AppBarItemTrigger Type="Button" Id="select"
-                                       Text="{Binding Resources.ConnectionsAppBarSelect}" />
+                                       Text="{Binding Resources.ConnectionsAppBarSelect, Source={StaticResource LocalizedStrings}}" />
         <appbarutils:AppBarItemTrigger Type="Button" Id="disconnect"
-                                       Text="{Binding Resources.ConnectionsAppBarDisconnect}" IsEnabled="{Binding CanDisconnect}" />
+                                       Text="{Binding Resources.ConnectionsAppBarDisconnect, Source={StaticResource LocalizedStrings}}"
+                                       IsEnabled="{Binding CanDisconnect}" />
         <appbarutils:AppBarItemTrigger Type="MenuItem" Id="connect"
-                                       Text="{Binding Resources.ConnectionsAppBarConnect}" IsEnabled="{Binding CanConnect}" />
+                                       Text="{Binding Resources.ConnectionsAppBarConnect, Source={StaticResource LocalizedStrings}}"
+                                       IsEnabled="{Binding CanConnect}" />
         <appbarutils:AppBarItemTrigger Type="MenuItem" Id="wifi settings"
-                                       Text="{Binding Resources.ConnectionsAppBarWifiSettings}" />
+                                       Text="{Binding Resources.ConnectionsAppBarWifiSettings, Source={StaticResource LocalizedStrings}}" />
         <appbarutils:AppBarItemTrigger Type="MenuItem" Id="cellular settings"
-                                       Text="{Binding Resources.ConnectionsAppBarCellularSettings}" />
+                                       Text="{Binding Resources.ConnectionsAppBarCellularSettings, Source={StaticResource LocalizedStrings}}" />
     </blend:Interaction.Triggers>
 </phone:PhoneApplicationPage>
