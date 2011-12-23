@@ -34,8 +34,8 @@
         </Grid.RowDefinitions>
 
         <progressIndicator:ProgressIndicatorProxy
-            IsIndeterminate="{Binding ProgressIndeterminate}"
-            Text="{Binding ProgressText}" />
+            IsIndeterminate="{Binding ProgressIndeterminate, Mode=TwoWay}"
+            Text="{Binding ProgressText, Mode=TwoWay}" />
 
         <controls:Pivot
             Title="{Binding Resources.ApplicationName}"

@@ -7,9 +7,7 @@ using derpirc.Core;
 using derpirc.Data;
 using derpirc.Data.Models.Settings;
 using derpirc.Helpers;
-using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using GalaSoft.MvvmLight.Threading;
 using Microsoft.Phone.Controls;
 
 namespace derpirc.ViewModels
@@ -382,19 +380,16 @@ namespace derpirc.ViewModels
                 Ports = model.Ports;
                 Password = model.Password;
 
-                DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                _favoritesList.Clear();
+                if (model.Favorites != null)
                 {
-                    _favoritesList.Clear();
-                    if (model.Favorites != null)
+                    foreach (var item in model.Favorites)
                     {
-                        foreach (var item in model.Favorites)
-                        {
-                            _favoritesList.Add(item);
-                        }
+                        _favoritesList.Add(item);
                     }
-                    if (_favoritesList.Count > 0)
-                        CanClear = true;
-                });
+                }
+                if (_favoritesList.Count > 0)
+                    CanClear = true;
             }
         }
 
@@ -408,11 +403,8 @@ namespace derpirc.ViewModels
                 model.Ports = Ports;
                 model.Password = Password;
 
-                DispatcherHelper.CheckBeginInvokeOnUI(() =>
-                {
-                    model.Favorites.Clear();
-                    model.Favorites.AddRange(_favoritesList.ToList());
-                });
+                model.Favorites.Clear();
+                model.Favorites.AddRange(_favoritesList.ToList());
             }
         }
 

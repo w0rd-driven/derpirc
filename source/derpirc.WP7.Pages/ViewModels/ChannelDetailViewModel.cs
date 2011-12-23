@@ -10,7 +10,6 @@ using derpirc.Core;
 using derpirc.Data;
 using derpirc.Data.Models;
 using derpirc.Helpers;
-using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Threading;
 
@@ -62,7 +61,7 @@ namespace derpirc.ViewModels
                     return;
 
                 _canSend = value;
-                DispatcherHelper.CheckBeginInvokeOnUI(() => SendCommand.RaiseCanExecuteChanged());
+                SendCommand.RaiseCanExecuteChanged();
                 RaisePropertyChanged(() => CanSend);
             }
         }
@@ -87,7 +86,7 @@ namespace derpirc.ViewModels
                     return;
 
                 _canSwitch = value;
-                DispatcherHelper.CheckBeginInvokeOnUI(() => SwitchCommand.RaiseCanExecuteChanged());
+                SwitchCommand.RaiseCanExecuteChanged();
                 RaisePropertyChanged(() => CanSwitch);
             }
         }
@@ -116,7 +115,7 @@ namespace derpirc.ViewModels
                     return;
 
                 _channelName = value;
-                DispatcherHelper.CheckBeginInvokeOnUI(() => RaisePropertyChanged(() => ChannelName));
+                RaisePropertyChanged(() => ChannelName);
             }
         }
 
@@ -130,7 +129,7 @@ namespace derpirc.ViewModels
                     return;
 
                 _networkName = value;
-                DispatcherHelper.CheckBeginInvokeOnUI(() => RaisePropertyChanged(() => NetworkName));
+                RaisePropertyChanged(() => NetworkName);
             }
         }
 
@@ -144,7 +143,7 @@ namespace derpirc.ViewModels
                     return;
 
                 _channelTopic = value;
-                DispatcherHelper.CheckBeginInvokeOnUI(() => RaisePropertyChanged(() => ChannelTopic));
+                RaisePropertyChanged(() => ChannelTopic);
             }
         }
 
@@ -160,7 +159,7 @@ namespace derpirc.ViewModels
                     return;
 
                 _model = value;
-                DispatcherHelper.CheckBeginInvokeOnUI(() => RaisePropertyChanged(() => Model));
+                RaisePropertyChanged(() => Model);
             }
         }
 
@@ -177,7 +176,7 @@ namespace derpirc.ViewModels
                     return;
 
                 _selectedItem = value;
-                DispatcherHelper.CheckBeginInvokeOnUI(() => RaisePropertyChanged(() => SelectedItem));
+                RaisePropertyChanged(() => SelectedItem);
             }
         }
 
@@ -191,7 +190,7 @@ namespace derpirc.ViewModels
                     return;
 
                 _sendText = value;
-                DispatcherHelper.CheckBeginInvokeOnUI(() => RaisePropertyChanged(() => SendText));
+                RaisePropertyChanged(() => SendText);
                 CheckCanSend();
             }
         }
@@ -206,7 +205,7 @@ namespace derpirc.ViewModels
                     return;
 
                 _sendWatermark = value;
-                DispatcherHelper.CheckBeginInvokeOnUI(() => RaisePropertyChanged(() => SendWatermark));
+                RaisePropertyChanged(() => SendWatermark);
             }
         }
 
@@ -220,7 +219,7 @@ namespace derpirc.ViewModels
                     return;
 
                 _isConnected = value;
-                DispatcherHelper.CheckBeginInvokeOnUI(() => RaisePropertyChanged(() => IsConnected));
+                RaisePropertyChanged(() => IsConnected);
             }
         }
 
@@ -234,7 +233,7 @@ namespace derpirc.ViewModels
                     return;
 
                 _status = value;
-                DispatcherHelper.CheckBeginInvokeOnUI(() => RaisePropertyChanged(() => Status));
+                RaisePropertyChanged(() => Status);
             }
         }
 
@@ -308,13 +307,19 @@ namespace derpirc.ViewModels
                 if (e.Info.NetworkName.Equals(this.Model.Network.Name, StringComparison.OrdinalIgnoreCase))
                     if (e.Info.State == ClientState.Processed)
                     {
-                        this.IsConnected = false;
-                        this.Status = "Network connected, channel not yet joined";
+                        DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                        {
+                            this.IsConnected = false;
+                            this.Status = "Network connected, channel not yet joined";
+                        });
                     }
                     else
                     {
-                        this.IsConnected = false;
-                        this.Status = "Network disconnected";
+                        DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                        {
+                            this.IsConnected = false;
+                            this.Status = "Network disconnected";
+                        });
                     }
         }
 
@@ -323,8 +328,11 @@ namespace derpirc.ViewModels
             if (this.Model != null)
                 if (e.SummaryId == this.Model.Id)
                 {
-                    this.IsConnected = true;
-                    this.Status = "Joined";
+                    DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                    {
+                        this.IsConnected = true;
+                        this.Status = "Joined";
+                    });
                 }
         }
 
@@ -333,8 +341,11 @@ namespace derpirc.ViewModels
             if (this.Model != null)
                 if (e.SummaryId == this.Model.Id)
                 {
-                    this.IsConnected = false;
-                    this.Status = "Parted";
+                    DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                    {
+                        this.IsConnected = false;
+                        this.Status = "Parted";
+                    });
                 }
         }
 
@@ -359,11 +370,13 @@ namespace derpirc.ViewModels
                         }
                     }
                     if (newMessage != null)
+                    {
+                        _messagesList.Add(newMessage);
                         DispatcherHelper.CheckBeginInvokeOnUI(() =>
                         {
-                            _messagesList.Add(newMessage);
                             Messages.View.MoveCurrentToLast();
                         });
+                    }
                 }
         }
 
@@ -428,6 +441,7 @@ namespace derpirc.ViewModels
         private void LoadById(int integerId)
         {
             Channel model = null;
+            string channelName, channelTopic, networkName, sendText, sendWaterMark;
             var isDifferentPage = false;
             if (Model != null && Model.Id != integerId)
                 isDifferentPage = true;
@@ -451,26 +465,32 @@ namespace derpirc.ViewModels
                     if (model != null)
                     {
                         Model = model;
-                        this.ChannelName = model.Name;
-                        this.ChannelTopic = model.Topic;
-                        if (model.Network != null)
-                            this.NetworkName = model.Network.Name;
-                        this.CheckConnection();
-                        this.SendText = string.Empty;
-                        this.SendWatermark = string.Format("chat on {0}", NetworkName);
+                        channelName = model.Name;
+                        channelTopic = model.Topic;
+                        networkName = (model.Network != null) ? model.Network.Name : string.Empty;
+                        sendText = string.Empty;
+                        sendWaterMark = string.Format("chat on {0}", networkName);
 
                         // ToList this so the UI thread can access. Otherwise dispose is called on the UnitOfWork
                         var messages = unitOfWork.ChannelItems.FindBy(x => x.SummaryId == integerId)
                             .Take(SettingsUnitOfWork.Default.Storage.ShowMaxMessages).ToList();
+
+                        foreach (var item in messages)
+                        {
+                            if (!_messagesList.Any(x => x.Id == item.Id))
+                                _messagesList.Add(item);
+                        }
+                        if (!isDifferentPage)
+                            this.PurgeOrphans(messages);
+
                         DispatcherHelper.CheckBeginInvokeOnUI(() =>
                         {
-                            foreach (var item in messages)
-                            {
-                                if (!_messagesList.Any(x => x.Id == item.Id))
-                                    _messagesList.Add(item);
-                            }
-                            if (!isDifferentPage)
-                                this.PurgeOrphans(messages);
+                            this.ChannelName = channelName;
+                            this.ChannelTopic = channelTopic;
+                            this.NetworkName = networkName;
+                            this.CheckConnection();
+                            this.SendText = sendText;
+                            this.SendWatermark = sendWaterMark;
                             this.Messages.View.MoveCurrentToLast();
                         });
                     }

@@ -2,7 +2,6 @@
 using System.Windows.Navigation;
 using derpirc.Core;
 using derpirc.Data.Models.Settings;
-using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
 using GalaSoft.MvvmLight.Threading;
@@ -64,11 +63,8 @@ namespace derpirc.ViewModels
                     return;
 
                 _canAdd = value;
-                DispatcherHelper.CheckBeginInvokeOnUI(() =>
-                {
-                    AddCommand.RaiseCanExecuteChanged();
-                    RaisePropertyChanged(() => CanAdd);
-                });
+                AddCommand.RaiseCanExecuteChanged();
+                RaisePropertyChanged(() => CanAdd);
             }
         }
 
@@ -102,11 +98,8 @@ namespace derpirc.ViewModels
                     return;
 
                 _canClear = value;
-                DispatcherHelper.CheckBeginInvokeOnUI(() =>
-                {
-                    ClearCommand.RaiseCanExecuteChanged();
-                    RaisePropertyChanged(() => CanClear);
-                });
+                ClearCommand.RaiseCanExecuteChanged();
+                RaisePropertyChanged(() => CanClear);
             }
         }
 
@@ -172,10 +165,16 @@ namespace derpirc.ViewModels
                     switch (message.Notification)
                     {
                         case "add":
-                            CanAdd = message.Content;
+                            DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                            {
+                                CanAdd = message.Content;
+                            });
                             break;
                         case "clear":
-                            CanClear = message.Content;
+                            DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                            {
+                                CanClear = message.Content;
+                            });
                             break;
                     }
                 });

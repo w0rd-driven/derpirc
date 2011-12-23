@@ -79,7 +79,7 @@ namespace derpirc.ViewModels
                     return;
 
                 _canConnect = value;
-                DispatcherHelper.CheckBeginInvokeOnUI(() => ConnectCommand.RaiseCanExecuteChanged());
+                ConnectCommand.RaiseCanExecuteChanged();
                 RaisePropertyChanged(() => CanConnect);
             }
         }
@@ -104,7 +104,7 @@ namespace derpirc.ViewModels
                     return;
 
                 _canDisconnect = value;
-                DispatcherHelper.CheckBeginInvokeOnUI(() => DisconnectCommand.RaiseCanExecuteChanged());
+                DisconnectCommand.RaiseCanExecuteChanged();
                 RaisePropertyChanged(() => CanDisconnect);
             }
         }
@@ -129,7 +129,7 @@ namespace derpirc.ViewModels
                     return;
 
                 _canReconnect = value;
-                DispatcherHelper.CheckBeginInvokeOnUI(() => ReconnectCommand.RaiseCanExecuteChanged());
+                ReconnectCommand.RaiseCanExecuteChanged();
                 RaisePropertyChanged(() => CanReconnect);
             }
         }
@@ -443,8 +443,6 @@ namespace derpirc.ViewModels
                     // Wait for Collection/PropertyChanged event
                     _connectionsList.Add(client);
                 }
-                else
-                    foundClient = client;
                 Connections.View.Refresh();
             });
         }

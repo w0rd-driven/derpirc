@@ -81,7 +81,7 @@ namespace derpirc.ViewModels
                     return;
 
                 _canViewSettings = value;
-                DispatcherHelper.CheckBeginInvokeOnUI(() => ViewSettingsCommand.RaiseCanExecuteChanged());
+                ViewSettingsCommand.RaiseCanExecuteChanged();
                 RaisePropertyChanged(() => CanViewSettings);
             }
         }
@@ -106,7 +106,7 @@ namespace derpirc.ViewModels
                     return;
 
                 _canViewConnections = value;
-                DispatcherHelper.CheckBeginInvokeOnUI(() => ViewConnectionsCommand.RaiseCanExecuteChanged());
+                ViewConnectionsCommand.RaiseCanExecuteChanged();
                 RaisePropertyChanged(() => CanViewConnections);
             }
         }
@@ -131,7 +131,7 @@ namespace derpirc.ViewModels
                     return;
 
                 _canViewAbout = value;
-                DispatcherHelper.CheckBeginInvokeOnUI(() => ViewAboutCommand.RaiseCanExecuteChanged());
+                ViewAboutCommand.RaiseCanExecuteChanged();
                 RaisePropertyChanged(() => CanViewAbout);
             }
         }
