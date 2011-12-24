@@ -35,6 +35,7 @@ namespace derpirc
             // Show graphics profiling information while debugging.
             if (System.Diagnostics.Debugger.IsAttached)
             {
+#if DEBUG
                 // Display the current frame rate counters
                 Application.Current.Host.Settings.EnableFrameRateCounter = true;
 
@@ -50,6 +51,7 @@ namespace derpirc
                 // Caution:- Use this under debug mode only. Application that disable user idle detection will continue to run
                 // and consume battery power when the user is not using the phone.
                 PhoneApplicationService.Current.UserIdleDetectionMode = IdleDetectionMode.Disabled;
+#endif
             }
         }
 

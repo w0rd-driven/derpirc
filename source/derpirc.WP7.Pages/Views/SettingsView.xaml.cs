@@ -20,18 +20,18 @@ namespace derpirc.Views
             InitializeComponent();
         }
 
-        SettingsViewModel viewModel { get { return this.DataContext as SettingsViewModel; } }
+        SettingsViewModel ViewModel { get { return this.DataContext as SettingsViewModel; } }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            viewModel.NavigatedToCommand.Execute(e);
+            ViewModel.NavigatedToCommand.Execute(e);
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);
-            viewModel.NavigatedFromCommand.Execute(e);
+            ViewModel.NavigatedFromCommand.Execute(e);
         }
 
         private void DeleteNetworkItem_Click(object sender, RoutedEventArgs e)
@@ -42,7 +42,10 @@ namespace derpirc.Views
             var listBoxItem = this.NetworksList.ItemContainerGenerator.ContainerFromItem(menuItem.DataContext) as ListBoxItem;
             if (listBoxItem == null)
                 return;
-            viewModel.DeleteCommand.Execute(listBoxItem.DataContext as Network);
+
+            var dataContext = listBoxItem.DataContext as Network;
+            if (dataContext != null)
+                ViewModel.DeleteCommand.Execute(dataContext);
         }
     }
 }

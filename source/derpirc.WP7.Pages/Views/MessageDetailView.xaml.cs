@@ -19,26 +19,26 @@ namespace derpirc.Views
             InitializeComponent();
         }
 
-        MessageDetailViewModel viewModel { get { return this.DataContext as MessageDetailViewModel; } }
+        MessageDetailViewModel ViewModel { get { return this.DataContext as MessageDetailViewModel; } }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            viewModel.NavigatedToCommand.Execute(e);
+            ViewModel.NavigatedToCommand.Execute(e);
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);
-            viewModel.NavigatedFromCommand.Execute(e);
+            ViewModel.NavigatedFromCommand.Execute(e);
         }
 
         private void Send_KeyUp(object sender, KeyEventArgs e)
         {
             var control = sender as TextBox;
             if (e.Key == Key.Enter && !string.IsNullOrEmpty(control.Text))
-                if (viewModel.SendCommand.CanExecute(null))
-                    viewModel.SendCommand.Execute(null);
+                if (ViewModel.SendCommand.CanExecute(null))
+                    ViewModel.SendCommand.Execute(null);
         }
     }
 }

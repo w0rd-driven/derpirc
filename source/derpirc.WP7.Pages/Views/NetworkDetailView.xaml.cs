@@ -17,18 +17,18 @@ namespace derpirc.Views
             InitializeComponent();
         }
 
-        NetworkDetailViewModel viewModel { get { return this.DataContext as NetworkDetailViewModel; } }
+        NetworkDetailViewModel ViewModel { get { return this.DataContext as NetworkDetailViewModel; } }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);
-            viewModel.NavigatedFromCommand.Execute(e);
+            ViewModel.NavigatedFromCommand.Execute(e);
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            viewModel.NavigatedToCommand.Execute(e);
+            ViewModel.NavigatedToCommand.Execute(e);
         }
     }
 }

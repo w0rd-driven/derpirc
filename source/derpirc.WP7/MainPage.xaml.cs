@@ -12,18 +12,18 @@ namespace derpirc
             InitializeComponent();
         }
 
-        MainViewModel viewModel { get { return this.DataContext as MainViewModel; } }
+        MainViewModel ViewModel { get { return this.DataContext as MainViewModel; } }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            viewModel.NavigatedToCommand.Execute(e);
+            ViewModel.NavigatedToCommand.Execute(e);
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);
-            viewModel.NavigatedFromCommand.Execute(e);
+            ViewModel.NavigatedFromCommand.Execute(e);
         }
     }
 }
