@@ -6,19 +6,17 @@ using System.Net;
 using System.Text;
 using System.Windows;
 using System.Windows.Navigation;
+using derpirc.Localization;
 using Microsoft.Phone.Controls;
+using Microsoft.Phone.Tasks;
 
 namespace derpirc.Helpers
 {
     // CrashReporter
     // Matt Isenhower, Komodex Systems LLC
     // http://blog.ike.to/2011/02/02/wp7-application-crash-reporter/
-    public static class LittleWatson
+    public static class CrashReporter
     {
-        // Error Report URL parameters
-        private const string ErrorReportURL = "http://example.com/wp7/crashreporter/";
-        private const string ProductName = "Remote";
-
         // The filename for crash reports in isolated storage 
         private const string ErrorLogFilename = "ExceptionLog.log";
 
@@ -42,7 +40,8 @@ namespace derpirc.Helpers
             RootFrame.Unobscured += new EventHandler(RootFrame_Unobscured);
 
             // Send previous log if it exists
-            SendExceptionLog();
+            EmailExceptionLog();
+            //SendExceptionLog();
         }
 
         #region Events
@@ -87,7 +86,7 @@ namespace derpirc.Helpers
                         writer.WriteLine(type ?? "Application Error");
 
                         // Application name
-                        writer.WriteLine("-> Product: " + ProductName);
+                        writer.WriteLine("-> Product: " + AppResources.ApplicationName);
 
                         // Application version
                         writer.Write("-> Version: "); // + Utility.ApplicationVersion);
@@ -133,6 +132,56 @@ namespace derpirc.Helpers
             catch { }
         }
 
+        private static void SafeDeleteFile(IsolatedStorageFile store)
+        {
+            try
+            {
+                store.DeleteFile(ErrorLogFilename);
+            }
+            catch (Exception ex)
+            {
+            }
+        }
+
+        #endregion
+
+        #region Email
+
+        private static void EmailExceptionLog()
+        {
+            try
+            {
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+                {
+                    if (!store.FileExists(ErrorLogFilename))
+                        return;
+
+                    using (TextReader reader = new StreamReader(store.OpenFile(ErrorLogFilename, FileMode.Open, FileAccess.Read, FileShare.None)))
+                    {
+                        ErrorLogContent = reader.ReadToEnd();
+                    }
+
+                    if (ErrorLogContent == null)
+                        return;
+
+                    if (ErrorLogContent != null)
+                    {
+                        var messageResult = MessageBox.Show(AppResources.ErrorReportPrompt, AppResources.ErrorReportPromptCaption, MessageBoxButton.OKCancel);
+                        if (messageResult == MessageBoxResult.OK)
+                        {
+                            var email = new EmailComposeTask();
+                            email.To = AppResources.ErrorReportEmail;
+                            email.Subject = AppResources.ApplicationName + " " + AppResources.ErrorReportSubject;
+                            email.Body = ErrorLogContent;
+                            SafeDeleteFile(store);
+                            email.Show();
+                        }
+                    }
+                }
+            }
+            catch { }
+        }
+
         #endregion
 
         #region HTTP Request and Response
@@ -154,7 +203,7 @@ namespace derpirc.Helpers
                     if (ErrorLogContent == null)
                         return;
 
-                    string url = ErrorReportURL + "?p=" + ProductName;// + "&v=" + Utility.ApplicationVersion;
+                    string url = AppResources.ErrorReportURL + "?p=" + AppResources.ApplicationName;// + "&v=" + Utility.ApplicationVersion;
 #if DEBUG
                     url += "&d=1";
 #endif
@@ -203,11 +252,7 @@ namespace derpirc.Helpers
                 reader.Close();
                 response.Close();
 
-                // Delete the log file
-                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
-                {
-                    store.DeleteFile(ErrorLogFilename);
-                }
+                SafeDeleteFile(IsolatedStorageFile.GetUserStoreForApplication());
             }
             catch { }
         }

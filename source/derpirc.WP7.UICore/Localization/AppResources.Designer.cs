@@ -250,6 +250,51 @@ namespace derpirc.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to derpirc-support@braytonium.com.
+        /// </summary>
+        public static string ErrorReportEmail {
+            get {
+                return ResourceManager.GetString("ErrorReportEmail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A problem occurred the last time you ran this application. Would you like to send an email to report it?.
+        /// </summary>
+        public static string ErrorReportPrompt {
+            get {
+                return ResourceManager.GetString("ErrorReportPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Problem Report.
+        /// </summary>
+        public static string ErrorReportPromptCaption {
+            get {
+                return ResourceManager.GetString("ErrorReportPromptCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to problem report.
+        /// </summary>
+        public static string ErrorReportSubject {
+            get {
+                return ResourceManager.GetString("ErrorReportSubject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string ErrorReportURL {
+            get {
+                return ResourceManager.GetString("ErrorReportURL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to channels.
         /// </summary>
         public static string MainChannels {

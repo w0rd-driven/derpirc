@@ -328,4 +328,24 @@
   <data name="ProgressLoading" xml:space="preserve">
     <value>Loading</value>
   </data>
+  <data name="ErrorReportEmail" xml:space="preserve">
+    <value>derpirc-support@braytonium.com</value>
+    <comment>Used by CrashReporter to send error logs</comment>
+  </data>
+  <data name="ErrorReportPrompt" xml:space="preserve">
+    <value>A problem occurred the last time you ran this application. Would you like to send an email to report it?</value>
+    <comment>CrashReporter MessageBox Text</comment>
+  </data>
+  <data name="ErrorReportPromptCaption" xml:space="preserve">
+    <value>Problem Report</value>
+    <comment>CrashReporter MessageBox Caption</comment>
+  </data>
+  <data name="ErrorReportSubject" xml:space="preserve">
+    <value>problem report</value>
+    <comment>Used by CrashReporter to send error logs</comment>
+  </data>
+  <data name="ErrorReportURL" xml:space="preserve">
+    <value />
+    <comment>Used by CrashReporter to send error logs</comment>
+  </data>
 </root>

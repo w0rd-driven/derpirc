@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Navigation;
 using derpirc.Core;
+using derpirc.Helpers;
 using derpirc.ViewModels;
 using GalaSoft.MvvmLight.Threading;
 using Microsoft.Phone.Controls;
@@ -31,6 +32,9 @@ namespace derpirc
 
             // Phone-specific initialization
             InitializePhoneApplication();
+
+            // Crash reporter initialization
+            //CrashReporter.Initialize(RootFrame);
 
             // Show graphics profiling information while debugging.
             if (System.Diagnostics.Debugger.IsAttached)
