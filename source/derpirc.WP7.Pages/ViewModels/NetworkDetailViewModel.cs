@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Navigation;
@@ -9,6 +10,7 @@ using derpirc.Data.Models.Settings;
 using derpirc.Helpers;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Threading;
 using Microsoft.Phone.Controls;
 
 namespace derpirc.ViewModels
@@ -335,14 +337,17 @@ namespace derpirc.ViewModels
         private void OnNavigatedTo(NavigationEventArgs eventArgs)
         {
             var queryString = eventArgs.Uri.ParseQueryString();
-            var id = string.Empty;
-            queryString.TryGetValue("id", out id);
-            var integerId = -1;
-            int.TryParse(id, out integerId);
+            ThreadPool.QueueUserWorkItem((objectState) =>
+            {
+                var id = string.Empty;
+                queryString.TryGetValue("id", out id);
+                var integerId = -1;
+                int.TryParse(id, out integerId);
 
-            var model = SettingsUnitOfWork.Default.Networks.Where(x => x.Id == integerId).FirstOrDefault();
-            if (model != null)
-                Model = model;
+                var model = SettingsUnitOfWork.Default.Networks.Where(x => x.Id == integerId).FirstOrDefault();
+                if (model != null)
+                    Model = model;
+            });
 
             if (!eventArgs.IsNavigationInitiator && eventArgs.NavigationMode == NavigationMode.Back)
                 SupervisorFacade.Default.Reconnect(null, true, true);
@@ -375,22 +380,31 @@ namespace derpirc.ViewModels
         {
             if (model != null)
             {
-                DisplayName = model.DisplayName;
-                Name = model.Name;
-                HostName = model.HostName;
-                Ports = model.Ports;
-                Password = model.Password;
+                var displayName = model.DisplayName;
+                var name = model.Name;
+                var hostName = model.HostName;
+                var ports = model.Ports;
+                var password = model.Password;
 
-                _favoritesList.Clear();
-                if (model.Favorites != null)
+                DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
-                    foreach (var item in model.Favorites)
+                    DisplayName = displayName;
+                    Name = name;
+                    HostName = hostName;
+                    Ports = ports;
+                    Password = password;
+
+                    _favoritesList.Clear();
+                    if (model.Favorites != null)
                     {
-                        _favoritesList.Add(item);
+                        foreach (var item in model.Favorites)
+                        {
+                            _favoritesList.Add(item);
+                        }
                     }
-                }
-                if (_favoritesList.Count > 0)
-                    CanClear = true;
+                    if (_favoritesList.Count > 0)
+                        CanClear = true;
+                });
             }
         }
 

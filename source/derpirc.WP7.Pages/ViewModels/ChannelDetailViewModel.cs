@@ -476,16 +476,16 @@ namespace derpirc.ViewModels
                         var messages = unitOfWork.ChannelItems.FindBy(x => x.SummaryId == integerId)
                             .Take(SettingsUnitOfWork.Default.Storage.ShowMaxMessages).ToList();
 
-                        foreach (var item in messages)
-                        {
-                            if (!_messagesList.Any(x => x.Id == item.Id))
-                                _messagesList.Add(item);
-                        }
-                        if (!isDifferentPage)
-                            this.PurgeOrphans(messages);
-
                         DispatcherHelper.CheckBeginInvokeOnUI(() =>
                         {
+                            foreach (var item in messages)
+                            {
+                                if (!_messagesList.Any(x => x.Id == item.Id))
+                                    _messagesList.Add(item);
+                            }
+                            if (!isDifferentPage)
+                                this.PurgeOrphans(messages);
+
                             this.ChannelName = channelName;
                             this.ChannelTopic = channelTopic;
                             this.NetworkName = networkName;

@@ -2,12 +2,14 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Navigation;
 using derpirc.Core;
 using derpirc.Data;
 using derpirc.Helpers;
+using derpirc.Localization;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Threading;
@@ -170,6 +172,7 @@ namespace derpirc.ViewModels
             }
         }
 
+        private bool _canSelectChannel;
         private ChannelViewModel _selectedChannel;
         public ChannelViewModel SelectedChannel
         {
@@ -189,6 +192,7 @@ namespace derpirc.ViewModels
         private ObservableCollection<ChannelViewModel> _channelsList;
         public CollectionViewSource Channels  { get; set; }
 
+        private bool _canSelectMention;
         private MentionViewModel _selectedMention;
         public MentionViewModel SelectedMention
         {
@@ -208,6 +212,7 @@ namespace derpirc.ViewModels
         private ObservableCollection<MentionViewModel> _mentionsList;
         public CollectionViewSource Mentions { get; set; }
 
+        private bool _canSelectMessage;
         private MessageViewModel _selectedMessage;
         public MessageViewModel SelectedMessage
         {
@@ -288,6 +293,9 @@ namespace derpirc.ViewModels
             CanViewConnections = true;
             CanViewSettings = true;
             CanViewAbout = true;
+            _canSelectChannel = true;
+            _canSelectMention = true;
+            _canSelectMessage = true;
 
             if (IsInDesignMode)
             {
@@ -587,10 +595,10 @@ namespace derpirc.ViewModels
                         if (_lastRefreshChannels == DateTime.MinValue)
                         {
                             ProgressIndeterminate = true;
-                            ProgressText = "Loading channels...";
+                            ProgressText = GetProgressText(AppResources.MainChannels);
                             using (var unitOfWork = new DataUnitOfWork(new ContextConnectionString()))
                             {
-                                var channels = unitOfWork.Channels.FindAll().ToList();
+                                var channels = unitOfWork.Channels.FindAll();
                                 foreach (var item in channels)
                                 {
                                     var itemSummary = new ChannelViewModel(item);
@@ -607,10 +615,10 @@ namespace derpirc.ViewModels
                         if (_lastRefreshMentions == DateTime.MinValue)
                         {
                             ProgressIndeterminate = true;
-                            ProgressText = "Loading mentions...";
+                            ProgressText = GetProgressText(AppResources.MainMentions);
                             using (var unitOfWork = new DataUnitOfWork(new ContextConnectionString()))
                             {
-                                var mentions = unitOfWork.Mentions.FindAll().ToList();
+                                var mentions = unitOfWork.Mentions.FindAll();
                                 foreach (var item in mentions)
                                 {
                                     var itemSummary = new MentionViewModel(item);
@@ -626,11 +634,11 @@ namespace derpirc.ViewModels
                     case 2:
                         if (_lastRefreshMessages == DateTime.MinValue)
                         {
+                            ProgressIndeterminate = true;
+                            ProgressText = GetProgressText(AppResources.MainMessages);
                             using (var unitOfWork = new DataUnitOfWork(new ContextConnectionString()))
                             {
-                                var messages = unitOfWork.Messages.FindAll().ToList();
-                                ProgressIndeterminate = true;
-                                ProgressText = "Loading messages...";
+                                var messages = unitOfWork.Messages.FindAll();
                                 foreach (var item in messages)
                                 {
                                     var itemSummary = new MessageViewModel(item);
@@ -645,6 +653,14 @@ namespace derpirc.ViewModels
                 }
             }
          }
+
+        private string GetProgressText(string input)
+        {
+            var stringFormat = "{0} {1}...";
+            var result = string.Empty;
+            result = string.Format(stringFormat, AppResources.ProgressLoading, input);
+            return result;
+        }
 
         private void OnNavigatedTo(NavigationEventArgs eventArgs)
         {
@@ -666,64 +682,121 @@ namespace derpirc.ViewModels
 
         private void ViewSettings()
         {
-            var uriString = "/derpirc.Pages;component/Views/SettingsView.xaml";
-            var uri = new Uri(uriString, UriKind.Relative);
-            NavigationService.Navigate(uri);
+            CanViewSettings = false;
+            ThreadPool.QueueUserWorkItem((objectState) =>
+            {
+                var uriString = "/derpirc.Pages;component/Views/SettingsView.xaml";
+                var uri = new Uri(uriString, UriKind.Relative);
+                DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                {
+                    CanViewSettings = true;
+                    NavigationService.Navigate(uri);
+                });
+            });
         }
 
         private void ViewConnections()
         {
-            var uriString = "/derpirc.Pages;component/Views/ConnectionView.xaml";
-            var uri = new Uri(uriString, UriKind.Relative);
-            NavigationService.Navigate(uri);
+            CanViewConnections = false;
+            ThreadPool.QueueUserWorkItem((objectState) =>
+            {
+                var uriString = "/derpirc.Pages;component/Views/ConnectionView.xaml";
+                var uri = new Uri(uriString, UriKind.Relative);
+                DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                {
+                    CanViewConnections = true;
+                    NavigationService.Navigate(uri);
+                });
+            });
         }
 
         private void ViewAbout()
         {
-            var uriString = "/derpirc.Pages;component/Views/AboutView.xaml";
-            var uri = new Uri(uriString, UriKind.Relative);
-            NavigationService.Navigate(uri);
+            CanViewAbout = false;
+            ThreadPool.QueueUserWorkItem((objectState) =>
+            {
+                var uriString = "/derpirc.Pages;component/Views/AboutView.xaml";
+                var uri = new Uri(uriString, UriKind.Relative);
+                DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                {
+                    CanViewAbout = true;
+                    NavigationService.Navigate(uri);
+                });
+            });
         }
 
         private void SelectChannel()
         {
-            var id = string.Empty;
-            var uriString = string.Empty;
-            if (SelectedChannel != null)
-                id = SelectedChannel.RecordId.ToString();
-            if (!string.IsNullOrEmpty(id))
+            if (_canSelectChannel)
             {
-                uriString = string.Format("/derpirc.Pages;component/Views/ChannelDetailView.xaml?id={0}", Uri.EscapeUriString(id));
-                var uri = new Uri(uriString, UriKind.Relative);
-                NavigationService.Navigate(uri);
+                _canSelectChannel = false;
+                ThreadPool.QueueUserWorkItem((objectState) =>
+                {
+                    var id = string.Empty;
+                    var uriString = string.Empty;
+                    if (SelectedChannel != null)
+                        id = SelectedChannel.RecordId.ToString();
+                    if (!string.IsNullOrEmpty(id))
+                    {
+                        uriString = string.Format("/derpirc.Pages;component/Views/ChannelDetailView.xaml?id={0}", Uri.EscapeUriString(id));
+                        var uri = new Uri(uriString, UriKind.Relative);
+                        DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                        {
+                            _canSelectChannel = true;
+                            NavigationService.Navigate(uri);
+                        });
+                    }
+                });
             }
         }
 
         private void SelectMention()
         {
-            var id = string.Empty;
-            var uriString = string.Empty;
-            if (SelectedMention != null)
-                id = SelectedMention.RecordId.ToString();
-            if (!string.IsNullOrEmpty(id))
+            if (_canSelectMention)
             {
-                uriString = string.Format("/derpirc.Pages;component/Views/MentionDetailView.xaml?id={0}", Uri.EscapeUriString(id));
-                var uri = new Uri(uriString, UriKind.Relative);
-                NavigationService.Navigate(uri);
+                _canSelectMention = false;
+                ThreadPool.QueueUserWorkItem((objectState) =>
+                {
+                    var id = string.Empty;
+                    var uriString = string.Empty;
+                    if (SelectedMention != null)
+                        id = SelectedMention.RecordId.ToString();
+                    if (!string.IsNullOrEmpty(id))
+                    {
+                        uriString = string.Format("/derpirc.Pages;component/Views/MentionDetailView.xaml?id={0}", Uri.EscapeUriString(id));
+                        var uri = new Uri(uriString, UriKind.Relative);
+                        DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                        {
+                            _canSelectMention = true;
+                            NavigationService.Navigate(uri);
+                        });
+                    }
+                });
             }
         }
 
         private void SelectMessage()
         {
-            var id = string.Empty;
-            var uriString = string.Empty;
-            if (SelectedMessage != null)
-                id = SelectedMessage.RecordId.ToString();
-            if (!string.IsNullOrEmpty(id))
+            if (_canSelectMessage)
             {
-                uriString = string.Format("/derpirc.Pages;component/Views/MessageDetailView.xaml?id={0}", Uri.EscapeUriString(id));
-                var uri = new Uri(uriString, UriKind.Relative);
-                NavigationService.Navigate(uri);
+                _canSelectMessage = false;
+                ThreadPool.QueueUserWorkItem((objectState) =>
+                {
+                    var id = string.Empty;
+                    var uriString = string.Empty;
+                    if (SelectedMessage != null)
+                        id = SelectedMessage.RecordId.ToString();
+                    if (!string.IsNullOrEmpty(id))
+                    {
+                        uriString = string.Format("/derpirc.Pages;component/Views/MessageDetailView.xaml?id={0}", Uri.EscapeUriString(id));
+                        var uri = new Uri(uriString, UriKind.Relative);
+                        DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                        {
+                            _canSelectMessage = true;
+                            NavigationService.Navigate(uri);
+                        });
+                    }
+                });
             }
         }
 

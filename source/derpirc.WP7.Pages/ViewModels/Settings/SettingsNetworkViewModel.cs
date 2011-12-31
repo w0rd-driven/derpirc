@@ -9,6 +9,7 @@ using derpirc.Data.Models.Settings;
 using derpirc.Helpers;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Messaging;
+using GalaSoft.MvvmLight.Threading;
 
 namespace derpirc.ViewModels
 {
@@ -50,6 +51,8 @@ namespace derpirc.ViewModels
             }
         }
 
+        private bool _canViewDetails;
+
         #endregion
 
         #region Properties
@@ -90,6 +93,7 @@ namespace derpirc.ViewModels
             Networks = new CollectionViewSource() { Source = _networksList };
 
             CanAdd = true;
+            _canViewDetails = true;
 
             if (IsInDesignMode)
             {
@@ -170,7 +174,7 @@ namespace derpirc.ViewModels
 
         private void SelectItem()
         {
-            if (SelectedItem != null)
+            if (SelectedItem != null && _canViewDetails)
                 ViewDetails(SelectedItem);
         }
 
@@ -189,16 +193,25 @@ namespace derpirc.ViewModels
 
         private void ViewDetails(Network item)
         {
-            var id = string.Empty;
-            var uriString = string.Empty;
-            if (item != null)
-                id = item.Id.ToString();
-            if (!string.IsNullOrEmpty(id))
+            _canViewDetails = false;
+            ThreadPool.QueueUserWorkItem((objectState) =>
             {
-                uriString = string.Format("/derpirc.Pages;component/Views/NetworkDetailView.xaml?id={0}", Uri.EscapeUriString(id));
-                var uri = new Uri(uriString, UriKind.Relative);
-                NavigationService.Navigate(uri);
-            }
+                var id = string.Empty;
+                var uriString = string.Empty;
+                if (item != null)
+                    id = item.Id.ToString();
+                if (!string.IsNullOrEmpty(id))
+                {
+                    uriString = string.Format("/derpirc.Pages;component/Views/NetworkDetailView.xaml?id={0}", Uri.EscapeUriString(id));
+                    var uri = new Uri(uriString, UriKind.Relative);
+                    DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                    {
+                        _canViewDetails = true;
+                        NavigationService.Navigate(uri);
+                    });
+                }
+            });
+
         }
 
         private void Save(bool commit)
