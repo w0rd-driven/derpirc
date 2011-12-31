@@ -288,7 +288,7 @@ namespace derpirc.ViewModels
         private void OnStateChanged(object sender, ClientStatusEventArgs e)
         {
             if (this.Model != null)
-                if (e.Info.NetworkName.Equals(this.Model.Network.Name, StringComparison.OrdinalIgnoreCase))
+                if (e.Info.NetworkName.Equals(this.NetworkName, StringComparison.OrdinalIgnoreCase))
                     if (e.Info.State == ClientState.Processed)
                     {
                         DispatcherHelper.CheckBeginInvokeOnUI(() =>
