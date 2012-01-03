@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "derpirc.WP7.UICore", "derpi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "derpirc.WP7.Pages", "derpirc.WP7.Pages\derpirc.WP7.Pages.csproj", "{30127F2E-5D95-466E-B1F7-81798945C8C5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "derpirc.WP7.CleanupTask", "derpirc.WP7.CleanupTask\derpirc.WP7.CleanupTask.csproj", "{1AF7093E-F0B1-4153-878E-F9B454E7B3DB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +65,14 @@ Global
 		{30127F2E-5D95-466E-B1F7-81798945C8C5}.Release|Any CPU.Build.0 = Release|Any CPU
 		{30127F2E-5D95-466E-B1F7-81798945C8C5}.Release|x64.ActiveCfg = Release|Any CPU
 		{30127F2E-5D95-466E-B1F7-81798945C8C5}.Release|x86.ActiveCfg = Release|Any CPU
+		{1AF7093E-F0B1-4153-878E-F9B454E7B3DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1AF7093E-F0B1-4153-878E-F9B454E7B3DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1AF7093E-F0B1-4153-878E-F9B454E7B3DB}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{1AF7093E-F0B1-4153-878E-F9B454E7B3DB}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1AF7093E-F0B1-4153-878E-F9B454E7B3DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1AF7093E-F0B1-4153-878E-F9B454E7B3DB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1AF7093E-F0B1-4153-878E-F9B454E7B3DB}.Release|x64.ActiveCfg = Release|Any CPU
+		{1AF7093E-F0B1-4153-878E-F9B454E7B3DB}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
