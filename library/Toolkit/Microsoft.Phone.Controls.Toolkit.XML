@@ -8583,9 +8583,8 @@
         </member>
         <member name="T:Microsoft.Phone.Controls.Primitives.HorizontalLoopingSelector">
             <summary>
-            An infinitely scrolling, UI- and data-virtualizing selection control.
+            An infinitely horizontal scrolling, UI- and data-virtualizing selection control.
             </summary>
-            <QualityBand>Preview</QualityBand>
         </member>
         <member name="F:Microsoft.Phone.Controls.Primitives.HorizontalLoopingSelector.DataSourceProperty">
             <summary>
@@ -8619,11 +8618,6 @@
             Balances the items.
             </summary>
         </member>
-        <member name="F:Microsoft.Phone.Controls.Primitives.HorizontalLoopingSelector.ItemStyleProperty">
-            <summary>
-            DependencyProperty for ItemStyle
-            </summary>
-        </member>
         <member name="P:Microsoft.Phone.Controls.Primitives.HorizontalLoopingSelector.DataSource">
             <summary>
             The data source that the this control is the view for.
@@ -8654,16 +8648,10 @@
             The IsExpandedChanged event will be raised whenever the IsExpanded state changes.
             </summary>
         </member>
-        <member name="P:Microsoft.Phone.Controls.Primitives.HorizontalLoopingSelector.ItemStyle">
-            <summary>
-            Style property for an item in a Looping Selector
-            </summary>
-        </member>
         <member name="T:Microsoft.Phone.Controls.Primitives.HorizontalLoopingSelectorItem">
             <summary>
             The items that will be contained in the LoopingSelector.
             </summary>
-            <QualityBand>Preview</QualityBand>
         </member>
         <member name="M:Microsoft.Phone.Controls.Primitives.HorizontalLoopingSelectorItem.#ctor">
             <summary>
