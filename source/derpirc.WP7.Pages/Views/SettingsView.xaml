@@ -225,6 +225,7 @@
         </shell:ApplicationBar>
     </phone:PhoneApplicationPage.ApplicationBar>
     <blend:Interaction.Behaviors>
+        <appbarutils:AppBarPropertyBinder IsVisible="{Binding IsAppBarVisible}" />
         <appbarutils:AppBarItemCommand Type="Button" Id="add" Command="{Binding AddCommand}" />
         <appbarutils:AppBarItemCommand Type="MenuItem" Id="clear" Command="{Binding ClearCommand}" />
     </blend:Interaction.Behaviors>
@@ -233,6 +234,5 @@
                                        Text="{Binding Resources.SettingsAppBarAdd, Source={StaticResource LocalizedStrings}}" IsEnabled="{Binding CanAdd}" />
         <appbarutils:AppBarItemTrigger Type="MenuItem" Id="clear"
                                        Text="{Binding Resources.SettingsAppBarClear, Source={StaticResource LocalizedStrings}}" IsEnabled="{Binding CanClear}" />
-        <appbarutils:AppBarTrigger IsVisible="{Binding IsAppBarVisible}" />
     </blend:Interaction.Triggers>
 </phone:PhoneApplicationPage>

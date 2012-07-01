@@ -250,6 +250,7 @@
         </shell:ApplicationBar>
     </phone:PhoneApplicationPage.ApplicationBar>
     <blend:Interaction.Behaviors>
+        <appbarutils:AppBarPropertyBinder IsVisible="{Binding IsAppBarVisible}" />
         <appbarutils:AppBarItemCommand Type="MenuItem" Id="connections" Command="{Binding ViewConnectionsCommand}" />
         <appbarutils:AppBarItemCommand Type="MenuItem" Id="settings" Command="{Binding ViewSettingsCommand}" />
         <appbarutils:AppBarItemCommand Type="MenuItem" Id="about" Command="{Binding ViewAboutCommand}" />
@@ -264,7 +265,6 @@
         <appbarutils:AppBarItemTrigger Type="MenuItem" Id="about"
                                        Text="{Binding Resources.About, Source={StaticResource LocalizedStrings}}"
                                        IsEnabled="{Binding CanViewAbout}" />
-        <appbarutils:AppBarTrigger IsVisible="{Binding IsAppBarVisible}" />
     </blend:Interaction.Triggers>
 
 </phone:PhoneApplicationPage>
