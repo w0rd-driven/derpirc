@@ -392,6 +392,19 @@
             The SelectionAdapter.
             </summary>
         </member>
+        <member name="M:Microsoft.Phone.Controls.AutoCompleteBox.SelectText(System.Int32,System.Int32)">
+            <summary>
+                Selects a range of text in the text box.
+            </summary>
+            <param name="start">The zero-based index of the first character in the selection.</param>
+            <param name="length">The length of the selection, in characters.</param>
+            <exception cref="T:System.ArgumentOutOfRangeException">The start or length value is negative.</exception>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.AutoCompleteBox.SelectAllText">
+            <summary>
+            Selects the entire contents of the text box.
+            </summary>
+        </member>
         <member name="M:Microsoft.Phone.Controls.AutoCompleteBox.#ctor">
             <summary>
             Initializes a new instance of the
@@ -1040,6 +1053,42 @@
             <summary>
             Determines whether text completion should be done.
             </summary>
+        </member>
+        <member name="P:Microsoft.Phone.Controls.AutoCompleteBox.SelectedText">
+            <summary>
+            Gets or sets the content of the current selection in the text box.
+            </summary>
+            <returns>The currently selected text in the text box. If no text is selected, the
+                value is System.String.Empty.</returns>
+            <exception cref="T:System.ArgumentNullException">The value is set to null.</exception>
+        </member>
+        <member name="P:Microsoft.Phone.Controls.AutoCompleteBox.SelectedTextStart">
+            <summary>
+                Gets or sets the starting position of the text selected in the text box.
+            </summary>
+            <returns>The starting position of the current selection.</returns>
+            <exception cref="T:System.ArgumentOutOfRangeException">The value is less than 0.</exception>
+        </member>
+        <member name="P:Microsoft.Phone.Controls.AutoCompleteBox.SelectedTextLength">
+            <summary>
+                Gets or sets the number of characters in the current selection in the text
+                box.
+            </summary>
+            <returns>The number of characters in the current selection in the text box, or 0 if
+                there is no selection.</returns>
+            <exception cref="T:System.ArgumentOutOfRangeException">The value is less than 0.</exception>
+        </member>
+        <member name="P:Microsoft.Phone.Controls.AutoCompleteBox.SelectedTextBackground">
+            <summary>
+            Gets or sets the brush that fills the background of the selected text.
+            </summary>
+            <returns>The brush that fills the background of the selected text.</returns>
+        </member>
+        <member name="P:Microsoft.Phone.Controls.AutoCompleteBox.SelectedTextForground">
+            <summary>
+            Gets or sets the brush used for the selected text in the text box.
+            </summary>
+            <returns>The brush used for the selected text in the text box.</returns>
         </member>
         <member name="P:Microsoft.Phone.Controls.AutoCompleteBox.TextBox">
             <summary>
@@ -5479,7 +5528,7 @@
             <summary>
             Gets or sets the delegate, which is called to summarize a list of selections into a string.
             If not implemented, the default summarizing behavior will be used.
-            If this delegate is implemented, default summarizing behavior can be achieved by returning 
+            If this delegate is implemented, default summarizing behavior can be achieved by returning
             null instead of a string.
             </summary>
         </member>
@@ -5490,7 +5539,7 @@
         </member>
         <member name="P:Microsoft.Phone.Controls.ListPicker.IsHighlighted">
             <summary>
-            Whether the list picker is highlighted. 
+            Whether the list picker is highlighted.
             This occurs when the user is manipulating the box or when in expanded mode.
             </summary>
         </member>
@@ -5536,8 +5585,8 @@
         </member>
         <member name="P:Microsoft.Phone.Controls.ListPicker.ExpansionMode">
             <summary>
-            Gets or sets how the list picker expands when tapped. 
-            This property has an effect only when SelectionMode is Single. 
+            Gets or sets how the list picker expands when tapped.
+            This property has an effect only when SelectionMode is Single.
             When SelectionMode is Multiple, the ExpansionMode will be treated as FullScreenOnly.
             ExpansionAllowed will only expand when the number of items is less than or equalt to ItemCountThreshold
             Single by default.
@@ -7096,11 +7145,6 @@
             </summary>
             <param name="e">An object that contains the event data.</param>
         </member>
-        <member name="M:Microsoft.Phone.Controls.ListPickerPage.UpdateOutOfViewItems">
-            <summary>
-            Go through all the items that were not visible on the page and set their properties accordingly without animation.
-            </summary>
-        </member>
         <member name="M:Microsoft.Phone.Controls.ListPickerPage.InitializeComponent">
             <summary>
             InitializeComponent
@@ -7210,6 +7254,16 @@
         <member name="P:Microsoft.Phone.Controls.LocalizedResources.ControlResources.Monday">
             <summary>
               Looks up a localized string similar to Monday.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Phone.Controls.LocalizedResources.ControlResources.Off">
+            <summary>
+              Looks up a localized string similar to Off.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Phone.Controls.LocalizedResources.ControlResources.On">
+            <summary>
+              Looks up a localized string similar to On.
             </summary>
         </member>
         <member name="P:Microsoft.Phone.Controls.LocalizedResources.ControlResources.OnDayOfWeek_Other">
@@ -9660,23 +9714,26 @@
         </member>
         <member name="M:Microsoft.Phone.Controls.OffOnConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
             <summary>
-            Converts a value.
+            Converts a boolean to the equivalent On or Off string.
             </summary>
-            <param name="value">The value produced by the binding source.</param>
-            <param name="targetType">The type of the binding target property.</param>
-            <param name="parameter">The converter parameter to use.</param>
-            <param name="culture">The culture to use in the converter.</param>
+            <param name="value">The given boolean.</param>
+            <param name="targetType">
+            The type corresponding to the binding property, which must be of
+            <see cref="T:System.String"/>.
+            </param>
+            <param name="parameter">(Not used).</param>
+            <param name="culture">(Not used).</param>
             <returns>A converted value. If the method returns null, the valid null value is used.</returns>
         </member>
         <member name="M:Microsoft.Phone.Controls.OffOnConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
             <summary>
-            Converts a value.
+            Not implemented.
             </summary>
-            <param name="value">The value produced by the binding source.</param>
-            <param name="targetType">The type of the binding target property.</param>
-            <param name="parameter">The converter parameter to use.</param>
-            <param name="culture">The culture to use in the converter.</param>
-            <returns>A converted value. If the method returns null, the valid null value is used.</returns>
+            <param name="value">(Not used).</param>
+            <param name="targetType">(Not used).</param>
+            <param name="parameter">(Not used).</param>
+            <param name="culture">(Not used).</param>
+            <returns>null</returns>
         </member>
         <member name="T:Microsoft.Phone.Controls.ToggleSwitch">
             <summary>
@@ -9934,16 +9991,6 @@
         <member name="P:Microsoft.Phone.Controls.Properties.Resources.NonSupportedDateTime">
             <summary>
               Looks up a localized string similar to Invalid argument. Future dates and times are not supported..
-            </summary>
-        </member>
-        <member name="P:Microsoft.Phone.Controls.Properties.Resources.Off">
-            <summary>
-              Looks up a localized string similar to Off.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Phone.Controls.Properties.Resources.On">
-            <summary>
-              Looks up a localized string similar to On.
             </summary>
         </member>
         <member name="P:Microsoft.Phone.Controls.Properties.Resources.RoutedPropertyChangingEventArgs_CancelSet_InvalidOperation">
