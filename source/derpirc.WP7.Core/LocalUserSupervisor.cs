@@ -326,7 +326,8 @@ namespace derpirc.Core
                                     Source = channelName,
                                     Text = text,
                                     Owner = owner,
-                                    Timestamp = DateTime.UtcNow,
+                                    //Timestamp = DateTime.UtcNow,
+                                    Timestamp = DateTime.Now,
                                     IsRead = isRead,
                                 };
                                 summary.Messages.Add(message);
@@ -366,7 +367,8 @@ namespace derpirc.Core
                                     Source = nickName,
                                     Text = text,
                                     Owner = owner,
-                                    Timestamp = DateTime.UtcNow,
+                                    //Timestamp = DateTime.UtcNow,
+                                    Timestamp = DateTime.Now,
                                     IsRead = isRead,
                                 };
                                 summary.Messages.Add(message);
@@ -407,7 +409,8 @@ namespace derpirc.Core
                                 Source = nickName,
                                 Text = text,
                                 Owner = owner,
-                                Timestamp = DateTime.UtcNow,
+                                //Timestamp = DateTime.UtcNow,
+                                Timestamp = DateTime.Now,
                                 IsRead = isRead,
                             };
                             summary.Messages.Add(message);
