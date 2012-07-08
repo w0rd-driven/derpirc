@@ -225,7 +225,7 @@
             </controls:PivotItem>
         </controls:Pivot>
         
-        <adRotator:AdRotatorControl x:Name="AdRotatorControl"
+        <!--<adRotator:AdRotatorControl x:Name="AdRotatorControl"
                                     xmlns:adRotator="clr-namespace:AdRotator;assembly=AdRotator"
                                     IsEnabled="False"
                                     DefaultSettingsFileUri="/derpirc;component/AdRotator.xml"
@@ -234,7 +234,7 @@
                                     PubCenterAdUnitId="99999"
                                     PubCenterAppId="xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
                                     AdDuplexAppId="9999"
-                                    Grid.Row="1" />
+                                    Grid.Row="1" />-->
     </Grid>
  
     <phone:PhoneApplicationPage.ApplicationBar>

@@ -157,7 +157,7 @@
             </Grid>
         </Grid>
 
-        <adRotator:AdRotatorControl x:Name="AdRotatorControl"
+        <!--<adRotator:AdRotatorControl x:Name="AdRotatorControl"
                                     xmlns:adRotator="clr-namespace:AdRotator;assembly=AdRotator"
                                     Grid.Row="2"
                                     IsEnabled="False"
@@ -166,7 +166,7 @@
                                     DefaultAdType="PubCenter"
                                     PubCenterAdUnitId="99999"
                                     PubCenterAppId="xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-                                    AdDuplexAppId="9999" />
+                                    AdDuplexAppId="9999" />-->
     </Grid>
 
     <phone:PhoneApplicationPage.ApplicationBar>
