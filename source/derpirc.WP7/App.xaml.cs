@@ -34,7 +34,7 @@ namespace derpirc
             InitializePhoneApplication();
 
             // Crash reporter initialization
-            //CrashReporter.Initialize(RootFrame);
+            CrashReporter.Initialize(RootFrame);
 
             // Show graphics profiling information while debugging.
             if (System.Diagnostics.Debugger.IsAttached)

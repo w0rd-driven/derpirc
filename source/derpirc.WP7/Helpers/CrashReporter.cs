@@ -40,7 +40,7 @@ namespace derpirc.Helpers
             RootFrame.Unobscured += new EventHandler(RootFrame_Unobscured);
 
             // Send previous log if it exists
-            EmailExceptionLog();
+            //EmailExceptionLog();
             //SendExceptionLog();
         }
 
@@ -72,7 +72,7 @@ namespace derpirc.Helpers
 
         #region Methods
 
-        private static void LogException(Exception e, string type = null)
+        private static void LogException(Exception exception, string type = null)
         {
             try
             {
@@ -110,9 +110,9 @@ namespace derpirc.Helpers
                             writer.WriteLine("-> Culture: " + CultureInfo.CurrentCulture);
                             writer.WriteLine("-> Current page: " + RootFrame.CurrentSource);
                         }
-                        catch (Exception ex)
+                        catch (Exception exceptionWriter)
                         {
-                            writer.WriteLine(" -> Error getting device/page info: " + ex.ToString());
+                            writer.WriteLine(" -> Error getting device/page info: " + exceptionWriter.ToString());
                         }
 
                         writer.WriteLine("-> Obscured: " + ((IsObscured) ? "Yes" : "No"));
@@ -123,7 +123,7 @@ namespace derpirc.Helpers
                         // Exception Info
                         writer.WriteLine("Exception Information:");
                         writer.WriteLine();
-                        writer.WriteLine(e.ToString());
+                        writer.WriteLine(exception.ToString());
 
                         writer.WriteLine();
                     }
@@ -138,7 +138,7 @@ namespace derpirc.Helpers
             {
                 store.DeleteFile(ErrorLogFilename);
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
             }
         }
