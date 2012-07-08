@@ -43,10 +43,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AdDuplex.AdControl.Silverlight">
+    <Reference Include="AdDuplex.AdControl.Silverlight, Version=1.2.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\library\Ads\AdDuplex.AdControl.Silverlight.dll</HintPath>
     </Reference>
-    <Reference Include="AdRotator">
+    <Reference Include="AdRotator, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\library\Ads\AdRotator.dll</HintPath>
     </Reference>
     <Reference Include="AppBarUtils">
@@ -58,8 +58,8 @@
     <Reference Include="GalaSoft.MvvmLight.WP71">
       <HintPath>..\..\library\MVVMLight\WP71\GalaSoft.MvvmLight.WP71.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Advertising.Mobile, Version=5.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
-    <Reference Include="Microsoft.Advertising.Mobile.UI, Version=5.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.Advertising.Mobile, Version=6.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.Advertising.Mobile.UI, Version=6.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.Expression.Drawing" />
     <Reference Include="Microsoft.Phone" />
     <Reference Include="Microsoft.Phone.Controls, Version=7.0.0.0, Culture=neutral, PublicKeyToken=24eec0d8c86cda1e, processorArchitecture=MSIL" />
