@@ -357,7 +357,6 @@ namespace derpirc.ViewModels
 
         private void OnNavigatedFrom(NavigationEventArgs eventArgs)
         {
-            this.IsSelectionEnabled = false;
             if (eventArgs.NavigationMode == NavigationMode.New)
             {
                 // A task is being called...

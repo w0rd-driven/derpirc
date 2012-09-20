@@ -392,19 +392,6 @@
             The SelectionAdapter.
             </summary>
         </member>
-        <member name="M:Microsoft.Phone.Controls.AutoCompleteBox.SelectText(System.Int32,System.Int32)">
-            <summary>
-                Selects a range of text in the text box.
-            </summary>
-            <param name="start">The zero-based index of the first character in the selection.</param>
-            <param name="length">The length of the selection, in characters.</param>
-            <exception cref="T:System.ArgumentOutOfRangeException">The start or length value is negative.</exception>
-        </member>
-        <member name="M:Microsoft.Phone.Controls.AutoCompleteBox.SelectAllText">
-            <summary>
-            Selects the entire contents of the text box.
-            </summary>
-        </member>
         <member name="M:Microsoft.Phone.Controls.AutoCompleteBox.#ctor">
             <summary>
             Initializes a new instance of the
@@ -1053,42 +1040,6 @@
             <summary>
             Determines whether text completion should be done.
             </summary>
-        </member>
-        <member name="P:Microsoft.Phone.Controls.AutoCompleteBox.SelectedText">
-            <summary>
-            Gets or sets the content of the current selection in the text box.
-            </summary>
-            <returns>The currently selected text in the text box. If no text is selected, the
-                value is System.String.Empty.</returns>
-            <exception cref="T:System.ArgumentNullException">The value is set to null.</exception>
-        </member>
-        <member name="P:Microsoft.Phone.Controls.AutoCompleteBox.SelectedTextStart">
-            <summary>
-                Gets or sets the starting position of the text selected in the text box.
-            </summary>
-            <returns>The starting position of the current selection.</returns>
-            <exception cref="T:System.ArgumentOutOfRangeException">The value is less than 0.</exception>
-        </member>
-        <member name="P:Microsoft.Phone.Controls.AutoCompleteBox.SelectedTextLength">
-            <summary>
-                Gets or sets the number of characters in the current selection in the text
-                box.
-            </summary>
-            <returns>The number of characters in the current selection in the text box, or 0 if
-                there is no selection.</returns>
-            <exception cref="T:System.ArgumentOutOfRangeException">The value is less than 0.</exception>
-        </member>
-        <member name="P:Microsoft.Phone.Controls.AutoCompleteBox.SelectedTextBackground">
-            <summary>
-            Gets or sets the brush that fills the background of the selected text.
-            </summary>
-            <returns>The brush that fills the background of the selected text.</returns>
-        </member>
-        <member name="P:Microsoft.Phone.Controls.AutoCompleteBox.SelectedTextForground">
-            <summary>
-            Gets or sets the brush used for the selected text in the text box.
-            </summary>
-            <returns>The brush used for the selected text in the text box.</returns>
         </member>
         <member name="P:Microsoft.Phone.Controls.AutoCompleteBox.TextBox">
             <summary>
@@ -8197,8 +8148,22 @@
             </summary>
             <param name="list">The ItemsControl to search on.</param>
             <returns>
-            A collection of weak references to the items in the view port.
+            A list of weak references to the items in the view port.
             </returns>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.ItemsControlExtensions.GetItemsInViewPort(System.Windows.Controls.ItemsControl,System.Collections.Generic.IList{System.WeakReference})">
+            <summary>
+            Gets the items that are currently in the view port
+            of an ItemsControl with a ScrollViewer and adds them
+            into a list of weak references.
+            </summary>
+            <param name="list">
+            The items control to search on.
+            </param>
+            <param name="items">
+            The list of weak references where the items in 
+            the view port will be added.
+            </param>
         </member>
         <member name="T:Microsoft.Phone.Controls.MultiselectItem">
             <summary>

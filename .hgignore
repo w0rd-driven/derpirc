@@ -37,3 +37,4 @@ _ReSharper*/
 [Bb]uild/
 [Tt]humbs.db
 *.docstates
+source/packages/*
