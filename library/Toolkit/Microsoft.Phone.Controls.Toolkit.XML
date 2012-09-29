@@ -2760,6 +2760,19 @@
             <param name="applyTemplates">Specifies whether to apply templates on the traversed framework elements</param>
             <returns>The logical children of the framework element of the specified type.</returns>
         </member>
+        <member name="M:System.Windows.Controls.TemplatedVisualTreeExtensions.GetParentByType``1(System.Windows.FrameworkElement)">
+            <summary>
+            The first parent of the framework element of the specified type 
+            that is found while traversing the visual tree upwards.
+            </summary>
+            <typeparam name="T">
+            The element type of the dependency object.
+            </typeparam>
+            <param name="element">The framework element.</param>
+            <returns>
+            The first parent of the framework element of the specified type.
+            </returns>
+        </member>
         <member name="T:System.Windows.Controls.TimeTypeConverter">
             <summary>
             Allows time to be set from xaml.
@@ -3447,6 +3460,47 @@
             Gets the current offset value from the translate transform object.
             </summary>
         </member>
+        <member name="T:Microsoft.Phone.Controls.WeakReferenceHelper">
+            <summary>
+            A helper class that provides useful utilities to
+            work with weak references.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.WeakReferenceHelper.ContainsTarget(System.Collections.Generic.IEnumerable{System.WeakReference},System.Object)">
+            <summary>
+            Determine if there is a reference to a known target in an object
+            that implements IEnumerable.
+            </summary>
+            <param name="references">
+            The object that implements IEnumerable.
+            </param>
+            <param name="target">
+            The known target.
+            </param>
+            <returns>
+            True if a reference to the known target exists in the list. False otherwise.
+            </returns>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.WeakReferenceHelper.TryRemoveTarget(System.Collections.Generic.IList{System.WeakReference},System.Object)">
+            <summary>
+            Remove a reference to a known target from an object
+            that implement IList.
+            </summary>
+            <param name="references">The list to be examined.</param>
+            <param name="target">The known target.</param>
+            <returns>
+            Try if the target was successsfully removed.
+            </returns>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.WeakReferenceHelper.RemoveNullTargetReferences(System.Collections.Generic.IList{System.WeakReference})">
+            <summary>
+            Removes all the weak references with null targets from an object
+            that implements IList.
+            </summary>
+            <param name="references">
+            The object that implements IList.
+            </param>
+        </member>
         <member name="T:Microsoft.Phone.Controls.ContextMenu">
             <summary>
             Represents a pop-up menu that enables a control to expose functionality that is specific to the context of the control.
@@ -3597,11 +3651,6 @@
             Stores a reference to the current root visual.
             </summary>
         </member>
-        <member name="F:Microsoft.Phone.Controls.ContextMenu._mousePosition">
-            <summary>
-            Stores the last known mouse position (via MouseMove).
-            </summary>
-        </member>
         <member name="F:Microsoft.Phone.Controls.ContextMenu._owner">
             <summary>
             Stores a reference to the object that owns the ContextMenu.
@@ -3741,13 +3790,6 @@
         <member name="M:Microsoft.Phone.Controls.ContextMenu.OnLayoutUpdated(System.Object,System.EventArgs)">
             <summary>
             Handles the LayoutUpdated event to capture Application.Current.RootVisual.
-            </summary>
-            <param name="sender">Source of the event.</param>
-            <param name="e">Event arguments.</param>
-        </member>
-        <member name="M:Microsoft.Phone.Controls.ContextMenu.OnRootVisualMouseMove(System.Object,System.Windows.Input.MouseEventArgs)">
-            <summary>
-            Handles the RootVisual's MouseMove event to track the last mouse position.
             </summary>
             <param name="sender">Source of the event.</param>
             <param name="e">Event arguments.</param>
@@ -4318,6 +4360,452 @@
         <member name="M:Microsoft.Phone.Controls.Separator.#ctor">
             <summary>
             Initializes a new instance of the Separator class.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Phone.Controls.CustomMessageBox">
+            <summary>
+            Represents a popup dialog with one or two buttons.
+            </summary>
+            <QualityBand>Preview</QualityBand>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.CustomMessageBox._systemTrayHeightInPortrait">
+            <summary>
+            The height of the system tray in pixels when the page
+            is in portrait mode.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.CustomMessageBox._systemTrayWidthInLandscape">
+            <summary>
+            The width of the system tray in pixels when the page
+            is in landscape mode.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.CustomMessageBox.TitleTextBlock">
+            <summary>
+            Title text block template part name.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.CustomMessageBox.CaptionTextBlock">
+            <summary>
+            Caption text block template part name.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.CustomMessageBox.MessageTextBlock">
+            <summary>
+            Message text block template part name.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.CustomMessageBox.LeftButton">
+            <summary>
+            Left button template part name.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.CustomMessageBox.RightButton">
+            <summary>
+            Right button template part name.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.CustomMessageBox._currentInstance">
+            <summary>
+            Holds a weak reference to the message box that is currently displayed.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.CustomMessageBox._screenWidth">
+            <summary>
+            The current screen width.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.CustomMessageBox._screenHeight">
+            <summary>
+            The current screen height.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.CustomMessageBox._mustRestore">
+            <summary>
+            Identifies whether the application bar and the system tray
+            must be restored after the message box is dismissed. 
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.CustomMessageBox._titleTextBlock">
+            <summary>
+            Title text block template part.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.CustomMessageBox._captionTextBlock">
+            <summary>
+            Caption text block template part.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.CustomMessageBox._messageTextBlock">
+            <summary>
+            Message text block template part.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.CustomMessageBox._leftButton">
+            <summary>
+            Left button template part.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.CustomMessageBox._rightButton">
+            <summary>
+            Right button template part.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.CustomMessageBox._popup">
+            <summary>
+            The popup used to display the message box.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.CustomMessageBox._container">
+            <summary>
+            The child container of the popup.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.CustomMessageBox._frame">
+            <summary>
+            The root visual of the application.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.CustomMessageBox._page">
+            <summary>
+            The current application page.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.CustomMessageBox._hasApplicationBar">
+            <summary>
+            Identifies whether the application bar is visible or not before
+            opening the message box.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.CustomMessageBox._systemTrayColor">
+            <summary>
+            The current color of the system tray.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.CustomMessageBox.TitleProperty">
+            <summary>
+            Identifies the Title dependency property.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.CustomMessageBox.OnTitlePropertyChanged(System.Windows.DependencyObject,System.Windows.DependencyPropertyChangedEventArgs)">
+            <summary>
+            Changes the visibility of the title text block based on its content.
+            </summary>
+            <param name="obj">The dependency object.</param>
+            <param name="e">The event information.</param>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.CustomMessageBox.CaptionProperty">
+            <summary>
+            Identifies the Caption dependency property.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.CustomMessageBox.OnCaptionPropertyChanged(System.Windows.DependencyObject,System.Windows.DependencyPropertyChangedEventArgs)">
+            <summary>
+            Changes the visibility of the caption text block based on its content.
+            </summary>
+            <param name="obj">The dependency object.</param>
+            <param name="e">The event information.</param>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.CustomMessageBox.MessageProperty">
+            <summary>
+            Identifies the Message dependency property.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.CustomMessageBox.OnMessagePropertyChanged(System.Windows.DependencyObject,System.Windows.DependencyPropertyChangedEventArgs)">
+            <summary>
+            Changes the visibility of the message text block based on its content.
+            </summary>
+            <param name="obj">The dependency object.</param>
+            <param name="e">The event information.</param>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.CustomMessageBox.LeftButtonContentProperty">
+            <summary>
+            Identifies the LeftButtonContent dependency property.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.CustomMessageBox.OnLeftButtonContentPropertyChanged(System.Windows.DependencyObject,System.Windows.DependencyPropertyChangedEventArgs)">
+            <summary>
+            Changes the visibility of the left button based on its content.
+            </summary>
+            <param name="obj">The dependency object.</param>
+            <param name="e">The event information.</param>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.CustomMessageBox.RightButtonContentProperty">
+            <summary>
+            Identifies the RightButtonContent dependency property.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.CustomMessageBox.OnRightButtonContentPropertyChanged(System.Windows.DependencyObject,System.Windows.DependencyPropertyChangedEventArgs)">
+            <summary>
+            Changes the visibility of the right button based on its content.
+            </summary>
+            <param name="obj">The dependency object.</param>
+            <param name="e">The event information.</param>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.CustomMessageBox.IsLeftButtonEnabledProperty">
+            <summary>
+            Identifies the IsLeftButtonEnabled dependency property.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.CustomMessageBox.IsRightButtonEnabledProperty">
+            <summary>
+            Identifies the IsRightButtonEnabled dependency property.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.CustomMessageBox.IsFullScreenProperty">
+            <summary>
+            Identifies the IsFullScreen dependency property.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.CustomMessageBox.OnIsFullScreenPropertyChanged(System.Windows.DependencyObject,System.Windows.DependencyPropertyChangedEventArgs)">
+            <summary>
+            Modifies the vertical alignment of the message box depending
+            on whether it should occupy the full screen or not.
+            </summary>
+            <param name="obj"></param>
+            <param name="e"></param>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.CustomMessageBox.OnBackKeyPress(System.Object,System.ComponentModel.CancelEventArgs)">
+            <summary>
+            Called when the back key is pressed. This event handler cancels
+            the backward navigation and dismisses the message box.
+            </summary>
+            <param name="sender">The event sender.</param>
+            <param name="e">The event information.</param>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.CustomMessageBox.OnNavigating(System.Object,System.Windows.Navigation.NavigatingCancelEventArgs)">
+            <summary>
+            Called when the application frame is navigating.
+            This event handler dismisses the message box.
+            </summary>
+            <param name="sender">The event sender.</param>
+            <param name="e">The event information.</param>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.CustomMessageBox.OnApplyTemplate">
+            <summary>
+            Gets the template parts and attaches event handlers.
+            Animates the message box when the template is applied to it.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.CustomMessageBox.#ctor">
+            <summary>
+            Initializes a new instance of the CustomMessageBox class.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.CustomMessageBox.Show">
+            <summary>
+            Reveals the message box by inserting it into a popup and opening it.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.CustomMessageBox.Dismiss">
+            <summary>
+            Dismisses the message box.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.CustomMessageBox.Dismiss(Microsoft.Phone.Controls.CustomMessageBoxResult,System.Boolean)">
+            <summary>
+            Dismisses the message box.
+            </summary>
+            <param name="source">
+            The source that caused the dismission.
+            </param>
+            <param name="useTransition">
+            If true, the message box is dismissed after swiveling
+            backward and out.
+            </param>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.CustomMessageBox.ClosePopup(System.Boolean)">
+            <summary>
+            Closes the pop up.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.CustomMessageBox.CustomMessageBox_LayoutUpdated(System.Object,System.EventArgs)">
+            <summary>
+            Called when the visual layout changes.
+            </summary>
+            <param name="sender">The event sender.</param>
+            <param name="e">The event information.</param>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.CustomMessageBox.LeftButton_Click(System.Object,System.Windows.RoutedEventArgs)">
+            <summary>
+            Dismisses the message box with the left button.
+            </summary>
+            <param name="sender">The event sender.</param>
+            <param name="e">The event information.</param>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.CustomMessageBox.RightButton_Click(System.Object,System.Windows.RoutedEventArgs)">
+            <summary>
+            Dismisses the message box with the right button.
+            </summary>
+            <param name="sender">The event sender.</param>
+            <param name="e">The event information.</param>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.CustomMessageBox.OnOrientationChanged(System.Object,Microsoft.Phone.Controls.OrientationChangedEventArgs)">
+            <summary>
+            Called when the current page changes orientation.
+            </summary>
+            <param name="sender">The event sender.</param>
+            <param name="e">The event information.</param>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.CustomMessageBox.SetSizeAndOffset">
+            <summary>
+            Sets The vertical and horizontal offset of the popup,
+            as well as the size of its child container.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.CustomMessageBox.GetTransformedRect">
+            <summary>
+            Gets a rectangle that occupies the entire page.
+            </summary>
+            <returns>The width, height and location of the rectangle.</returns>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.CustomMessageBox.IsLandscape(Microsoft.Phone.Controls.PageOrientation)">
+            <summary>
+            Determines whether the orientation is landscape.
+            </summary>
+            <param name="orientation">The orientation.</param>
+            <returns>True if the orientation is landscape.</returns>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.CustomMessageBox.GetTransform">
+            <summary>
+            Gets a transform for popup elements based
+            on the current page orientation.
+            </summary>
+            <returns>
+            A composite transform determined by page orientation.
+            </returns>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.CustomMessageBox.GetPageOrientation">
+            <summary>
+            Gets the current page orientation.
+            </summary>
+            <returns>
+            The current page orientation.
+            </returns>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.CustomMessageBox.GetVisibilityFromString(System.String)">
+            <summary>
+            Returns a visibility value based on the value of a string.
+            </summary>
+            <param name="str">The string.</param>
+            <returns>
+            Visibility.Collapsed if the string is null or empty.
+            Visibility.Visible otherwise.
+            </returns>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.CustomMessageBox.GetVisibilityFromObject(System.Object)">
+            <summary>
+            Returns a visibility value based on the value of an object.
+            </summary>
+            <param name="obj">The object.</param>
+            <returns>
+            Visibility.Collapsed if the object is null.
+            Visibility.Visible otherwise.
+            </returns>
+        </member>
+        <member name="E:Microsoft.Phone.Controls.CustomMessageBox.Dismissing">
+            <summary>
+            Called when the message is being dismissing.
+            </summary>
+        </member>
+        <member name="E:Microsoft.Phone.Controls.CustomMessageBox.Dismissed">
+            <summary>
+            Called when the message box is dismissed.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Phone.Controls.CustomMessageBox.Title">
+            <summary>
+            Gets or sets the title.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Phone.Controls.CustomMessageBox.Caption">
+            <summary>
+            Gets or sets the caption.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Phone.Controls.CustomMessageBox.Message">
+            <summary>
+            Gets or sets the message.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Phone.Controls.CustomMessageBox.LeftButtonContent">
+            <summary>
+            Gets or sets the left button content.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Phone.Controls.CustomMessageBox.RightButtonContent">
+            <summary>
+            Gets or sets the right button content.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Phone.Controls.CustomMessageBox.IsLeftButtonEnabled">
+            <summary>
+            Gets or sets whether the left button is enabled.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Phone.Controls.CustomMessageBox.IsRightButtonEnabled">
+            <summary>
+            Gets or sets whether the right button is enabled.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Phone.Controls.CustomMessageBox.IsFullScreen">
+            <summary>
+            Gets or sets whether the message box occupies the whole screen.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Phone.Controls.CustomMessageBoxResult">
+            <summary>
+            Describes the different possible results 
+            for the dismissal of a CustomMessageBox.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.CustomMessageBoxResult.LeftButton">
+            <summary>
+            The left button contains the result value
+            of the custom message box.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.CustomMessageBoxResult.RightButton">
+            <summary>
+            The right button contains the result value
+            of custom the message box.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.CustomMessageBoxResult.None">
+            <summary>
+            The custom message box has no result.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Phone.Controls.DismissedEventArgs">
+            <summary>
+            Provides data for the CustomMessageBox's Dismissed event.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.DismissedEventArgs.#ctor(Microsoft.Phone.Controls.CustomMessageBoxResult)">
+            <summary>
+            Initializes a new instance of the DismissedEventArgs class.
+            </summary>
+            <param name="result">The result value.</param>
+        </member>
+        <member name="P:Microsoft.Phone.Controls.DismissedEventArgs.Result">
+            <summary>
+            Gets or sets the result value.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Phone.Controls.DismissingEventArgs">
+            <summary>
+            Provides data for the CustomMessageBox's Dismissing event.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.DismissingEventArgs.#ctor(Microsoft.Phone.Controls.CustomMessageBoxResult)">
+            <summary>
+            Initializes a new instance of the DismissingEventArgs class.
+            </summary>
+            <param name="result">The result value.</param>
+        </member>
+        <member name="P:Microsoft.Phone.Controls.DismissingEventArgs.Result">
+            <summary>
+            Gets or sets the result value.
             </summary>
         </member>
         <member name="T:System.Windows.HierarchicalDataTemplate">
@@ -5633,6 +6121,1059 @@
             InitializeComponent
             </summary>
         </member>
+        <member name="T:Microsoft.Phone.Controls.SlideInEffect">
+            <summary>
+            Provides attached properties to make FrameworkElements inside
+            PivotItems responsive to SelectionChanged events by Pivots.
+            The result is a 'slide in' effect added to the selected elements.
+            </summary>
+            <QualityBand>Preview</QualityBand>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.SlideInEffect.ProportionalOffset">
+            <summary>
+            The proportional offset by which each line index
+            gets translated on the X-axis.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.SlideInEffect.ExponentialInterpolationWeight">
+            <summary>
+            The percentage of the total translation that plays
+            using the exponential interpolation.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.SlideInEffect.BeginTime">
+            <summary>
+            Time in milliseconds at which the linear translation begins.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.SlideInEffect.BreakTime">
+            <summary>
+            Time in milliseconds at which the storyboard's interpolation
+            changes from linear to exponential.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.SlideInEffect.EndTime">
+            <summary>
+            Time in milliseconds at which the exponential translation ends.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.SlideInEffect.SlideInExponentialEase">
+            <summary>
+            The easing function that defines the exponential interpolation
+            of the storyboard.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.SlideInEffect.XPropertyPath">
+            <summary>
+            The property path used to map the animation's target property
+            to the X property of a translate transform.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.SlideInEffect._selectionChanged">
+            <summary>
+            Identifies whether there was a SelectionChanged event
+            triggered by a pivot.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.SlideInEffect._manipulatedStarted">
+            <summary>
+            Identifies whether there was a ManipulationStarted event
+            triggered by a pivot.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.SlideInEffect._pivotsToElementCounters">
+            <summary>
+            Private manager that represents a correlation between Pivots
+            and the number of indexed elements it contains.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.SlideInEffect._pivotItemsToElements">
+            <summary>
+            Private manager that represents a correlation between PivotItems 
+            and the indexed elements it contains.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.SlideInEffect.GetLineIndex(System.Windows.DependencyObject)">
+            <summary>
+            Gets the line index of the specified dependency object.
+            </summary>
+            <param name="obj">The dependency object.</param>
+            <returns>The line index.</returns>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.SlideInEffect.SetLineIndex(System.Windows.DependencyObject,System.Int32)">
+            <summary>
+            Sets the line index of the specified dependency object.
+            </summary>
+            <param name="obj">The dependency object.</param>
+            <param name="value">The line index.</param>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.SlideInEffect.LineIndexProperty">
+            <summary>
+            Identifies the line index of the current element,
+            which is proportional to its initial offset before sliding in.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.SlideInEffect.OnLineIndexPropertyChanged(System.Windows.DependencyObject,System.Windows.DependencyPropertyChangedEventArgs)">
+            <summary>
+            Modify the subscription of the dependency object 
+            to the private managers based on the line index value.
+            </summary>
+            <param name="obj">The dependency object.</param>
+            <param name="e">The event arguments.</param>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.SlideInEffect.GetParentPivot(System.Windows.DependencyObject)">
+            <summary>
+            Gets the parent pivot of the specified dependency object.
+            </summary>
+            <param name="obj">The dependency object.</param>
+            <returns>The pivot.</returns>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.SlideInEffect.SetParentPivot(System.Windows.DependencyObject,Microsoft.Phone.Controls.Pivot)">
+            <summary>
+            Sets the parent pivot of the specified dependency object.
+            </summary>
+            <param name="obj">The dependency object.</param>
+            <param name="value">The pivot.</param>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.SlideInEffect.ParentPivotProperty">
+            <summary>
+            Identifies the ParentPivot dependency property.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.SlideInEffect.OnParentPivotPropertyChanged(System.Windows.DependencyObject,System.Windows.DependencyPropertyChangedEventArgs)">
+            <summary>
+            Manages subscription to a pivot.
+            </summary>
+            <param name="obj">The dependency object.</param>
+            <param name="e">The event arguments.</param>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.SlideInEffect.GetParentPivotItem(System.Windows.DependencyObject)">
+            <summary>
+            Gets the parent pivot item of the specified dependency object.
+            </summary>
+            <param name="obj">The dependency object.</param>
+            <returns>The pivot item.</returns>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.SlideInEffect.SetParentPivotItem(System.Windows.DependencyObject,Microsoft.Phone.Controls.PivotItem)">
+            <summary>
+            Sets the parent pivot item of the specified dependency object.
+            </summary>
+            <param name="obj">The depedency object.</param>
+            <param name="value">The pivot item.</param>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.SlideInEffect.ParentPivotItemProperty">
+            <summary>
+            Identifies the ParentPivotItem dependency property.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.SlideInEffect.OnParentPivotItemPropertyChanged(System.Windows.DependencyObject,System.Windows.DependencyPropertyChangedEventArgs)">
+            <summary>
+            Manages subscription to a pivot item.
+            </summary>
+            <param name="obj">The dependency object.</param>
+            <param name="e">The event arguments.</param>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.SlideInEffect.GetAttachedTransform(System.Windows.DependencyObject)">
+            <summary>
+            Gets the attached transform of the specified dependency object.
+            </summary>
+            <param name="obj">The dependency object.</param>
+            <returns>The attached transform.</returns>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.SlideInEffect.SetAttachedTransform(System.Windows.DependencyObject,System.Windows.Media.TranslateTransform)">
+            <summary>
+            Sets the attached transform of the specified dependency object.
+            </summary>
+            <param name="obj">The dependency object.</param>
+            <param name="value">The attached transform.</param>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.SlideInEffect.AttachedTransformProperty">
+            <summary>
+            Identifies the AttachedTransform dependency property.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.SlideInEffect.GetIsSubscribed(System.Windows.DependencyObject)">
+            <summary>
+            Gets whether the specified dependency object
+            is subscribed to the private managers or not.
+            </summary>
+            <param name="obj">The dependency object.</param>
+            <returns>The value.</returns>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.SlideInEffect.SetIsSubscribed(System.Windows.DependencyObject,System.Boolean)">
+            <summary>
+            Sets whether the specified dependency object
+            is subscribed to the private managers or not.
+            </summary>
+            <param name="obj">The dependency object.</param>
+            <param name="value">The value.</param>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.SlideInEffect.IsSubscribedProperty">
+            <summary>
+            Identifies the IsSubscribed dependency property.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.SlideInEffect.GetHasEventsAttached(System.Windows.DependencyObject)">
+            <summary>
+            Gets whether the specified dependency object
+            has events attached to it or not.
+            </summary>
+            <param name="obj">The dependency object.</param>
+            <returns>The value.</returns>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.SlideInEffect.SetHasEventsAttached(System.Windows.DependencyObject,System.Boolean)">
+            <summary>
+            Sets whether the specified dependency object
+            has events attached to it or not.
+            </summary>
+            <param name="obj">The dependency object.</param>
+            <param name="value">The value.</param>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.SlideInEffect.HasEventsAttachedProperty">
+            <summary>
+            Identifies the HasEventsAttached dependency property.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.SlideInEffect.Target_Loaded(System.Object,System.Windows.RoutedEventArgs)">
+            <summary>
+            Called when an element gets loaded.
+            </summary>
+            <param name="sender">The event sender.</param>
+            <param name="e">The event information.</param>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.SlideInEffect.Target_Unloaded(System.Object,System.Windows.RoutedEventArgs)">
+            <summary>
+            Called when an element gets unloaded.
+            </summary>
+            <param name="sender">The event sender.</param>
+            <param name="e">The event information.</param>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.SlideInEffect.Pivot_SelectionChanged(System.Object,System.Windows.Controls.SelectionChangedEventArgs)">
+            <summary>
+            Sets a flag indicating that a SelectionChanged event ocurred.
+            </summary>
+            <param name="sender">The event sender.</param>
+            <param name="e">The event information.</param>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.SlideInEffect.Pivot_ManipulationStarted(System.Object,System.Windows.Input.ManipulationStartedEventArgs)">
+            <summary>
+            Sets a flag indicating that a ManipulationStarted event ocurred.
+            </summary>
+            <param name="sender">The event sender.</param>
+            <param name="e">The event information.</param>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.SlideInEffect.Pivot_ManipulationCompleted(System.Object,System.Windows.Input.ManipulationCompletedEventArgs)">
+            <summary>
+            Animates the corresponding elements.
+            </summary>
+            <param name="sender">The event sender.</param>
+            <param name="e">The event information.</param>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.SlideInEffect.SubscribeFrameworkElement(System.Windows.FrameworkElement)">
+            <summary>
+            Subscribes an element to the private managers.
+            </summary>
+            <param name="target">The framework element.</param>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.SlideInEffect.UnsubscribeFrameworkElement(System.Windows.FrameworkElement)">
+            <summary>
+            Unsubscribes an element from the private managers.
+            </summary>
+            <param name="target">The framework element.</param>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.SlideInEffect.ComposeStoryboard(System.Windows.FrameworkElement,System.Boolean,System.Windows.Media.Animation.Storyboard@)">
+            <summary>
+            Adds an animation corresponding to an specific framework element.
+            Thus, the storyboard can be composed piece by piece.
+            </summary>
+            <param name="element">The framework element.</param>
+            <param name="leftToRight">
+            Indicates whether the animation should go 
+            from left to right or viceversa.
+            </param>
+            <param name="storyboard">A reference to the storyboard.</param>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.SlideInEffect.IsOnScreen(System.Windows.FrameworkElement)">
+            <summary>
+            Indicates whether the specified framework element
+            is within the bounds of the application's root visual.
+            </summary>
+            <param name="element">The framework element.</param>
+            <returns>
+            True if the rectangular bounds of the framework element
+            are completely outside the bounds of the application's root visual.
+            </returns>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.SlideInEffect.AttachTransform(System.Windows.FrameworkElement)">
+            <summary>
+            Attach the translate transform that is used
+            for the slide in effect to a framework element.
+            </summary>
+            <param name="element">The framework element.</param>
+        </member>
+        <member name="T:Microsoft.Phone.Controls.TiltEffect">
+            <summary>
+            This code provides attached properties for adding a 'tilt' effect to all 
+            controls within a container.
+            </summary>
+            <QualityBand>Preview</QualityBand>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.TiltEffect.MaxAngle">
+            <summary>
+            Maximum amount of tilt, in radians.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.TiltEffect.MaxDepression">
+            <summary>
+            Maximum amount of depression, in pixels
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.TiltEffect._originalCacheMode">
+            <summary>
+            Cache of previous cache modes. Not using weak references for now.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.TiltEffect.TiltReturnAnimationDelay">
+            <summary>
+            Delay between releasing an element and the tilt release animation 
+            playing.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.TiltEffect.TiltReturnAnimationDuration">
+            <summary>
+            Duration of tilt release animation.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.TiltEffect.currentTiltElement">
+            <summary>
+            The control that is currently being tilted.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.TiltEffect.tiltReturnStoryboard">
+            <summary>
+            The single instance of a storyboard used for all tilts.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.TiltEffect.tiltReturnXAnimation">
+            <summary>
+            The single instance of an X rotation used for all tilts.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.TiltEffect.tiltReturnYAnimation">
+            <summary>
+            The single instance of a Y rotation used for all tilts.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.TiltEffect.tiltReturnZAnimation">
+            <summary>
+            The single instance of a Z depression used for all tilts.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.TiltEffect.currentTiltElementCenter">
+            <summary>
+            The center of the tilt element.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.TiltEffect.wasPauseAnimation">
+            <summary>
+            Whether the animation just completed was for a 'pause' or not.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.TiltEffect.#ctor">
+            <summary>
+            This is not a constructable class, but it cannot be static because 
+            it derives from DependencyObject.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.TiltEffect.#cctor">
+            <summary>
+            Initialize the static properties
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.TiltEffect.IsTiltEnabledProperty">
+            <summary>
+            Whether the tilt effect is enabled on a container (and all its 
+            children).
+            </summary>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.TiltEffect.GetIsTiltEnabled(System.Windows.DependencyObject)">
+            <summary>
+            Gets the IsTiltEnabled dependency property from an object.
+            </summary>
+            <param name="source">The object to get the property from.</param>
+            <returns>The property's value.</returns>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.TiltEffect.SetIsTiltEnabled(System.Windows.DependencyObject,System.Boolean)">
+            <summary>
+            Sets the IsTiltEnabled dependency property on an object.
+            </summary>
+            <param name="source">The object to set the property on.</param>
+            <param name="value">The value to set.</param>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.TiltEffect.SuppressTiltProperty">
+            <summary>
+            Suppresses the tilt effect on a single control that would otherwise 
+            be tilted.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.TiltEffect.GetSuppressTilt(System.Windows.DependencyObject)">
+            <summary>
+            Gets the SuppressTilt dependency property from an object.
+            </summary>
+            <param name="source">The object to get the property from.</param>
+            <returns>The property's value.</returns>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.TiltEffect.SetSuppressTilt(System.Windows.DependencyObject,System.Boolean)">
+            <summary>
+            Sets the SuppressTilt dependency property from an object.
+            </summary>
+            <param name="source">The object to get the property from.</param>
+            <param name="value">The property's value.</param>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.TiltEffect.OnIsTiltEnabledChanged(System.Windows.DependencyObject,System.Windows.DependencyPropertyChangedEventArgs)">
+            <summary>
+            Property change handler for the IsTiltEnabled dependency property.
+            </summary>
+            <param name="target">The element that the property is atteched to.</param>
+            <param name="args">Event arguments.</param>
+            <remarks>
+            Adds or removes event handlers from the element that has been 
+            (un)registered for tilting.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.TiltEffect.TiltEffect_ManipulationStarted(System.Object,System.Windows.Input.ManipulationStartedEventArgs)">
+            <summary>
+            Event handler for ManipulationStarted.
+            </summary>
+            <param name="sender">sender of the event - this will be the tilt 
+            container (eg, entire page).</param>
+            <param name="e">Event arguments.</param>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.TiltEffect.TiltEffect_ManipulationDelta(System.Object,System.Windows.Input.ManipulationDeltaEventArgs)">
+            <summary>
+            Event handler for ManipulationDelta
+            </summary>
+            <param name="sender">sender of the event - this will be the tilting 
+            object (eg a button).</param>
+            <param name="e">Event arguments.</param>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.TiltEffect.TiltEffect_ManipulationCompleted(System.Object,System.Windows.Input.ManipulationCompletedEventArgs)">
+            <summary>
+            Event handler for ManipulationCompleted.
+            </summary>
+            <param name="sender">sender of the event - this will be the tilting 
+            object (eg a button).</param>
+            <param name="e">Event arguments.</param>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.TiltEffect.TryStartTiltEffect(System.Windows.FrameworkElement,System.Windows.Input.ManipulationStartedEventArgs)">
+            <summary>
+            Checks if the manipulation should cause a tilt, and if so starts the 
+            tilt effect.
+            </summary>
+            <param name="source">The source of the manipulation (the tilt 
+            container, eg entire page).</param>
+            <param name="e">The args from the ManipulationStarted event.</param>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.TiltEffect.GetCenterToCenterDelta(System.Windows.FrameworkElement,System.Windows.FrameworkElement)">
+            <summary>
+            Computes the delta between the centre of an element and its 
+            container.
+            </summary>
+            <param name="element">The element to compare.</param>
+            <param name="container">The element to compare against.</param>
+            <returns>A point that represents the delta between the two centers.</returns>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.TiltEffect.BeginTiltEffect(System.Windows.FrameworkElement,System.Windows.Point,System.Windows.Point,System.Windows.Point)">
+            <summary>
+            Begins the tilt effect by preparing the control and doing the 
+            initial animation.
+            </summary>
+            <param name="element">The element to tilt.</param>
+            <param name="touchPoint">The touch point, in element coordinates.</param>
+            <param name="centerPoint">The center point of the element in element
+            coordinates.</param>
+            <param name="centerDelta">The delta between the 
+            <paramref name="element"/>'s center and the container's center.</param>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.TiltEffect.PrepareControlForTilt(System.Windows.FrameworkElement,System.Windows.Point)">
+            <summary>
+            Prepares a control to be tilted by setting up a plane projection and
+            some event handlers.
+            </summary>
+            <param name="element">The control that is to be tilted.</param>
+            <param name="centerDelta">Delta between the element's center and the
+            tilt container's.</param>
+            <returns>true if successful; false otherwise.</returns>
+            <remarks>
+            This method is conservative; it will fail any attempt to tilt a 
+            control that already has a projection on it.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.TiltEffect.RevertPrepareControlForTilt(System.Windows.FrameworkElement)">
+            <summary>
+            Removes modifications made by PrepareControlForTilt.
+            </summary>
+            <param name="element">THe control to be un-prepared.</param>
+            <remarks>
+            This method is basic; it does not do anything to detect if the 
+            control being un-prepared was previously prepared.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.TiltEffect.PrepareTiltReturnStoryboard(System.Windows.FrameworkElement)">
+            <summary>
+            Creates the tilt return storyboard (if not already created) and 
+            targets it to the projection.
+            </summary>
+            <param name="element">The framework element to prepare for
+            projection.</param>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.TiltEffect.ContinueTiltEffect(System.Windows.FrameworkElement,System.Windows.Input.ManipulationDeltaEventArgs)">
+            <summary>
+            Continues a tilt effect that is currently applied to an element, 
+            presumably because the user moved their finger.
+            </summary>
+            <param name="element">The element being tilted.</param>
+            <param name="e">The manipulation event args.</param>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.TiltEffect.EndTiltEffect(System.Windows.FrameworkElement)">
+            <summary>
+            Ends the tilt effect by playing the animation.
+            </summary>
+            <param name="element">The element being tilted.</param>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.TiltEffect.TiltReturnStoryboard_Completed(System.Object,System.EventArgs)">
+            <summary>
+            Handler for the storyboard complete event.
+            </summary>
+            <param name="sender">sender of the event.</param>
+            <param name="e">event args.</param>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.TiltEffect.ResetTiltEffect(System.Windows.FrameworkElement)">
+            <summary>
+            Resets the tilt effect on the control, making it appear 'normal'
+            again.
+            </summary>
+            <param name="element">The element to reset the tilt on.</param>
+            <remarks>
+            This method doesn't turn off the tilt effect or cancel any current
+            manipulation; it just temporarily cancels the effect.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.TiltEffect.StopTiltReturnStoryboardAndCleanup">
+            <summary>
+            Stops the tilt effect and release resources applied to the currently
+            tilted control.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.TiltEffect.PauseTiltEffect">
+            <summary>
+            Pauses the tilt effect so that the control returns to the 'at rest'
+            position, but doesn't stop the tilt effect (handlers are still 
+            attached).
+            </summary>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.TiltEffect.ResetTiltReturnStoryboard">
+            <summary>
+            Resets the storyboard to not running.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.TiltEffect.ApplyTiltEffect(System.Windows.FrameworkElement,System.Windows.Point,System.Windows.Point)">
+            <summary>
+            Applies the tilt effect to the control.
+            </summary>
+            <param name="element">the control to tilt.</param>
+            <param name="touchPoint">The touch point, in the container's 
+            coordinates.</param>
+            <param name="centerPoint">The center point of the container.</param>
+        </member>
+        <member name="P:Microsoft.Phone.Controls.TiltEffect.UseLogarithmicEase">
+            <summary>
+            Whether to use a slightly more accurate (but slightly slower) tilt 
+            animation easing function.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Phone.Controls.TiltEffect.TiltableItems">
+            <summary>
+            Default list of items that are tiltable.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Phone.Controls.TiltEffect.LogarithmicEase">
+            <summary>
+            Provides an easing function for the tilt return.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.TiltEffect.LogarithmicEase.EaseInCore(System.Double)">
+            <summary>
+            Computes the easing function.
+            </summary>
+            <param name="normalizedTime">The time.</param>
+            <returns>The eased value.</returns>
+        </member>
+        <member name="T:Microsoft.Phone.Controls.TreeHelpers">
+            <summary>
+            Couple of simple helpers for walking the visual tree.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.TreeHelpers.GetVisualAncestors(System.Windows.FrameworkElement)">
+            <summary>
+            Gets the ancestors of the element, up to the root.
+            </summary>
+            <param name="node">The element to start from.</param>
+            <returns>An enumerator of the ancestors.</returns>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.TreeHelpers.GetVisualParent(System.Windows.FrameworkElement)">
+            <summary>
+            Gets the visual parent of the element.
+            </summary>
+            <param name="node">The element to check.</param>
+            <returns>The visual parent.</returns>
+        </member>
+        <member name="T:Microsoft.Phone.Controls.TurnstileFeatherEffect">
+            <summary>
+            Provides attached properties to feather FrameworkElements in
+            and out during page transitions. The result is a 'turnstile feather' effect
+            added to the select elements.
+            </summary>
+            <QualityBand>Preview</QualityBand>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.TurnstileFeatherEffect.FeatheringCenterOfRotationX">
+            <summary>
+            The center of rotation on X for elements that are feathered.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.TurnstileFeatherEffect.ForwardInFeatheringDuration">
+            <summary>
+            The duration in milliseconds that each element takes
+            to feather forward in.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.TurnstileFeatherEffect.ForwardInFeatheringAngle">
+            <summary>
+            The initial angle position for an element 
+            that feathers forward in.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.TurnstileFeatherEffect.ForwardInFeatheringDelay">
+            <summary>
+            The delay in milliseconds between each element that 
+            feathers forward in.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.TurnstileFeatherEffect.ForwardOutFeatheringDuration">
+            <summary>
+            The duration in milliseconds that each element takes
+            to feather forward out.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.TurnstileFeatherEffect.ForwardOutFeatheringAngle">
+            <summary>
+            The final angle position for an element 
+            that feathers forward out.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.TurnstileFeatherEffect.ForwardOutFeatheringDelay">
+            <summary>
+            The delay in milliseconds between each element that 
+            feathers forward out.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.TurnstileFeatherEffect.BackwardInFeatheringDuration">
+            <summary>
+            The duration in milliseconds that each element takes
+            to feather backward in.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.TurnstileFeatherEffect.BackwardInFeatheringAngle">
+            <summary>
+            The initial angle position for an element 
+            that feathers backward in.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.TurnstileFeatherEffect.BackwardInFeatheringDelay">
+            <summary>
+            The delay in milliseconds between each element that 
+            feathers backward in.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.TurnstileFeatherEffect.BackwardOutFeatheringDuration">
+            <summary>
+            The duration in milliseconds that each element takes
+            to feather backward out.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.TurnstileFeatherEffect.BackwardOutFeatheringAngle">
+            <summary>
+            The initial angle position for an element 
+            that feathers backward out.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.TurnstileFeatherEffect.BackwardOutFeatheringDelay">
+            <summary>
+            The delay in milliseconds between each element that 
+            feathers backward out.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.TurnstileFeatherEffect.TurnstileFeatheringExponentialEaseIn">
+            <summary>
+            The easing function that defines the exponential inwards 
+            interpolation of the storyboards.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.TurnstileFeatherEffect.TurnstileFeatheringExponentialEaseOut">
+            <summary>
+            The easing function that defines the exponential outwards
+            interpolation of the storyboards.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.TurnstileFeatherEffect.RotationYPropertyPath">
+            <summary>
+            The property path used to map the animation's target property
+            to the RotationY property of the plane projection of a UI element.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.TurnstileFeatherEffect.OpacityPropertyPath">
+            <summary>
+            The property path used to map the animation's target property
+            to the Opacity property of a UI element.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.TurnstileFeatherEffect.Origin">
+            <summary>
+            A point with coordinate (0, 0).
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.TurnstileFeatherEffect._pagesToReferences">
+            <summary>
+            Private manager that represents a correlation between pages
+            and the indexed elements it contains.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.TurnstileFeatherEffect._featheringTargets">
+            <summary>
+            Identifies the set of framework elements that are targeted
+            to be feathered.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.TurnstileFeatherEffect._pendingRestore">
+            <summary>
+            Indicates whether the targeted framework elements need their
+            projections and transforms to be restored.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.TurnstileFeatherEffect._nonPermittedTypes">
+            <summary>
+            Default list of types that cannot be feathered.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.TurnstileFeatherEffect.GetFeatheringIndex(System.Windows.DependencyObject)">
+            <summary>
+            Gets the feathering index of the specified dependency object.
+            </summary>
+            <param name="obj">The dependency object.</param>
+            <returns>The feathering index.</returns>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.TurnstileFeatherEffect.SetFeatheringIndex(System.Windows.DependencyObject,System.Int32)">
+            <summary>
+            Sets the feathering index of the specified dependency object.
+            </summary>
+            <param name="obj">The dependency object.</param>
+            <param name="value">The feathering index.</param>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.TurnstileFeatherEffect.FeatheringIndexProperty">
+            <summary>
+            Identifies the feathering index of the current element,
+            which represents its place in the feathering order sequence.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.TurnstileFeatherEffect.OnFeatheringIndexPropertyChanged(System.Windows.DependencyObject,System.Windows.DependencyPropertyChangedEventArgs)">
+            <summary>
+            Subscribes an element to the private manager.
+            </summary>
+            <param name="obj">The event sender.</param>
+            <param name="e">The event arguments.</param>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.TurnstileFeatherEffect.GetParentPage(System.Windows.DependencyObject)">
+            <summary>
+            Gets the parent page of the specified dependency object.
+            </summary>
+            <param name="obj">The dependency object.</param>
+            <returns>The page.</returns>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.TurnstileFeatherEffect.SetParentPage(System.Windows.DependencyObject,Microsoft.Phone.Controls.PhoneApplicationPage)">
+            <summary>
+            Sets the parent page of the specified dependency object.
+            </summary>
+            <param name="obj">The depedency object.</param>
+            <param name="value">The page.</param>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.TurnstileFeatherEffect.ParentPageProperty">
+            <summary>
+            Identifies the ParentPage dependency property.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.TurnstileFeatherEffect.OnParentPagePropertyChanged(System.Windows.DependencyObject,System.Windows.DependencyPropertyChangedEventArgs)">
+            <summary>
+            Manages subscription to a page.
+            </summary>
+            <param name="obj">The dependency object.</param>
+            <param name="e">The event arguments.</param>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.TurnstileFeatherEffect.GetIsSubscribed(System.Windows.DependencyObject)">
+            <summary>
+            Gets whether the specified dependency object
+            is subscribed to the private manager or not.
+            </summary>
+            <param name="obj">The dependency object.</param>
+            <returns>The value.</returns>        
+        </member>
+        <member name="M:Microsoft.Phone.Controls.TurnstileFeatherEffect.SetIsSubscribed(System.Windows.DependencyObject,System.Boolean)">
+            <summary>
+            Sets whether the specified dependency object
+            is subscribed to the private manager or not.
+            </summary>
+            <param name="obj">The dependency object.</param>
+            <param name="value">The value.</param>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.TurnstileFeatherEffect.IsSubscribedProperty">
+            <summary>
+            Identifies the IsSubscribed dependency property.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.TurnstileFeatherEffect.GetHasEventsAttached(System.Windows.DependencyObject)">
+            <summary>
+            Gets whether the specified dependency object
+            has events attached to it or not.
+            </summary>
+            <param name="obj">The dependency object.</param>
+            <returns>The value.</returns>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.TurnstileFeatherEffect.SetHasEventsAttached(System.Windows.DependencyObject,System.Boolean)">
+            <summary>
+            Sets whether the specified dependency object
+            has events attached to it or not.
+            </summary>
+            <param name="obj">The dependency object.</param>
+            <param name="value">The value.</param>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.TurnstileFeatherEffect.HasEventsAttachedProperty">
+            <summary>
+            Identifies the HasEventsAttached dependency property.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.TurnstileFeatherEffect.GetOriginalProjection(System.Windows.DependencyObject)">
+            <summary>
+            Gets the original projection of the specified dependency object
+            after the projection needed to apply the turnstile feather effect
+            has been attached to it.
+            </summary>
+            <param name="obj">The dependency object.</param>
+            <returns>The original projection.</returns>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.TurnstileFeatherEffect.SetOriginalProjection(System.Windows.DependencyObject,System.Windows.Media.Projection)">
+            <summary>
+            Sets the original projection of the specified dependency object.
+            </summary>
+            <param name="obj">The dependency object.</param>
+            <param name="value">The original projection.</param>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.TurnstileFeatherEffect.OriginalProjectionProperty">
+            <summary>
+            Identifies the OriginalProjection dependency property.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.TurnstileFeatherEffect.GetOriginalRenderTransform(System.Windows.DependencyObject)">
+            <summary>
+            Gets the original render transform of the specified dependency 
+            object after the transform needed to apply the turnstile feather 
+            effect has been attached to it.
+            </summary>
+            <param name="obj">The dependency object.</param>
+            <returns>The original render transform.</returns>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.TurnstileFeatherEffect.SetOriginalRenderTransform(System.Windows.DependencyObject,System.Windows.Media.Transform)">
+            <summary>
+            Sets the original render transform of the specified 
+            dependency object.
+            </summary>
+            <param name="obj">The dependency object.</param>
+            <param name="value">The original render transform.</param>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.TurnstileFeatherEffect.OriginalRenderTransformProperty">
+            <summary>
+            Identifies the OriginalRenderTransform dependency property.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.TurnstileFeatherEffect.GetOriginalOpacity(System.Windows.DependencyObject)">
+            <summary>
+            Gets the original opacity of the specified dependency 
+            object before the turnstile feather effect is applied to it.
+            </summary>
+            <param name="obj">The dependency object.</param>
+            <returns>The original opacity.</returns>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.TurnstileFeatherEffect.SetOriginalOpacity(System.Windows.DependencyObject,System.Double)">
+            <summary>
+            Sets the original opacity of the specified 
+            dependency object.
+            </summary>
+            <param name="obj">The dependency object.</param>
+            <param name="value">The original opacity.</param>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.TurnstileFeatherEffect.OriginalOpacityProperty">
+            <summary>
+            Identifies the OriginalOpacity dependency property.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.TurnstileFeatherEffect.Target_SizeChanged(System.Object,System.Windows.SizeChangedEventArgs)">
+            <summary>
+            Called when an element gets resized.
+            </summary>
+            <param name="sender">The event sender.</param>
+            <param name="e">The event information.</param>
+            <remarks>
+            Ideally, the Loaded event should be handled instead of
+            the SizeChanged event. However, the Loaded event does not occur
+            by the time the TransitionFrame tries to animate a forward in transition.
+            Handling the SizeChanged event instead guarantees that
+            the newly created FrameworkElements can be subscribed in time
+            before the transition begins.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.TurnstileFeatherEffect.Target_Unloaded(System.Object,System.Windows.RoutedEventArgs)">
+            <summary>
+            Called when an element gets unloaded.
+            </summary>
+            <param name="sender">The event sender.</param>
+            <param name="e">The event information.</param>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.TurnstileFeatherEffect.CheckForTypePermission(System.Object)">
+            <summary>
+            Throws an exception if the object sent as parameter is of a type
+            that is included in the list of non-permitted types.
+            </summary>
+            <param name="obj">The object.</param>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.TurnstileFeatherEffect.SortReferencesByIndex(System.WeakReference,System.WeakReference)">
+            <summary>
+            Compares two weak references targeting dependency objects
+            to sort them based on their feathering index.
+            </summary>
+            <param name="x">The first weak reference.</param>
+            <param name="y">The second weak reference.</param>
+            <returns>
+            0 if both weak references target dependency objects with
+            the same feathering index.
+            1 if the first reference targets a dependency 
+            object with a greater feathering index.
+            -1 if the second reference targets a dependency 
+            object with a greater feathering index.       
+            </returns>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.TurnstileFeatherEffect.GetTargetsToAnimate">
+            <summary>
+            Returns the set of weak references to the items 
+            that must be animated.
+            </summary>
+            <returns>
+            A set of weak references to items sorted by their feathering index.
+            </returns>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.TurnstileFeatherEffect.SubscribeFrameworkElement(System.Windows.FrameworkElement)">
+            <summary>
+            Subscribes an element to the private managers.
+            </summary>
+            <param name="target">The framework element.</param>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.TurnstileFeatherEffect.UnsubscribeFrameworkElement(System.Windows.FrameworkElement)">
+            <summary>
+            Unsubscribes an element from the private manager.
+            </summary>
+            <param name="target">The framework element.</param>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.TurnstileFeatherEffect.TryAttachProjectionAndTransform(Microsoft.Phone.Controls.PhoneApplicationFrame,System.Windows.FrameworkElement)">
+            <summary>
+            Prepares a framework element to be feathered by adding a plane projection
+            and a composite transform to it.
+            </summary>
+            <param name="root">The root visual.</param>
+            <param name="element">The framework element.</param>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.TurnstileFeatherEffect.RestoreProjectionsAndTransforms">
+            <summary>
+            Restores the original projection and render transform of
+            the targeted framework elements.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.TurnstileFeatherEffect.IsOnScreen(System.Windows.FrameworkElement)">
+            <summary>
+            Indicates whether the specified framework element
+            is within the bounds of the application's root visual.
+            </summary>
+            <param name="element">The framework element.</param>
+            <returns>
+            True if the rectangular bounds of the framework element
+            are completely outside the bounds of the application's root visual.
+            </returns>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.TurnstileFeatherEffect.ComposeForwardInStoryboard(System.Windows.Media.Animation.Storyboard)">
+            <summary>
+            Adds a set of animations corresponding to the 
+            turnstile feather forward in effect.
+            </summary>
+            <param name="storyboard">
+            The storyboard where the animations
+            will be added.
+            </param>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.TurnstileFeatherEffect.ComposeForwardOutStoryboard(System.Windows.Media.Animation.Storyboard)">
+            <summary>
+            Adds a set of animations corresponding to the 
+            turnstile feather forward out effect.
+            </summary>
+            <param name="storyboard">
+            The storyboard where the animations
+            will be added.
+            </param>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.TurnstileFeatherEffect.ComposeBackwardInStoryboard(System.Windows.Media.Animation.Storyboard)">
+            <summary>
+            Adds a set of animations corresponding to the 
+            turnstile feather backward in effect.
+            </summary>
+            <param name="storyboard">
+            The storyboard where the animations
+            will be added.
+            </param>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.TurnstileFeatherEffect.ComposeBackwardOutStoryboard(System.Windows.Media.Animation.Storyboard)">
+            <summary>
+            Adds a set of animations corresponding to the 
+            turnstile feather backward out effect.
+            </summary>
+            <param name="storyboard">
+            The storyboard where the animations
+            will be added.
+            </param>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.TurnstileFeatherEffect.ComposeStoryboard(System.Windows.Media.Animation.Storyboard,System.Nullable{System.TimeSpan},Microsoft.Phone.Controls.TurnstileFeatherTransitionMode)">
+            <summary>
+            Adds a set of animations corresponding to the 
+            turnstile feather effect.
+            </summary>
+            <param name="storyboard">
+            The storyboard where the animations
+            will be added.</param>
+            <param name="beginTime">
+            The time at which the storyboard should begin.</param>
+            <param name="mode">
+            The mode of the turnstile feather effect.
+            </param>
+        </member>
+        <member name="P:Microsoft.Phone.Controls.TurnstileFeatherEffect.NonPermittedTypes">
+            <summary>
+            Default list of types that cannot be feathered.
+            </summary>
+        </member>
         <member name="T:Microsoft.Phone.Controls.ExpanderView">
             <summary>
             Represents a collection of items that can be expanded or collapsed.
@@ -6137,6 +7678,11 @@
         <member name="F:Microsoft.Phone.Controls.PhoneTextBox.CommonStates">
             <summary>
             Common States.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.PhoneTextBox.NormalState">
+            <summary>
+            Normal state.
             </summary>
         </member>
         <member name="F:Microsoft.Phone.Controls.PhoneTextBox.DisabledState">
@@ -7366,7 +8912,7 @@
             <summary>
             Create new LinkUnlinkEventArgs.
             </summary>
-            <param name="cp">The ContentPresenter.</param>
+            <param name="contentPresenter">The ContentPresenter.</param>
         </member>
         <member name="P:Microsoft.Phone.Controls.LinkUnlinkEventArgs.ContentPresenter">
             <summary>
@@ -7497,9 +9043,24 @@
             Used to listen for changes in the groups within ItemsSource.
             </summary>
         </member>
+        <member name="F:Microsoft.Phone.Controls.LongListSelector._isResettingSelectedItem">
+            <summary>
+            Indicates the LLS is in the process of setting the SelectedItem back to its old value.
+            </summary>
+        </member>
         <member name="F:Microsoft.Phone.Controls.LongListSelector.ItemsSourceProperty">
             <summary>
             The DataSource DependencyProperty.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.LongListSelector.SelectedItemProperty">
+            <summary>
+            The SelectedItem DependencyProperty.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.LongListSelector.OnSelectedItemChanged(System.Windows.DependencyObject,System.Windows.DependencyPropertyChangedEventArgs)">
+            <summary>
+            Called when the selected item changes
             </summary>
         </member>
         <member name="F:Microsoft.Phone.Controls.LongListSelector.ListHeaderProperty">
@@ -7794,7 +9355,7 @@
             Called when the DisplayAllGroups dependency property changes
             </summary>
         </member>
-        <member name="M:Microsoft.Phone.Controls.LongListSelector.OnSelectionChanged(System.Object,System.Windows.Controls.SelectionChangedEventArgs)">
+        <member name="M:Microsoft.Phone.Controls.LongListSelector.OnListBoxSelectionChanged(System.Object,System.Windows.Controls.SelectionChangedEventArgs)">
             <summary>
             Called when there is a change in the selected item(s) in the listbox.
             </summary>
@@ -7829,11 +9390,6 @@
             Gets or sets whether the list is flat instead of a group hierarchy.
             </summary>
         </member>
-        <member name="P:Microsoft.Phone.Controls.LongListSelector.SelectedItem">
-            <summary>
-            Gets or sets the selected item.
-            </summary>
-        </member>
         <member name="P:Microsoft.Phone.Controls.LongListSelector.IsBouncy">
             <summary>
             Gets or sets whether the list can be (temporarily) scrolled off of the ends. 
@@ -7863,6 +9419,11 @@
             <summary>
             The DataSource property. Where all of the items come from.
             </summary>
+        </member>
+        <member name="P:Microsoft.Phone.Controls.LongListSelector.SelectedItem">
+            <summary>
+            Gets or sets the selected item.
+            </summary>       
         </member>
         <member name="P:Microsoft.Phone.Controls.LongListSelector.ListHeader">
             <summary>
@@ -9354,322 +10915,217 @@
             <param name="dimension">The dimension of interest.</param>
             <param name="frame">The instance of the animation type.</param>
         </member>
-        <member name="T:Microsoft.Phone.Controls.TiltEffect">
+        <member name="T:Microsoft.Phone.Controls.Rating">
             <summary>
-            This code provides attached properties for adding a 'tilt' effect to all 
-            controls within a container.
-            </summary>
-            <QualityBand>Preview</QualityBand>
-        </member>
-        <member name="F:Microsoft.Phone.Controls.TiltEffect.MaxAngle">
-            <summary>
-            Maximum amount of tilt, in radians.
+            A rating control implementation that allows for a parameterized
+            number of RatingItems, which can be arbitrarily styled using the
+            FilledItemStyle and UnfilledItemStyle properties, or templated
+            using an applied ControlTemplate.
             </summary>
         </member>
-        <member name="F:Microsoft.Phone.Controls.TiltEffect.MaxDepression">
+        <member name="M:Microsoft.Phone.Controls.Rating.#ctor">
             <summary>
-            Maximum amount of depression, in pixels
+            Initializes a new instance of the Rating type.
             </summary>
         </member>
-        <member name="F:Microsoft.Phone.Controls.TiltEffect._originalCacheMode">
+        <member name="M:Microsoft.Phone.Controls.Rating.OnApplyTemplate">
             <summary>
-            Cache of previous cache modes. Not using weak references for now.
+            Applies the template and extracts both a visual state and template
+            parts.
             </summary>
         </member>
-        <member name="F:Microsoft.Phone.Controls.TiltEffect.TiltReturnAnimationDelay">
+        <member name="M:Microsoft.Phone.Controls.Rating.ChangeDragHelperVisibility(System.Boolean)">
             <summary>
-            Delay between releasing an element and the tilt release animation 
-            playing.
+            Checks for existence of a drag text helper, and sets the visibility of this element.
+            </summary>
+            <param name="isVisible">Indicates whether the UIElement should be visible.</param>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.Rating.UpdateDragHelper">
+            <summary>
+            Updates both the text and the positioning of the drag text helper.
             </summary>
         </member>
-        <member name="F:Microsoft.Phone.Controls.TiltEffect.TiltReturnAnimationDuration">
+        <member name="M:Microsoft.Phone.Controls.Rating.PerformValueCalculation(System.Windows.Point,System.Windows.UIElement)">
             <summary>
-            Duration of tilt release animation.
+            Calculates the new Value of this control using a location and relative source.
+            The location is translated to the control, and then used to set the value.
+            </summary>
+            <param name="location">A point.</param>
+            <param name="locationRelativeSource">The UIElement that the point originated from.</param>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.Rating.UpdateClippingMask">
+            <summary>
+            Updates the clipping mask on _filledClipElement, if present, to reflect the current Value of the control.
             </summary>
         </member>
-        <member name="F:Microsoft.Phone.Controls.TiltEffect.currentTiltElement">
+        <member name="M:Microsoft.Phone.Controls.Rating.BuildNewRatingItem(System.Windows.Style)">
             <summary>
-            The control that is currently being tilted.
+            Builds a new RatingItem, taking in an optional Style to be applied to it.
+            </summary>
+            <param name="s">An optional style to apply to the RatingItem</param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.Rating.AdjustNumberOfRatingItems">
+            <summary>
+            Adds or removes RatingItem objects in the _filledItemCollection and _unfilledItemCollection lists to
+            reflect the value of RatingItemCount.
             </summary>
         </member>
-        <member name="F:Microsoft.Phone.Controls.TiltEffect.tiltReturnStoryboard">
+        <member name="M:Microsoft.Phone.Controls.Rating.SynchronizeGrid(System.Windows.Controls.Grid,System.Collections.Generic.IList{Microsoft.Phone.Controls.RatingItem})">
             <summary>
-            The single instance of a storyboard used for all tilts.
+            Adjusts the RowDefinition and ColumnDefinition collections on a Grid to be consistent with the
+            number of RatingItems present in the collections, and finally adds these RatingItems to the 
+            grid's Children, setting their Row and Column dependency properties. 
+            </summary>
+            <param name="grid">The grid to fix up.</param>
+            <param name="ratingItemList">A rating list source to add to the grid.</param>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.Rating.SynchronizeGrids">
+            <summary>
+            Helper function to call SynchronizeGrid on both Grids captured from the ControlTemplate.
             </summary>
         </member>
-        <member name="F:Microsoft.Phone.Controls.TiltEffect.tiltReturnXAnimation">
+        <member name="F:Microsoft.Phone.Controls.Rating.FilledItemStyleProperty">
             <summary>
-            The single instance of an X rotation used for all tilts.
+            Identifies the FilledItemStyle dependency property.
             </summary>
         </member>
-        <member name="F:Microsoft.Phone.Controls.TiltEffect.tiltReturnYAnimation">
+        <member name="F:Microsoft.Phone.Controls.Rating.UnfilledItemStyleProperty">
             <summary>
-            The single instance of a Y rotation used for all tilts.
+            Identifies the UnfilledItemStyle dependency property.
             </summary>
         </member>
-        <member name="F:Microsoft.Phone.Controls.TiltEffect.tiltReturnZAnimation">
+        <member name="F:Microsoft.Phone.Controls.Rating.RatingItemCountProperty">
             <summary>
-            The single instance of a Z depression used for all tilts.
+            Identifies the RatingItemCount dependency property.
             </summary>
         </member>
-        <member name="F:Microsoft.Phone.Controls.TiltEffect.currentTiltElementCenter">
+        <member name="F:Microsoft.Phone.Controls.Rating.ValueProperty">
             <summary>
-            The center of the tilt element.
+            Identifies the Value dependency property.
             </summary>
         </member>
-        <member name="F:Microsoft.Phone.Controls.TiltEffect.wasPauseAnimation">
+        <member name="F:Microsoft.Phone.Controls.Rating.ReadOnlyProperty">
             <summary>
-            Whether the animation just completed was for a 'pause' or not.
+            Identifies the ReadOnly dependency property.
             </summary>
         </member>
-        <member name="M:Microsoft.Phone.Controls.TiltEffect.#ctor">
+        <member name="F:Microsoft.Phone.Controls.Rating.AllowHalfItemIncrementProperty">
             <summary>
-            This is not a constructable class, but it cannot be static because 
-            it derives from DependencyObject.
+            Identifies the AllowHalfItemIncrement dependency property.
             </summary>
         </member>
-        <member name="M:Microsoft.Phone.Controls.TiltEffect.#cctor">
+        <member name="F:Microsoft.Phone.Controls.Rating.AllowSelectingZeroProperty">
             <summary>
-            Initialize the static properties
+            Identifies the AllowNoItemsSelected dependency property.
             </summary>
         </member>
-        <member name="F:Microsoft.Phone.Controls.TiltEffect.IsTiltEnabledProperty">
+        <member name="F:Microsoft.Phone.Controls.Rating.ShowSelectionHelperProperty">
             <summary>
-            Whether the tilt effect is enabled on a container (and all its 
-            children).
+            Identifies the AllowNoItemsSelected dependency property.
             </summary>
         </member>
-        <member name="M:Microsoft.Phone.Controls.TiltEffect.GetIsTiltEnabled(System.Windows.DependencyObject)">
+        <member name="F:Microsoft.Phone.Controls.Rating.OrientationProperty">
             <summary>
-            Gets the IsTiltEnabled dependency property from an object.
-            </summary>
-            <param name="source">The object to get the property from.</param>
-            <returns>The property's value.</returns>
-        </member>
-        <member name="M:Microsoft.Phone.Controls.TiltEffect.SetIsTiltEnabled(System.Windows.DependencyObject,System.Boolean)">
-            <summary>
-            Sets the IsTiltEnabled dependency property on an object.
-            </summary>
-            <param name="source">The object to set the property on.</param>
-            <param name="value">The value to set.</param>
-        </member>
-        <member name="F:Microsoft.Phone.Controls.TiltEffect.SuppressTiltProperty">
-            <summary>
-            Suppresses the tilt effect on a single control that would otherwise 
-            be tilted.
+            Identifies the Orientation dependency property.
             </summary>
         </member>
-        <member name="M:Microsoft.Phone.Controls.TiltEffect.GetSuppressTilt(System.Windows.DependencyObject)">
+        <member name="E:Microsoft.Phone.Controls.Rating.ValueChanged">
             <summary>
-            Gets the SuppressTilt dependency property from an object.
+            Occures when the value of this control changes, either from user interaction or by directly setting
+            the property.
             </summary>
-            <param name="source">The object to get the property from.</param>
-            <returns>The property's value.</returns>
         </member>
-        <member name="M:Microsoft.Phone.Controls.TiltEffect.SetSuppressTilt(System.Windows.DependencyObject,System.Boolean)">
+        <member name="P:Microsoft.Phone.Controls.Rating.FilledItemStyle">
             <summary>
-            Sets the SuppressTilt dependency property from an object.
+            Gets or sets the style that will be applied to filled RatingItems.
+            This style can only be applied once to a RatingItem.
             </summary>
-            <param name="source">The object to get the property from.</param>
-            <param name="value">The property's value.</param>
         </member>
-        <member name="M:Microsoft.Phone.Controls.TiltEffect.OnIsTiltEnabledChanged(System.Windows.DependencyObject,System.Windows.DependencyPropertyChangedEventArgs)">
+        <member name="P:Microsoft.Phone.Controls.Rating.UnfilledItemStyle">
             <summary>
-            Property change handler for the IsTiltEnabled dependency property.
+            Gets or sets the style that will be applied to unfilled RatingItems.
+            This style can only be applied once to a RatingItem.
             </summary>
-            <param name="target">The element that the property is atteched to.</param>
-            <param name="args">Event arguments.</param>
+        </member>
+        <member name="P:Microsoft.Phone.Controls.Rating.RatingItemCount">
+            <summary>
+            Gets or sets the number of RatingItems that will be displayed
+            by the control. Changing this property will cause elements to be
+            added or removed from the FilledItemsCollection 
+            and UnfilledItemsCollection.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Phone.Controls.Rating.Value">
+            <summary>
+            Gets or sets the current value of the control. This value
+            corresponds to the percentage of filled RatingItems displayed,
+            as determiend by a Clipping mask.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Phone.Controls.Rating.ReadOnly">
+            <summary>
+            Gets or sets the value indicating whether this control will
+            process user input and update the Value property.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Phone.Controls.Rating.AllowHalfItemIncrement">
+            <summary>
+            Gets or sets the value indicating whether this control will
+            allow users to select half items when dragging or touching.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Phone.Controls.Rating.AllowSelectingZero">
+            <summary>
+            Gets or sets the value indicating whether this control will
+            allow users to drag the selected items to zero.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Phone.Controls.Rating.ShowSelectionHelper">
+            <summary>
+            Gets or sets the value indicating whether this control will
+            display the drag selection helper.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Phone.Controls.Rating.Orientation">
+            <summary>
+            Gets or sets the value indicating the current orientation of the
+            control.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Phone.Controls.RatingItem">
+            <summary>
+            A Control-derived class used by the Rating control to
+            uniquely identify the objects used by the collections
+            that contain the items displayed by the control.
+            </summary>
             <remarks>
-            Adds or removes event handlers from the element that has been 
-            (un)registered for tilting.
+            This control exists to allow for custom ControlTemplates
+            to be created to override the default visual style of the
+            Rating control items. 
             </remarks>
         </member>
-        <member name="M:Microsoft.Phone.Controls.TiltEffect.TiltEffect_ManipulationStarted(System.Object,System.Windows.Input.ManipulationStartedEventArgs)">
+        <member name="M:Microsoft.Phone.Controls.RatingItem.#ctor">
             <summary>
-            Event handler for ManipulationStarted.
+            Initializes a new instance of the RatingItem type.
             </summary>
-            <param name="sender">sender of the event - this will be the tilt 
-            container (eg, entire page).</param>
-            <param name="e">Event arguments.</param>
         </member>
-        <member name="M:Microsoft.Phone.Controls.TiltEffect.TiltEffect_ManipulationDelta(System.Object,System.Windows.Input.ManipulationDeltaEventArgs)">
+        <member name="F:Microsoft.Phone.Controls.RatingItem.StrokeThicknessProperty">
             <summary>
-            Event handler for ManipulationDelta
+            Identifies the StrokeThickness dependency property.
             </summary>
-            <param name="sender">sender of the event - this will be the tilting 
-            object (eg a button).</param>
-            <param name="e">Event arguments.</param>
         </member>
-        <member name="M:Microsoft.Phone.Controls.TiltEffect.TiltEffect_ManipulationCompleted(System.Object,System.Windows.Input.ManipulationCompletedEventArgs)">
+        <member name="P:Microsoft.Phone.Controls.RatingItem.StrokeThickness">
             <summary>
-            Event handler for ManipulationCompleted.
+            Gets or sets the value indicating the thickness of a stroke
+            around the path object.
             </summary>
-            <param name="sender">sender of the event - this will be the tilting 
-            object (eg a button).</param>
-            <param name="e">Event arguments.</param>
-        </member>
-        <member name="M:Microsoft.Phone.Controls.TiltEffect.TryStartTiltEffect(System.Windows.FrameworkElement,System.Windows.Input.ManipulationStartedEventArgs)">
-            <summary>
-            Checks if the manipulation should cause a tilt, and if so starts the 
-            tilt effect.
-            </summary>
-            <param name="source">The source of the manipulation (the tilt 
-            container, eg entire page).</param>
-            <param name="e">The args from the ManipulationStarted event.</param>
-        </member>
-        <member name="M:Microsoft.Phone.Controls.TiltEffect.GetCenterToCenterDelta(System.Windows.FrameworkElement,System.Windows.FrameworkElement)">
-            <summary>
-            Computes the delta between the centre of an element and its 
-            container.
-            </summary>
-            <param name="element">The element to compare.</param>
-            <param name="container">The element to compare against.</param>
-            <returns>A point that represents the delta between the two centers.</returns>
-        </member>
-        <member name="M:Microsoft.Phone.Controls.TiltEffect.BeginTiltEffect(System.Windows.FrameworkElement,System.Windows.Point,System.Windows.Point,System.Windows.Point)">
-            <summary>
-            Begins the tilt effect by preparing the control and doing the 
-            initial animation.
-            </summary>
-            <param name="element">The element to tilt.</param>
-            <param name="touchPoint">The touch point, in element coordinates.</param>
-            <param name="centerPoint">The center point of the element in element
-            coordinates.</param>
-            <param name="centerDelta">The delta between the 
-            <paramref name="element"/>'s center and the container's center.</param>
-        </member>
-        <member name="M:Microsoft.Phone.Controls.TiltEffect.PrepareControlForTilt(System.Windows.FrameworkElement,System.Windows.Point)">
-            <summary>
-            Prepares a control to be tilted by setting up a plane projection and
-            some event handlers.
-            </summary>
-            <param name="element">The control that is to be tilted.</param>
-            <param name="centerDelta">Delta between the element's center and the
-            tilt container's.</param>
-            <returns>true if successful; false otherwise.</returns>
             <remarks>
-            This method is conservative; it will fail any attempt to tilt a 
-            control that already has a projection on it.
+            A control element was neccessary to allow for control templating,
+            however the default implementation uses a path, this property was
+            created because a good substitute for StrokeThickeness of a path,
+            which is a double type, does not exist in the default Control class.
             </remarks>
-        </member>
-        <member name="M:Microsoft.Phone.Controls.TiltEffect.RevertPrepareControlForTilt(System.Windows.FrameworkElement)">
-            <summary>
-            Removes modifications made by PrepareControlForTilt.
-            </summary>
-            <param name="element">THe control to be un-prepared.</param>
-            <remarks>
-            This method is basic; it does not do anything to detect if the 
-            control being un-prepared was previously prepared.
-            </remarks>
-        </member>
-        <member name="M:Microsoft.Phone.Controls.TiltEffect.PrepareTiltReturnStoryboard(System.Windows.FrameworkElement)">
-            <summary>
-            Creates the tilt return storyboard (if not already created) and 
-            targets it to the projection.
-            </summary>
-            <param name="element">The framework element to prepare for
-            projection.</param>
-        </member>
-        <member name="M:Microsoft.Phone.Controls.TiltEffect.ContinueTiltEffect(System.Windows.FrameworkElement,System.Windows.Input.ManipulationDeltaEventArgs)">
-            <summary>
-            Continues a tilt effect that is currently applied to an element, 
-            presumably because the user moved their finger.
-            </summary>
-            <param name="element">The element being tilted.</param>
-            <param name="e">The manipulation event args.</param>
-        </member>
-        <member name="M:Microsoft.Phone.Controls.TiltEffect.EndTiltEffect(System.Windows.FrameworkElement)">
-            <summary>
-            Ends the tilt effect by playing the animation.
-            </summary>
-            <param name="element">The element being tilted.</param>
-        </member>
-        <member name="M:Microsoft.Phone.Controls.TiltEffect.TiltReturnStoryboard_Completed(System.Object,System.EventArgs)">
-            <summary>
-            Handler for the storyboard complete event.
-            </summary>
-            <param name="sender">sender of the event.</param>
-            <param name="e">event args.</param>
-        </member>
-        <member name="M:Microsoft.Phone.Controls.TiltEffect.ResetTiltEffect(System.Windows.FrameworkElement)">
-            <summary>
-            Resets the tilt effect on the control, making it appear 'normal'
-            again.
-            </summary>
-            <param name="element">The element to reset the tilt on.</param>
-            <remarks>
-            This method doesn't turn off the tilt effect or cancel any current
-            manipulation; it just temporarily cancels the effect.
-            </remarks>
-        </member>
-        <member name="M:Microsoft.Phone.Controls.TiltEffect.StopTiltReturnStoryboardAndCleanup">
-            <summary>
-            Stops the tilt effect and release resources applied to the currently
-            tilted control.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Phone.Controls.TiltEffect.PauseTiltEffect">
-            <summary>
-            Pauses the tilt effect so that the control returns to the 'at rest'
-            position, but doesn't stop the tilt effect (handlers are still 
-            attached).
-            </summary>
-        </member>
-        <member name="M:Microsoft.Phone.Controls.TiltEffect.ResetTiltReturnStoryboard">
-            <summary>
-            Resets the storyboard to not running.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Phone.Controls.TiltEffect.ApplyTiltEffect(System.Windows.FrameworkElement,System.Windows.Point,System.Windows.Point)">
-            <summary>
-            Applies the tilt effect to the control.
-            </summary>
-            <param name="element">the control to tilt.</param>
-            <param name="touchPoint">The touch point, in the container's 
-            coordinates.</param>
-            <param name="centerPoint">The center point of the container.</param>
-        </member>
-        <member name="P:Microsoft.Phone.Controls.TiltEffect.UseLogarithmicEase">
-            <summary>
-            Whether to use a slightly more accurate (but slightly slower) tilt 
-            animation easing function.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Phone.Controls.TiltEffect.TiltableItems">
-            <summary>
-            Default list of items that are tiltable.
-            </summary>
-        </member>
-        <member name="T:Microsoft.Phone.Controls.TiltEffect.LogarithmicEase">
-            <summary>
-            Provides an easing function for the tilt return.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Phone.Controls.TiltEffect.LogarithmicEase.EaseInCore(System.Double)">
-            <summary>
-            Computes the easing function.
-            </summary>
-            <param name="normalizedTime">The time.</param>
-            <returns>The eased value.</returns>
-        </member>
-        <member name="T:Microsoft.Phone.Controls.TreeHelpers">
-            <summary>
-            Couple of simple helpers for walking the visual tree.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Phone.Controls.TreeHelpers.GetVisualAncestors(System.Windows.FrameworkElement)">
-            <summary>
-            Gets the ancestors of the element, up to the root.
-            </summary>
-            <param name="node">The element to start from.</param>
-            <returns>An enumerator of the ancestors.</returns>
-        </member>
-        <member name="M:Microsoft.Phone.Controls.TreeHelpers.GetVisualParent(System.Windows.FrameworkElement)">
-            <summary>
-            Gets the visual parent of the element.
-            </summary>
-            <param name="node">The element to check.</param>
-            <returns>The visual parent.</returns>
         </member>
         <member name="T:Microsoft.Phone.Controls.OffOnConverter">
             <summary>
@@ -10173,6 +11629,11 @@
             <param name="sender">The source object.</param>
             <param name="e">The event arguments.</param>
         </member>
+        <member name="M:Microsoft.Phone.Controls.TransitionFrame.EnsureLastTransitionIsComplete">
+            <summary>
+            Stops the last navigation transition if it's active and a new navigation occurs.
+            </summary>
+        </member>
         <member name="M:Microsoft.Phone.Controls.TransitionFrame.OnExitTransitionCompleted(System.Object,System.EventArgs)">
             <summary>
             Handles the completion of the exit transition, automatically 
@@ -10199,13 +11660,6 @@
             </summary>
             <param name="oldContent">The old <see cref="T:System.Object"/>.</param>
             <param name="newContent">The new <see cref="T:System.Object"/>.</param>
-        </member>
-        <member name="M:Microsoft.Phone.Controls.TransitionFrame.OnBackKeyPress(System.Object,System.ComponentModel.CancelEventArgs)">
-            <summary>
-            Handles the BackKeyPress to stop the animation and go back.
-            </summary>
-            <param name="sender">The source object.</param>
-            <param name="e">The event arguments.</param>
         </member>
         <member name="M:Microsoft.Phone.Controls.TransitionFrame.TransitionNewContent(Microsoft.Phone.Controls.ITransition,Microsoft.Phone.Controls.NavigationInTransition)">
             <summary>
@@ -10335,41 +11789,13 @@
             has completed playing.
             </summary>
         </member>
-        <member name="T:Microsoft.Phone.Controls.RollTransition">
+        <member name="T:Microsoft.Phone.Controls.FeatheredTransition">
             <summary>
-            Provides roll <see cref="T:Microsoft.Phone.Controls.ITransition"/>s.
-            </summary>
-        </member>
-        <member name="T:Microsoft.Phone.Controls.TransitionElement">
-            <summary>
-            Transition factory for a particular transition family.
-            </summary>
-            <QualityBand>Preview</QualityBand>
-        </member>
-        <member name="M:Microsoft.Phone.Controls.TransitionElement.GetTransition(System.Windows.UIElement)">
-            <summary>
-            Creates a new
+            Controls an
             <see cref="T:Microsoft.Phone.Controls.ITransition"/>
-            for a
-            <see cref="T:System.Windows.UIElement"/>.
-            Existing
-            <see cref="F:System.Windows.UIElement.RenderTransformProperty"/>
-            or
-            <see cref="F:System.Windows.UIElement.ProjectionProperty"/>
-            values may be saved and cleared before the start of the transition, then restored it after it is stopped or completed.
-            </summary>
-            <param name="element">The <see cref="T:System.Windows.UIElement"/>.</param>
-            <returns>The <see cref="T:Microsoft.Phone.Controls.ITransition"/>.</returns>
-        </member>
-        <member name="M:Microsoft.Phone.Controls.RollTransition.GetTransition(System.Windows.UIElement)">
-            <summary>
-            Creates a new
-            <see cref="T:Microsoft.Phone.Controls.ITransition"/>
-            for a
+            in order to produce a feathered animation on a set of 
             <see cref="T:System.Windows.UIElement"/>.
             </summary>
-            <param name="element">The <see cref="T:System.Windows.UIElement"/>.</param>
-            <returns>The <see cref="T:Microsoft.Phone.Controls.ITransition"/>.</returns>
         </member>
         <member name="T:Microsoft.Phone.Controls.Transition">
             <summary>
@@ -10397,7 +11823,8 @@
         </member>
         <member name="F:Microsoft.Phone.Controls.Transition._element">
             <summary>
-            The <see cref="T:System.Windows.UIElement"/>.
+            The <see cref="T:System.Windows.UIElement"/>
+            that the transition will be applied to.
             </summary>
         </member>
         <member name="F:Microsoft.Phone.Controls.Transition._isHitTestVisible">
@@ -10480,6 +11907,13 @@
             <see cref="T:System.Windows.UIElement"/>.
             </summary>
         </member>
+        <member name="M:Microsoft.Phone.Controls.Transition.OnCompleted(System.Object,System.EventArgs)">
+            <summary>
+            Mirrors <see cref="E:System.Windows.Media.Animation.Storyboard.Completed"/>.
+            </summary>
+            <param name="sender">The event sender.</param>
+            <param name="e">The event arguments.</param>
+        </member>
         <member name="M:Microsoft.Phone.Controls.Transition.Seek(System.TimeSpan)">
             <summary>
             Mirrors <see cref="M:System.Windows.Media.Animation.Storyboard.Seek"/>.
@@ -10502,10 +11936,96 @@
             Mirrors <see cref="M:System.Windows.Media.Animation.Storyboard.Stop"/>.
             </summary>
         </member>
+        <member name="P:Microsoft.Phone.Controls.Transition.Storyboard">
+            <summary>
+            The property that identifies the
+            <see cref="T:System.Windows.Media.Animation.Storyboard"/>
+            for the
+            <see cref="T:System.Windows.UIElement"/>.
+            </summary>
+        </member>
         <member name="E:Microsoft.Phone.Controls.Transition.Completed">
             <summary>
             Mirrors <see cref="E:System.Windows.Media.Animation.Storyboard.Completed"/>.
             </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.FeatheredTransition._mode">
+            <summary>
+            The <see cref="T:Microsoft.Phone.Controls.TurnstileFeatherTransitionMode"/>.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.FeatheredTransition._beginTime">
+            <summary>
+            The time at which the transition should begin.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.FeatheredTransition.#ctor(System.Windows.UIElement,System.Windows.Media.Animation.Storyboard,Microsoft.Phone.Controls.TurnstileFeatherTransitionMode,System.Nullable{System.TimeSpan})">
+            <summary>
+            Constructs a
+            <see cref="T:Microsoft.Phone.Controls.FeatheredTransition"/>
+            for a
+            <see cref="T:System.Windows.UIElement"/>
+            and a
+            <see cref="T:System.Windows.Media.Animation.Storyboard"/>,
+            based on a 
+            <see cref="T:Microsoft.Phone.Controls.TurnstileFeatherTransitionMode"/>
+            </summary>
+            <param name="element">
+            The <see cref="T:System.Windows.UIElement"/>.
+            </param>
+            <param name="storyboard">
+            The <see cref="T:System.Windows.Media.Animation.Storyboard"/>.
+            </param>
+            <param name="mode">
+            The <see cref="T:Microsoft.Phone.Controls.TurnstileFeatherTransitionMode"/>.
+            </param>
+            <param name="beginTime">
+            The time at which the transition should begin.
+            </param>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.FeatheredTransition.Begin">
+            <summary>
+            Composes the
+            <see cref="M:System.Windows.Media.Animation.Storyboard"/>
+            and mirrors 
+            <see cref="M:System.Windows.Media.Animation.Storyboard.Begin"/>.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Phone.Controls.RollTransition">
+            <summary>
+            Provides roll <see cref="T:Microsoft.Phone.Controls.ITransition"/>s.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Phone.Controls.TransitionElement">
+            <summary>
+            Transition factory for a particular transition family.
+            </summary>
+            <QualityBand>Preview</QualityBand>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.TransitionElement.GetTransition(System.Windows.UIElement)">
+            <summary>
+            Creates a new
+            <see cref="T:Microsoft.Phone.Controls.ITransition"/>
+            for a
+            <see cref="T:System.Windows.UIElement"/>.
+            Existing
+            <see cref="F:System.Windows.UIElement.RenderTransformProperty"/>
+            or
+            <see cref="F:System.Windows.UIElement.ProjectionProperty"/>
+            values may be saved and cleared before the start of the transition, then restored it after it is stopped or completed.
+            </summary>
+            <param name="element">The <see cref="T:System.Windows.UIElement"/>.</param>
+            <returns>The <see cref="T:Microsoft.Phone.Controls.ITransition"/>.</returns>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.RollTransition.GetTransition(System.Windows.UIElement)">
+            <summary>
+            Creates a new
+            <see cref="T:Microsoft.Phone.Controls.ITransition"/>
+            for a
+            <see cref="T:System.Windows.UIElement"/>.
+            </summary>
+            <param name="element">The <see cref="T:System.Windows.UIElement"/>.</param>
+            <returns>The <see cref="T:Microsoft.Phone.Controls.ITransition"/>.</returns>
         </member>
         <member name="T:Microsoft.Phone.Controls.TransitionService">
             <summary>
@@ -10796,6 +12316,74 @@
             The <see cref="T:Microsoft.Phone.Controls.SlideTransitionMode"/>.
             </summary>
         </member>
+        <member name="T:Microsoft.Phone.Controls.TurnstileFeatherTransition">
+            <summary>
+            Provides turnstile feather <see cref="T:Microsoft.Phone.Controls.ITransition"/>s.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.TurnstileFeatherTransition.ModeProperty">
+            <summary>
+            The
+            <see cref="T:System.Windows.DependencyProperty"/>
+            for the
+            <see cref="T:Microsoft.Phone.Controls.TurnstileTransitionMode"/>.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.TurnstileFeatherTransition.BeginTimeProperty">
+            <summary>
+            The
+            <see cref="T:System.Windows.DependencyProperty"/>
+            for the time at which the transition should begin.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.TurnstileFeatherTransition.GetTransition(System.Windows.UIElement)">
+            <summary>
+            Creates a new
+            <see cref="T:Microsoft.Phone.Controls.ITransition"/>
+            for a
+            <see cref="T:System.Windows.UIElement"/>.
+            Saves and clears the existing
+            <see cref="F:System.Windows.UIElement.ProjectionProperty"/>
+            value before the start of the transition, then restores it after it is stopped or completed.
+            </summary>
+            <param name="element">The <see cref="T:System.Windows.UIElement"/>.</param>
+            <returns>The <see cref="T:Microsoft.Phone.Controls.ITransition"/>.</returns>
+        </member>
+        <member name="P:Microsoft.Phone.Controls.TurnstileFeatherTransition.Mode">
+            <summary>
+            The <see cref="T:Microsoft.Phone.Controls.TurnstileTransitionMode"/>.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Phone.Controls.TurnstileFeatherTransition.BeginTime">
+            <summary>
+            The time at which the transition should begin.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Phone.Controls.TurnstileFeatherTransitionMode">
+            <summary>
+            The turnstile feather transition modes.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.TurnstileFeatherTransitionMode.ForwardIn">
+            <summary>
+            The turnstile feather forward in transition mode.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.TurnstileFeatherTransitionMode.ForwardOut">
+            <summary>
+            The turnstile feather forward out transition mode.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.TurnstileFeatherTransitionMode.BackwardIn">
+            <summary>
+            The turnstile feather backward in transition mode.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Phone.Controls.TurnstileFeatherTransitionMode.BackwardOut">
+            <summary>
+            The turnstile feather backward out transition mode.
+            </summary>
+        </member>
         <member name="T:Microsoft.Phone.Controls.TurnstileTransition">
             <summary>
             Provides turnstile <see cref="T:Microsoft.Phone.Controls.ITransition"/>s.
@@ -10919,6 +12507,19 @@
             </summary>
             <param name="element">The <see cref="T:System.Windows.UIElement"/>.</param>
             <param name="turnstileTransitionMode">The transition mode.</param>
+            <returns>The <see cref="T:Microsoft.Phone.Controls.ITransition"/>.</returns>
+        </member>
+        <member name="M:Microsoft.Phone.Controls.Transitions.TurnstileFeather(System.Windows.UIElement,Microsoft.Phone.Controls.TurnstileFeatherTransitionMode,System.Nullable{System.TimeSpan})">
+            <summary>
+            Creates an
+            <see cref="T:Microsoft.Phone.Controls.ITransition"/>
+            for a
+            <see cref="T:System.Windows.UIElement"/>
+            for the turnstile feather transition family.
+            </summary>
+            <param name="element">The <see cref="T:System.Windows.UIElement"/>.</param>
+            <param name="turnstileFeatherTransitionMode">The transition mode.</param>
+            <param name="beginTime">The time at which the transition should begin.</param>
             <returns>The <see cref="T:Microsoft.Phone.Controls.ITransition"/>.</returns>
         </member>
         <member name="T:Microsoft.Phone.Controls.TurnstileTransitionMode">
