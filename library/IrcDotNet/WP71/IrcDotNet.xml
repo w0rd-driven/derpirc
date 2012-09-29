@@ -4327,8 +4327,18 @@
             <param name="item1">The value of the tuple's first component.</param>
             <param name="item2">The value of the tuple's second component.</param>
         </member>
-        <!-- Badly formed XML comment ignored for member "P:System.Tuple`2.Item1" -->
-        <!-- Badly formed XML comment ignored for member "P:System.Tuple`2.Item2" -->
+        <member name="P:System.Tuple`2.Item1">
+            <summary>
+            Gets the value of the current System.Tuple%lt;T1, T2&gt; object's first component.
+            </summary>
+            <value>The value of the current System.Tuple%lt;T1, T2&gt; object's first component.</value>
+        </member>
+        <member name="P:System.Tuple`2.Item2">
+            <summary>
+            Gets the value of the current System.Tuple%lt;T1, T2&gt; object's second component.
+            </summary>
+            <value>The value of the current System.Tuple%lt;T1, T2&gt; object's second component.</value>
+        </member>
         <member name="T:System.Tuple`3">
             <summary>
             Represents a 3-tuple, or triple.
@@ -4345,8 +4355,23 @@
             <param name="item2">The value of the tuple's second component.</param>
             <param name="item3">The value of the tuple's third component.</param>
         </member>
-        <!-- Badly formed XML comment ignored for member "P:System.Tuple`3.Item1" -->
-        <!-- Badly formed XML comment ignored for member "P:System.Tuple`3.Item2" -->
-        <!-- Badly formed XML comment ignored for member "P:System.Tuple`3.Item3" -->
+        <member name="P:System.Tuple`3.Item1">
+            <summary>
+            Gets the value of the current System.Tuple&lt;T1, T2, T3&gt; object's first component.
+            </summary>
+            <value>The value of the current System.Tuple&lt;T1, T2, T3&gt; object's first component.</value>
+        </member>
+        <member name="P:System.Tuple`3.Item2">
+            <summary>
+            Gets the value of the current System.Tuple&lt;T1, T2, T3&gt; object's second component.
+            </summary>
+            <value>The value of the current System.Tuple&lt;T1, T2, T3&gt; object's second component.</value>
+        </member>
+        <member name="P:System.Tuple`3.Item3">
+            <summary>
+            Gets the value of the current System.Tuple&lt;T1, T2, T3&gt; object's third component.
+            </summary>
+            <value>The value of the current System.Tuple&lt;T1, T2, T3&gt; object's third component.</value>
+        </member>
     </members>
 </doc>
