@@ -53,6 +53,9 @@ namespace derpirc.Data.Models.Settings
             OnCreated();
         }
 
+        /// <summary>
+        /// Future - Has the user been notified of running under lock?
+        /// </summary>
         public bool IsUserLockAware
         {
             get
@@ -72,6 +75,9 @@ namespace derpirc.Data.Models.Settings
             }
         }
 
+        /// <summary>
+        /// Future - Run under lock screen
+        /// </summary>
         public bool IsRunUnderLock
         {
             get
@@ -91,6 +97,9 @@ namespace derpirc.Data.Models.Settings
             }
         }
 
+        /// <summary>
+        /// Future - Show toast on new mentions
+        /// </summary>
         public bool IsNotifyMentions
         {
             get
@@ -110,6 +119,9 @@ namespace derpirc.Data.Models.Settings
             }
         }
 
+        /// <summary>
+        /// Future - Show toast on new messages
+        /// </summary>
         public bool IsNotifyMessages
         {
             get
@@ -129,6 +141,9 @@ namespace derpirc.Data.Models.Settings
             }
         }
 
+        /// <summary>
+        /// Reconnect on connection disconnect
+        /// </summary>
         public bool IsReconnectOnDisconnect
         {
             get
@@ -148,6 +163,9 @@ namespace derpirc.Data.Models.Settings
             }
         }
 
+        /// <summary>
+        /// Rejoin channel on kick
+        /// </summary>
         public bool IsRejoinOnKick
         {
             get
@@ -167,6 +185,9 @@ namespace derpirc.Data.Models.Settings
             }
         }
 
+        /// <summary>
+        /// Join channel on invite
+        /// </summary>
         public bool IsJoinOnInvite
         {
             get
@@ -186,6 +207,9 @@ namespace derpirc.Data.Models.Settings
             }
         }
 
+        /// <summary>
+        /// Number of times to retry reconnection on disconnect
+        /// </summary>
         public int DisconnectRetries
         {
             get
@@ -205,6 +229,9 @@ namespace derpirc.Data.Models.Settings
             }
         }
 
+        /// <summary>
+        /// Wait time in seconds before reconnect
+        /// </summary>
         public int DisconnectRetryWait
         {
             get

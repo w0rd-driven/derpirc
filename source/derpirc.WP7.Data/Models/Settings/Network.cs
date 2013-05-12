@@ -64,6 +64,9 @@ namespace derpirc.Data.Models.Settings
             }
         }
 
+        /// <summary>
+        /// Friendly network name
+        /// </summary>
         public string DisplayName
         {
             get
@@ -84,6 +87,9 @@ namespace derpirc.Data.Models.Settings
             }
         }
 
+        /// <summary>
+        /// Name returned by network servers
+        /// </summary>
         public string Name
         {
             get
@@ -104,6 +110,9 @@ namespace derpirc.Data.Models.Settings
             }
         }
 
+        /// <summary>
+        /// Hostname of server to join
+        /// </summary>
         public string HostName
         {
             get
@@ -124,6 +133,9 @@ namespace derpirc.Data.Models.Settings
             }
         }
 
+        /// <summary>
+        /// Ports to connect to
+        /// </summary>
         public string Ports
         {
             get
@@ -143,6 +155,9 @@ namespace derpirc.Data.Models.Settings
             }
         }
 
+        /// <summary>
+        /// Network server password
+        /// </summary>
         public string Password
         {
             get
@@ -162,6 +177,9 @@ namespace derpirc.Data.Models.Settings
             }
         }
 
+        /// <summary>
+        /// Favorite channels
+        /// </summary>
         public List<Favorite> Favorites
         {
             get

@@ -30,6 +30,9 @@ namespace derpirc.Data.Models.Settings
             OnCreated();
         }
 
+        /// <summary>
+        /// Identifier
+        /// </summary>
         public int Id
         {
             get
@@ -49,6 +52,9 @@ namespace derpirc.Data.Models.Settings
             }
         }
 
+        /// <summary>
+        /// Friendly name
+        /// </summary>
         public string Name
         {
             get
@@ -68,6 +74,9 @@ namespace derpirc.Data.Models.Settings
             }
         }
 
+        /// <summary>
+        /// Networks
+        /// </summary>
         public List<Network> Networks
         {
             get

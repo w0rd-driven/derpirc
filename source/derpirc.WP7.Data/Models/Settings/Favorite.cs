@@ -33,6 +33,9 @@ namespace derpirc.Data.Models.Settings
             OnCreated();
         }
 
+        /// <summary>
+        /// Identifier
+        /// </summary>
         public int Id
         {
             get
@@ -52,6 +55,9 @@ namespace derpirc.Data.Models.Settings
             }
         }
 
+        /// <summary>
+        /// Channel favorite name
+        /// </summary>
         public string Name
         {
             get
@@ -71,6 +77,9 @@ namespace derpirc.Data.Models.Settings
             }
         }
 
+        /// <summary>
+        /// Auto connect on server join
+        /// </summary>
         public bool IsAutoConnect
         {
             get
@@ -90,6 +99,9 @@ namespace derpirc.Data.Models.Settings
             }
         }
 
+        /// <summary>
+        /// Channel key
+        /// </summary>
         public string Password
         {
             get
