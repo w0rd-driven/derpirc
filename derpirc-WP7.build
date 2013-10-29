@@ -103,7 +103,7 @@
 		</CreateItem>
 		
 		<!--Licenses-->
-		<CreateItem Include="*License.txt">
+		<CreateItem Include="*LICENSE">
 			<Output ItemName="licenseFiles" TaskParameter="Include"/>
 		</CreateItem>
 		

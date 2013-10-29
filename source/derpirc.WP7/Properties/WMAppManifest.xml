@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Deployment xmlns="http://schemas.microsoft.com/windowsphone/2009/deployment" AppPlatformVersion="7.1">
-  <App xmlns="" ProductID="{49f5b56d-5ba4-4533-b219-8123871c4286}" Title="derpirc" RuntimeType="Silverlight" Version="1.0.0.23" Genre="apps.normal" Author="Jeremy Brayton" Description="Windows Phone 7 IRC Client" Publisher="Braytonium Software">
+  <App xmlns="" ProductID="{49f5b56d-5ba4-4533-b219-8123871c4286}" Title="derpirc" RuntimeType="Silverlight" Version="1.0.0.24" Genre="apps.normal" Author="Jeremy Brayton" Description="Windows Phone 7 IRC Client" Publisher="Braytonium Software">
     <IconPath IsRelative="true" IsResource="false">ApplicationIcon.png</IconPath>
     <Capabilities>
       <Capability Name="ID_CAP_NETWORKING" />
