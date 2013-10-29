@@ -52,7 +52,7 @@
 	<Target Name="Rebuild" DependsOnTargets="UpdateVersion;Clean;Build;" />
 	
 	<Target Name="CreateVersionNumber" Condition="$(VersionNumber)==''">
-		<Version VersionFile=".\resources\msbuild\VersionNumber.txt" BuildType="Automatic" RevisionType="Increment" StartDate="1/30/2011">
+		<Version VersionFile=".\resources\msbuild\VersionNumber.txt" RevisionType="Increment" StartDate="1/30/2011">
 			<Output TaskParameter="Major" PropertyName="Major" />
 			<Output TaskParameter="Minor" PropertyName="Minor" />
 			<Output TaskParameter="Build" PropertyName="Build" />
