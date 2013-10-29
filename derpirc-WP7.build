@@ -7,7 +7,7 @@
 			 Primary configuration properties (override them via command line
 			 if needed
 		-->
-		<BuildPath Condition="$(BuildPath)==''">Build</BuildPath>
+		<BuildPath Condition="$(BuildPath)==''">build</BuildPath>
 		<Configuration Condition="$(Configuration)==''">Release</Configuration>
 		<BuildFramework></BuildFramework>
 		<AllowPartiallyTrustedCallers Condition="$(AllowPartiallyTrustedCallers)==''">true</AllowPartiallyTrustedCallers>
